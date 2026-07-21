@@ -1,0 +1,1285 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pelayanan Digital Desa Narmada v3.6.1</title>
+    <link rel="icon" href="favicon.png" type="image/png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
+                    colors: {
+                        narmadaGreen: {
+                            DEFAULT: '#059669',
+                            light: '#34D399',
+                            dark: '#047857'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <link rel="stylesheet" href="style.css">
+
+    <!-- VERCEL-GAS HYBRID POLYFILL -->
+    <script>
+        const GAS_API_URL = "https://script.google.com/macros/s/AKfycbzmjoh971LrqxxkiLE3D4TI-USB4efSVQ5jWMxLlBPj_2UATy-bM7Lam_QmzUoHzQuj/exec"; // Ganti dengan URL Deploy Anda
+
+        window.google = window.google || {};
+        window.google.script = window.google.script || {};
+
+        Object.defineProperty(window.google.script, 'run', {
+            get: function() {
+                let successHandler = null;
+                let failureHandler = null;
+                
+                const handlerProxy = new Proxy({}, {
+                    get: function(target, prop) {
+                        if (prop === 'withSuccessHandler') {
+                            return function(callback) {
+                                successHandler = callback;
+                                return handlerProxy;
+                            };
+                        }
+                        if (prop === 'withFailureHandler') {
+                            return function(callback) {
+                                failureHandler = callback;
+                                return handlerProxy;
+                            };
+                        }
+                        
+                        return function(...args) {
+                            fetch(GAS_API_URL, {
+                                method: "POST",
+                                body: JSON.stringify({ action: prop, params: args }),
+                                headers: { "Content-Type": "text/plain;charset=utf-8" },
+                                redirect: "follow"
+                            })
+                            .then(r => r.json())
+                            .then(res => {
+                                if (res.success && successHandler) successHandler(res.data);
+                                else if (!res.success && failureHandler) failureHandler(res.error);
+                                else if (!res.success && !failureHandler) console.error("GAS Error:", res.error);
+                            })
+                            .catch(err => {
+                                if (failureHandler) failureHandler(err);
+                                else console.error("Network Error:", err);
+                            });
+                        };
+                    }
+                });
+                return handlerProxy;
+            }
+        });
+    </script>
+
+</head>
+
+<body class="text-slate-900 antialiased flex flex-col justify-between min-h-screen">
+    <input type="hidden" id="initial-page-param" value="">
+
+    <div
+        class="fixed top-[-10%] left-[-10%] w-[45%] h-[45%] bg-emerald-200/30 rounded-full blur-[100px] pointer-events-none -z-10">
+    </div>
+    <div
+        class="fixed bottom-[-5%] right-[-5%] w-[40%] h-[40%] bg-teal-100/40 rounded-full blur-[90px] pointer-events-none -z-10">
+    </div>
+
+    <div class="w-full flex-grow flex flex-col justify-start z-10 transition-all duration-300">
+
+        <!-- ========================================== -->
+        <!-- 1. ANTARMUKA PORTAL WARGA (BINGKAI MOBILE APP) -->
+        <!-- ========================================== -->
+        <div id="citizen-workspace" class="phone-frame">
+
+            <header
+                class="flex flex-row justify-between items-center bg-white/40 backdrop-blur-2xl border border-white/60 rounded-2xl p-3 mb-6 shadow-sm sticky top-0 z-50">
+                <div class="flex items-center space-x-2.5 cursor-pointer" onclick="switchView('beranda')">
+                    <!-- LOGO ADJUSTMENT: Mengubah object-cover menjadi object-contain untuk support PNG transparent -->
+                    <div class="w-11 h-11 flex items-center justify-center shrink-0 overflow-hidden">
+                        <img id="warga-logo-img" src="" class="w-full h-full object-contain drop-shadow-sm"
+                            alt="Logo Desa">
+                    </div>
+                    <div class="text-left">
+                        <h1
+                            class="font-black text-sm md:text-base tracking-tight text-slate-900 leading-none uppercase">
+                            DESA <span class="text-narmadaGreen" id="warga-title-view">NARMADA</span>
+                        </h1>
+                        <p class="text-[10px] text-slate-500 font-extrabold tracking-wide mt-1">Sistem Pelayanan Digital
+                        </p>
+                    </div>
+                </div>
+            </header>
+
+            <section id="view-beranda" class="space-y-5">
+                <div
+                    class="relative bg-slate-50 border border-emerald-500/10 rounded-3xl shadow-2xl overflow-hidden flex flex-col justify-start min-h-[220px]">
+                    <!-- Background Image Banner -->
+                    <img id="warga-banner-img" src="" alt="" class="absolute inset-0 w-full h-full object-cover z-0">
+
+                    <!-- Overlay Transparan Tanpa Blur -->
+                    <div class="absolute inset-0 bg-gradient-to-r from-white/95 via-white/80 to-transparent z-0"></div>
+
+                    <!-- Text Container: Menghapus backdrop-blur-md -->
+                    <div
+                        class="relative z-10 p-5 w-full max-w-[80%] md:max-w-[70%] rounded-br-[40px] shadow-sm mt-0 ml-0 space-y-3 text-left h-full">
+                        <span class="text-xs font-semibold text-slate-700 block">Selamat datang,</span>
+                        <h2
+                            class="text-xl md:text-2xl font-black text-slate-900 tracking-tight leading-tight drop-shadow-sm">
+                            Pelayanan Digital<br>
+                            <span class="text-narmadaGreen" id="banner-desa-name">Desa Narmada</span>
+                        </h2>
+                        <p class="text-[9px] text-slate-800 font-extrabold leading-relaxed drop-shadow-sm"
+                            id="banner-desa-desc">
+                            Urus kebutuhan administrasi desa lebih mudah, cepat, dan transparan.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-3 gap-3 pt-2 w-full">
+                    <div onclick="handleMulaiPengajuan()"
+                        class="light-glass-card p-4 rounded-2xl text-center transition-all duration-300 hover:bg-slate-50 cursor-pointer group flex flex-col items-center justify-center space-y-2.5 aspect-square bg-white border border-slate-200 tap-squish">
+                        <div
+                            class="bg-emerald-50 w-11 h-11 rounded-xl flex items-center justify-center text-narmadaGreen text-lg border border-emerald-500/10 transition-all">
+                            <i class="fa-solid fa-file-signature text-base"></i>
+                        </div>
+                        <h3 class="font-semibold text-xs text-slate-700 leading-tight">Mulai Pengajuan</h3>
+                    </div>
+
+                    <div onclick="switchView('status')"
+                        class="light-glass-card p-4 rounded-2xl text-center transition-all duration-300 hover:bg-slate-50 cursor-pointer group flex flex-col items-center justify-center space-y-2.5 aspect-square bg-white border border-slate-200 tap-squish">
+                        <div
+                            class="bg-blue-50 w-11 h-11 rounded-xl flex items-center justify-center text-blue-500 text-lg border border-blue-500/10 transition-all">
+                            <i class="fa-solid fa-magnifying-glass text-base"></i>
+                        </div>
+                        <h3 class="font-semibold text-xs text-slate-700 leading-tight">Cek Status Pengajuan</h3>
+                    </div>
+
+                    <a id="link-wa-warga-beranda" href="https://wa.me/6281234567890" target="_blank"
+                        class="light-glass-card p-4 rounded-2xl text-center transition-all duration-300 hover:bg-slate-50 block group flex flex-col items-center justify-center space-y-2.5 aspect-square bg-white border border-slate-200 tap-squish">
+                        <div
+                            class="bg-amber-50 w-11 h-11 rounded-xl flex items-center justify-center text-amber-500 text-lg border border-amber-500/10 transition-all">
+                            <i class="fa-solid fa-phone text-base"></i>
+                        </div>
+                        <h3 class="font-semibold text-xs text-slate-700 leading-tight">Hubungi Kantor Desa</h3>
+                    </a>
+                </div>
+
+                <div class="space-y-2.5 w-full pt-2">
+                    <h3 class="text-slate-600 text-xs uppercase font-bold tracking-wider text-left mb-2">Informasi
+                        Pelayanan</h3>
+                    <div class="grid grid-cols-1 gap-2.5">
+                        <div id="warga-info-jam" onclick="toggleInfoDetail('jam-detail')"
+                            class="bg-white border border-slate-200 p-3.5 rounded-xl cursor-pointer hover:border-emerald-500/30 transition-all shadow-sm flex flex-col justify-start">
+                            <div class="flex items-center justify-between w-full">
+                                <div class="flex items-center space-x-2.5">
+                                    <div
+                                        class="bg-emerald-50 w-9 h-9 rounded-xl flex items-center justify-center text-narmadaGreen border border-emerald-500/10">
+                                        <span class="text-lg">⏰</span>
+                                    </div>
+                                    <div class="text-left w-full">
+                                        <h4 class="font-semibold text-sm text-slate-800">Jam Pelayanan</h4>
+                                        <div id="lbl-desc-jam-pelayanan">Memuat...</div>
+                                    </div>
+                                </div>
+                                <i id="jam-detail-icon"
+                                    class="fa-solid fa-chevron-down text-slate-400 text-xs transition-transform duration-300 shrink-0"></i>
+                            </div>
+                            <div id="jam-detail"
+                                class="hidden mt-3 pt-2.5 border-t border-slate-100 text-xs text-slate-600 space-y-1 w-full text-left font-medium">
+                                <div
+                                    class="grid grid-cols-2 border-b border-slate-200 pb-1 mb-1 font-semibold text-slate-800">
+                                    <span>Hari</span>
+                                    <span>Jam Pelayanan</span>
+                                </div>
+                                <div class="grid grid-cols-2"><span>Senin</span><span
+                                        class="text-narmadaGreen font-semibold">08.00 - 14.00 WITA</span></div>
+                                <div class="grid grid-cols-2"><span>Selasa</span><span
+                                        class="text-narmadaGreen font-semibold">08.00 - 14.00 WITA</span></div>
+                                <div class="grid grid-cols-2"><span>Rabu</span><span
+                                        class="text-narmadaGreen font-semibold">08.00 - 14.00 WITA</span></div>
+                                <div class="grid grid-cols-2"><span>Kamis</span><span
+                                        class="text-narmadaGreen font-semibold">08.00 - 14.00 WITA</span></div>
+                                <div class="grid grid-cols-2"><span>Jumat</span><span
+                                        class="text-narmadaGreen font-semibold">08.00 - 14.00 WITA</span></div>
+                                <div class="grid grid-cols-2"><span>Sabtu</span><span
+                                        class="text-red-500 font-semibold">Tutup/Libur</span></div>
+                                <div class="grid grid-cols-2"><span>Minggu</span><span
+                                        class="text-red-500 font-semibold">Tutup/Libur</span></div>
+                            </div>
+                        </div>
+
+                        <div id="warga-info-alur" onclick="toggleInfoDetail('alur-detail')"
+                            class="bg-white border border-slate-200 p-3.5 rounded-xl cursor-pointer hover:border-emerald-500/30 transition-all shadow-sm flex flex-col justify-start">
+                            <div class="flex items-center justify-between w-full">
+                                <div class="flex items-center space-x-2.5">
+                                    <div
+                                        class="bg-emerald-50 w-9 h-9 rounded-xl flex items-center justify-center text-narmadaGreen border border-emerald-500/10">
+                                        <span class="text-lg">🗺️</span>
+                                    </div>
+                                    <div class="text-left">
+                                        <h4 class="font-semibold text-sm text-slate-800">Alur Pengurusan</h4>
+                                        <p class="text-xs text-slate-500 font-medium leading-relaxed mt-1"
+                                            id="lbl-desc-alur-pelayanan">Ajukan online -> Verifikasi -> Serahkan berkas
+                                            fisik -> Selesai</p>
+                                    </div>
+                                </div>
+                                <i id="alur-detail-icon"
+                                    class="fa-solid fa-chevron-down text-slate-400 text-xs transition-transform duration-300"></i>
+                            </div>
+                            <div id="alur-detail"
+                                class="hidden mt-3 pt-2.5 border-t border-slate-100 text-xs text-slate-600 space-y-3 w-full text-left">
+                                <p class="font-semibold text-narmadaGreen uppercase tracking-wide">Tahapan Pengurusan
+                                    Dokumen:</p>
+                                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center text-xs font-medium">
+                                    <div
+                                        class="p-2 bg-emerald-50 text-narmadaGreen rounded-lg border border-emerald-100">
+                                        1. Ajukan Online</div>
+                                    <div class="p-2 bg-blue-50 text-blue-600 rounded-lg border border-blue-100">2.
+                                        Verifikasi</div>
+                                    <div class="p-2 bg-amber-50 text-amber-600 rounded-lg border border-amber-100">3.
+                                        Serah Fisik</div>
+                                    <div class="p-2 bg-teal-50 text-teal-600 rounded-lg border border-teal-100">4. Ambil
+                                        Surat</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="w-full animate-fade-in" id="warga-info-banner-semi">
+                    <div
+                        class="bg-emerald-50 border border-emerald-500/20 rounded-xl p-3.5 flex items-start space-x-2.5 shadow-sm text-left">
+                        <div class="bg-narmadaGreen text-white p-1.5 rounded-lg text-sm shrink-0 shadow">
+                            <i class="fa-solid fa-circle-info"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-sm text-narmadaGreen mb-1">Pelayanan Semi Digital</h4>
+                            <p class="text-xs text-slate-600 font-medium leading-relaxed" id="lbl-desc-semi-digital">
+                                Anda dapat mengajukan permohonan secara online dari rumah. Setelah permohonan
+                                diverifikasi, silakan datang ke kantor desa untuk menyerahkan dokumen fisik sesuai
+                                dengan persyaratan.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW B: PILIH SURAT & FORM PENGAJUAN (5-STEP WIZARD) -->
+            <section id="view-layanan" class="hidden space-y-4">
+                <div class="flex items-center space-x-2 text-left">
+                    <button id="btn-back-warga-nav" onclick="backToPrevStepOrMenu()"
+                        class="bg-narmadaGreen px-3 py-1.5 rounded-xl text-white hover:bg-narmadaGreen-dark border border-narmadaGreen text-[10px] font-extrabold transition-all flex items-center gap-1.5 shadow-md tap-squish">
+                        <i class="fa-solid fa-arrow-left"></i> Kembali
+                    </button>
+                    <span class="text-slate-400 text-xs">/</span>
+                    <span class="text-[10px] font-extrabold text-slate-500">Pengajuan Pelayanan</span>
+                </div>
+
+                <div id="wrapper-select-layanan"
+                    class="light-glass-card p-4 rounded-2xl space-y-3 shadow-xl border border-slate-101">
+                    <h3 class="text-xs font-bold text-slate-900 flex items-center gap-1.5 text-left">
+                        <span>📁</span> Pilih Jenis Pelayanan Administrasi
+                    </h3>
+                    <div class="grid grid-cols-1 gap-2.5" id="container-list-layanan"></div>
+                </div>
+
+                <div id="wrapper-formulir-pengajuan"
+                    class="hidden light-glass-card p-4 rounded-2xl space-y-4 shadow-xl border border-slate-101 text-left">
+                    <div
+                        class="flex items-center justify-between border-b border-slate-101 pb-3 mb-2 gap-1 overflow-x-auto">
+                        <div class="flex items-center space-x-1 shrink-0">
+                            <span id="step-badge-1"
+                                class="w-4 h-4 rounded-full flex items-center justify-center step-node-active text-[8px] font-bold">1</span>
+                            <span class="text-slate-400 text-[8px] font-bold">Panduan</span>
+                        </div>
+                        <div class="flex-grow border-t border-slate-200 min-w-[10px]"></div>
+                        <div class="flex items-center space-x-1 shrink-0">
+                            <span id="step-badge-2"
+                                class="w-4 h-4 rounded-full flex items-center justify-center step-node-inactive text-[8px] font-bold">2</span>
+                            <span class="text-slate-400 text-[8px] font-bold">Identitas</span>
+                        </div>
+                        <div class="flex-grow border-t border-slate-200 min-w-[10px]"></div>
+                        <div class="flex items-center space-x-1 shrink-0">
+                            <span id="step-badge-3"
+                                class="w-4 h-4 rounded-full flex items-center justify-center step-node-inactive text-[8px] font-bold">3</span>
+                            <span class="text-slate-400 text-[8px] font-bold">Isian</span>
+                        </div>
+                        <div class="flex-grow border-t border-slate-200 min-w-[10px]"></div>
+                        <div class="flex items-center space-x-1 shrink-0">
+                            <span id="step-badge-4"
+                                class="w-4 h-4 rounded-full flex items-center justify-center step-node-inactive text-[8px] font-bold">4</span>
+                            <span class="text-slate-400 text-[8px] font-bold">Unggah</span>
+                        </div>
+                        <div class="flex-grow border-t border-slate-200 min-w-[10px]"></div>
+                        <div class="flex items-center space-x-1 shrink-0">
+                            <span id="step-badge-5"
+                                class="w-4 h-4 rounded-full flex items-center justify-center step-node-inactive text-[8px] font-bold">5</span>
+                            <span class="text-slate-400 text-[8px] font-bold">Tinjau</span>
+                        </div>
+                    </div>
+
+                    <h3 class="text-sm font-extrabold text-narmadaGreen" id="text-judul-layanan-terpilih">Nama Pelayanan
+                    </h3>
+
+                    <!-- STEP 1: PERSYARATAN & PANDUAN -->
+                    <div id="wizard-section-1" class="space-y-4">
+                        <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-3.5 space-y-3 shadow-inner">
+                            <p class="font-extrabold text-narmadaGreen flex items-center gap-1.5 text-xs">
+                                <i class="fa-solid fa-bullhorn"></i> 📢 Panduan Berkas Fisik:
+                            </p>
+                            <p class="text-[10px] text-slate-700 leading-relaxed font-semibold">
+                                Harap membawa berkas fisik asli & fotokopiannya ke Kantor Desa Narmada saat status
+                                permohonan online Anda telah diverifikasi dan siap diserahkan.
+                            </p>
+
+                            <div class="border-t border-emerald-200 pt-2.5 mt-2 space-y-1.5">
+                                <div id="container-desc-syarat-vertikal"
+                                    class="space-y-1 text-[10px] text-slate-600 font-semibold pl-1"></div>
+                            </div>
+                        </div>
+
+                        <div
+                            class="bg-slate-50 border border-slate-200 rounded-xl p-3 flex items-start space-x-2.5 shadow-sm">
+                            <input type="checkbox" id="warga-syarat-checkbox" onchange="toggleWizardStep1State()"
+                                class="mt-0.5 w-4.5 h-4.5 text-narmadaGreen border-slate-300 rounded focus:ring-narmadaGreen cursor-pointer">
+                            <label for="warga-syarat-checkbox"
+                                class="text-[10px] font-extrabold text-slate-700 leading-relaxed cursor-pointer select-none">
+                                Saya menyatakan sudah menyiapkan seluruh dokumen persyaratan fisik di atas secara
+                                lengkap & benar.
+                            </label>
+                        </div>
+
+                        <div class="flex justify-end pt-2">
+                            <button type="button" id="btn-next-step-1" onclick="goToStep2()" disabled
+                                class="px-5 py-2.5 rounded-xl bg-slate-300 text-slate-500 font-bold text-xs shadow-md transition-all flex items-center gap-1.5 cursor-not-allowed tap-squish">
+                                Lanjut ke Identitas <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- STEP 2: IDENTITAS -->
+                    <div id="wizard-section-2" class="hidden space-y-4">
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1.5">NIK Pemohon (16 Digit)
+                                    *</label>
+                                <input type="text" id="warga-nik" required placeholder="Masukkan 16 digit NIK Anda"
+                                    class="w-full px-3 py-2.5 rounded-xl custom-input text-sm font-medium shadow-sm">
+                                <p id="lbl-nik-warning" class="hidden text-xs text-red-500 font-medium mt-1.5"><i
+                                        class="fa-solid fa-triangle-exclamation"></i> Digit NIK harus tepat 16 digit!
+                                </p>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1.5">Nama Lengkap Sesuai KTP
+                                    *</label>
+                                <input type="text" id="warga-nama" required placeholder="Nama lengkap Anda"
+                                    class="w-full px-3 py-2.5 rounded-xl custom-input text-sm font-medium shadow-sm"
+                                    oninput="this.value = this.value.toUpperCase();">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1.5">Nomor WhatsApp Aktif
+                                    *</label>
+                                <input type="text" id="warga-wa" required placeholder="Contoh: 081234567890"
+                                    class="w-full px-3 py-2.5 rounded-xl custom-input text-sm font-medium shadow-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1.5">Alamat Pemohon Sesuai
+                                    KTP *</label>
+                                <textarea id="warga-alamat" required
+                                    placeholder="Tuliskan alamat lengkap pemohon sesuai KTP" rows="2"
+                                    class="w-full px-3 py-2.5 rounded-xl custom-input text-sm font-medium shadow-sm"
+                                    oninput="this.value = this.value.toUpperCase();"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-end pt-2">
+                            <button type="button" onclick="goToStep3()"
+                                class="px-5 py-2.5 bg-narmadaGreen hover:bg-narmadaGreen-dark text-white font-semibold text-sm rounded-xl shadow-sm transition-all flex items-center gap-1.5 tap-squish">
+                                Lanjut ke Isian Form <i class="fa-solid fa-arrow-right text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- STEP 3: ISIAN FORMULIR DINAMIS -->
+                    <div id="wizard-section-3" class="hidden space-y-4">
+                        <div class="p-3 bg-slate-50 border rounded-xl shadow-inner text-left">
+                            <h4 class="font-extrabold text-xs text-slate-800" id="lbl-judul-section-isian">Isian
+                                Keperluan Surat & Formulir</h4>
+                            <p class="text-[9px] text-slate-505 mt-1" id="lbl-desc-section-isian">Mohon lengkapi seluruh
+                                isian data pendukung berikut.</p>
+                        </div>
+
+                        <div id="container-pertanyaan-tambahan" class="space-y-3 pt-2"></div>
+
+                        <div class="flex justify-end pt-2">
+                            <button type="button" onclick="goToStep4()"
+                                class="px-5 py-2.5 bg-narmadaGreen hover:bg-narmadaGreen-dark text-white font-bold text-xs rounded-xl shadow-md transition-all flex items-center gap-1.5 tap-squish">
+                                Lanjut ke Unggah Berkas <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- STEP 4: UPLOAD FOTO BERKAS -->
+                    <div id="wizard-section-4" class="hidden space-y-4">
+                        <div class="space-y-2">
+                            <label class="block text-[10px] font-extrabold text-slate-800">📷 Unggah Foto Dokumen
+                                Persyaratan Asli:</label>
+                            <div id="container-upload-persyaratan" class="grid grid-cols-1 gap-3"></div>
+                        </div>
+
+                        <div class="flex justify-end pt-3 border-t border-slate-101">
+                            <button type="button" onclick="goToStep5()"
+                                class="px-5 py-2.5 bg-narmadaGreen hover:bg-narmadaGreen-dark text-white text-xs font-bold rounded-xl shadow-md transition-all flex items-center gap-1.5 tap-squish">
+                                <span>Lanjut ke Tinjauan</span> <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- STEP 5: TINJAU & SUBMIT -->
+                    <div id="wizard-section-5" class="hidden space-y-4">
+                        <div class="bg-amber-50 border border-amber-200 rounded-xl p-3.5 space-y-2.5 shadow-inner">
+                            <p class="font-extrabold text-amber-800 flex items-center gap-1.5 text-[11px]">
+                                <i class="fa-solid fa-magnifying-glass-chart"></i> Tinjau Kembali Data Anda
+                            </p>
+                            <p class="text-[9px] text-slate-600 leading-relaxed font-semibold">
+                                Mohon luangkan waktu sejenak untuk meninjau kecocokan data Anda di bawah ini sebelum
+                                mengirim pengajuan resmi.
+                            </p>
+                        </div>
+
+                        <div class="space-y-3 bg-white border border-slate-101 rounded-2xl p-4 shadow-xl text-left">
+                            <div class="border-b border-slate-101 pb-2">
+                                <p class="text-[9px] text-slate-400 font-bold uppercase tracking-wide">Identitas Pemohon
+                                </p>
+                                <p class="text-xs font-bold text-slate-900 mt-0.5" id="review-display-nama">-</p>
+                                <p class="text-[10px] text-slate-505 font-semibold" id="review-display-nik">-</p>
+                                <p class="text-[10px] text-slate-505 font-semibold" id="review-display-wa">-</p>
+                                <p class="text-[10px] text-slate-505 font-semibold italic mt-1"
+                                    id="review-display-alamat">-</p>
+                            </div>
+
+                            <div class="border-b border-slate-101 pb-2">
+                                <p class="text-[9px] font-bold text-slate-700 mt-1 mb-0.5 uppercase tracking-wide">ISIAN FORMULIR WARGA</p>
+                                <div class="space-y-1 mt-1 text-[11px] text-slate-700 font-semibold"
+                                    id="review-display-isian"></div>
+                            </div>
+
+                            <div>
+                                <p class="text-[9px] text-slate-400 font-bold uppercase tracking-wide mb-1.5">Foto
+                                    Dokumen Berkas</p>
+                                <div class="grid grid-cols-2 gap-2" id="review-display-berkas"></div>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-end pt-3 border-t border-slate-101">
+                            <button type="button" id="btn-submit-warga" onclick="handleWargaSubmit()"
+                                class="px-5 py-2.5 bg-narmadaGreen hover:bg-narmadaGreen-dark text-white text-xs font-extrabold rounded-xl shadow-md hover:shadow-lg transition-all flex items-center gap-1.5 tap-squish">
+                                <span>Kirim Pengajuan</span> <i class="fa-solid fa-paper-plane text-[10px]"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- SUCCESS STATE SCREEN -->
+                    <div id="wizard-section-success" class="hidden text-center py-6 space-y-4 animate-fade-in">
+                        <div
+                            class="mx-auto w-14 h-14 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-2xl shadow-md animate-bounce">
+                            <i class="fa-solid fa-check-double"></i>
+                        </div>
+                        <h3 class="text-base font-extrabold text-slate-900">Pengajuan Sukses Terkirim!</h3>
+                        <p class="text-[10px] text-slate-505 max-w-[80%] mx-auto leading-relaxed">
+                            Berkas digital Anda telah masuk ke dalam antrean sistem administrasi desa. Silakan catat
+                            atau salin nomor registrasi berikut untuk melacak berkas secara berkala.
+                        </p>
+
+                        <div
+                            class="bg-slate-50 border border-slate-200 rounded-2xl p-4 max-w-xs mx-auto space-y-2.5 shadow-inner text-center">
+                            <span class="text-[9px] font-bold text-slate-400 uppercase block tracking-wider">No.
+                                Registrasi Pengajuan</span>
+                            <span class="text-xs font-black text-emerald-700 tracking-widest block select-all"
+                                id="success-reg-id">REQ-00000000-0000</span>
+
+                            <button onclick="copyRegIdToClipboard()"
+                                class="mx-auto flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-900 text-white rounded-lg text-[9px] font-bold transition-all shadow">
+                                <i class="fa-regular fa-copy"></i> Salin No. Registrasi
+                            </button>
+                            
+                            <button onclick="sendWaAfterSubmit()"
+                                class="mx-auto mt-2 flex items-center gap-1.5 px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg text-[9px] font-bold transition-all shadow tap-squish">
+                                <i class="fa-brands fa-whatsapp text-sm"></i> Kabari Admin via WA
+                            </button>
+                        </div>
+
+                        <div class="pt-4">
+                            <button onclick="switchView('beranda')"
+                                class="px-6 py-2.5 bg-emerald-50 hover:bg-emerald-100 text-narmadaGreen font-bold text-xs rounded-xl transition-all shadow-md tap-squish">
+                                Kembali ke Beranda
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- VIEW C: CEK STATUS PENGAJUAN (WARGA) -->
+            <section id="view-status" class="hidden space-y-5">
+                <div class="flex items-center space-x-2 text-left">
+                    <button onclick="switchView('beranda')"
+                        class="bg-narmadaGreen px-3 py-1.5 rounded-xl text-white hover:bg-narmadaGreen-dark border border-narmadaGreen text-[10px] font-extrabold transition-all flex items-center gap-1.5 shadow-md tap-squish">
+                        <i class="fa-solid fa-arrow-left"></i> Kembali
+                    </button>
+                    <span class="text-slate-400 text-xs">/</span>
+                    <span class="text-[10px] font-extrabold text-slate-500">Cek Status</span>
+                </div>
+
+                <div class="light-glass-card p-4 rounded-2xl space-y-4 shadow-xl border border-slate-101">
+                    <h3 class="text-xs font-bold text-slate-900 flex items-center gap-1.5 text-left">
+                        <span>🔍</span> Lacak Berkas Pengajuan Warga
+                    </h3>
+                    <form onsubmit="event.preventDefault(); runSearchStatus();" class="flex gap-2">
+                        <input type="text" id="search-status-key" required
+                            placeholder="Masukkan NIK atau ID Pengajuan (REQ-...)"
+                            class="flex-grow px-3 py-2.5 rounded-xl custom-input text-xs shadow-inner">
+                        <button type="submit"
+                            class="px-4 py-2.5 rounded-xl bg-narmadaGreen hover:bg-narmadaGreen-dark text-white font-extrabold text-xs transition-all shadow-md">Cari</button>
+                    </form>
+
+                    <div id="wrapper-hasil-status" class="hidden space-y-3">
+                        <h4
+                            class="text-xs font-semibold text-slate-500 uppercase tracking-widest border-b border-slate-200 pb-1.5 text-left">
+                            Hasil Penelusuran</h4>
+                        <div id="box-list-status" class="space-y-3 text-left"></div>
+                    </div>
+                </div>
+            </section>
+
+            <footer class="w-full pt-3 mt-auto mb-2 text-center text-xs font-medium text-slate-400 tracking-wide">
+                © 2026 Pemerintah Desa Narmada. All Rights Reserved.
+            </footer>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- 2. ANTARMUKA PORTAL ADMIN (DESKTOP WORKSPACE) -->
+        <!-- ========================================== -->
+        <div id="admin-workspace" class="hidden fixed inset-0 z-[100] w-full overflow-x-auto bg-slate-50/90">
+        <!-- Background Blur Blobs -->
+        <div class="fixed top-[-10%] right-[-5%] w-[40%] h-[40%] bg-emerald-200/20 rounded-full blur-[100px] pointer-events-none z-[101]"></div>
+        <div class="fixed bottom-[-10%] left-[-5%] w-[35%] h-[35%] bg-teal-200/20 rounded-full blur-[90px] pointer-events-none z-[101]"></div>
+        
+        <div class="flex h-full min-w-[1024px] w-full bg-transparent overflow-hidden relative z-[102]">
+
+            <!-- SIDEBAR -->
+            <div class="flex w-64 bg-narmadaGreen text-emerald-50 flex-col shrink-0 transition-all duration-300 z-50 relative h-full shadow-2xl" id="admin-sidebar">
+                <div class="p-6 border-b border-emerald-700/50 flex items-center space-x-3">
+                    <div class="w-10 h-10 flex items-center justify-center shrink-0 overflow-hidden bg-white rounded-lg p-1">
+                        <img id="admin-logo-img" src="" class="w-full h-full object-contain drop-shadow-sm" alt="Logo Desa">
+                    </div>
+                    <div class="text-left">
+                        <h2 class="text-sm font-extrabold text-white leading-none">
+                            DESA <span class="text-emerald-200" id="admin-title-view">NARMADA</span>
+                        </h2>
+                        <p class="text-[10px] text-emerald-100 font-semibold mt-1">Admin Panel</p>
+                    </div>
+                </div>
+
+                <div class="flex flex-col flex-1 py-6 px-4 space-y-1.5 overflow-y-auto">
+                    <button id="tab-adm-dashboard" onclick="switchAdminTab('dashboard')"
+                        class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left font-bold text-xs bg-white text-narmadaGreen shadow-sm transition-all active:scale-95">
+                        <i class="fa-solid fa-chart-pie w-4 text-center"></i> Dashboard
+                    </button>
+                    <button id="tab-adm-daftar-layanan" onclick="switchAdminTab('daftar-layanan')"
+                        class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left font-bold text-xs text-emerald-50 hover:bg-narmadaGreen-dark hover:text-white transition-all active:scale-95">
+                        <i class="fa-solid fa-folder-open w-4 text-center"></i> Layanan
+                    </button>
+                    <button id="tab-adm-kontak" onclick="switchAdminTab('kontak')"
+                        class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left font-bold text-xs text-emerald-50 hover:bg-narmadaGreen-dark hover:text-white transition-all active:scale-95">
+                        <i class="fa-solid fa-phone w-4 text-center"></i> Kontak Pelayanan
+                    </button>
+                    <button id="tab-adm-beranda" onclick="switchAdminTab('beranda')"
+                        class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left font-bold text-xs text-emerald-50 hover:bg-narmadaGreen-dark hover:text-white transition-all active:scale-95">
+                        <i class="fa-solid fa-home w-4 text-center"></i> Setelan Beranda
+                    </button>
+                    <button id="tab-adm-kredensial" onclick="switchAdminTab('kredensial')"
+                        class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left font-bold text-xs text-emerald-50 hover:bg-narmadaGreen-dark hover:text-white transition-all active:scale-95">
+                        <i class="fa-solid fa-key w-4 text-center"></i> Kredensial Admin
+                    </button>
+                </div>
+
+                <div class="p-4 border-t border-emerald-700/50">
+                    <button onclick="confirmAdminLogout()"
+                        class="w-full px-4 py-2.5 rounded-xl bg-emerald-800 hover:bg-red-500 hover:text-white text-emerald-100 font-bold text-xs transition-all active:scale-95 flex items-center justify-center gap-2 shadow-sm">
+                        <i class="fa-solid fa-right-from-bracket"></i> Keluar
+                    </button>
+                </div>
+            </div>
+
+            <!-- MAIN CONTENT AREA -->
+            <div class="flex-1 flex flex-col h-full overflow-hidden relative">
+                
+                <!-- Content Scrollable Area -->
+                <div class="flex-1 overflow-y-auto p-8 bg-slate-50/50">
+
+                <!-- SUB-TAB 0: DASHBOARD TERPADU -->
+                <div id="subview-admin-dashboard" class="space-y-6 text-left">
+                    <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+                        <div id="card-stat-total" onclick="setStatusFilter('')"
+                            class="bg-white border border-slate-100 p-4 rounded-2xl shadow-sm hover:shadow-lg flex flex-col justify-between cursor-pointer hover:-translate-y-1 transition-all">
+                            <div class="flex items-center gap-2 mb-2">
+                                <div class="bg-slate-100 w-8 h-8 rounded-lg flex items-center justify-center text-slate-500"><i class="fa-solid fa-list"></i></div>
+                                <span class="text-slate-500 text-[10px] font-bold uppercase tracking-wider">Total</span>
+                            </div>
+                            <span id="stat-total" class="text-2xl font-black text-slate-800">0</span>
+                        </div>
+
+                        <div id="card-stat-pending" onclick="setStatusFilter('Pending')"
+                            class="bg-white border border-slate-100 p-4 rounded-2xl shadow-sm hover:shadow-lg flex flex-col justify-between cursor-pointer hover:-translate-y-1 transition-all">
+                            <div class="flex items-center gap-2 mb-2">
+                                <div class="bg-blue-50 w-8 h-8 rounded-lg flex items-center justify-center text-blue-500"><i class="fa-solid fa-clock"></i></div>
+                                <span class="text-slate-500 text-[10px] font-bold uppercase tracking-wider">Pending</span>
+                            </div>
+                            <span id="stat-pending" class="text-2xl font-black text-blue-600">0</span>
+                        </div>
+
+                        <div id="card-stat-verifikasi" onclick="setStatusFilter('Verifikasi')"
+                            class="bg-white border border-slate-100 p-4 rounded-2xl shadow-sm hover:shadow-lg flex flex-col justify-between cursor-pointer hover:-translate-y-1 transition-all">
+                            <div class="flex items-center gap-2 mb-2">
+                                <div class="bg-amber-50 w-8 h-8 rounded-lg flex items-center justify-center text-amber-500"><i class="fa-solid fa-magnifying-glass"></i></div>
+                                <span class="text-slate-500 text-[10px] font-bold uppercase tracking-wider">Verifikasi</span>
+                            </div>
+                            <span id="stat-verifikasi" class="text-2xl font-black text-amber-500">0</span>
+                        </div>
+
+                        <div id="card-stat-selesai" onclick="setStatusFilter('Selesai')"
+                            class="bg-white border border-slate-100 p-4 rounded-2xl shadow-sm hover:shadow-lg flex flex-col justify-between cursor-pointer hover:-translate-y-1 transition-all">
+                            <div class="flex items-center gap-2 mb-2">
+                                <div class="bg-emerald-50 w-8 h-8 rounded-lg flex items-center justify-center text-emerald-500"><i class="fa-solid fa-check-circle"></i></div>
+                                <span class="text-slate-500 text-[10px] font-bold uppercase tracking-wider">Selesai</span>
+                            </div>
+                            <span id="stat-selesai" class="text-2xl font-black text-emerald-600">0</span>
+                        </div>
+
+                        <div id="card-stat-uploadUlang" onclick="setStatusFilter('Upload Ulang')"
+                            class="bg-white border border-slate-100 p-4 rounded-2xl shadow-sm hover:shadow-lg flex flex-col justify-between cursor-pointer hover:-translate-y-1 transition-all">
+                            <div class="flex items-center gap-2 mb-2">
+                                <div class="bg-red-50 w-8 h-8 rounded-lg flex items-center justify-center text-red-500"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                                <span class="text-slate-500 text-[10px] font-bold uppercase tracking-wider">Revisi</span>
+                            </div>
+                            <span id="stat-uploadUlang" class="text-2xl font-black text-red-600">0</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-3xl border border-slate-200 p-5 shadow-xl space-y-4">
+                        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3">
+                            <div>
+                                <h3 class="font-extrabold text-sm text-slate-800 flex items-center gap-2">
+                                    <span>📂</span> Daftar Pengajuan Masuk
+                                </h3>
+                                <p class="text-[10px] text-slate-400 font-semibold mt-1">Filter Aktif: <span
+                                        id="label-active-filter" class="text-narmadaGreen font-bold">Semua Berkas</span>
+                                </p>
+                            </div>
+
+                            <div class="flex gap-2 max-w-md w-full sm:w-auto">
+                                <input type="text" id="admin-keyword-filter" oninput="runAdminFilter()"
+                                    placeholder="Cari NIK, Nama, atau ID Pengajuan..."
+                                    class="flex-grow sm:w-64 px-3.5 py-2 rounded-xl custom-input text-xs shadow-inner">
+                                <button onclick="runAdminFilter()"
+                                    class="px-4 py-2 bg-narmadaGreen hover:bg-narmadaGreen-dark text-white rounded-xl text-xs font-bold transition-all shadow-md flex items-center gap-1.5 shrink-0">
+                                    <i class="fa-solid fa-magnifying-glass"></i> Cari
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Tabel Data Pengajuan -->
+                        <div class="overflow-x-auto border border-slate-101 rounded-2xl shadow-inner">
+                            <table class="w-full text-left border-collapse text-xs">
+                                <thead>
+                                    <tr
+                                        class="bg-slate-50 text-slate-400 font-bold uppercase tracking-wider text-[9px] border-b border-slate-101">
+                                        <th class="p-4 w-[5%] text-center">No</th>
+                                        <th class="p-4 w-[15%]">Waktu & Tempat</th>
+                                        <th class="p-4 w-[25%]">Detail Pemohon</th>
+                                        <th class="p-4 w-[25%]">Pelayanan</th>
+                                        <th class="p-4 w-[10%] text-center">Status</th>
+                                        <th class="p-4 w-[10%] text-center">Verifikasi</th>
+                                        <th class="p-4 w-[10%] text-center">Hubungi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="table-admin-rows" class="divide-y divide-slate-101 bg-white">
+                                    <!-- Dimuat secara dinamis via JS -->
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Kontrol Navigasi Halaman (Pagination) -->
+                        <div class="flex justify-between items-center pt-2">
+                            <span id="txt-pagination-info" class="text-[10px] font-bold text-slate-400">Halaman 1 dari 1
+                                (0 Berkas)</span>
+                            <div class="flex gap-1.5">
+                                <button id="btn-adm-prev" onclick="moveAdminPage(-1)" disabled
+                                    class="px-3 py-1.5 bg-white hover:bg-slate-50 text-slate-505 border border-slate-200 rounded-lg text-[10px] font-bold transition-all shadow disabled:opacity-40 disabled:cursor-not-allowed">
+                                    <i class="fa-solid fa-chevron-left mr-1"></i> Prev
+                                </button>
+                                <button id="btn-adm-next" onclick="moveAdminPage(1)" disabled
+                                    class="px-3 py-1.5 bg-white hover:bg-slate-50 text-slate-505 border border-slate-200 rounded-lg text-[10px] font-bold transition-all shadow disabled:opacity-40 disabled:cursor-not-allowed">
+                                    Next <i class="fa-solid fa-chevron-right ml-1"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SUB-TAB B: PENGATURAN LAYANAN (WIZARD SERVICE BUILDER) -->
+                                <div id="subview-admin-layanan" class="hidden space-y-6 text-left">
+                    <!-- STICKY HEADER -->
+                    <div class="w-full flex justify-between items-center bg-white/80 backdrop-blur-md p-4 rounded-2xl shadow-sm border border-slate-200 sticky top-0 z-40">
+                        <div>
+                            <h2 class="text-lg font-bold text-slate-800" id="unified-editor-title">Editor Layanan</h2>
+                            <p class="text-[10px] text-slate-500">Konfigurasi detail, berkas persyaratan, dan kolom pertanyaan.</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="closeLayananEditor()" class="px-4 py-2 text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition-all">Batal</button>
+                            <button onclick="submitBuilderDataToServer()" class="px-5 py-2 bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold rounded-xl shadow-md flex items-center gap-2 transition-all">
+                                <i class="fa-solid fa-save"></i> Simpan Perubahan
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+                        <!-- LEFT COLUMN: INFO DASAR & KEPERLUAN -->
+                        <div class="xl:col-span-1 space-y-6">
+                            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 space-y-4">
+                                <h3 class="text-sm font-bold text-slate-800 border-b pb-2"><i class="fa-solid fa-info-circle text-narmadaGreen"></i> Info Dasar</h3>
+                                
+                                <!-- HIDDEN SELECT (For compatibility with existing JS, we hide it and set it programmatically) -->
+                                <select id="builder-select-layanan" class="hidden"><option value="[+] TAMBAH LAYANAN BARU">[+] TAMBAH LAYANAN BARU</option></select>
+                                
+                                <div id="wrapper-builder-nama">
+                                    <label class="block text-[10px] font-bold text-slate-505 mb-1">Nama Pelayanan *</label>
+                                    <input type="text" id="builder-layanan-nama" list="saran-nama-layanan" placeholder="Contoh: Surat Pengantar Nikah" class="w-full px-3 py-2 rounded-xl custom-input text-xs shadow-inner bg-slate-50">
+                                    <datalist id="saran-nama-layanan"></datalist>
+                                </div>
+                                <div id="wrapper-builder-template">
+                                    <label class="block text-[10px] font-bold text-slate-505 mb-1">ID Template Google Docs (PDF) *</label>
+                                    <input type="text" id="builder-template-doc-id" placeholder="Kosongkan jika tidak butuh PDF" class="w-full px-3 py-2 rounded-xl custom-input text-xs shadow-inner bg-slate-50">
+                                </div>
+                            </div>
+
+                            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 space-y-4">
+                                <h3 class="text-sm font-bold text-slate-800 border-b pb-2"><i class="fa-solid fa-list-check text-narmadaGreen"></i> Keperluan Surat</h3>
+                                <p class="text-[9px] text-slate-500">Tentukan daftar keperluan (opsi dropdown) yang bisa dipilih warga saat mengajukan layanan ini.</p>
+                                
+                                <div>
+                                    <div class="flex gap-2">
+                                        <select id="builder-keperluan-select" onchange="handleKeperluanSelectChange()" class="flex-grow px-3 py-2 rounded-xl custom-input text-xs shadow-inner bg-slate-50">
+                                            <option value="">-- Pilih / Edit Keperluan --</option>
+                                            <option value="__ADD_NEW__" class="font-extrabold text-emerald-600">[+] TAMBAH KEPERLUAN BARU...</option>
+                                        </select>
+                                        <button type="button" onclick="deleteSelectedKeperluanOption()" class="px-3 py-2 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-xl text-xs font-bold transition-all shadow-sm" title="Hapus opsi terpilih">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </button>
+                                    </div>
+
+                                    <div id="wrapper-new-keperluan" class="hidden mt-2.5 p-3 bg-slate-50 border border-slate-200 rounded-xl shadow-inner space-y-2">
+                                        <label class="block text-[9px] font-bold text-slate-500">Ketik Keperluan Baru</label>
+                                        <div class="flex gap-2">
+                                            <input type="text" id="builder-keperluan-new-input" placeholder="Contoh: Melamar Pekerjaan" class="flex-grow px-3 py-1.5 rounded-lg custom-input text-xs shadow-inner">
+                                            <button type="button" onclick="saveNewKeperluanOption()" class="px-4 py-1.5 bg-narmadaGreen hover:bg-narmadaGreen-dark text-white rounded-lg text-xs font-bold transition-all shadow-md">Simpan</button>
+                                            <button type="button" onclick="cancelNewKeperluanOption()" class="px-3 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-lg text-xs font-bold transition-all">Batal</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- RIGHT COLUMN: PERSYARATAN & PERTANYAAN -->
+                        <div class="xl:col-span-2 space-y-6">
+                            
+                            <!-- PERSYARATAN CARD -->
+                            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 space-y-4">
+                                <h3 class="text-sm font-bold text-slate-800 border-b pb-2"><i class="fa-solid fa-file-invoice text-emerald-600"></i> Berkas Persyaratan (Upload Warga)</h3>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-100">
+                                    <div>
+                                        <label class="block text-[10px] font-bold text-slate-550 mb-1">Berlaku Untuk Keperluan:</label>
+                                        <select id="builder-req-keperluan" class="w-full px-3 py-2 rounded-xl custom-input text-xs shadow-inner bg-white"></select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] font-bold text-slate-550 mb-1">Nama Persyaratan:</label>
+                                        <div class="flex gap-2">
+                                            <input type="text" id="builder-req-input" list="saran-persyaratan-list" placeholder="Ketik atau pilih saran..." class="flex-grow px-3 py-2 rounded-xl custom-input text-xs shadow-inner bg-white">
+                                            <datalist id="saran-persyaratan-list"></datalist>
+                                            <button type="button" onclick="addRequirementToKeperluan()" class="px-4 py-2 bg-slate-800 text-white rounded-xl text-xs font-bold hover:bg-slate-900 shadow-sm"><i class="fa-solid fa-plus"></i> Tambah</button>
+                                        </div>
+                                        <div id="builder-req-suggestions" class="flex flex-wrap gap-1.5 mt-2"></div>
+                                    </div>
+                                </div>
+
+                                <div class="space-y-2 mt-2">
+                                    <h4 class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Daftar Persyaratan Terpilih:</h4>
+                                    <div id="builder-req-mapping-list" class="space-y-2 max-h-[250px] overflow-y-auto pr-2"></div>
+                                </div>
+                            </div>
+
+                            <!-- PERTANYAAN CARD -->
+                            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 space-y-4">
+                                <h3 class="text-sm font-bold text-slate-800 border-b pb-2"><i class="fa-solid fa-question-circle text-blue-600"></i> Formulir Pertanyaan Tambahan</h3>
+                                
+                                <div class="bg-slate-50 p-4 border border-slate-200 rounded-2xl grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                    <div class="sm:col-span-3 grid grid-cols-1 sm:grid-cols-2 gap-3 mb-1 border-b border-slate-200 pb-3">
+                                        <div>
+                                            <label class="block text-[9px] font-bold text-slate-500 mb-0.5">Keperluan Surat (Opsional)</label>
+                                            <select id="builder-q-keperluan" class="w-full px-2.5 py-1.5 rounded-lg custom-input text-xs shadow-inner bg-white">
+                                                <option value="Wajib">Wajib (Berlaku Semua Keperluan)</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block text-[9px] font-bold text-slate-500 mb-0.5">Judul Penanda (Opsional)</label>
+                                            <input type="text" id="builder-q-judul" placeholder="Contoh: Data Pribadi" class="w-full px-2.5 py-1.5 rounded-lg custom-input text-xs shadow-inner bg-white">
+                                        </div>
+                                    </div>
+
+                                    <div class="sm:col-span-2 mt-1">
+                                        <label class="block text-[9px] font-bold text-slate-500 mb-0.5">Nama Pertanyaan / Label</label>
+                                        <input type="text" id="builder-q-label" placeholder="Contoh: Bidang Usaha" class="w-full px-2.5 py-1.5 rounded-lg custom-input text-xs shadow-inner bg-white">
+                                    </div>
+                                    <div class="mt-1">
+                                        <label class="block text-[9px] font-bold text-slate-500 mb-0.5">Wajib Diisi?</label>
+                                        <select id="builder-q-required" class="w-full px-2.5 py-1.5 rounded-lg custom-input text-xs shadow-inner bg-white">
+                                            <option value="ya">Ya (Wajib)</option>
+                                            <option value="tidak">Tidak (Opsional)</option>
+                                        </select>
+                                    </div>
+                                    <div class="mt-1">
+                                        <label class="block text-[9px] font-bold text-slate-500 mb-0.5">Tipe Input</label>
+                                        <select id="builder-q-type" onchange="toggleBuilderOptionInput()" class="w-full px-2.5 py-1.5 rounded-lg custom-input text-xs shadow-inner bg-white">
+                                            <option value="text">Input Teks</option>
+                                            <option value="dropdown">Dropdown (Pilihan)</option>
+                                            <option value="number">Angka (Number)</option>
+                                            <option value="date">Tanggal (Date)</option>
+                                        </select>
+                                    </div>
+
+                                    <div id="wrapper-q-options" class="hidden sm:col-span-3">
+                                        <label class="block text-[9px] font-bold text-slate-500 mb-0.5">Opsi Pilihan (Pisahkan dengan koma)</label>
+                                        <input type="text" id="builder-q-options" placeholder="Contoh: Pertanian, Perdagangan, Jasa" class="w-full px-2.5 py-1.5 rounded-lg custom-input text-xs shadow-inner bg-white">
+                                    </div>
+                                    <div id="wrapper-q-limit" class="hidden sm:col-span-3">
+                                        <label class="block text-[9px] font-bold text-slate-500 mb-0.5">Batas Maksimal Digit (Opsional)</label>
+                                        <input type="number" id="builder-q-limit" placeholder="Contoh: 16 untuk NIK" class="w-full px-2.5 py-1.5 rounded-lg custom-input text-xs shadow-inner bg-white">
+                                    </div>
+                                    <div class="sm:col-span-3 flex justify-end">
+                                        <button id="btn-add-update-question" onclick="addBuilderQuestionToList()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 shadow-md">
+                                            <i class="fa-solid fa-plus"></i> <span>Tambahkan Pertanyaan</span>
+                                        </button>
+                                        <button id="btn-cancel-update-question" onclick="cancelEditBuilderQuestion()" class="hidden ml-2 px-3 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-lg text-xs font-bold transition-all">Batal</button>
+                                    </div>
+                                </div>
+
+                                <!-- REPEATER GROUP -->
+                                <div class="bg-indigo-50/40 p-4 border border-indigo-100 rounded-2xl">
+                                    <div class="mb-3 border-b border-indigo-100 pb-2">
+                                        <h4 class="text-xs font-extrabold text-indigo-700"><i class="fa-solid fa-layer-group"></i> Grup Pertanyaan Berulang (Opsional)</h4>
+                                    </div>
+                                    <div class="grid grid-cols-1 gap-3 mb-3">
+                                        <div>
+                                            <label class="block text-[9px] font-bold text-slate-500 mb-0.5">Keperluan Surat</label>
+                                            <select id="builder-repeater-keperluan" class="w-full px-2.5 py-1.5 rounded-lg custom-input text-xs shadow-inner bg-white" onchange="populateBuilderRepeaterSelect()">
+                                                <option value="Wajib">Wajib (Berlaku Semua Keperluan)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="block text-[9px] font-bold text-slate-500 mb-0.5">Pilih Pertanyaan</label>
+                                        <div class="flex gap-2">
+                                            <select id="builder-repeater-select" class="flex-grow px-2.5 py-1.5 rounded-lg custom-input text-xs shadow-inner bg-white border border-indigo-200">
+                                                <option value="">-- Pilih Pertanyaan Tunggal --</option>
+                                            </select>
+                                            <button type="button" onclick="addQuestionToRepeaterTempList()" class="px-3 py-1.5 bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg text-xs font-bold transition-all whitespace-nowrap shadow-sm"><i class="fa-solid fa-plus"></i> Sisipkan</button>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <h5 class="text-[9px] font-bold text-slate-500 mb-1">Daftar Grup Pertanyaan Berulang:</h5>
+                                        <div id="builder-repeater-temp-list" class="space-y-1.5 min-h-[40px] bg-white p-2 rounded-xl border border-indigo-100 shadow-inner">
+                                            <div class="text-center text-[10px] text-slate-400 italic py-2">Belum ada pertanyaan dipilih.</div>
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-end">
+                                        <button id="btn-add-update-repeater" onclick="saveRepeaterGroup()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 shadow-md">
+                                            <i class="fa-solid fa-save"></i> <span>Tambahkan Grup</span>
+                                        </button>
+                                        <button id="btn-cancel-update-repeater" onclick="cancelEditRepeaterGroup()" class="hidden ml-2 px-3 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-lg text-xs font-bold transition-all">Batal</button>
+                                    </div>
+                                </div>
+
+                                <div class="space-y-2 mt-4">
+                                    <h4 class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Daftar Pertanyaan Yang Dibuat:</h4>
+                                    <div id="builder-q-list" class="space-y-2 max-h-[300px] overflow-y-auto pr-2"></div>
+                                </div>
+                            </div>
+                    </div>
+                    </div>
+                </div>
+
+                <!-- SUB-TAB C: DAFTAR LAYANAN AKTIF -->
+                <div id="subview-admin-daftar-layanan" class="hidden space-y-6 text-left">
+                    <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-2xl p-6 space-y-4">
+                        <div class="flex items-center justify-between border-b pb-3">
+                            <h4 class="text-sm font-extrabold text-slate-800 flex items-center gap-1.5">
+                                <i class="fa-solid fa-folder-open text-narmadaGreen"></i> Daftar Pelayanan Aktif Desa
+                                Narmada
+                            </h4>
+                            <div class="flex items-center gap-2">
+                                <span id="txt-total-layanan-aktif"
+                                    class="px-3 py-1 bg-emerald-50 text-narmadaGreen border border-emerald-200 text-xs font-bold rounded-full">0 Layanan Aktif</span>
+                                <button onclick="openLayananEditor('__NEW__')" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-900 text-white rounded-lg text-xs font-bold shadow transition-all flex items-center gap-1.5"><i class="fa-solid fa-plus"></i> Tambah Layanan Baru</button>
+                            </div>
+                        </div>
+                        <div
+                            class="overflow-x-auto border border-slate-101 rounded-2xl shadow-inner max-h-[600px] overflow-y-auto">
+                            <table class="w-full text-left border-collapse text-xs">
+                                <thead>
+                                    <tr
+                                        class="bg-slate-50 text-slate-500 font-bold uppercase tracking-wider text-[9px] border-b border-slate-200 sticky top-0 z-10 shadow-sm">
+                                        <th class="p-3 text-center w-10">No</th>
+                                        <th class="p-3 w-40">Nama Layanan</th>
+                                        <th class="p-3 w-40">Jenis Keperluan</th>
+                                        <th class="p-3">Dokumen Wajib & Tambahan</th>
+                                        <th class="p-3">Pertanyaan Isian & Tambahan</th>
+                                        <th class="p-3 text-center w-20">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="standalone-active-services-list" class="divide-y divide-slate-100 bg-white">
+                                    <!-- Render daftar pelayanan aktif secara luas -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SUB-TAB F: VERIFIKASI BERKAS -->
+                <div id="subview-admin-verifikasi" class="hidden h-full flex flex-col text-left">
+                    <div class="w-full flex justify-between items-center bg-white/80 backdrop-blur-md p-4 rounded-2xl shadow-sm border border-slate-200 sticky top-0 z-40 flex-shrink-0 mb-4">
+                        <div>
+                            <h2 class="text-lg font-bold text-slate-800">Verifikasi Kelayakan Berkas</h2>
+                            <p class="text-[10px] text-slate-500">Periksa dokumen pemohon dan perbarui status pelayanan.</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <button type="button" onclick="closeManageStatusModal()" class="px-4 py-2 text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition-all">Batal</button>
+                            <button type="button" onclick="confirmSaveVerification()" class="px-5 py-2 bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold rounded-xl shadow-md transition-all flex items-center gap-1.5">
+                                Simpan Verifikasi
+                            </button>
+                        </div>
+                    </div>
+                    <form id="form-manage-status" class="flex-1 flex flex-col min-h-0 space-y-4">
+                        <input type="hidden" id="edit-status-id">
+                        <div class="grid grid-cols-1 xl:grid-cols-2 gap-4 flex-1 min-h-0">
+                            <!-- Kolom Kiri: Isian Formulir & Status -->
+                            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col h-full overflow-hidden">
+                                <h5 id="info-modal-keperluan" class="text-sm font-bold text-slate-800 mb-2 border-b border-slate-200 pb-2 flex-shrink-0">Keperluan: -</h5>
+                                
+                                <div id="info-modal-jawaban" class="text-xs flex-1 mb-3 overflow-y-auto custom-scrollbar pr-2"></div>
+                                
+                                <!-- Status & Template WA -->
+                                <div class="border-t border-slate-200 pt-3 space-y-2 mt-auto flex-shrink-0">
+                                    <div>
+                                        <label class="block text-[10px] font-bold text-slate-600 mb-1">Ubah Status</label>
+                                        <select id="edit-status-select" onchange="markVerifikasiDirty()" required class="w-full px-2 py-1.5 rounded-lg custom-input text-[11px] shadow-inner bg-slate-50">
+                                            <option value="Verifikasi">Verifikasi</option>
+                                            <option value="Pelayanan Selesai">Pelayanan Selesai</option>
+                                            <option value="Upload Ulang">Upload Ulang</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] font-bold text-slate-600 mb-1">Pesan WA Otomatis</label>
+                                        <textarea id="edit-status-catatan" oninput="markVerifikasiDirty()" required rows="3" class="w-full px-2 py-1.5 rounded-lg custom-input text-[10px] shadow-inner bg-slate-50" placeholder="Pesan verifikasi..."></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Kolom Kanan: Galeri Berkas & Evaluasi -->
+                            <div class="flex flex-col h-full overflow-hidden">
+                                <div id="modal-checklist-rows" class="flex-1 space-y-4 bg-slate-50 p-3 rounded-xl border border-slate-200 shadow-inner overflow-y-auto custom-scrollbar">
+                                    <!-- Card Berkas di-render via JS -->
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- SUB-TAB D: KONTAK PELAYANAN -->
+                <div id="subview-admin-kontak" class="hidden max-w-md mx-auto text-left">
+                    <div class="light-glass-card p-5 rounded-2xl space-y-4 shadow-2xl border border-slate-101">
+                        <h4
+                            class="text-xs font-bold text-slate-800 border-b border-slate-200 pb-2 flex items-center gap-1.5">
+                            <i class="fa-solid fa-phone text-narmadaGreen"></i> Atur Kontak Pelayanan Desa Narmada
+                        </h4>
+                        <form onsubmit="event.preventDefault(); saveAdminSettings();" class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-600 mb-1">Nomor WhatsApp Pelayanan
+                                    Desa</label>
+                                <input type="text" id="setelan-wa" required placeholder="Contoh: 081234567890"
+                                    class="w-full px-3 py-2 rounded-xl custom-input text-xs shadow-inner">
+                            </div>
+                            <button type="submit"
+                                class="w-full py-2 bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs rounded-xl transition-all shadow-md">
+                                Simpan Nomor Kontak
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- SUB-TAB E: PENGATURAN BERANDA -->
+                <div id="subview-admin-beranda" class="hidden max-w-2xl mx-auto text-left space-y-4">
+                    <div class="light-glass-card p-5 rounded-2xl space-y-4 shadow-2xl border border-slate-101">
+                        <h4
+                            class="text-xs font-bold text-slate-800 border-b border-slate-200 pb-2 flex items-center gap-1.5">
+                            <i class="fa-solid fa-house-laptop text-narmadaGreen"></i> Pengaturan Tampilan Beranda
+                        </h4>
+                        <form onsubmit="event.preventDefault(); saveAdminSettings();" class="space-y-4">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-600 mb-1">Nama Desa</label>
+                                    <input type="text" id="setelan-nama-desa" required
+                                        class="w-full px-3 py-2 rounded-xl custom-input text-xs shadow-inner">
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-600 mb-1">Link Gambar/Logo Desa
+                                        (URL)</label>
+                                    <input type="text" id="setelan-logo-url-desa" required
+                                        class="w-full px-3 py-2 rounded-xl custom-input text-xs shadow-inner"
+                                        placeholder="https://domain.com/logo.png">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-600 mb-1">Deskripsi Ringkas Banner
+                                    Utama</label>
+                                <input type="text" id="setelan-deskripsi-banner" required
+                                    class="w-full px-3 py-2 rounded-xl custom-input text-xs shadow-inner">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-600 mb-1">Link Gambar Banner Utama
+                                    (URL)</label>
+                                <input type="text" id="setelan-banner-url-desa"
+                                    class="w-full px-3 py-2 rounded-xl custom-input text-xs shadow-inner"
+                                    placeholder="https://domain.com/banner.png">
+                            </div>
+
+                            <div class="p-3 bg-slate-50 border rounded-xl space-y-3 shadow-inner">
+                                <div class="flex items-center justify-between border-b border-slate-200 pb-2">
+                                    <span class="text-[10px] font-bold text-slate-700">Tampilkan Info Jam
+                                        Pelayanan</span>
+                                    <label class="relative inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" id="setelan-toggle-jam" class="sr-only peer">
+                                        <div
+                                            class="w-9 h-5 bg-slate-300 rounded-full peer peer-checked:bg-narmadaGreen peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all">
+                                        </div>
+                                    </label>
+                                </div>
+                                <div>
+                                    <label class="block text-[9px] font-bold text-slate-550 mb-1">Deskripsi Ringkas Jam
+                                        Pelayanan</label>
+                                    <input type="text" id="setelan-desc-jam" required
+                                        class="w-full px-3.5 py-1.5 rounded-xl custom-input text-[11px] shadow-inner">
+                                </div>
+
+                                <div class="flex items-center justify-between border-b border-slate-200 pt-2 pb-2">
+                                    <span class="text-[10px] font-bold text-slate-700">Tampilkan Info Alur
+                                        Pengurusan</span>
+                                    <label class="relative inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" id="setelan-toggle-alur" class="sr-only peer">
+                                        <div
+                                            class="w-9 h-5 bg-slate-300 rounded-full peer peer-checked:bg-narmadaGreen peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all">
+                                        </div>
+                                    </label>
+                                </div>
+                                <div>
+                                    <label class="block text-[9px] font-bold text-slate-550 mb-1">Deskripsi Ringkas Alur
+                                        Pengurusan</label>
+                                    <input type="text" id="setelan-desc-alur" required
+                                        class="w-full px-3.5 py-1.5 rounded-xl custom-input text-[11px] shadow-inner">
+                                </div>
+
+                                <div class="flex items-center justify-between border-b border-slate-200 pt-2 pb-2">
+                                    <span class="text-[10px] font-bold text-slate-700">Tampilkan Banner Pelayanan Semi
+                                        Digital</span>
+                                    <label class="relative inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" id="setelan-toggle-banner" class="sr-only peer">
+                                        <div
+                                            class="w-9 h-5 bg-slate-300 rounded-full peer peer-checked:bg-narmadaGreen peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all">
+                                        </div>
+                                    </label>
+                                </div>
+                                <div>
+                                    <label class="block text-[9px] font-bold text-slate-550 mb-1">Deskripsi Panjang
+                                        Banner Semi-Digital</label>
+                                    <textarea id="setelan-desc-banner-semi" required rows="2"
+                                        class="w-full px-3.5 py-1.5 rounded-xl custom-input text-[11px] shadow-inner"></textarea>
+                                </div>
+                            </div>
+
+                            <button type="submit"
+                                class="w-full py-2.5 bg-narmadaGreen hover:bg-narmadaGreen-dark text-white font-bold text-xs rounded-xl transition-all shadow-md">
+                                Simpan Pengaturan Beranda
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- SUB-TAB F: KREDENSIAL AKUN ADMIN -->
+                <div id="subview-admin-kredensial" class="hidden max-w-md mx-auto text-left">
+                    <div class="light-glass-card p-5 rounded-2xl space-y-4 shadow-2xl border border-slate-101">
+                        <h4
+                            class="text-xs font-bold text-slate-800 border-b border-slate-200 pb-2 flex items-center gap-1.5">
+                            <i class="fa-solid fa-key text-narmadaGreen"></i> Keamanan Kredensial Login
+                        </h4>
+                        <form onsubmit="event.preventDefault(); saveAdminSettings();" class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-600 mb-1">Username Akun Admin</label>
+                                <input type="text" id="setelan-user" required
+                                    class="w-full px-3 py-2 rounded-xl custom-input text-xs shadow-inner">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-600 mb-1">Kata Sandi (Password)
+                                    Admin</label>
+                                <input type="password" id="setelan-pass" required
+                                    class="w-full px-3 py-2 rounded-xl custom-input text-xs shadow-inner">
+                            </div>
+                            <button type="submit"
+                                class="w-full py-2.5 bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs rounded-xl transition-all shadow-md">
+                                Perbarui Kredensial Admin
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            </div> <!-- end Content Scrollable Area -->
+        </div> <!-- end Main -->
+        </div> <!-- end admin-workspace -->
+    </div> <!-- end admin-workspace-wrapper -->
+
+    <!-- LANDING PAGE LOGIN ADMIN -->
+    <div id="view-admin-login" class="hidden flex flex-row w-full h-screen bg-slate-50 z-50 fixed top-0 left-0">
+        <!-- Visual Side -->
+        <div class="w-5/12 bg-narmadaGreen text-white flex flex-col justify-between p-12 relative overflow-hidden h-full">
+            <div class="absolute inset-0 bg-gradient-to-br from-narmadaGreen to-narmadaGreen-dark z-0 opacity-90"></div>
+            <!-- Decorative shapes -->
+            <div class="absolute -top-24 -left-24 w-64 h-64 bg-white opacity-5 rounded-full blur-3xl z-0"></div>
+            <div class="absolute -bottom-32 -right-32 w-80 h-80 bg-emerald-300 opacity-10 rounded-full blur-3xl z-0"></div>
+            
+            <div class="relative z-10">
+                <div class="w-12 h-12 bg-white rounded-xl flex items-center justify-center mb-6 shadow-lg">
+                    <img id="admin-login-logo" src="" alt="Logo" class="w-8 h-8 object-contain">
+                </div>
+                <h2 class="text-3xl md:text-4xl font-black tracking-tight mb-4 drop-shadow-md leading-tight">Sistem<br>Pelayanan Digital</h2>
+                <p class="text-emerald-50 text-sm md:text-base font-medium drop-shadow-sm max-w-sm leading-relaxed">Portal khusus Administrator untuk mengelola layanan administrasi desa secara terpusat, cepat, dan transparan.</p>
+            </div>
+            <div class="relative z-10 mt-12 md:mt-0">
+                <p class="text-xs text-emerald-100/80 font-medium">&copy; 2026 Desa Narmada. All rights reserved.</p>
+            </div>
+        </div>
+        
+        <!-- Form Side -->
+        <div class="w-7/12 flex items-center justify-center p-12 bg-slate-50 relative h-full overflow-y-auto">
+            <div class="w-full max-w-md bg-white p-8 md:p-10 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100">
+                <div class="text-center mb-8">
+                    <h3 class="text-2xl font-bold text-slate-900 mb-2">Selamat Datang Kembali</h3>
+                    <p class="text-sm text-slate-500">Silakan login ke akun admin Anda.</p>
+                </div>
+                
+                <form onsubmit="event.preventDefault(); runAdminLoginAuth();" class="space-y-5">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-2 uppercase tracking-wide">Username</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
+                                <i class="fa-solid fa-user"></i>
+                            </div>
+                            <input type="text" id="login-username" required placeholder="Ketik username admin"
+                                class="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-200 focus:border-narmadaGreen focus:ring focus:ring-emerald-200 focus:ring-opacity-50 transition-all text-sm outline-none bg-slate-50 focus:bg-white text-slate-800">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-2 uppercase tracking-wide">Password</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
+                                <i class="fa-solid fa-lock"></i>
+                            </div>
+                            <input type="password" id="login-password" required placeholder="Masukkan kata sandi"
+                                class="w-full pl-11 pr-11 py-3 rounded-xl border border-slate-200 focus:border-narmadaGreen focus:ring focus:ring-emerald-200 focus:ring-opacity-50 transition-all text-sm outline-none bg-slate-50 focus:bg-white text-slate-800">
+                            <button type="button" onclick="togglePasswordView('login-password', 'eye-icon-login')"
+                                class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-narmadaGreen transition-colors">
+                                <i class="fa-solid fa-eye" id="eye-icon-login"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" id="btn-submit-login"
+                        class="w-full py-3.5 bg-narmadaGreen hover:bg-narmadaGreen-dark text-white font-bold text-sm rounded-xl transition-all shadow-[0_4px_14px_0_rgba(5,150,105,0.39)] hover:shadow-[0_6px_20px_rgba(5,150,105,0.23)] hover:-translate-y-0.5 flex justify-center items-center gap-2 mt-2">
+                        <span>Masuk ke Dashboard</span>
+                        <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </button>
+                    
+                    <div class="mt-6 text-center">
+                        <button type="button" onclick="switchView('beranda')" class="text-xs font-semibold text-slate-500 hover:text-narmadaGreen transition-colors inline-flex items-center gap-1.5">
+                            <i class="fa-solid fa-arrow-left"></i> Kembali ke Portal Warga
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- LIGHTBOX MODAL -->
+    <div id="lightbox-modal" onclick="closeLightbox()" class="hidden fixed inset-0 bg-slate-950/90 backdrop-blur-md z-[60] flex flex-col items-center justify-center p-4 cursor-zoom-out transition-all opacity-0">
+        <div class="absolute top-4 right-4 flex gap-2">
+            <a id="lightbox-download" href="#" target="_blank" class="w-10 h-10 flex items-center justify-center bg-white/10 hover:bg-white/20 rounded-full text-white transition-all backdrop-blur-sm">
+                <i class="fa-solid fa-download"></i>
+            </a>
+            <button class="w-10 h-10 flex items-center justify-center bg-white/10 hover:bg-white/20 rounded-full text-white transition-all backdrop-blur-sm">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+        </div>
+        <img id="lightbox-img" src="" class="max-w-full max-h-[90vh] rounded-xl shadow-2xl object-contain border border-white/10 scale-95 transition-transform duration-300" alt="Zoom Berkas">
+        <p id="lightbox-title" class="mt-4 text-white/80 font-bold text-sm tracking-wider"></p>
+    </div>
+
+    <!-- CUSTOM GLASSMORPHISM CONFIRM MODAL -->
+    <div id="modal-custom-confirm"
+        class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4 text-left">
+        <div class="light-glass-card rounded-2xl w-full max-w-sm p-6 space-y-4 shadow-2xl border border-slate-101">
+            <h4 class="font-bold text-slate-900 text-sm flex items-center gap-1.5" id="confirm-modal-title">Konfirmasi
+                Tindakan</h4>
+            <p class="text-xs text-slate-600 leading-relaxed" id="confirm-modal-message">Apakah Anda yakin ingin
+                melakukan tindakan ini?</p>
+            <div class="flex justify-end gap-2 pt-2">
+                <button type="button" id="confirm-modal-btn-cancel"
+                    class="px-4 py-2 text-xs font-bold text-slate-550 hover:bg-slate-100 rounded-xl">Batal</button>
+                <button type="button" id="confirm-modal-btn-ok"
+                    class="px-5 py-2 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded-xl shadow-md">Ya,
+                    Lanjutkan</button>
+            </div>
+        </div>
+    </div>
+
+</div> <!-- end flex-grow wrapper -->
+
+    <div id="toast-wrapper" class="fixed bottom-5 right-5 z-50 space-y-2 pointer-events-none"></div>
+
+    <!-- JAVASCRIPT UTAMA -->
+    <script src="script_utils.js"></script>
+    <script src="script_core.js"></script>
+    <script src="script_warga.js"></script>
+    <script src="script_admin.js"></script>
+</body>
+
+</html>
