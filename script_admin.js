@@ -131,24 +131,25 @@ function runAdminLoginAuth() {
             activeStatusFilter = statusVal;
 
             var label = "Semua Berkas";
-            if (statusVal === "Pending") label = "Pending";
+            if (statusVal === "Menunggu") label = "Menunggu";
             else if (statusVal === "Verifikasi") label = "Verifikasi";
             else if (statusVal === "Selesai") label = "Selesai";
-            else if (statusVal === "Upload Ulang") label = "Upload Ulang";
+            else if (statusVal === "Perbaikan") label = "Perbaikan";
 
             document.getElementById('label-active-filter').innerText = label;
 
             document.getElementById('card-stat-total').className = document.getElementById('card-stat-total').className.replace(' stat-card-active', '');
-            document.getElementById('card-stat-pending').className = document.getElementById('card-stat-pending').className.replace(' stat-card-active', '');
+            document.getElementById('card-stat-menunggu').className = document.getElementById('card-stat-menunggu').className.replace(' stat-card-active', '');
             document.getElementById('card-stat-verifikasi').className = document.getElementById('card-stat-verifikasi').className.replace(' stat-card-active', '');
             document.getElementById('card-stat-selesai').className = document.getElementById('card-stat-selesai').className.replace(' stat-card-active', '');
-            document.getElementById('card-stat-uploadUlang').className = document.getElementById('card-stat-uploadUlang').className.replace(' stat-card-active', '');
+            document.getElementById('card-stat-perbaikan').className = document.getElementById('card-stat-perbaikan').className.replace(' stat-card-active', '');
 
             var selectedCardId = 'card-stat-total';
-            if (statusVal === 'Pending') selectedCardId = 'card-stat-pending';
+            if (statusVal === 'Menunggu') selectedCardId = 'card-stat-menunggu';
+            else if (statusVal === 'Semua') selectedCardId = 'card-stat-semua';
             else if (statusVal === 'Verifikasi') selectedCardId = 'card-stat-verifikasi';
             else if (statusVal === 'Selesai') selectedCardId = 'card-stat-selesai';
-            else if (statusVal === 'Upload Ulang') selectedCardId = 'card-stat-uploadUlang';
+            else if (statusVal === 'Perbaikan') selectedCardId = 'card-stat-perbaikan';
 
             document.getElementById(selectedCardId).className += ' stat-card-active';
 
@@ -165,16 +166,13 @@ function runAdminLoginAuth() {
                     })
                     .getDashboardStats();
             } else {
-                dummyPengajuanList.forEach(function (row) {
-                    if (row.status === "Pending") row.status = "Verifikasi";
-                });
 
                 var mockStats = {
                     total: dummyPengajuanList.length,
-                    pending: dummyPengajuanList.filter(r => r.status === "Pending").length,
+                    pending: dummyPengajuanList.filter(r => r.status === "Menunggu").length,
                     verifikasi: dummyPengajuanList.filter(r => r.status === "Verifikasi").length,
-                    selesai: dummyPengajuanList.filter(r => r.status === "Pelayanan Selesai" || r.status === "Selesai").length,
-                    uploadUlang: dummyPengajuanList.filter(r => r.status === "Upload Ulang").length
+                    selesai: dummyPengajuanList.filter(r => r.status === "Selesai" || r.status === "Pelayanan Selesai").length,
+                    uploadUlang: dummyPengajuanList.filter(r => r.status === "Perbaikan" || r.status === "Upload Ulang").length
                 };
                 renderStatsDashboard(mockStats);
                 fetchAdminDashboardData();
@@ -183,10 +181,10 @@ function runAdminLoginAuth() {
 
         function renderStatsDashboard(stats) {
             document.getElementById('stat-total').innerText = stats.total;
-            document.getElementById('stat-pending').innerText = stats.pending;
+            document.getElementById('stat-menunggu').innerText = stats.pending;
             document.getElementById('stat-verifikasi').innerText = stats.verifikasi;
             document.getElementById('stat-selesai').innerText = stats.selesai;
-            document.getElementById('stat-uploadUlang').innerText = stats.uploadUlang;
+            document.getElementById('stat-perbaikan').innerText = stats.uploadUlang;
         }
 
         function fetchUserDashboardData(nik, noReq) {
@@ -268,10 +266,10 @@ function runAdminLoginAuth() {
             response.data.forEach(function (row, idx) {
                 var rowNo = startIndex + idx + 1;
                 var badgeColor = "bg-slate-100 text-slate-600 font-bold border-slate-200";
-                if (row.status === "Pending") badgeColor = "bg-blue-100 text-blue-700 font-bold border-blue-200";
+                if (row.status === "Menunggu") badgeColor = "bg-blue-100 text-blue-700 font-bold border-blue-200";
                 else if (row.status === "Verifikasi") badgeColor = "bg-amber-100 text-amber-700 font-bold border-amber-200";
-                else if (row.status === "Pelayanan Selesai" || row.status === "Selesai") badgeColor = "bg-emerald-100 text-emerald-700 font-bold border-emerald-200";
-                else if (row.status === "Upload Ulang") badgeColor = "bg-red-100 text-red-700 font-bold border-red-200";
+                else if (row.status === "Selesai" || row.status === "Pelayanan Selesai") badgeColor = "bg-emerald-100 text-emerald-700 font-bold border-emerald-200";
+                else if (row.status === "Perbaikan" || row.status === "Upload Ulang") badgeColor = "bg-red-100 text-red-700 font-bold border-red-200";
 
                 var cleanWaNum = row.wa.replace('+', '');
                 var encodedNote = encodeURIComponent(row.catatan || "");
@@ -599,13 +597,13 @@ function runAdminLoginAuth() {
             var textNotes = document.getElementById('edit-status-catatan');
 
             if (brokenFiles.length > 0) {
-                selectStatus.value = "Upload Ulang";
+                selectStatus.value = "Perbaikan";
                 var filesBullet = brokenFiles.join(", ");
                 textNotes.value = "Halo Bapak/Ibu *" + nama + "*, permohonan *" + layanan + "* dengan ID *" + id + "* belum lengkap. " +
                     "Mohon lakukan unggah ulang dokumen berkas berikut: *" + filesBullet + "*, karena foto dokumen yang dikirim buram atau tidak sesuai. " +
                     "Silakan buka menu 'Cek Status' di website resmi kami untuk melakukan upload ulang tanpa harus mengetik ulang nama berkas. Terima kasih.";
             } else {
-                selectStatus.value = "Pelayanan Selesai";
+                selectStatus.value = "Selesai";
                 textNotes.value = "Halo Bapak/Ibu *" + nama + "*, berkas pengajuan *" + layanan + "* dengan ID *" + id + "* telah diperiksa dan dinyatakan LENGKAP & SESUAI. " +
                     "Surat pelayanan Anda kini sudah selesai diproses dan siap diserahterimakan di kantor desa. Terima kasih.";
             }

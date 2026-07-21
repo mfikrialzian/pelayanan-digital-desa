@@ -861,7 +861,7 @@ function saveWargaDraft() {
                     dummyPengajuanList.unshift({
                         id: mockId, tanggal: "01/07/2026 15:45:00", nik: wargaData.nik, nama: wargaData.nama,
                         layanan: wargaData.layanan, wa: wargaData.wa, alamat: wargaData.alamat, linkDokumen: "Foto KTP: #, Foto KK: #",
-                        status: "Pending", catatan: "Menunggu verifikasi berkas digital oleh admin.", detailLayanan: JSON.stringify(wargaData.detailLayanan)
+                        status: "Menunggu", catatan: "Menunggu verifikasi berkas digital oleh admin.", detailLayanan: JSON.stringify(wargaData.detailLayanan)
                     });
 
                     localStorage.removeItem('wargaDraft_Narmada');
@@ -967,10 +967,10 @@ function saveWargaDraft() {
             var htmlBuffer = "";
             results.forEach(function (item) {
                 var badgeColor = "bg-slate-100 text-slate-700 border-slate-200";
-                if (item.status === "Pending") badgeColor = "bg-blue-50 text-blue-600 border-blue-200";
+                if (item.status === "Menunggu") badgeColor = "bg-blue-50 text-blue-600 border-blue-200";
                 else if (item.status === "Verifikasi") badgeColor = "bg-amber-50 text-amber-600 border-amber-200 font-bold";
-                else if (item.status === "Pelayanan Selesai" || item.status === "Selesai") badgeColor = "bg-slate-900 text-emerald-400 border-slate-900";
-                else if (item.status === "Upload Ulang") badgeColor = "bg-red-50 text-red-600 border-red-200 font-bold";
+                else if (item.status === "Selesai" || item.status === "Pelayanan Selesai") badgeColor = "bg-slate-900 text-emerald-400 border-slate-900";
+                else if (item.status === "Perbaikan" || item.status === "Upload Ulang") badgeColor = "bg-red-50 text-red-600 border-red-200 font-bold";
 
                 var cleanWaNum = item.wa.replace('+', '');
                 var encodedNote = encodeURIComponent(item.catatan || "");
@@ -1003,7 +1003,7 @@ function saveWargaDraft() {
                     '</div>' +
                     '<div class="p-2.5 bg-slate-50 border rounded-lg text-[11px] italic text-slate-600 shadow-inner"><strong>Catatan Petugas:</strong> "' + item.catatan + '"</div>';
 
-                if (item.status === "Upload Ulang") {
+                if (item.status === "Perbaikan" || item.status === "Upload Ulang") {
                     var matchedLayanan = (window.loadedLayananList || dummyLayananList).find(function (lay) {
                         return lay.nama === item.layanan;
                     });
@@ -1073,7 +1073,7 @@ function saveWargaDraft() {
                         setTimeout(function () {
                             var findIdx = dummyPengajuanList.findIndex(function (r) { return r.id === idPengajuan; });
                             if (findIdx !== -1) {
-                                dummyPengajuanList[findIdx].status = "Pending";
+                                dummyPengajuanList[findIdx].status = "Menunggu";
                                 dummyPengajuanList[findIdx].catatan = "Berkas '" + labelNamaBerkas + "' sudah diupload ulang. Segera segarkan dashboard.";
                             }
                             pushToast("SIMULASI: Berkas '" + labelNamaBerkas + "' diperbarui.", "success");

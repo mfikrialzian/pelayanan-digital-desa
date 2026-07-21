@@ -640,13 +640,13 @@
                             <span id="stat-total" class="text-2xl font-black text-slate-800">0</span>
                         </div>
 
-                        <div id="card-stat-pending" onclick="setStatusFilter('Pending')"
+                        <div id="card-stat-menunggu" onclick="setStatusFilter('Menunggu')"
                             class="bg-white border border-slate-100 p-4 rounded-2xl shadow-sm hover:shadow-lg flex flex-col justify-between cursor-pointer hover:-translate-y-1 transition-all">
                             <div class="flex items-center gap-2 mb-2">
                                 <div class="bg-blue-50 w-8 h-8 rounded-lg flex items-center justify-center text-blue-500"><i class="fa-solid fa-clock"></i></div>
-                                <span class="text-slate-500 text-[10px] font-bold uppercase tracking-wider">Pending</span>
+                                <span class="text-slate-500 text-[10px] font-bold uppercase tracking-wider">Menunggu</span>
                             </div>
-                            <span id="stat-pending" class="text-2xl font-black text-blue-600">0</span>
+                            <span id="stat-menunggu" class="text-2xl font-black text-blue-600">0</span>
                         </div>
 
                         <div id="card-stat-verifikasi" onclick="setStatusFilter('Verifikasi')"
@@ -667,13 +667,13 @@
                             <span id="stat-selesai" class="text-2xl font-black text-emerald-600">0</span>
                         </div>
 
-                        <div id="card-stat-uploadUlang" onclick="setStatusFilter('Upload Ulang')"
+                        <div id="card-stat-perbaikan" onclick="setStatusFilter('Perbaikan')"
                             class="bg-white border border-slate-100 p-4 rounded-2xl shadow-sm hover:shadow-lg flex flex-col justify-between cursor-pointer hover:-translate-y-1 transition-all">
                             <div class="flex items-center gap-2 mb-2">
                                 <div class="bg-red-50 w-8 h-8 rounded-lg flex items-center justify-center text-red-500"><i class="fa-solid fa-triangle-exclamation"></i></div>
-                                <span class="text-slate-500 text-[10px] font-bold uppercase tracking-wider">Revisi</span>
+                                <span class="text-slate-500 text-[10px] font-bold uppercase tracking-wider">Perbaikan</span>
                             </div>
-                            <span id="stat-uploadUlang" class="text-2xl font-black text-red-600">0</span>
+                            <span id="stat-perbaikan" class="text-2xl font-black text-red-600">0</span>
                         </div>
                     </div>
 
@@ -994,9 +994,10 @@
                                     <div>
                                         <label class="block text-[10px] font-bold text-slate-600 mb-1">Ubah Status</label>
                                         <select id="edit-status-select" onchange="markVerifikasiDirty()" required class="w-full px-2 py-1.5 rounded-lg custom-input text-[11px] shadow-inner bg-slate-50">
+                                            <option value="Menunggu">Menunggu</option>
                                             <option value="Verifikasi">Verifikasi</option>
-                                            <option value="Pelayanan Selesai">Pelayanan Selesai</option>
-                                            <option value="Upload Ulang">Upload Ulang</option>
+                                            <option value="Selesai">Selesai</option>
+                                            <option value="Perbaikan">Perbaikan</option>
                                         </select>
                                     </div>
                                     <div>
