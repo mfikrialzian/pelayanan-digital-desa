@@ -934,24 +934,30 @@
                 <div id="subview-admin-daftar-layanan" class="hidden space-y-6 text-left">
                     <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-2xl p-6 space-y-4">
                         <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3 border-b border-slate-100 pb-4">
-                            <div>
-                                <h3 class="font-extrabold text-sm text-slate-800 flex items-center gap-2">
-                                    <i class="fa-solid fa-folder-open text-narmadaGreen"></i> Daftar Pelayanan Aktif
-                                </h3>
+                            <!-- Sisi Kiri: Judul dan Info Jumlah -->
+                            <div class="flex flex-col">
+                                <div class="flex items-center gap-3">
+                                    <h3 class="font-extrabold text-sm text-slate-800 flex items-center gap-2">
+                                        <i class="fa-solid fa-folder-open text-narmadaGreen"></i> Daftar Pelayanan Aktif
+                                    </h3>
+                                    <span id="txt-total-layanan-aktif" class="px-2.5 py-0.5 bg-emerald-50 text-narmadaGreen border border-emerald-200 text-[10px] font-bold rounded-full">0 Layanan</span>
+                                </div>
                                 <p class="text-[10px] text-slate-400 font-semibold mt-1">Kelola dan konfigurasikan jenis pelayanan untuk warga.</p>
                             </div>
                             
-                            <div class="flex items-center gap-2 max-w-md w-full sm:w-auto">
-                                <input type="text" id="admin-layanan-keyword-filter" oninput="runLayananFilter()" placeholder="Cari Nama Layanan..." class="flex-grow sm:w-64 px-3.5 py-2 rounded-xl custom-input text-xs shadow-inner">
-                                <button onclick="runLayananFilter()" class="px-4 py-2 bg-narmadaGreen hover:bg-narmadaGreen-dark text-white rounded-xl text-xs font-bold transition-all shadow-md flex items-center gap-1.5 shrink-0">
-                                    <i class="fa-solid fa-magnifying-glass"></i> Cari
-                                </button>
-                                
-                                <div class="w-px h-6 bg-slate-200 mx-1 hidden sm:block"></div>
-                                
-                                <span id="txt-total-layanan-aktif" class="hidden sm:inline-flex px-3 py-1 bg-emerald-50 text-narmadaGreen border border-emerald-200 text-[10px] font-bold rounded-full shrink-0">0 Layanan</span>
+                            <!-- Sisi Kanan: Pencarian Kapsul dan Tombol Tambah -->
+                            <div class="flex items-center gap-2 w-full sm:w-auto">
+                                <!-- Form Pencarian Kapsul -->
+                                <div class="flex items-center gap-1 bg-slate-50 border border-slate-200 p-1 rounded-xl shadow-inner flex-grow">
+                                    <input type="text" id="admin-layanan-keyword-filter" oninput="runLayananFilter()" placeholder="Cari layanan..." class="bg-transparent border-none focus:ring-0 text-xs px-2 w-32 sm:w-48 outline-none">
+                                    <button onclick="runLayananFilter()" class="w-7 h-7 bg-white hover:bg-slate-100 text-slate-500 rounded-lg text-xs transition-all shadow-sm flex items-center justify-center border border-slate-200 shrink-0">
+                                        <i class="fa-solid fa-magnifying-glass"></i>
+                                    </button>
+                                </div>
+
+                                <!-- Tombol Tambah -->
                                 <button onclick="openLayananEditor('__NEW__')" class="px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-xs font-bold shadow transition-all flex items-center gap-1.5 shrink-0">
-                                    <i class="fa-solid fa-plus"></i> Tambah Layanan
+                                    <i class="fa-solid fa-plus"></i> Tambah Baru
                                 </button>
                             </div>
                         </div>
