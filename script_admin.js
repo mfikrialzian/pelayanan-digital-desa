@@ -937,76 +937,110 @@ function runAdminLoginAuth() {
             });
         }
 
-        function loadBuilderDaftarLayananTab() {
+        function runLayananFilter() {
+            var keyword = document.getElementById('admin-layanan-keyword-filter').value.toLowerCase().trim();
+            var list = window.loadedLayananList || [];
+            
+            if (!keyword) {
+                renderLayananTable(list);
+                return;
+            }
+
+            var filtered = list.filter(function (row) {
+                return row.nama.toLowerCase().indexOf(keyword) !== -1;
+            });
+            renderLayananTable(filtered);
+        }
+
+        function renderLayananTable(list) {
             var listContainer = document.getElementById('standalone-active-services-list');
             var totalBadge = document.getElementById('txt-total-layanan-aktif');
+            if (!listContainer) return;
+            
+            listContainer.innerHTML = "";
+
+            if (totalBadge) totalBadge.innerText = list.length + " Layanan";
+
+            if (!list || list.length === 0) {
+                listContainer.innerHTML = '<tr><td colspan="6" class="p-6 text-center text-slate-400 italic">Belum ada pelayanan aktif terdaftar.</td></tr>';
+                return;
+            }
+
+            var htmlBuffer = "";
+            list.forEach(function (row, index) {
+                var keperluanList = row.judulSectionIsian ? row.judulSectionIsian.split(',').map(s => s.trim()).filter(s => s) : [];
+                var kepHtml = keperluanList.length > 0
+                    ? '<ul class="list-disc pl-3 text-[9px] space-y-0.5 text-slate-600"><li>' + keperluanList.join('</li><li>') + '</li></ul>'
+                    : '<span class="text-slate-400 italic text-[9px]">Wajib (Tanpa Pilihan)</span>';
+
+                var reqMap = {};
+                (row.requirements || []).forEach(function (r) {
+                    var cleanName = r.name;
+                    var kep = "Wajib";
+                    var match = cleanName.match(/^\[(.*?)\]\s*(.*)$/);
+                    if (match) { kep = match[1]; cleanName = match[2]; }
+                    if (!reqMap[kep]) reqMap[kep] = [];
+                    reqMap[kep].push(cleanName);
+                });
+                var docHtml = "";
+                Object.keys(reqMap).forEach(k => {
+                    docHtml += '<p class="text-[9px] font-bold text-slate-700 mt-1 mb-0.5">' + (k === "Wajib" ? "DOKUMEN WAJIB" : "TAMBAHAN: " + k) + '</p>';
+                    docHtml += '<ul class="list-disc pl-3 text-[9px] space-y-0.5 text-slate-600"><li>' + reqMap[k].join('</li><li>') + '</li></ul>';
+                });
+                if (docHtml === "") docHtml = '<span class="text-slate-400 italic text-[9px]">Tanpa lampiran</span>';
+
+                var qMap = {};
+                (row.fields || []).forEach(function (f) {
+                    var meta = parseQuestionMetadata(f.name);
+                    if (!qMap[meta.keperluan]) qMap[meta.keperluan] = [];
+                    var typeStr = f.type === 'dropdown' ? ' (Dropdown)' :
+                        f.type === 'number' ? ' (Angka)' :
+                            f.type === 'date' ? ' (Tanggal)' : ' (Teks)';
+                    qMap[meta.keperluan].push(meta.cleanName + typeStr);
+                });
+                var qHtml = "";
+                Object.keys(qMap).forEach(k => {
+                    qHtml += '<p class="text-[9px] font-bold text-slate-700 mt-1 mb-0.5">' + (k === "Wajib" ? "ISIAN UMUM" : "TAMBAHAN: " + k) + '</p>';
+                    qHtml += '<ul class="list-disc pl-3 text-[9px] space-y-0.5 text-slate-600"><li>' + qMap[k].join('</li><li>') + '</li></ul>';
+                });
+                if (qHtml === "") qHtml = '<span class="text-slate-400 italic text-[9px]">Tanpa pertanyaan</span>';
+
+                var tr = '<tr class="hover:bg-slate-50 transition-all group">' +
+                    '<td class="p-3 text-center text-xs font-bold text-slate-500">' + (index + 1) + '</td>' +
+                    '<td class="p-3 font-extrabold text-xs text-slate-800">' + row.nama + '</td>' +
+                    '<td class="p-3 align-top">' + kepHtml + '</td>' +
+                    '<td class="p-3 align-top">' + docHtml + '</td>' +
+                    '<td class="p-3 align-top">' + qHtml + '</td>' +
+                    '<td class="p-3 text-center align-middle">' +
+                    '<div class="flex flex-col gap-1.5 items-center justify-center">' +
+                    '<button onclick="switchAdminTab(\'layanan\'); populateBuilderLayananToEdit(\'' + row.id + '\')" class="px-3 py-1.5 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-700 font-bold text-[10px] transition-all flex items-center justify-center gap-1.5 shadow-sm w-[90px] border border-amber-200">' +
+                    '<i class="fa-solid fa-pencil"></i> Edit' +
+                    '</button>' +
+                    '<button onclick="deleteBuilderMasterLayanan(\'' + row.nama + '\')" class="px-3 py-1.5 rounded-lg bg-red-50 hover:bg-red-100 text-red-700 font-bold text-[10px] transition-all flex items-center justify-center gap-1.5 shadow-sm w-[90px] border border-red-200">' +
+                    '<i class="fa-solid fa-trash"></i> Hapus' +
+                    '</button>' +
+                    '</div>' +
+                    '</td>' +
+                    '</tr>';
+                htmlBuffer += tr;
+            });
+            listContainer.innerHTML = htmlBuffer;
+        }
+
+        function loadBuilderDaftarLayananTab() {
+            var listContainer = document.getElementById('standalone-active-services-list');
             if (!listContainer) return;
             listContainer.innerHTML = getTableSkeleton(5, 5);
 
             var successHandler = function (list) {
-                listContainer.innerHTML = "";
                 window.loadedLayananList = list;
-
-                if (totalBadge) totalBadge.innerText = list.length + " Layanan Aktif";
-
-                if (!list || list.length === 0) {
-                    listContainer.innerHTML = '<tr><td colspan="6" class="p-6 text-center text-slate-400 italic">Belum ada pelayanan aktif terdaftar.</td></tr>';
-                    return;
+                
+                var keywordInput = document.getElementById('admin-layanan-keyword-filter');
+                if (keywordInput && keywordInput.value.trim() !== "") {
+                    runLayananFilter();
+                } else {
+                    renderLayananTable(list);
                 }
-
-                list.forEach(function (row, index) {
-                    var keperluanList = row.judulSectionIsian ? row.judulSectionIsian.split(',').map(s => s.trim()).filter(s => s) : [];
-                    var kepHtml = keperluanList.length > 0
-                        ? '<ul class="list-disc pl-3 text-[9px] space-y-0.5 text-slate-600"><li>' + keperluanList.join('</li><li>') + '</li></ul>'
-                        : '<span class="text-slate-400 italic text-[9px]">Wajib (Tanpa Pilihan)</span>';
-
-                    var reqMap = {};
-                    (row.requirements || []).forEach(function (r) {
-                        var cleanName = r.name;
-                        var kep = "Wajib";
-                        var match = cleanName.match(/^\[(.*?)\]\s*(.*)$/);
-                        if (match) { kep = match[1]; cleanName = match[2]; }
-                        if (!reqMap[kep]) reqMap[kep] = [];
-                        reqMap[kep].push(cleanName);
-                    });
-                    var docHtml = "";
-                    Object.keys(reqMap).forEach(k => {
-                        docHtml += '<p class="text-[9px] font-bold text-slate-700 mt-1 mb-0.5">' + (k === "Wajib" ? "DOKUMEN WAJIB" : "TAMBAHAN: " + k) + '</p>';
-                        docHtml += '<ul class="list-disc pl-3 text-[9px] space-y-0.5 text-slate-600"><li>' + reqMap[k].join('</li><li>') + '</li></ul>';
-                    });
-                    if (docHtml === "") docHtml = '<span class="text-slate-400 italic text-[9px]">Tanpa lampiran</span>';
-
-                    var qMap = {};
-                    (row.fields || []).forEach(function (f) {
-                        var meta = parseQuestionMetadata(f.name);
-                        if (!qMap[meta.keperluan]) qMap[meta.keperluan] = [];
-                        var typeStr = f.type === 'dropdown' ? ' (Dropdown)' :
-                            f.type === 'number' ? ' (Angka)' :
-                                f.type === 'date' ? ' (Tanggal)' : ' (Teks)';
-                        qMap[meta.keperluan].push(meta.cleanName + typeStr);
-                    });
-                    var qHtml = "";
-                    Object.keys(qMap).forEach(k => {
-                        qHtml += '<p class="text-[9px] font-bold text-slate-700 mt-1 mb-0.5">' + (k === "Wajib" ? "ISIAN UMUM" : "TAMBAHAN: " + k) + '</p>';
-                        qHtml += '<ul class="list-disc pl-3 text-[9px] space-y-0.5 text-slate-600"><li>' + qMap[k].join('</li><li>') + '</li></ul>';
-                    });
-                    if (qHtml === "") qHtml = '<span class="text-slate-400 italic text-[9px]">Tanpa pertanyaan</span>';
-
-                    var tr = '<tr class="hover:bg-slate-50 transition-all group">' +
-                        '<td class="p-3 text-center text-xs font-bold text-slate-500">' + (index + 1) + '</td>' +
-                        '<td class="p-3 font-extrabold text-xs text-slate-800">' + row.nama + '</td>' +
-                        '<td class="p-3 align-top">' + kepHtml + '</td>' +
-                        '<td class="p-3 align-top">' + docHtml + '</td>' +
-                        '<td class="p-3 align-top">' + qHtml + '</td>' +
-                        '<td class="p-3 text-center align-middle">' +
-                        '<div class="flex items-center justify-center gap-1">' +
-                        '<button onclick="switchAdminTab(\'layanan\'); populateBuilderLayananToEdit(\'' + row.id + '\')" class="p-1.5 text-blue-600 hover:bg-white rounded-lg border border-slate-200 shadow-sm transition-all" title="Edit Layanan"><i class="fa-solid fa-edit text-[10px]"></i></button>' +
-                        '<button onclick="deleteBuilderMasterLayanan(\'' + row.nama + '\')" class="p-1.5 text-red-600 hover:bg-white rounded-lg border border-slate-200 shadow-sm transition-all" title="Hapus Layanan"><i class="fa-solid fa-trash text-[10px]"></i></button>' +
-                        '</div>' +
-                        '</td>' +
-                        '</tr>';
-                    listContainer.innerHTML += tr;
-                });
             };
 
             if (isGoogleEnv) {

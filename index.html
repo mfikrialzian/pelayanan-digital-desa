@@ -933,19 +933,29 @@
                 <!-- SUB-TAB C: DAFTAR LAYANAN AKTIF -->
                 <div id="subview-admin-daftar-layanan" class="hidden space-y-6 text-left">
                     <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-2xl p-6 space-y-4">
-                        <div class="flex items-center justify-between border-b pb-3">
-                            <h4 class="text-sm font-extrabold text-slate-800 flex items-center gap-1.5">
-                                <i class="fa-solid fa-folder-open text-narmadaGreen"></i> Daftar Pelayanan Aktif Desa
-                                Narmada
-                            </h4>
-                            <div class="flex items-center gap-2">
-                                <span id="txt-total-layanan-aktif"
-                                    class="px-3 py-1 bg-emerald-50 text-narmadaGreen border border-emerald-200 text-xs font-bold rounded-full">0 Layanan Aktif</span>
-                                <button onclick="openLayananEditor('__NEW__')" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-900 text-white rounded-lg text-xs font-bold shadow transition-all flex items-center gap-1.5"><i class="fa-solid fa-plus"></i> Tambah Layanan Baru</button>
+                        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3 border-b border-slate-100 pb-4">
+                            <div>
+                                <h3 class="font-extrabold text-sm text-slate-800 flex items-center gap-2">
+                                    <i class="fa-solid fa-folder-open text-narmadaGreen"></i> Daftar Pelayanan Aktif
+                                </h3>
+                                <p class="text-[10px] text-slate-400 font-semibold mt-1">Kelola dan konfigurasikan jenis pelayanan untuk warga.</p>
+                            </div>
+                            
+                            <div class="flex items-center gap-2 max-w-md w-full sm:w-auto">
+                                <input type="text" id="admin-layanan-keyword-filter" oninput="runLayananFilter()" placeholder="Cari Nama Layanan..." class="flex-grow sm:w-64 px-3.5 py-2 rounded-xl custom-input text-xs shadow-inner">
+                                <button onclick="runLayananFilter()" class="px-4 py-2 bg-narmadaGreen hover:bg-narmadaGreen-dark text-white rounded-xl text-xs font-bold transition-all shadow-md flex items-center gap-1.5 shrink-0">
+                                    <i class="fa-solid fa-magnifying-glass"></i> Cari
+                                </button>
+                                
+                                <div class="w-px h-6 bg-slate-200 mx-1 hidden sm:block"></div>
+                                
+                                <span id="txt-total-layanan-aktif" class="hidden sm:inline-flex px-3 py-1 bg-emerald-50 text-narmadaGreen border border-emerald-200 text-[10px] font-bold rounded-full shrink-0">0 Layanan</span>
+                                <button onclick="openLayananEditor('__NEW__')" class="px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-xs font-bold shadow transition-all flex items-center gap-1.5 shrink-0">
+                                    <i class="fa-solid fa-plus"></i> Tambah Layanan
+                                </button>
                             </div>
                         </div>
-                        <div
-                            class="overflow-x-auto border border-slate-101 rounded-2xl shadow-inner max-h-[600px] overflow-y-auto">
+                        <div class="overflow-x-auto border border-slate-101 rounded-2xl shadow-inner">
                             <table class="w-full text-left border-collapse text-xs">
                                 <thead>
                                     <tr
