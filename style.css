@@ -1,5 +1,5 @@
 body {
-            background-color: #059669; /* Narmada Green Solid */
+            background: linear-gradient(135deg, #ECFDF5 0%, #F8FAFC 100%);
             font-family: 'Plus Jakarta Sans', sans-serif;
             min-height: 100vh;
         }
