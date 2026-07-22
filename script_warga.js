@@ -203,8 +203,8 @@ function saveWargaDraft() {
 
             var formWrapper = document.getElementById('wrapper-formulir-pengajuan');
             formWrapper.classList.remove('hidden');
-            formWrapper.classList.remove('slide-in-backward');
-            formWrapper.classList.add('slide-in-forward');
+            formWrapper.classList.remove('animate-fade-in');
+            formWrapper.classList.add('animate-fade-in');
 
             document.getElementById('wizard-section-success').classList.add('hidden');
         }
@@ -325,7 +325,7 @@ function saveWargaDraft() {
             var container = document.getElementById(containerId);
             if (!container) return;
             var wrapperDiv = document.createElement('div');
-            wrapperDiv.className = "slide-in-forward mt-3";
+            wrapperDiv.className = "animate-fade-in mt-3";
             wrapperDiv.innerHTML = generateRepeaterBlockHtml(encodedSubFields, true);
             container.appendChild(wrapperDiv);
         }
@@ -414,14 +414,13 @@ function saveWargaDraft() {
         }
 
         function switchWizardSection(stepNum) {
-            var isBackward = stepNum < currentWizardStep;
             currentWizardStep = stepNum;
 
             for (var s = 1; s <= 5; s++) {
                 var el = document.getElementById('wizard-section-' + s);
                 if (el) {
                     el.classList.add('hidden');
-                    el.classList.remove('slide-in-forward', 'slide-in-backward');
+                    el.classList.remove('animate-fade-in');
                 }
             }
             for (var b = 1; b <= 5; b++) {
@@ -434,7 +433,7 @@ function saveWargaDraft() {
             var targetStep = document.getElementById('wizard-section-' + stepNum);
             if (targetStep) {
                 targetStep.classList.remove('hidden');
-                targetStep.classList.add(isBackward ? 'slide-in-backward' : 'slide-in-forward');
+                targetStep.classList.add('animate-fade-in');
             }
         }
 
@@ -603,8 +602,7 @@ function saveWargaDraft() {
             if (currentWizardStep === 1) {
                 var selectWrapper = document.getElementById('wrapper-select-layanan');
                 selectWrapper.classList.remove('hidden');
-                selectWrapper.classList.remove('slide-in-forward');
-                selectWrapper.classList.add('slide-in-backward');
+                selectWrapper.classList.add('animate-fade-in');
                 formWrapper.classList.add('hidden');
             } else if (currentWizardStep === 2) {
                 goToStep1();
@@ -622,7 +620,7 @@ function saveWargaDraft() {
             var rowCount = container.children.length + 1;
             var cols = configStr.split(',');
 
-            var rowHtml = '<div class="p-3 bg-white border border-slate-200 rounded-xl relative shadow-sm repeater-row-' + containerId + ' slide-in-forward">';
+            var rowHtml = '<div class="p-3 bg-white border border-slate-200 rounded-xl relative shadow-sm repeater-row-' + containerId + ' animate-fade-in">';
             rowHtml += '<button type="button" onclick="this.parentElement.remove(); updateRepeaterHidden(\'' + containerId + '\');" class="absolute top-2 right-2 text-red-400 hover:text-red-600 bg-red-50 p-1 rounded-md transition-all tap-squish"><i class="fa-solid fa-xmark text-[10px]"></i></button>';
             rowHtml += '<p class="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-2 border-b border-slate-100 pb-1">Data Ke-' + rowCount + '</p>';
             rowHtml += '<div class="space-y-2">';
