@@ -1,0 +1,17 @@
+{
+  "name": "Pelayanan Digital Desa Narmada",
+  "short_name": "Desa Narmada",
+  "description": "Sistem Pelayanan Digital Administrasi Desa Narmada",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#059669",
+  "icons": [
+    {
+      "src": "favicon.png",
+      "sizes": "192x192 512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
