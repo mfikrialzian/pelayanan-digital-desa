@@ -50,7 +50,7 @@ function saveWargaDraft() {
             var detailEl = document.getElementById(id);
             var iconEl = document.getElementById(id + "-icon");
             if (detailEl && iconEl) {
-                detailEl.classList.toggle('hidden');
+                detailEl.classList.toggle('is-open');
                 iconEl.classList.toggle('rotate-180');
             }
         }

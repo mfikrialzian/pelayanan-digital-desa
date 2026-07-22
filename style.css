@@ -144,3 +144,17 @@ body {
         .animate-mesh-2 {
             animation: floatMesh2 18s ease-in-out infinite alternate;
         }
+
+        .accordion-wrapper {
+            display: grid;
+            grid-template-rows: 0fr;
+            opacity: 0;
+            transition: grid-template-rows 0.4s ease-out, opacity 0.4s ease-out, margin 0.4s ease-out;
+        }
+        .accordion-wrapper.is-open {
+            grid-template-rows: 1fr;
+            opacity: 1;
+        }
+        .accordion-inner {
+            overflow: hidden;
+        }
