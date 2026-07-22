@@ -156,32 +156,32 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-3 gap-4 pt-4 w-full">
+                <div class="grid grid-cols-3 gap-3 md:gap-4 pt-4 w-full">
                     <div onclick="handleMulaiPengajuan()"
-                        class="relative bg-white/90 border border-slate-200/50 rounded-3xl shadow-2xl overflow-hidden p-5 text-center cursor-pointer group flex flex-col items-center justify-center space-y-3 aspect-square lg:aspect-auto lg:h-32 tap-squish">
+                        class="relative bg-white/90 border border-slate-200/50 rounded-2xl md:rounded-3xl shadow-xl hover:shadow-2xl overflow-hidden p-2 md:p-4 text-center cursor-pointer group flex flex-col items-center justify-start pt-4 md:pt-6 h-full aspect-square lg:aspect-auto lg:h-36 tap-squish">
                         <div class="absolute inset-0 bg-gradient-to-br from-blue-50/80 via-emerald-50/50 to-white z-0 opacity-60"></div>
                         <div class="absolute -top-6 -right-6 w-20 h-20 bg-emerald-300/30 rounded-full blur-2xl z-0 group-hover:scale-150 transition-transform duration-700"></div>
                         
                         <div
-                            class="relative z-10 bg-emerald-50 w-12 h-12 rounded-xl flex items-center justify-center text-narmadaGreen text-xl border border-emerald-500/20 transition-transform group-hover:scale-110 group-hover:rotate-3 shadow-sm">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-7 h-7 drop-shadow-sm" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            class="relative z-10 bg-emerald-50 w-10 h-10 md:w-14 md:h-14 rounded-xl flex items-center justify-center text-narmadaGreen text-lg md:text-2xl border border-emerald-500/20 transition-transform group-hover:scale-110 group-hover:rotate-3 shadow-sm mb-2 md:mb-3 shrink-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-6 h-6 md:w-7 md:h-7 drop-shadow-sm" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M7 3h7l5 5v10a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" class="fill-current opacity-20" stroke="none" />
                                 <path d="M7 3h7l5 5v10a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" />
                                 <path d="M14 3v5h5" />
                                 <path d="M14.5 13.5l-4 4-2 .5 .5-2 4-4a1.414 1.414 0 0 1 2 2z" />
                             </svg>
                         </div>
-                        <h3 class="relative z-10 font-extrabold text-[11px] md:text-sm text-slate-800 leading-tight">Mulai Pengajuan</h3>
+                        <h3 class="relative z-10 font-extrabold text-[10px] md:text-sm text-slate-800 leading-tight flex-1 flex items-center justify-center">Mulai Pengajuan</h3>
                     </div>
 
                     <div onclick="switchView('status')"
-                        class="relative bg-white/90 border border-slate-200/50 rounded-3xl shadow-2xl overflow-hidden p-5 text-center cursor-pointer group flex flex-col items-center justify-center space-y-3 aspect-square lg:aspect-auto lg:h-32 tap-squish">
+                        class="relative bg-white/90 border border-slate-200/50 rounded-2xl md:rounded-3xl shadow-xl hover:shadow-2xl overflow-hidden p-2 md:p-4 text-center cursor-pointer group flex flex-col items-center justify-start pt-4 md:pt-6 h-full aspect-square lg:aspect-auto lg:h-36 tap-squish">
                         <div class="absolute inset-0 bg-gradient-to-br from-blue-50/80 via-emerald-50/50 to-white z-0 opacity-60"></div>
                         <div class="absolute -top-6 -right-6 w-20 h-20 bg-blue-300/30 rounded-full blur-2xl z-0 group-hover:scale-150 transition-transform duration-700"></div>
 
                         <div
-                            class="relative z-10 bg-blue-50 w-12 h-12 rounded-xl flex items-center justify-center text-blue-500 text-xl border border-blue-500/20 transition-transform group-hover:scale-110 group-hover:-rotate-3 shadow-sm">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-7 h-7 drop-shadow-sm" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            class="relative z-10 bg-blue-50 w-10 h-10 md:w-14 md:h-14 rounded-xl flex items-center justify-center text-blue-500 text-lg md:text-2xl border border-blue-500/20 transition-transform group-hover:scale-110 group-hover:-rotate-3 shadow-sm mb-2 md:mb-3 shrink-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-6 h-6 md:w-7 md:h-7 drop-shadow-sm" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                                 <circle cx="11" cy="11" r="7" class="fill-current opacity-20" stroke="none" />
                                 <circle cx="11" cy="11" r="7" />
                                 <path d="M21 21l-4.35-4.35" />
@@ -189,17 +189,17 @@
                                 <path d="M7 8h5" stroke-width="1" class="opacity-50" />
                             </svg>
                         </div>
-                        <h3 class="relative z-10 font-extrabold text-[11px] md:text-sm text-slate-800 leading-tight">Cek Status Pengajuan</h3>
+                        <h3 class="relative z-10 font-extrabold text-[10px] md:text-sm text-slate-800 leading-tight flex-1 flex items-center justify-center">Cek Status Pengajuan</h3>
                     </div>
 
                     <a id="link-wa-warga-beranda" href="https://wa.me/6281234567890" target="_blank"
-                        class="relative bg-white/90 border border-slate-200/50 rounded-3xl shadow-2xl overflow-hidden p-5 text-center block group flex flex-col items-center justify-center space-y-3 aspect-square lg:aspect-auto lg:h-32 tap-squish">
+                        class="relative bg-white/90 border border-slate-200/50 rounded-2xl md:rounded-3xl shadow-xl hover:shadow-2xl overflow-hidden p-2 md:p-4 text-center group flex flex-col items-center justify-start pt-4 md:pt-6 h-full aspect-square lg:aspect-auto lg:h-36 tap-squish">
                         <div class="absolute inset-0 bg-gradient-to-br from-blue-50/80 via-emerald-50/50 to-white z-0 opacity-60"></div>
                         <div class="absolute -top-6 -right-6 w-20 h-20 bg-amber-300/30 rounded-full blur-2xl z-0 group-hover:scale-150 transition-transform duration-700"></div>
 
                         <div
-                            class="relative z-10 bg-amber-50 w-12 h-12 rounded-xl flex items-center justify-center text-amber-500 text-xl border border-amber-500/20 transition-transform group-hover:scale-110 group-hover:rotate-3 shadow-sm">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-7 h-7 drop-shadow-sm" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            class="relative z-10 bg-amber-50 w-10 h-10 md:w-14 md:h-14 rounded-xl flex items-center justify-center text-amber-500 text-lg md:text-2xl border border-amber-500/20 transition-transform group-hover:scale-110 group-hover:rotate-3 shadow-sm mb-2 md:mb-3 shrink-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-6 h-6 md:w-7 md:h-7 drop-shadow-sm" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M3 12a9 9 0 0 1 18 0" class="fill-current opacity-20" stroke="none" />
                                 <path d="M3 12a9 9 0 0 1 18 0" />
                                 <path d="M4 12h1v4c0 1.1-.9 2-2 2H3v-6z" class="fill-current" stroke="none" />
@@ -208,13 +208,11 @@
                                 <path d="M21 17s-1.5 2-4 2" />
                             </svg>
                         </div>
-                        <h3 class="relative z-10 font-extrabold text-[11px] md:text-sm text-slate-800 leading-tight">Hubungi Kantor Desa</h3>
+                        <h3 class="relative z-10 font-extrabold text-[10px] md:text-sm text-slate-800 leading-tight flex-1 flex items-center justify-center">Hubungi Kantor Desa</h3>
                     </a>
                 </div>
 
-                <div class="space-y-2.5 w-full pt-2">
-                    <h3 class="text-slate-600 text-xs uppercase font-bold tracking-wider text-left mb-2">Informasi
-                        Pelayanan</h3>
+                <div class="space-y-2.5 w-full pt-2 mt-4">
                     <div class="grid grid-cols-1 gap-4">
                         <div id="warga-info-jam" onclick="toggleInfoDetail('jam-detail')"
                             class="relative bg-white/90 border border-slate-200/50 rounded-3xl shadow-2xl overflow-hidden p-4 cursor-pointer hover:border-emerald-500/50 transition-all flex flex-col justify-start group">
