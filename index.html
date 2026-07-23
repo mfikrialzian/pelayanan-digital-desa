@@ -665,7 +665,7 @@
         <div class="flex h-full min-w-[1024px] w-full bg-transparent overflow-hidden relative z-[102]">
 
             <!-- SIDEBAR -->
-            <div class="flex w-64 bg-gradient-to-b from-slate-900 via-slate-900 to-narmadaGreen-dark text-slate-300 flex-col shrink-0 transition-all duration-300 z-50 relative h-full shadow-[4px_0_24px_rgba(0,0,0,0.15)] border-r border-slate-700/50" id="admin-sidebar">
+            <div class="flex w-64 bg-narmadaGreen-dark text-slate-200 flex-col shrink-0 transition-all duration-300 z-50 relative h-full shadow-[4px_0_24px_rgba(0,0,0,0.15)] border-r border-narmadaGreen/50" id="admin-sidebar">
                 <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSIjZmZmIiBmaWxsLW9wYWNpdHk9IjAuMDUiLz4KPC9zdmc+')] opacity-20 z-0 mix-blend-overlay"></div>
                 <div class="p-6 border-b border-slate-700/50 flex items-center space-x-3 relative z-10">
                     <div class="w-10 h-10 flex items-center justify-center shrink-0 overflow-hidden bg-white/10 backdrop-blur-md rounded-xl p-1 border border-white/20 shadow-inner">
@@ -853,11 +853,11 @@
                         </div>
 
                         <!-- Tabel Data Pengajuan -->
-                        <div class="overflow-x-auto border border-slate-101 rounded-2xl shadow-inner">
+                        <div class="relative z-10 overflow-x-auto border border-slate-200 rounded-2xl shadow-inner">
                             <table class="w-full text-left border-collapse text-xs">
                                 <thead>
                                     <tr
-                                        class="bg-slate-50 text-slate-400 font-bold uppercase tracking-wider text-[9px] border-b border-slate-101">
+                                        class="bg-slate-50 text-slate-400 font-bold uppercase tracking-wider text-[9px] border-b border-slate-200">
                                         <th class="p-4 w-[5%] text-center">No</th>
                                         <th class="p-4 w-[15%]">Waktu & Tempat</th>
                                         <th class="p-4 w-[25%]">Detail Pemohon</th>
@@ -867,14 +867,14 @@
                                         <th class="p-4 w-[10%] text-center">Hubungi</th>
                                     </tr>
                                 </thead>
-                                <tbody id="table-admin-rows" class="divide-y divide-slate-101 bg-white">
+                                <tbody id="table-admin-rows" class="divide-y divide-slate-200 bg-white">
                                     <!-- Dimuat secara dinamis via JS -->
                                 </tbody>
                             </table>
                         </div>
 
                         <!-- Kontrol Navigasi Halaman (Pagination) -->
-                        <div class="flex justify-between items-center pt-2">
+                        <div class="relative z-10 flex justify-between items-center pt-2">
                             <span id="txt-pagination-info" class="text-[10px] font-bold text-slate-400">Halaman 1 dari 1
                                 (0 Berkas)</span>
                             <div class="flex gap-1.5">
