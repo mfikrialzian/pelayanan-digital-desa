@@ -557,9 +557,14 @@ function saveWargaDraft() {
 
                 if (inp.value.trim()) {
                     var meta = parseQuestionMetadata(inp.getAttribute('data-question'));
+                    var displayValue = inp.value.trim();
+                    if (inp.type === 'date') {
+                        var parts = displayValue.split('-');
+                        if (parts.length === 3) displayValue = parts[2] + '/' + parts[1] + '/' + parts[0];
+                    }
                     isianContainer.innerHTML += '<div class="flex justify-between border-b border-slate-50 py-1">' +
                         '<span class="text-slate-555">' + meta.cleanName + ':</span>' +
-                        '<span class="font-bold text-slate-800">' + inp.value.trim() + '</span>' +
+                        '<span class="font-bold text-slate-800">' + displayValue + '</span>' +
                         '</div>';
                     hasIsian = true;
                 }
@@ -582,7 +587,7 @@ function saveWargaDraft() {
                     if (match) cleanName = match[2];
 
                     berkasContainer.innerHTML += '<div class="border border-slate-101 rounded-xl p-1 bg-slate-50 text-center">' +
-                        '<img src="' + base64 + '" class="w-full h-20 object-cover rounded-lg mb-1 shadow-sm">' +
+                        '<img src="' + base64 + '" class="w-full h-auto rounded-lg mb-1 shadow-sm">' +
                         '<span class="text-[8px] font-bold text-slate-500 block truncate">' + cleanName + '</span>' +
                         '</div>';
                 }
