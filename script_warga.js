@@ -443,6 +443,7 @@ function saveWargaDraft() {
                 targetStep.classList.remove('hidden');
                 targetStep.classList.add('animate-fade-in');
             }
+            validateCurrentWizardStep();
         }
 
         function goToStep1() { switchWizardSection(1); }
@@ -753,6 +754,7 @@ function saveWargaDraft() {
                                 '<div class="absolute bottom-0 inset-x-0 bg-black/60 text-white text-[8px] py-0.5 font-bold text-center"><i class="fa-solid fa-circle-check text-emerald-400"></i> Berkas Layak (Sharpness: ' + Math.round(score) + ')</div>';
                             pushToast("Foto berhasil dilampirkan.", "success");
                         }
+                        validateCurrentWizardStep();
                     });
                 };
                 img.src = e.target.result;
@@ -1091,3 +1093,81 @@ function saveWargaDraft() {
             };
             reader.readAsDataURL(file);
         }
+
+        function validateCurrentWizardStep() {
+            if (currentWizardStep === 2) {
+                var btn = document.getElementById('btn-next-step-2');
+                if (!btn) return;
+                var nik = document.getElementById('warga-nik') ? document.getElementById('warga-nik').value.trim() : "";
+                var nama = document.getElementById('warga-nama') ? document.getElementById('warga-nama').value.trim() : "";
+                var wa = document.getElementById('warga-wa') ? document.getElementById('warga-wa').value.trim() : "";
+                var alamat = document.getElementById('warga-alamat') ? document.getElementById('warga-alamat').value.trim() : "";
+                if (nik.length === 16 && nama && wa && alamat) {
+                    btn.disabled = false;
+                    btn.className = "px-5 py-2.5 bg-narmadaGreen hover:bg-narmadaGreen-dark text-white font-semibold text-sm rounded-xl shadow-sm transition-all flex items-center gap-1.5 tap-squish";
+                } else {
+                    btn.disabled = true;
+                    btn.className = "px-5 py-2.5 bg-slate-300 text-slate-500 font-bold text-xs rounded-xl shadow-md transition-all flex items-center gap-1.5 cursor-not-allowed tap-squish";
+                }
+            } else if (currentWizardStep === 3) {
+                var btn = document.getElementById('btn-next-step-3');
+                if (!btn) return;
+                var reqKeperluan = document.getElementById('warga-keperluan-surat');
+                if (reqKeperluan && !reqKeperluan.value.trim()) {
+                    btn.disabled = true;
+                    btn.className = "px-5 py-2.5 bg-slate-300 text-slate-500 font-bold text-xs rounded-xl shadow-md transition-all flex items-center gap-1.5 cursor-not-allowed tap-squish";
+                    return;
+                }
+                var isValid = true;
+                var qWrappers = document.querySelectorAll('.dynamic-question-wrapper');
+                for (var i = 0; i < qWrappers.length; i++) {
+                    if (!qWrappers[i].classList.contains('hidden')) {
+                        var inputField = qWrappers[i].querySelector('.dynamic-question-field');
+                        if (inputField && inputField.hasAttribute('required') && !inputField.value.trim()) {
+                            isValid = false;
+                            break;
+                        }
+                    }
+                }
+                if (isValid) {
+                    btn.disabled = false;
+                    btn.className = "px-5 py-2.5 bg-narmadaGreen hover:bg-narmadaGreen-dark text-white font-bold text-xs rounded-xl shadow-md transition-all flex items-center gap-1.5 tap-squish";
+                } else {
+                    btn.disabled = true;
+                    btn.className = "px-5 py-2.5 bg-slate-300 text-slate-500 font-bold text-xs rounded-xl shadow-md transition-all flex items-center gap-1.5 cursor-not-allowed tap-squish";
+                }
+            } else if (currentWizardStep === 4) {
+                var btn = document.getElementById('btn-next-step-4');
+                if (!btn) return;
+                var requirements = selectedLayananGlobal.requirements || [];
+                var missingFile = false;
+                for (var i = 0; i < requirements.length; i++) {
+                    var slotId = "slot_" + requirements[i].id;
+                    var wrapperCard = document.getElementById('wrapper-slot-card-' + slotId);
+                    if (wrapperCard && !wrapperCard.classList.contains('hidden')) {
+                        if (!uploadDataStore[slotId]) {
+                            missingFile = true;
+                            break;
+                        }
+                    }
+                }
+                if (!missingFile) {
+                    btn.disabled = false;
+                    btn.className = "px-5 py-2.5 bg-narmadaGreen hover:bg-narmadaGreen-dark text-white text-xs font-bold rounded-xl shadow-md transition-all flex items-center gap-1.5 tap-squish";
+                } else {
+                    btn.disabled = true;
+                    btn.className = "px-5 py-2.5 bg-slate-300 text-slate-500 text-xs font-bold rounded-xl shadow-md transition-all flex items-center gap-1.5 cursor-not-allowed tap-squish";
+                }
+            }
+        }
+
+        document.addEventListener('input', function(e) {
+            if (activeView === 'layanan' && currentWizardStep >= 2 && currentWizardStep <= 4) {
+                validateCurrentWizardStep();
+            }
+        });
+        document.addEventListener('change', function(e) {
+            if (activeView === 'layanan' && currentWizardStep >= 2 && currentWizardStep <= 4) {
+                validateCurrentWizardStep();
+            }
+        });
