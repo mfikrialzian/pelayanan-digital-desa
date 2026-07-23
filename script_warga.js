@@ -537,12 +537,18 @@ function saveWargaDraft() {
             isianContainer.innerHTML = "";
 
             var keperl = document.getElementById('warga-keperluan-surat');
-            if (keperl && keperl.value) {
-                isianContainer.innerHTML += '<div class="flex justify-between border-b border-slate-50 py-1"><span class="text-slate-555">Keperluan Surat:</span><span class="font-bold text-slate-800">' + keperl.value + '</span></div>';
+            var optionsList = window.currentSelectedLayananObj ? (window.currentSelectedLayananObj.keperluan ? window.currentSelectedLayananObj.keperluan.split(',').map(function(s){return s.trim()}).filter(function(s){return s}) : []) : [];
+            var hasIsian = false;
+
+            if (keperl && keperl.value && optionsList.length > 1) {
+                isianContainer.innerHTML += '<div class="grid grid-cols-[1fr_10px_1fr] gap-2 border-b border-slate-50 py-1">' +
+                    '<span class="text-slate-555 text-[10px] text-left break-words">Keperluan Surat</span>' +
+                    '<span class="text-slate-400 text-[10px] text-center">:</span>' +
+                    '<span class="font-bold text-slate-800 text-[10px] text-left break-words">' + keperl.value + '</span></div>';
+                hasIsian = true;
             }
 
             var allDynamicInputs = document.querySelectorAll('.dynamic-question-field');
-            var hasIsian = (keperl && keperl.value) ? true : false;
 
             allDynamicInputs.forEach(function (inp) {
                 var wrapper = inp.closest('.dynamic-question-wrapper');
@@ -562,9 +568,10 @@ function saveWargaDraft() {
                         var parts = displayValue.split('-');
                         if (parts.length === 3) displayValue = parts[2] + '/' + parts[1] + '/' + parts[0];
                     }
-                    isianContainer.innerHTML += '<div class="flex justify-between border-b border-slate-50 py-1">' +
-                        '<span class="text-slate-555">' + meta.cleanName + ':</span>' +
-                        '<span class="font-bold text-slate-800">' + displayValue + '</span>' +
+                    isianContainer.innerHTML += '<div class="grid grid-cols-[1fr_10px_1fr] gap-2 border-b border-slate-50 py-1">' +
+                        '<span class="text-slate-555 text-[10px] text-left break-words">' + meta.cleanName + '</span>' +
+                        '<span class="text-slate-400 text-[10px] text-center">:</span>' +
+                        '<span class="font-bold text-slate-800 text-[10px] text-left break-words">' + displayValue + '</span>' +
                         '</div>';
                     hasIsian = true;
                 }
@@ -1020,12 +1027,18 @@ function saveWargaDraft() {
                     return '<span class="text-slate-400 block text-[10px]">' + l + '</span>';
                 }).join("");
 
+                var matchedLayananStatus = (window.loadedLayananList || dummyLayananList).find(function (lay) {
+                    return lay.nama === item.layanan;
+                });
+                var statusOptionsList = matchedLayananStatus ? (matchedLayananStatus.keperluan ? matchedLayananStatus.keperluan.split(',').map(function(s){return s.trim()}).filter(function(s){return s}) : []) : [];
+
                 var parsedDetailsHtml = "";
                 if (item.detailLayanan && item.detailLayanan !== "-") {
                     try {
                         var parsedObj = JSON.parse(item.detailLayanan);
                         Object.keys(parsedObj).forEach(function (k) {
-                            parsedDetailsHtml += '<div class="flex justify-between border-b border-slate-100 py-1"><span class="text-slate-500 text-[10px]">' + k + ':</span><span class="font-bold text-slate-800">' + parsedObj[k] + '</span></div>';
+                            if (k === "Keperluan Surat" && statusOptionsList.length <= 1) return;
+                            parsedDetailsHtml += '<div class="grid grid-cols-[1fr_10px_1fr] gap-2 border-b border-slate-100 py-1"><span class="text-slate-500 text-[10px] text-left break-words">' + k + '</span><span class="text-slate-400 text-[10px] text-center">:</span><span class="font-bold text-slate-800 text-[10px] text-left break-words">' + parsedObj[k] + '</span></div>';
                         });
                     } catch (e) {
                         var parts = item.detailLayanan.split('|');
@@ -1034,8 +1047,9 @@ function saveWargaDraft() {
                                 var kv = part.split(':');
                                 if (kv.length >= 2) {
                                     var k = kv[0].trim();
+                                    if (k === "Keperluan Surat" && statusOptionsList.length <= 1) return;
                                     var v = kv.slice(1).join(':').trim();
-                                    parsedDetailsHtml += '<div class="flex justify-between border-b border-slate-100 py-1"><span class="text-slate-500 text-[10px]">' + k + ':</span><span class="font-bold text-slate-800">' + v + '</span></div>';
+                                    parsedDetailsHtml += '<div class="grid grid-cols-[1fr_10px_1fr] gap-2 border-b border-slate-100 py-1"><span class="text-slate-500 text-[10px] text-left break-words">' + k + '</span><span class="text-slate-400 text-[10px] text-center">:</span><span class="font-bold text-slate-800 text-[10px] text-left break-words">' + v + '</span></div>';
                                 } else {
                                     parsedDetailsHtml += '<div class="border-b border-slate-100 py-1 text-slate-800 font-bold">' + part.trim() + '</div>';
                                 }
