@@ -223,21 +223,23 @@ function saveWargaDraft() {
 
             var keperluanOptionsStr = selectedLayananGlobal.judulSectionIsian || "";
             if (keperluanOptionsStr) {
-                var optionsList = keperluanOptionsStr.split(',');
-                var selectHtml = '<div class="space-y-1">' +
-                    '<label class="block text-xs font-semibold text-slate-600 mb-1.5">Keperluan Surat *</label>' +
-                    '<select id="warga-keperluan-surat" onchange="runLiveConditionalLogicEvaluationForCitizen()" required class="w-full px-3 py-2.5 rounded-xl custom-input text-sm font-medium shadow-sm bg-white">' +
-                    '<option value="">-- Pilih Keperluan Surat --</option>';
+                var optionsList = keperluanOptionsStr.split(',').map(function(opt) { return opt.trim(); }).filter(function(opt) { return opt !== ""; });
+                
+                if (optionsList.length === 1) {
+                    qContainer.innerHTML += '<input type="hidden" id="warga-keperluan-surat" value="' + optionsList[0] + '">';
+                } else if (optionsList.length > 1) {
+                    var selectHtml = '<div class="space-y-1">' +
+                        '<label class="block text-xs font-semibold text-slate-600 mb-1.5">Keperluan Surat *</label>' +
+                        '<select id="warga-keperluan-surat" onchange="runLiveConditionalLogicEvaluationForCitizen()" required class="w-full px-3 py-2.5 rounded-xl custom-input text-sm font-medium shadow-sm bg-white">' +
+                        '<option value="">-- Pilih Keperluan Surat --</option>';
 
-                optionsList.forEach(function (opt) {
-                    var cleanOpt = opt.trim();
-                    if (cleanOpt) {
-                        selectHtml += '<option value="' + cleanOpt + '">' + cleanOpt + '</option>';
-                    }
-                });
+                    optionsList.forEach(function (opt) {
+                        selectHtml += '<option value="' + opt + '">' + opt + '</option>';
+                    });
 
-                selectHtml += '</select></div>';
-                qContainer.innerHTML += selectHtml;
+                    selectHtml += '</select></div>';
+                    qContainer.innerHTML += selectHtml;
+                }
             }
 
             if (fields && fields.length > 0) {
@@ -291,9 +293,9 @@ function saveWargaDraft() {
                 inputHtml += '</select>';
             } else if (displayType === "number") {
                 var limitAttr = optionsStr ? ' oninput="if(this.value.length > ' + optionsStr + ') this.value = this.value.slice(0, ' + optionsStr + ');"' : '';
-                inputHtml = '<input type="number" ' + requiredAttr + limitAttr + ' placeholder="Ketik angka" class="w-full px-3 py-2.5 rounded-xl custom-input text-sm font-medium shadow-sm dynamic-question-field" data-question="' + actualName + '">';
+                inputHtml = '<input type="number" ' + requiredAttr + limitAttr + ' placeholder="KETIK ANGKA" class="w-full px-3 py-2.5 rounded-xl custom-input text-sm font-medium shadow-sm dynamic-question-field uppercase" data-question="' + actualName + '">';
             } else if (displayType === "date") {
-                inputHtml = '<input type="date" ' + requiredAttr + ' class="w-full px-3 py-2.5 rounded-xl custom-input text-sm font-medium shadow-sm dynamic-question-field" data-question="' + actualName + '">';
+                inputHtml = '<input type="date" ' + requiredAttr + ' class="w-full px-3 py-2.5 rounded-xl custom-input text-sm font-medium shadow-sm dynamic-question-field uppercase" data-question="' + actualName + '">';
             } else {
                 inputHtml = '<input type="text" ' + requiredAttr + ' placeholder="Ketik jawaban Anda" oninput="this.value = this.value.toUpperCase();" class="w-full px-3 py-2.5 rounded-xl custom-input text-sm font-medium shadow-sm dynamic-question-field uppercase" data-question="' + actualName + '">';
             }
