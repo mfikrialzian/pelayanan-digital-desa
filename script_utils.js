@@ -37,10 +37,14 @@ function getTableSkeleton(cols, rows) {
         }
 
 
-        function askConfirmation(title, message, onConfirm) {
+        function askConfirmation(title, message, onConfirm, btnCancelText, btnOkText) {
             var modal = document.getElementById('modal-custom-confirm');
             document.getElementById('confirm-modal-title').innerText = title;
             document.getElementById('confirm-modal-message').innerText = message;
+            
+            document.getElementById('confirm-modal-btn-cancel').innerText = btnCancelText || "Batal";
+            document.getElementById('confirm-modal-btn-ok').innerText = btnOkText || "Ya, Lanjutkan";
+            
             modal.classList.remove('hidden');
 
             document.getElementById('confirm-modal-btn-cancel').onclick = function () {

@@ -558,9 +558,19 @@
                             </div>
                         </div>
 
-                        <div class="flex justify-end pt-3 border-t border-slate-101">
-                            <button type="button" id="btn-submit-warga" onclick="handleWargaSubmit()"
-                                class="px-5 py-2.5 bg-narmadaGreen hover:bg-narmadaGreen-dark text-white text-xs font-extrabold rounded-xl shadow-md hover:shadow-lg transition-all flex items-center gap-1.5 tap-squish">
+                        <div class="space-y-2.5 py-3 border-t border-slate-101">
+                            <label class="flex items-start gap-2.5 cursor-pointer">
+                                <input type="checkbox" id="warga-check-kebenaran" onchange="toggleSubmitButtonState()" class="mt-0.5 w-4 h-4 text-narmadaGreen border-slate-300 rounded focus:ring-narmadaGreen cursor-pointer shrink-0">
+                                <span class="text-[10px] text-slate-700 leading-tight select-none">Saya menyatakan bahwa seluruh data dan foto dokumen yang dilampirkan adalah benar dan sesuai dengan aslinya.</span>
+                            </label>
+                            <label class="flex items-start gap-2.5 cursor-pointer">
+                                <input type="checkbox" id="warga-check-tanggungjawab" onchange="toggleSubmitButtonState()" class="mt-0.5 w-4 h-4 text-narmadaGreen border-slate-300 rounded focus:ring-narmadaGreen cursor-pointer shrink-0">
+                                <span class="text-[10px] text-slate-700 leading-tight select-none">Saya bertanggung jawab penuh atas keabsahan pengajuan ini dan bersedia menerima sanksi apabila di kemudian hari terbukti memalsukan dokumen.</span>
+                            </label>
+                        </div>
+                        <div class="flex justify-end pt-1">
+                            <button type="button" id="btn-submit-warga" onclick="handleWargaSubmit()" disabled
+                                class="px-5 py-2.5 bg-slate-300 text-slate-500 text-xs font-extrabold rounded-xl shadow-md transition-all flex items-center gap-1.5 cursor-not-allowed tap-squish">
                                 <span>Kirim Pengajuan</span> <i class="fa-solid fa-paper-plane text-[10px]"></i>
                             </button>
                         </div>

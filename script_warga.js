@@ -774,7 +774,8 @@ function saveWargaDraft() {
                 pushToast("Sepertinya koneksi internet Anda terputus. Mohon periksa jaringan Anda sebelum mencoba lagi.", "error");
                 return;
             }
-            var lastSubmitTime = localStorage.getItem('lastSubmitTime_Narmada');
+            askConfirmation("Konfirmasi Pengiriman", "Apakah Anda sudah yakin semua data sudah benar? Pengajuan yang sudah terkirim akan masuk ke antrean admin dan tidak dapat dibatalkan atau diubah sendiri.", function() {
+                var lastSubmitTime = localStorage.getItem('lastSubmitTime_Narmada');
             if (lastSubmitTime) {
                 var timeDiffMinutes = (Date.now() - parseInt(lastSubmitTime)) / (1000 * 60);
                 if (timeDiffMinutes < 15) {
@@ -884,6 +885,22 @@ function saveWargaDraft() {
 
                     showWizardSuccessScreen(mockId);
                 }, 1200);
+            }
+            }, "Batal", "Ya, Kirim Pengajuan");
+        }
+
+        function toggleSubmitButtonState() {
+            var checkKebenaran = document.getElementById('warga-check-kebenaran') ? document.getElementById('warga-check-kebenaran').checked : false;
+            var checkTanggungjawab = document.getElementById('warga-check-tanggungjawab') ? document.getElementById('warga-check-tanggungjawab').checked : false;
+            var btnSubmit = document.getElementById('btn-submit-warga');
+            if (!btnSubmit) return;
+            
+            if (checkKebenaran && checkTanggungjawab) {
+                btnSubmit.disabled = false;
+                btnSubmit.className = "px-5 py-2.5 bg-narmadaGreen hover:bg-narmadaGreen-dark text-white text-xs font-extrabold rounded-xl shadow-md hover:shadow-lg transition-all flex items-center gap-1.5 tap-squish";
+            } else {
+                btnSubmit.disabled = true;
+                btnSubmit.className = "px-5 py-2.5 bg-slate-300 text-slate-500 text-xs font-extrabold rounded-xl shadow-md transition-all flex items-center gap-1.5 cursor-not-allowed tap-squish";
             }
         }
 
