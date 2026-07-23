@@ -1020,6 +1020,34 @@ function saveWargaDraft() {
                     return '<span class="text-slate-400 block text-[10px]">' + l + '</span>';
                 }).join("");
 
+                var parsedDetailsHtml = "";
+                if (item.detailLayanan && item.detailLayanan !== "-") {
+                    try {
+                        var parsedObj = JSON.parse(item.detailLayanan);
+                        Object.keys(parsedObj).forEach(function (k) {
+                            parsedDetailsHtml += '<div class="flex justify-between border-b border-slate-100 py-1"><span class="text-slate-500 text-[10px]">' + k + ':</span><span class="font-bold text-slate-800">' + parsedObj[k] + '</span></div>';
+                        });
+                    } catch (e) {
+                        var parts = item.detailLayanan.split('|');
+                        if (parts.length > 1) {
+                            parts.forEach(function (part) {
+                                var kv = part.split(':');
+                                if (kv.length >= 2) {
+                                    var k = kv[0].trim();
+                                    var v = kv.slice(1).join(':').trim();
+                                    parsedDetailsHtml += '<div class="flex justify-between border-b border-slate-100 py-1"><span class="text-slate-500 text-[10px]">' + k + ':</span><span class="font-bold text-slate-800">' + v + '</span></div>';
+                                } else {
+                                    parsedDetailsHtml += '<div class="border-b border-slate-100 py-1 text-slate-800 font-bold">' + part.trim() + '</div>';
+                                }
+                            });
+                        } else {
+                            parsedDetailsHtml += '<div class="font-bold text-slate-800">' + item.detailLayanan + '</div>';
+                        }
+                    }
+                } else {
+                    parsedDetailsHtml += '<div class="font-bold text-slate-800">-</div>';
+                }
+
                 var cardHtml = '<div class="bg-white border border-slate-200 p-4 rounded-xl shadow-2xl space-y-2.5 text-xs text-left">' +
                     '<div class="flex justify-between items-center pb-2 border-b border-slate-101">' +
                     '<div><span class="text-[8px] text-slate-400 block font-bold uppercase">No. Registrasi</span>' +
@@ -1031,9 +1059,9 @@ function saveWargaDraft() {
                     '<div><span class="text-slate-400 block text-[9px]">Layanan:</span><span class="font-bold text-narmadaGreen">' + item.layanan + '</span></div>' +
                     '<div><span class="text-slate-400 block text-[9px]">Alamat:</span><span class="font-semibold text-slate-800">' + (item.alamat || "-") + '</span></div>' +
                     '<div><span class="text-slate-400 block text-[9px]">WhatsApp:</span><span>' + item.wa + '</span></div>' +
-                    '<div class="col-span-2 border-t border-slate-50 pt-1.5"><span class="text-slate-400 block text-[9px] font-bold uppercase tracking-wide">ISIAN FORMULIR WARGA:</span><span class="font-bold text-slate-800">' + (item.detailLayanan || "-") + '</span></div>' +
                     '</div>' +
-                    '<div class="p-2.5 bg-slate-50 border rounded-lg text-[11px] italic text-slate-600 shadow-inner"><strong>Catatan Petugas:</strong> "' + item.catatan + '"</div>';
+                    '<div class="border-t border-slate-50 pt-2"><span class="text-slate-400 block text-[9px] font-bold uppercase tracking-wide mb-1">ISIAN FORMULIR WARGA:</span>' + parsedDetailsHtml + '</div>' +
+                    '<div class="p-2.5 bg-slate-50 border rounded-lg text-[11px] italic text-slate-600 shadow-inner mt-2"><strong>Catatan Petugas:</strong> "' + item.catatan + '"</div>';
 
                 if (item.status === "Perbaikan" || item.status === "Upload Ulang") {
                     var matchedLayanan = (window.loadedLayananList || dummyLayananList).find(function (lay) {
