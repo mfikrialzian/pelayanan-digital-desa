@@ -123,8 +123,12 @@ var dummyLayananList = [
                 initialPageParam = paramEl.value.trim().toLowerCase();
             }
             var urlParams = new URLSearchParams(window.location.search);
+            var pathname = window.location.pathname.toLowerCase();
+            
             if (urlParams.has('page')) {
                 initialPageParam = urlParams.get('page').trim().toLowerCase();
+            } else if (pathname === '/admin' || pathname === '/admin/') {
+                initialPageParam = 'admin';
             }
 
             if (initialPageParam === 'admin') {
