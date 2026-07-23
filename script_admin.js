@@ -98,8 +98,8 @@ function runAdminLoginAuth() {
             document.getElementById('subview-admin-beranda').classList.add('hidden');
             document.getElementById('subview-admin-kredensial').classList.add('hidden');
 
-            var inactiveClass = "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left font-bold text-xs text-emerald-50 hover:bg-narmadaGreen-dark hover:text-white transition-all active:scale-95";
-            var activeClass = "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left font-bold text-xs bg-white text-narmadaGreen shadow-sm transition-all active:scale-95";
+            var inactiveClass = "w-full flex items-center px-4 py-3 rounded-xl text-left font-bold text-xs text-emerald-50 hover:bg-white/10 hover:text-white hover:translate-x-1.5 transition-all duration-300 ease-out active:scale-95 group";
+            var activeClass = "w-full flex items-center px-4 py-3 rounded-xl text-left font-bold text-xs bg-white/20 text-white shadow-lg border border-white/20 hover:translate-x-1.5 transition-all duration-300 ease-out active:scale-95 group";
 
             document.getElementById('tab-adm-dashboard').className = inactiveClass;
             document.getElementById('tab-adm-daftar-layanan').className = inactiveClass;
