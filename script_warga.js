@@ -110,15 +110,23 @@ function saveWargaDraft() {
 
             var htmlBuffer = "";
             list.forEach(function (row) {
-                var itemHtml = '<div onclick="openFormPengajuan(\'' + row.nama + '\')" class="light-glass-card p-4 rounded-2xl text-center transition-all duration-300 shadow-lg hover:shadow-2xl cursor-pointer group bg-white border border-slate-101 flex items-center justify-between tap-squish">' +
-                    '<div class="flex items-center space-x-3">' +
-                    '<span class="text-xl">ðŸ“„</span>' +
-                    '<div class="text-left">' +
-                    '<p class="font-extrabold text-xs text-slate-800 group-hover:text-narmadaGreen transition-all">' + row.nama + '</p>' +
-                    '<p class="text-[9px] text-slate-400 font-medium">Layanan Digital Terintegrasi</p>' +
+                var keperluanText = (row.judulSectionIsian && row.judulSectionIsian.trim() !== "") 
+                    ? row.judulSectionIsian.split(',').join(', ') 
+                    : "Layanan Digital Terintegrasi";
+                    
+                var itemHtml = '<div onclick="openFormPengajuan(\'' + row.nama + '\')" class="light-glass-card p-3.5 md:p-4 rounded-2xl transition-all duration-300 shadow-md hover:shadow-xl cursor-pointer group bg-white border border-slate-100 hover:border-emerald-200 flex items-center justify-between tap-squish">' +
+                    '<div class="flex items-center space-x-3.5 flex-1 min-w-0 pr-2">' +
+                    '<div class="w-10 h-10 md:w-11 md:h-11 bg-gradient-to-br from-emerald-50 to-teal-50 text-emerald-600 rounded-xl flex items-center justify-center shrink-0 border border-emerald-100/50 group-hover:bg-gradient-to-br group-hover:from-narmadaGreen group-hover:to-narmadaGreen-dark group-hover:text-white transition-all duration-500 shadow-sm">' +
+                    '<i class="fa-solid fa-file-signature text-lg md:text-xl drop-shadow-sm group-hover:scale-110 transition-transform"></i>' +
+                    '</div>' +
+                    '<div class="text-left w-full overflow-hidden">' +
+                    '<p class="font-extrabold text-xs md:text-sm text-slate-800 group-hover:text-narmadaGreen transition-colors truncate">' + row.nama + '</p>' +
+                    '<p class="text-[10px] md:text-xs text-slate-500 font-medium leading-snug mt-0.5 line-clamp-2" title="' + keperluanText + '">' + keperluanText + '</p>' +
                     '</div>' +
                     '</div>' +
-                    '<i class="fa-solid fa-chevron-right text-slate-300 group-hover:text-narmadaGreen text-[10px] transition-all"></i>' +
+                    '<div class="bg-slate-50 group-hover:bg-emerald-50 w-7 h-7 rounded-full flex items-center justify-center shrink-0 transition-colors border border-slate-100 group-hover:border-emerald-100">' +
+                    '<i class="fa-solid fa-chevron-right text-slate-400 group-hover:text-narmadaGreen text-[10px] transition-transform group-hover:translate-x-0.5"></i>' +
+                    '</div>' +
                     '</div>';
                 htmlBuffer += itemHtml;
             });
