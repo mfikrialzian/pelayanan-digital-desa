@@ -175,8 +175,8 @@ function saveWargaDraft() {
                 if (groupedReqs["Wajib"]) {
                     htmlBuffer += '<div class="mb-2">';
                     htmlBuffer += '<p class="font-bold text-slate-800 text-[10px] mb-1">Dokumen Wajib:</p>';
-                    groupedReqs["Wajib"].forEach(function (item) {
-                        htmlBuffer += '<div class="flex items-center space-x-1.5 py-0.5 pl-1"><span class="text-narmadaGreen font-extrabold text-[9px]">âœ”ï¸</span> <span class="text-[10px] text-slate-600 font-semibold">' + item + '</span></div>';
+                    groupedReqs["Wajib"].forEach(function (item, index) {
+                        htmlBuffer += '<div class="flex items-start space-x-1.5 py-1 pl-1"><span class="text-emerald-600 font-bold text-[9px] bg-emerald-50 w-3.5 h-3.5 rounded-full flex items-center justify-center shrink-0 border border-emerald-100 mt-0.5">' + (index + 1) + '</span> <span class="text-[10px] text-slate-600 font-semibold leading-snug flex-1">' + item + '</span></div>';
                     });
                     htmlBuffer += '</div>';
                 }
@@ -190,8 +190,8 @@ function saveWargaDraft() {
                     if (kep !== "Wajib") {
                         htmlBuffer += '<div class="mb-2 border-l-2 border-emerald-300 pl-2 ml-1">';
                         htmlBuffer += '<p class="font-extrabold text-emerald-700 text-[10px] bg-emerald-50 px-2 py-0.5 rounded inline-block mb-1 border border-emerald-100">Jika Keperluan: ' + kep + '</p>';
-                        groupedReqs[kep].forEach(function (item) {
-                            htmlBuffer += '<div class="flex items-center space-x-1.5 py-0.5 pl-1"><span class="text-narmadaGreen font-extrabold text-[9px]">âœ”ï¸</span> <span class="text-[10px] text-slate-600 font-semibold">' + item + '</span></div>';
+                        groupedReqs[kep].forEach(function (item, index) {
+                            htmlBuffer += '<div class="flex items-start space-x-1.5 py-1 pl-1"><span class="text-emerald-600 font-bold text-[9px] bg-emerald-50 w-3.5 h-3.5 rounded-full flex items-center justify-center shrink-0 border border-emerald-100 mt-0.5">' + (index + 1) + '</span> <span class="text-[10px] text-slate-600 font-semibold leading-snug flex-1">' + item + '</span></div>';
                         });
                         htmlBuffer += '</div>';
                     }
