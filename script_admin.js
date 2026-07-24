@@ -2063,3 +2063,72 @@ function updateLaporanStats() {
     }
 }
 
+// --- Profile Dropdown Logic ---
+document.addEventListener('DOMContentLoaded', () => {
+    const profileTrigger = document.getElementById('admin-profile-trigger');
+    const profileMenu = document.getElementById('admin-profile-menu');
+    const profileChevron = document.getElementById('admin-profile-chevron');
+
+    if (profileTrigger && profileMenu) {
+        // Toggle dropdown on click
+        profileTrigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isHidden = profileMenu.classList.contains('hidden');
+            
+            if (isHidden) {
+                // Show menu
+                profileMenu.classList.remove('hidden');
+                // Small delay to allow display:block to apply before animating opacity/transform
+                setTimeout(() => {
+                    profileMenu.classList.remove('opacity-0', 'scale-95');
+                    profileMenu.classList.add('opacity-100', 'scale-100');
+                    if (profileChevron) profileChevron.style.transform = 'rotate(180deg)';
+                }, 10);
+            } else {
+                // Hide menu
+                profileMenu.classList.remove('opacity-100', 'scale-100');
+                profileMenu.classList.add('opacity-0', 'scale-95');
+                if (profileChevron) profileChevron.style.transform = 'rotate(0deg)';
+                // Wait for animation to finish before hiding
+                setTimeout(() => {
+                    profileMenu.classList.add('hidden');
+                }, 200);
+            }
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!profileMenu.contains(e.target) && !profileTrigger.contains(e.target)) {
+                if (!profileMenu.classList.contains('hidden')) {
+                    profileMenu.classList.remove('opacity-100', 'scale-100');
+                    profileMenu.classList.add('opacity-0', 'scale-95');
+                    if (profileChevron) profileChevron.style.transform = 'rotate(0deg)';
+                    setTimeout(() => {
+                        profileMenu.classList.add('hidden');
+                    }, 200);
+                }
+            }
+        });
+    }
+});
+
+// Dark Mode Toggle Logic (Mock for UI)
+function toggleDarkModeUI(element) {
+    const isDarkMode = document.documentElement.classList.contains('dark');
+    const track = document.getElementById('dark-mode-track');
+    const thumb = document.getElementById('dark-mode-thumb');
+    
+    if (isDarkMode) {
+        // Switch to Light Mode
+        document.documentElement.classList.remove('dark');
+        if (track) track.classList.replace('bg-emerald-500', 'bg-slate-200');
+        if (thumb) thumb.classList.replace('translate-x-4', 'translate-x-0');
+        localStorage.setItem('theme', 'light');
+    } else {
+        // Switch to Dark Mode
+        document.documentElement.classList.add('dark');
+        if (track) { track.classList.remove('bg-slate-200'); track.classList.add('bg-emerald-500'); }
+        if (thumb) { thumb.classList.remove('translate-x-0'); thumb.classList.add('translate-x-4'); }
+        localStorage.setItem('theme', 'dark');
+    }
+}
