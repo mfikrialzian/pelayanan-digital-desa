@@ -1886,101 +1886,114 @@ async function fetchActivities() {
     if (!tbody) return;
     tbody.innerHTML = `<tr><td colspan="4" class="px-4 py-8 text-center text-slate-400">Memuat log aktivitas...</td></tr>`;
     
-    try {
-        const token = sessionStorage.getItem("adminToken");
-        const req = await fetch(CONFIG.API_URL, {
-            method: "POST",
-            body: JSON.stringify({ action: "getActivities", params: [token, 50] })
-        });
-        const res = await req.json();
-        
-        if (!res.success) {
-            tbody.innerHTML = `<tr><td colspan="4" class="px-4 py-8 text-center text-red-500">${res.error || res.message}</td></tr>`;
-            return;
-        }
-        
-        if (res.data.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="4" class="px-4 py-8 text-center text-slate-400">Belum ada log aktivitas.</td></tr>`;
-            return;
-        }
-        
-        let html = "";
-        res.data.forEach(item => {
-            let icon = "fa-info-circle text-blue-500 bg-blue-50";
-            if (item.tipe === "NEW_REQUEST") icon = "fa-file-arrow-up text-blue-500 bg-blue-50";
-            if (item.tipe === "STATUS_UPDATE" || item.tipe === "UPDATE_STATUS") icon = "fa-check text-emerald-500 bg-emerald-50";
-            if (item.tipe === "LOGIN") icon = "fa-user text-slate-500 bg-slate-50";
-            if (item.tipe === "REUPLOAD") icon = "fa-cloud-arrow-up text-amber-500 bg-amber-50";
-
-            html += `
-            <tr class="hover:bg-slate-50 transition-colors group">
-                <td class="px-4 py-3 rounded-l-xl"><span class="font-bold text-slate-800">${item.waktu}</span></td>
-                <td class="px-4 py-3">
-                    <span class="inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-[10px] font-bold ${icon.split(" ")[1]} ${icon.split(" ")[2]}">
-                        <i class="fa-solid ${icon.split(" ")[0]}"></i> ${item.tipe}
-                    </span>
-                </td>
-                <td class="px-4 py-3 text-slate-600 truncate max-w-xs">${item.pesan}</td>
-                <td class="px-4 py-3 rounded-r-xl"><span class="font-bold text-slate-500">${item.pelaku}</span></td>
-            </tr>`;
-        });
-        
-        tbody.innerHTML = html;
-    } catch (e) {
-        tbody.innerHTML = `<tr><td colspan="4" class="px-4 py-8 text-center text-red-500">Gagal memuat: ${e.message}</td></tr>`;
+    if (isGoogleEnv) {
+        google.script.run
+            .withSuccessHandler(function (res) {
+                renderActivities(res, tbody);
+            })
+            .withFailureHandler(function (err) {
+                tbody.innerHTML = `<tr><td colspan="4" class="px-4 py-8 text-center text-red-500">Gagal memuat: ${err.toString()}</td></tr>`;
+            })
+            .getActivities(localStorage.getItem('adminToken_Narmada'), 50);
+    } else {
+        setTimeout(function() {
+            renderActivities({ success: true, data: [] }, tbody);
+        }, 800);
     }
+}
+
+function renderActivities(res, tbody) {
+    if (!res.success) {
+        tbody.innerHTML = `<tr><td colspan="4" class="px-4 py-8 text-center text-red-500">${res.error || res.message}</td></tr>`;
+        return;
+    }
+    
+    if (res.data.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="4" class="px-4 py-8 text-center text-slate-400">Belum ada log aktivitas.</td></tr>`;
+        return;
+    }
+    
+    let html = "";
+    res.data.forEach(item => {
+        let icon = "fa-info-circle text-blue-500 bg-blue-50";
+        if (item.tipe === "NEW_REQUEST") icon = "fa-file-arrow-up text-blue-500 bg-blue-50";
+        if (item.tipe === "STATUS_UPDATE" || item.tipe === "UPDATE_STATUS") icon = "fa-check text-emerald-500 bg-emerald-50";
+        if (item.tipe === "LOGIN") icon = "fa-user text-slate-500 bg-slate-50";
+        if (item.tipe === "REUPLOAD") icon = "fa-cloud-arrow-up text-amber-500 bg-amber-50";
+
+        html += `
+        <tr class="hover:bg-slate-50 transition-colors group">
+            <td class="px-4 py-3 rounded-l-xl"><span class="font-bold text-slate-800">${item.waktu}</span></td>
+            <td class="px-4 py-3">
+                <span class="inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-[10px] font-bold ${icon.split(" ")[1]} ${icon.split(" ")[2]}">
+                    <i class="fa-solid ${icon.split(" ")[0]}"></i> ${item.tipe}
+                </span>
+            </td>
+            <td class="px-4 py-3 text-slate-600 truncate max-w-xs">${item.pesan}</td>
+            <td class="px-4 py-3 rounded-r-xl"><span class="font-bold text-slate-500">${item.pelaku}</span></td>
+        </tr>`;
+    });
+    
+    tbody.innerHTML = html;
 }
 
 async function fetchNotifications() {
     const container = document.getElementById("notification-container");
     if (!container) return;
+    container.innerHTML = `<div class="text-center text-slate-400 py-4 text-xs">Memuat notifikasi...</div>`;
     
-    try {
-        const token = sessionStorage.getItem("adminToken");
-        const req = await fetch(CONFIG.API_URL, {
-            method: "POST",
-            body: JSON.stringify({ action: "getNotifications", params: [token, 10] })
-        });
-        const res = await req.json();
-        
-        if (!res.success) {
-            container.innerHTML = `<div class="text-center text-red-500 py-4 text-xs">${res.error || res.message}</div>`;
-            return;
-        }
-        
-        if (res.data.length === 0) {
-            container.innerHTML = `<div class="text-center text-slate-400 py-4 text-xs">Belum ada notifikasi.</div>`;
-            return;
-        }
-        
-        let html = "";
-        res.data.forEach(item => {
-            let icon = "fa-info-circle";
-            let colorClass = "bg-blue-50 text-blue-500";
-            let dotClass = "bg-blue-500";
-            
-            if (item.tipe === "NEW_REQUEST") { icon = "fa-file-arrow-up"; colorClass = "bg-emerald-50 text-emerald-500"; dotClass = "bg-emerald-500"; }
-            
-            let dot = item.dibaca ? "" : `<div class="w-2 h-2 rounded-full ${dotClass} mt-1 ml-auto shrink-0"></div>`;
-            
-            html += `
-            <div class="flex gap-3">
-                <div class="w-8 h-8 rounded-full ${colorClass} flex items-center justify-center shrink-0">
-                    <i class="fa-solid ${icon} text-xs"></i>
-                </div>
-                <div>
-                    <p class="text-xs font-bold text-slate-800">${item.judul}</p>
-                    <p class="text-[10px] text-slate-500 mt-0.5">${item.pesan}</p>
-                    <p class="text-[9px] font-bold text-slate-400 mt-1">${item.waktu}</p>
-                </div>
-                ${dot}
-            </div>`;
-        });
-        
-        container.innerHTML = html;
-    } catch (e) {
-        container.innerHTML = `<div class="text-center text-red-500 py-4 text-xs">Gagal: ${e.message}</div>`;
+    if (isGoogleEnv) {
+        google.script.run
+            .withSuccessHandler(function (res) {
+                renderNotifications(res, container);
+            })
+            .withFailureHandler(function (err) {
+                container.innerHTML = `<div class="text-center text-red-500 py-4 text-xs">Gagal: ${err.toString()}</div>`;
+            })
+            .getNotifications(localStorage.getItem('adminToken_Narmada'), 10);
+    } else {
+        setTimeout(function() {
+            renderNotifications({ success: true, data: [] }, container);
+        }, 800);
     }
+}
+
+function renderNotifications(res, container) {
+    if (!res.success) {
+        container.innerHTML = `<div class="text-center text-red-500 py-4 text-xs">${res.error || res.message}</div>`;
+        return;
+    }
+    
+    if (res.data.length === 0) {
+        container.innerHTML = `<div class="text-center text-slate-400 py-4 text-xs">Belum ada notifikasi.</div>`;
+        return;
+    }
+    
+    let html = "";
+    res.data.forEach(item => {
+        let icon = "fa-info-circle";
+        let colorClass = "bg-blue-50 text-blue-500";
+        let dotClass = "bg-blue-500";
+        
+        if (item.tipe === "NEW_REQUEST") { icon = "fa-file-arrow-up"; colorClass = "bg-emerald-50 text-emerald-500"; dotClass = "bg-emerald-500"; }
+        
+        let dot = item.dibaca ? "" : `<div class="w-2 h-2 rounded-full ${dotClass} mt-1 ml-auto shrink-0"></div>`;
+        
+        html += `
+        <div class="flex gap-3">
+            <div class="w-8 h-8 rounded-full ${colorClass} flex items-center justify-center shrink-0">
+                <i class="fa-solid ${icon} text-xs"></i>
+            </div>
+            <div>
+                <p class="text-xs font-bold text-slate-800">${item.judul}</p>
+                <p class="text-[10px] text-slate-500 mt-0.5">${item.pesan}</p>
+                <p class="text-[9px] font-bold text-slate-400 mt-1">${item.waktu}</p>
+            </div>
+            ${dot}
+        </div>`;
+    });
+    
+    container.innerHTML = html;
 }
 
 function exportDataExcel() {
