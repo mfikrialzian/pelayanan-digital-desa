@@ -124,13 +124,22 @@ function runAdminLoginAuth() {
             activeAdminTab = tabId;
 
             if (tabId === 'dashboard') {
+                document.getElementById('admin-right-column').classList.remove('hidden');
+                document.getElementById('admin-main-column').classList.remove('w-full');
+                document.getElementById('admin-main-column').classList.add('lg:w-3/4');
                 fetchAdminStats();
-            } else if (tabId === 'daftar-layanan') {
-                loadBuilderDaftarLayananTab();
-            } else if (tabId === 'laporan') {
-                updateLaporanStats();
-            } else if (tabId === 'aktivitas') {
-                fetchActivities();
+            } else {
+                document.getElementById('admin-right-column').classList.add('hidden');
+                document.getElementById('admin-main-column').classList.add('w-full');
+                document.getElementById('admin-main-column').classList.remove('lg:w-3/4');
+                
+                if (tabId === 'daftar-layanan') {
+                    loadBuilderDaftarLayananTab();
+                } else if (tabId === 'laporan') {
+                    updateLaporanStats();
+                } else if (tabId === 'aktivitas') {
+                    fetchActivities();
+                }
             }
         }
 
@@ -1898,18 +1907,19 @@ async function fetchActivities() {
 }
 
 function renderActivities(res, tbody) {
-    if (!res.success) {
-        tbody.innerHTML = `<tr><td colspan="4" class="px-4 py-8 text-center text-red-500">${res.error || res.message}</td></tr>`;
+    if (res && res.success === false) {
+        tbody.innerHTML = `<tr><td colspan="4" class="px-4 py-8 text-center text-red-500">${res.message || res.error}</td></tr>`;
         return;
     }
     
-    if (res.data.length === 0) {
+    let data = Array.isArray(res) ? res : (res.data || []);
+    if (data.length === 0) {
         tbody.innerHTML = `<tr><td colspan="4" class="px-4 py-8 text-center text-slate-400">Belum ada log aktivitas.</td></tr>`;
         return;
     }
     
     let html = "";
-    res.data.forEach(item => {
+    data.forEach(item => {
         let icon = "fa-info-circle text-blue-500 bg-blue-50";
         if (item.tipe === "NEW_REQUEST") icon = "fa-file-arrow-up text-blue-500 bg-blue-50";
         if (item.tipe === "STATUS_UPDATE" || item.tipe === "UPDATE_STATUS") icon = "fa-check text-emerald-500 bg-emerald-50";
@@ -1954,18 +1964,19 @@ async function fetchNotifications() {
 }
 
 function renderNotifications(res, container) {
-    if (!res.success) {
+    if (res && res.success === false) {
         container.innerHTML = `<div class="text-center text-red-500 py-4 text-xs">${res.error || res.message}</div>`;
         return;
     }
     
-    if (res.data.length === 0) {
+    let data = Array.isArray(res) ? res : (res.data || []);
+    if (data.length === 0) {
         container.innerHTML = `<div class="text-center text-slate-400 py-4 text-xs">Belum ada notifikasi.</div>`;
         return;
     }
     
     let html = "";
-    res.data.forEach(item => {
+    data.forEach(item => {
         let icon = "fa-info-circle";
         let colorClass = "bg-blue-50 text-blue-500";
         let dotClass = "bg-blue-500";
