@@ -100,25 +100,20 @@ function runAdminLoginAuth() {
             document.getElementById('subview-admin-laporan').classList.add('hidden');
             document.getElementById('subview-admin-aktivitas').classList.add('hidden');
 
-            const allTabs = ['tab-adm-dashboard', 'tab-adm-daftar-layanan', 'tab-adm-kontak', 'tab-adm-beranda', 'tab-adm-kredensial', 'tab-adm-laporan', 'tab-adm-aktivitas'];
+            const allTabs = ['tab-adm-dashboard', 'tab-adm-pengajuan', 'tab-adm-daftar-layanan', 'tab-adm-kontak', 'tab-adm-beranda', 'tab-adm-kredensial', 'tab-adm-laporan', 'tab-adm-aktivitas'];
 
             var inactiveClass = "w-full text-left flex items-center px-3 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-semibold text-sm transition-colors";
             var activeClass = "w-full text-left flex items-center px-3 py-2.5 bg-emerald-50 text-narmadaGreen rounded-xl font-bold text-sm transition-colors";
 
-            var tabPengajuan = document.getElementById('tab-adm-pengajuan');
-            if (tabPengajuan) tabPengajuan.className = inactiveClass;
-            document.getElementById('tab-adm-daftar-layanan').className = inactiveClass;
-            document.getElementById('tab-adm-kontak').className = inactiveClass;
-            document.getElementById('tab-adm-beranda').className = inactiveClass;
-            document.getElementById('tab-adm-kredensial').className = inactiveClass;
+            allTabs.forEach(function(id) {
+                var el = document.getElementById(id);
+                if (el) el.className = inactiveClass;
+            });
 
             document.getElementById('subview-admin-' + tabId).classList.remove('hidden');
             var activeTabEl = document.getElementById('tab-adm-' + tabId);
             if (activeTabEl) {
                 activeTabEl.className = activeClass;
-            }
-            if (tabId === 'dashboard' && tabPengajuan) {
-                tabPengajuan.className = activeClass;
             }
 
             // Jika di mobile, sembunyikan sidebar setelah klik menu
