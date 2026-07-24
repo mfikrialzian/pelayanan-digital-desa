@@ -897,7 +897,7 @@
                                 </div>
                                 <span class="font-medium">Profil</span>
                             </a>
-                            <a href="#" class="flex items-center gap-3 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 hover:text-narmadaGreen transition-colors group">
+                            <a href="javascript:switchAdminTab('pengaturan');" onclick="document.getElementById('admin-profile-trigger').click()" class="flex items-center gap-3 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 hover:text-narmadaGreen transition-colors group">
                                 <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center group-hover:bg-emerald-50 transition-colors">
                                     <i class="fa-solid fa-gear text-slate-500 group-hover:text-narmadaGreen"></i>
                                 </div>
@@ -1784,6 +1784,105 @@
                                     </button>
                                 </div>
                             </form>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- SUB-TAB J: PENGATURAN (VIEW FULL) -->
+                <div id="subview-admin-pengaturan" class="hidden max-w-2xl mx-auto text-left space-y-6">
+                    
+                    <!-- Header Pengaturan -->
+                    <div class="mb-2">
+                        <h2 class="text-xl md:text-2xl font-black text-slate-800">Pengaturan</h2>
+                        <p class="text-xs text-slate-500 mt-1">Kelola preferensi antarmuka dan notifikasi sistem Anda.</p>
+                    </div>
+
+                    <!-- Tampilan & Preferensi -->
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+                        <div class="p-4 md:p-5 border-b border-slate-100">
+                            <h3 class="text-xs md:text-sm font-bold text-slate-800 flex items-center gap-2">
+                                <i class="fa-solid fa-desktop text-narmadaGreen"></i> Tampilan & Preferensi
+                            </h3>
+                        </div>
+                        <div class="p-4 md:p-6 space-y-4">
+                            <!-- Toggle Tema -->
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h4 class="text-[10px] md:text-xs font-bold text-slate-700">Mode Gelap (Dark Mode)</h4>
+                                    <p class="text-[9px] md:text-[10px] text-slate-500 mt-0.5">Ubah antarmuka menjadi tema gelap untuk kenyamanan mata.</p>
+                                </div>
+                                <button type="button" onclick="toggleDarkModeUI(this)" class="relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-narmadaGreen focus:ring-offset-2" role="switch" aria-checked="false">
+                                    <span class="sr-only">Toggle dark mode</span>
+                                    <span aria-hidden="true" class="pointer-events-none absolute mx-auto h-3 w-7 rounded-full bg-slate-200 transition-colors duration-200 ease-in-out" id="settings-dark-mode-track"></span>
+                                    <span aria-hidden="true" class="pointer-events-none absolute left-0 inline-block h-4 w-4 transform rounded-full border border-slate-200 bg-white shadow ring-0 transition-transform duration-200 ease-in-out translate-x-0" id="settings-dark-mode-thumb"></span>
+                                </button>
+                            </div>
+                            <div class="border-t border-slate-100 my-2"></div>
+                            
+                            <!-- Kepadatan Tabel -->
+                            <div class="flex items-center justify-between">
+                                <div class="pr-4">
+                                    <h4 class="text-[10px] md:text-xs font-bold text-slate-700">Kepadatan Tabel</h4>
+                                    <p class="text-[9px] md:text-[10px] text-slate-500 mt-0.5">Atur jarak spasi antar baris pada tabel data.</p>
+                                </div>
+                                <select class="bg-slate-50 border border-slate-200 text-slate-700 text-[10px] md:text-xs rounded-lg focus:ring-narmadaGreen focus:border-narmadaGreen block p-2 outline-none w-28 md:w-36" onchange="mockSaveSetting('Kepadatan Tabel')">
+                                    <option value="compact">Rapat (Compact)</option>
+                                    <option value="regular" selected>Normal</option>
+                                    <option value="comfortable">Longgar</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Notifikasi -->
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+                        <div class="p-4 md:p-5 border-b border-slate-100">
+                            <h3 class="text-xs md:text-sm font-bold text-slate-800 flex items-center gap-2">
+                                <i class="fa-solid fa-bell text-amber-500"></i> Pengaturan Notifikasi
+                            </h3>
+                        </div>
+                        <div class="p-4 md:p-6 space-y-4">
+                            <!-- Email Notifications -->
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h4 class="text-[10px] md:text-xs font-bold text-slate-700">Notifikasi Email</h4>
+                                    <p class="text-[9px] md:text-[10px] text-slate-500 mt-0.5">Kirim notifikasi ke email saat ada pengajuan baru.</p>
+                                </div>
+                                <button type="button" onclick="toggleSettingSwitch(this, 'Notifikasi Email')" class="relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-narmadaGreen focus:ring-offset-2" role="switch" aria-checked="true">
+                                    <span class="sr-only">Toggle email</span>
+                                    <span aria-hidden="true" class="pointer-events-none absolute mx-auto h-3 w-7 rounded-full bg-emerald-500 transition-colors duration-200 ease-in-out toggle-track"></span>
+                                    <span aria-hidden="true" class="pointer-events-none absolute left-0 inline-block h-4 w-4 transform rounded-full border border-slate-200 bg-white shadow ring-0 transition-transform duration-200 ease-in-out translate-x-4 toggle-thumb"></span>
+                                </button>
+                            </div>
+                            <div class="border-t border-slate-100 my-2"></div>
+                            
+                            <!-- WhatsApp Notifications -->
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h4 class="text-[10px] md:text-xs font-bold text-slate-700">Notifikasi WhatsApp</h4>
+                                    <p class="text-[9px] md:text-[10px] text-slate-500 mt-0.5">Kirim pesan WhatsApp untuk pengajuan prioritas.</p>
+                                </div>
+                                <button type="button" onclick="toggleSettingSwitch(this, 'Notifikasi WhatsApp')" class="relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-narmadaGreen focus:ring-offset-2" role="switch" aria-checked="false">
+                                    <span class="sr-only">Toggle WA</span>
+                                    <span aria-hidden="true" class="pointer-events-none absolute mx-auto h-3 w-7 rounded-full bg-slate-200 transition-colors duration-200 ease-in-out toggle-track"></span>
+                                    <span aria-hidden="true" class="pointer-events-none absolute left-0 inline-block h-4 w-4 transform rounded-full border border-slate-200 bg-white shadow ring-0 transition-transform duration-200 ease-in-out translate-x-0 toggle-thumb"></span>
+                                </button>
+                            </div>
+                            <div class="border-t border-slate-100 my-2"></div>
+
+                            <!-- Push Notifications -->
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h4 class="text-[10px] md:text-xs font-bold text-slate-700">Push Notification Browser</h4>
+                                    <p class="text-[9px] md:text-[10px] text-slate-500 mt-0.5">Munculkan notifikasi di pojok layar browser Anda.</p>
+                                </div>
+                                <button type="button" onclick="toggleSettingSwitch(this, 'Push Notification')" class="relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-narmadaGreen focus:ring-offset-2" role="switch" aria-checked="true">
+                                    <span class="sr-only">Toggle Push</span>
+                                    <span aria-hidden="true" class="pointer-events-none absolute mx-auto h-3 w-7 rounded-full bg-emerald-500 transition-colors duration-200 ease-in-out toggle-track"></span>
+                                    <span aria-hidden="true" class="pointer-events-none absolute left-0 inline-block h-4 w-4 transform rounded-full border border-slate-200 bg-white shadow ring-0 transition-transform duration-200 ease-in-out translate-x-4 toggle-thumb"></span>
+                                </button>
+                            </div>
                         </div>
                     </div>
 

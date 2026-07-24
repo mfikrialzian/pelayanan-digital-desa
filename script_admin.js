@@ -2222,3 +2222,32 @@ function changePasswordMock(e) {
         });
     }, 1500);
 }
+
+// --- Pengaturan Logic ---
+function toggleSettingSwitch(button, settingName) {
+    const isChecked = button.getAttribute('aria-checked') === 'true';
+    const track = button.querySelector('.toggle-track');
+    const thumb = button.querySelector('.toggle-thumb');
+    
+    if (isChecked) {
+        // Turn OFF
+        button.setAttribute('aria-checked', 'false');
+        if (track) track.classList.replace('bg-emerald-500', 'bg-slate-200');
+        if (thumb) thumb.classList.replace('translate-x-4', 'translate-x-0');
+        
+        // Mock notification
+        pushToast(`${settingName} dinonaktifkan.`, 'info');
+    } else {
+        // Turn ON
+        button.setAttribute('aria-checked', 'true');
+        if (track) track.classList.replace('bg-slate-200', 'bg-emerald-500');
+        if (thumb) thumb.classList.replace('translate-x-0', 'translate-x-4');
+        
+        // Mock notification
+        pushToast(`${settingName} diaktifkan.`, 'success');
+    }
+}
+
+function mockSaveSetting(settingName) {
+    pushToast(`Pengaturan ${settingName} disimpan.`, 'success');
+}
