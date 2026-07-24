@@ -768,7 +768,7 @@
                     <button class="w-full text-left flex items-center px-3 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-semibold text-sm transition-colors" disabled>
                         <i class="fa-solid fa-folder-open w-5 text-center mr-2"></i> Dokumen & Surat
                     </button>
-                    <button class="w-full text-left flex items-center px-3 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-semibold text-sm transition-colors" disabled>
+                    <button id="tab-adm-laporan" onclick="switchAdminTab('laporan')" class="w-full text-left flex items-center px-3 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-semibold text-sm transition-colors">
                         <i class="fa-solid fa-chart-simple w-5 text-center mr-2"></i> Laporan
                     </button>
                     <button id="tab-adm-beranda" onclick="switchAdminTab('beranda')" class="w-full text-left flex items-center px-3 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-semibold text-sm transition-colors">
@@ -777,14 +777,14 @@
                     <button id="tab-adm-kredensial" onclick="switchAdminTab('kredensial')" class="w-full text-left flex items-center px-3 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-semibold text-sm transition-colors">
                         <i class="fa-regular fa-user w-5 text-center mr-2"></i> Pengguna
                     </button>
-                    <button class="w-full text-left flex items-center px-3 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-semibold text-sm transition-colors" disabled>
+                    <button id="tab-adm-aktivitas" onclick="switchAdminTab('aktivitas')" class="w-full text-left flex items-center px-3 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-semibold text-sm transition-colors">
                         <i class="fa-solid fa-clock-rotate-left w-5 text-center mr-2"></i> Log Aktivitas
                     </button>
                     
                     <div class="pt-4 pb-2">
                         <span class="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Lainnya</span>
                     </div>
-                    <a href="#" class="flex items-center px-3 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-semibold text-sm transition-colors">
+                    <a href="javascript:alert('Panduan penggunaan sistem belum diunggah.');" class="flex items-center px-3 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-semibold text-sm transition-colors">
                         <i class="fa-regular fa-circle-question w-5 text-center mr-2"></i> Bantuan & Panduan
                     </a>
                 </nav>
@@ -970,7 +970,7 @@
                                 <button class="px-4 py-2 bg-slate-50 text-slate-600 border border-slate-200 rounded-xl text-xs font-bold hover:bg-slate-100 transition-colors flex items-center gap-2">
                                     <i class="fa-solid fa-layer-group"></i> Tambah Layanan
                                 </button>
-                                <button class="px-4 py-2 bg-slate-50 text-slate-600 border border-slate-200 rounded-xl text-xs font-bold hover:bg-slate-100 transition-colors flex items-center gap-2">
+                                <button onclick="exportDataExcel()" class="px-4 py-2 bg-slate-50 text-slate-600 border border-slate-200 rounded-xl text-xs font-bold hover:bg-slate-100 transition-colors flex items-center gap-2">
                                     <i class="fa-solid fa-file-excel text-green-600"></i> Export Excel
                                 </button>
                                 <button class="px-4 py-2 bg-slate-50 text-slate-600 border border-slate-200 rounded-xl text-xs font-bold hover:bg-slate-100 transition-colors flex items-center gap-2">
@@ -979,8 +979,8 @@
                                 <button class="px-4 py-2 bg-slate-50 text-slate-600 border border-slate-200 rounded-xl text-xs font-bold hover:bg-slate-100 transition-colors flex items-center gap-2">
                                     <i class="fa-solid fa-qrcode"></i> Scan QR
                                 </button>
-                                <button class="px-4 py-2 bg-slate-50 text-slate-600 border border-slate-200 rounded-xl text-xs font-bold hover:bg-slate-100 transition-colors flex items-center gap-2">
-                                    <i class="fa-solid fa-print"></i> Cetak Massal
+                                <button onclick="cetakMassal()" class="px-4 py-2 bg-slate-50 text-slate-600 border border-slate-200 rounded-xl text-xs font-bold hover:bg-slate-100 transition-colors flex items-center gap-2">
+                                    <i class="fa-solid fa-print text-slate-700"></i> Cetak Massal
                                 </button>
                             </div>
                         </div>
@@ -1562,6 +1562,57 @@
                     </div>
                 </div>
 
+                <!-- SUB-TAB G: LAPORAN & EXPORT -->
+                <div id="subview-admin-laporan" class="hidden max-w-4xl mx-auto text-left space-y-4">
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center justify-center text-center space-y-4 min-h-[400px]">
+                        <div class="w-16 h-16 rounded-full bg-emerald-50 text-narmadaGreen flex items-center justify-center text-3xl mb-2">
+                            <i class="fa-solid fa-chart-simple"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-800">Pusat Laporan & Data Desa</h3>
+                        <p class="text-sm text-slate-500 max-w-md">Di sini Anda dapat melihat ringkasan data pengajuan layanan. Gunakan tombol export di bagian Daftar Pengajuan untuk mengunduh rekapitulasi data lengkap dalam bentuk spreadsheet.</p>
+                        
+                        <div class="grid grid-cols-2 gap-4 w-full max-w-lg mt-6">
+                            <div class="p-4 bg-slate-50 border border-slate-100 rounded-xl text-center">
+                                <p class="text-xs font-bold text-slate-500 mb-1">Total Permohonan</p>
+                                <p class="text-2xl font-black text-slate-800" id="laporan-total-all">-</p>
+                            </div>
+                            <div class="p-4 bg-slate-50 border border-slate-100 rounded-xl text-center">
+                                <p class="text-xs font-bold text-slate-500 mb-1">Permohonan Selesai</p>
+                                <p class="text-2xl font-black text-narmadaGreen" id="laporan-total-selesai">-</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SUB-TAB H: LOG AKTIVITAS (VIEW FULL) -->
+                <div id="subview-admin-aktivitas" class="hidden max-w-4xl mx-auto text-left space-y-4">
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
+                        <div class="flex justify-between items-center mb-4 border-b border-slate-100 pb-3">
+                            <h4 class="text-sm font-bold text-slate-800 flex items-center gap-2">
+                                <i class="fa-solid fa-clock-rotate-left text-narmadaGreen"></i> Riwayat Log Aktivitas Sistem
+                            </h4>
+                            <button onclick="fetchActivities()" class="text-xs font-bold text-narmadaGreen hover:bg-emerald-50 px-3 py-1.5 rounded-lg transition-colors">
+                                <i class="fa-solid fa-rotate-right mr-1"></i> Segarkan
+                            </button>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-xs whitespace-nowrap">
+                                <thead class="text-slate-500 bg-slate-50 uppercase font-bold text-[10px]">
+                                    <tr>
+                                        <th class="px-4 py-3 rounded-l-xl">Waktu</th>
+                                        <th class="px-4 py-3">Tipe</th>
+                                        <th class="px-4 py-3">Pesan Aktivitas</th>
+                                        <th class="px-4 py-3 rounded-r-xl">Pelaku</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabel-log-aktivitas" class="divide-y divide-slate-50">
+                                    <tr><td colspan="4" class="px-4 py-8 text-center text-slate-400">Memuat log aktivitas...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
                     <!-- RIGHT COLUMN (Notifications & Activities) -->
                     <div class="w-full lg:w-1/4 shrink-0 space-y-6" id="admin-right-column">
                         
@@ -1570,57 +1621,10 @@
                         <div class="bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col">
                             <div class="p-5 border-b border-slate-100 flex justify-between items-center">
                                 <h3 class="text-sm font-bold text-slate-800">Notifikasi</h3>
-                                <a href="#" class="text-[10px] font-bold text-narmadaGreen hover:underline">Lihat Semua</a>
+                                <a href="javascript:switchAdminTab('aktivitas');" class="text-[10px] font-bold text-narmadaGreen hover:underline">Lihat Semua</a>
                             </div>
-                            <div class="p-5 space-y-4">
-                                <!-- Notif 1 -->
-                                <div class="flex gap-3">
-                                    <div class="w-8 h-8 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center shrink-0">
-                                        <i class="fa-solid fa-file-arrow-up text-xs"></i>
-                                    </div>
-                                    <div>
-                                        <p class="text-xs font-bold text-slate-800">Pengajuan baru masuk</p>
-                                        <p class="text-[10px] text-slate-500 mt-0.5">IAN - Permohonan KK Barcode</p>
-                                        <p class="text-[9px] font-bold text-slate-400 mt-1">5 menit yang lalu</p>
-                                    </div>
-                                    <div class="w-2 h-2 rounded-full bg-blue-500 mt-1 ml-auto shrink-0"></div>
-                                </div>
-                                <!-- Notif 2 -->
-                                <div class="flex gap-3">
-                                    <div class="w-8 h-8 rounded-full bg-amber-50 text-amber-500 flex items-center justify-center shrink-0">
-                                        <i class="fa-solid fa-triangle-exclamation text-xs"></i>
-                                    </div>
-                                    <div>
-                                        <p class="text-xs font-bold text-slate-800">Data revisi diperlukan</p>
-                                        <p class="text-[10px] text-slate-500 mt-0.5">REQ-20260723-0004</p>
-                                        <p class="text-[9px] font-bold text-slate-400 mt-1">15 menit yang lalu</p>
-                                    </div>
-                                    <div class="w-2 h-2 rounded-full bg-amber-500 mt-1 ml-auto shrink-0"></div>
-                                </div>
-                                <!-- Notif 3 -->
-                                <div class="flex gap-3">
-                                    <div class="w-8 h-8 rounded-full bg-red-50 text-red-500 flex items-center justify-center shrink-0">
-                                        <i class="fa-solid fa-circle-xmark text-xs"></i>
-                                    </div>
-                                    <div>
-                                        <p class="text-xs font-bold text-slate-800">WA gagal terkirim</p>
-                                        <p class="text-[10px] text-slate-500 mt-0.5">REQ-20260723-0003</p>
-                                        <p class="text-[9px] font-bold text-slate-400 mt-1">30 menit yang lalu</p>
-                                    </div>
-                                    <div class="w-2 h-2 rounded-full bg-red-500 mt-1 ml-auto shrink-0"></div>
-                                </div>
-                                <!-- Notif 4 -->
-                                <div class="flex gap-3">
-                                    <div class="w-8 h-8 rounded-full bg-emerald-50 text-emerald-500 flex items-center justify-center shrink-0">
-                                        <i class="fa-solid fa-file-pdf text-xs"></i>
-                                    </div>
-                                    <div>
-                                        <p class="text-xs font-bold text-slate-800">PDF berhasil dibuat</p>
-                                        <p class="text-[10px] text-slate-500 mt-0.5">REQ-20260724-0001</p>
-                                        <p class="text-[9px] font-bold text-slate-400 mt-1">1 jam yang lalu</p>
-                                    </div>
-                                    <div class="w-2 h-2 rounded-full bg-emerald-500 mt-1 ml-auto shrink-0"></div>
-                                </div>
+                            <div class="p-5 space-y-4" id="notification-container">
+                                <div class="text-center text-slate-400 py-4 text-xs">Memuat notifikasi...</div>
                             </div>
                         </div>
 
@@ -1628,55 +1632,11 @@
                         <div class="bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col">
                             <div class="p-5 border-b border-slate-100 flex justify-between items-center">
                                 <h3 class="text-sm font-bold text-slate-800">Aktivitas Terbaru</h3>
-                                <a href="#" class="text-[10px] font-bold text-narmadaGreen hover:underline">Lihat Semua</a>
+                                <a href="javascript:switchAdminTab('aktivitas');" class="text-[10px] font-bold text-narmadaGreen hover:underline">Lihat Semua</a>
                             </div>
                             <div class="p-5">
-                                <div class="relative border-l-2 border-slate-100 ml-3 space-y-6">
-                                    <!-- Log 1 -->
-                                    <div class="relative pl-5">
-                                        <div class="absolute -left-[23px] top-1 w-5 h-5 rounded-full bg-white border-2 border-emerald-500 text-emerald-500 flex items-center justify-center">
-                                            <i class="fa-solid fa-check text-[8px]"></i>
-                                        </div>
-                                        <p class="text-[10px] font-bold text-slate-500 mb-1">09:20</p>
-                                        <p class="text-xs font-bold text-slate-800">Pengajuan REQ-20260724-0001</p>
-                                        <p class="text-[10px] text-slate-500 mt-0.5">diverifikasi oleh admin01</p>
-                                    </div>
-                                    <!-- Log 2 -->
-                                    <div class="relative pl-5">
-                                        <div class="absolute -left-[23px] top-1 w-5 h-5 rounded-full bg-white border-2 border-emerald-500 text-emerald-500 flex items-center justify-center">
-                                            <i class="fa-solid fa-print text-[8px]"></i>
-                                        </div>
-                                        <p class="text-[10px] font-bold text-slate-500 mb-1">09:10</p>
-                                        <p class="text-xs font-bold text-slate-800">PDF surat berhasil dicetak</p>
-                                        <p class="text-[10px] text-slate-500 mt-0.5">REQ-20260724-0001</p>
-                                    </div>
-                                    <!-- Log 3 -->
-                                    <div class="relative pl-5">
-                                        <div class="absolute -left-[23px] top-1 w-5 h-5 rounded-full bg-white border-2 border-slate-300 text-slate-400 flex items-center justify-center">
-                                            <i class="fa-solid fa-cloud-arrow-up text-[8px]"></i>
-                                        </div>
-                                        <p class="text-[10px] font-bold text-slate-500 mb-1">08:45</p>
-                                        <p class="text-xs font-bold text-slate-800">Pengajuan baru dari IAN</p>
-                                        <p class="text-[10px] text-slate-500 mt-0.5">Permohonan KK Barcode</p>
-                                    </div>
-                                    <!-- Log 4 -->
-                                    <div class="relative pl-5">
-                                        <div class="absolute -left-[23px] top-1 w-5 h-5 rounded-full bg-white border-2 border-emerald-500 text-emerald-500 flex items-center justify-center">
-                                            <i class="fa-brands fa-whatsapp text-[8px]"></i>
-                                        </div>
-                                        <p class="text-[10px] font-bold text-slate-500 mb-1">08:30</p>
-                                        <p class="text-xs font-bold text-slate-800">WhatsApp berhasil dikirim</p>
-                                        <p class="text-[10px] text-slate-500 mt-0.5">REQ-20260723-0002</p>
-                                    </div>
-                                    <!-- Log 5 -->
-                                    <div class="relative pl-5">
-                                        <div class="absolute -left-[23px] top-1 w-5 h-5 rounded-full bg-white border-2 border-amber-500 text-amber-500 flex items-center justify-center">
-                                            <i class="fa-solid fa-triangle-exclamation text-[8px]"></i>
-                                        </div>
-                                        <p class="text-[10px] font-bold text-slate-500 mb-1">08:15</p>
-                                        <p class="text-xs font-bold text-slate-800">Data revisi diperbarui</p>
-                                        <p class="text-[10px] text-slate-500 mt-0.5">REQ-20260723-0004</p>
-                                    </div>
+                                <div class="relative border-l-2 border-slate-100 ml-3 space-y-6" id="activity-container">
+                                    <div class="text-center text-slate-400 py-4 text-xs ml-4">Memuat log aktivitas...</div>
                                 </div>
                             </div>
                         </div>
