@@ -1,25 +1,17 @@
-$indexFile = "C:\Users\alzia\.gemini\antigravity\scratch\PelayananDigitalDesa\index.html"
-$content = [IO.File]::ReadAllText($indexFile)
+$lines = Get-Content "script.html"
 
-# Extract style
-$styleRegex = [regex]'(?s)<style>.*?</style>'
-$styleMatch = $styleRegex.Match($content)
-if ($styleMatch.Success) {
-    [IO.File]::WriteAllText("C:\Users\alzia\.gemini\antigravity\scratch\PelayananDigitalDesa\style.html", $styleMatch.Value)
-    $content = $content.Replace($styleMatch.Value, "<?!= include('style'); ?>")
+function Get-Lines($start, $end) {
+    return $lines[($start-1)..($end-1)]
 }
 
-# Extract last script (using right-to-left regex to get the last one)
-$scriptRegex = [regex]::new('(?s)<script>.*?</script>', [System.Text.RegularExpressions.RegexOptions]::RightToLeft)
-$scriptMatch = $scriptRegex.Match($content)
-if ($scriptMatch.Success) {
-    [IO.File]::WriteAllText("C:\Users\alzia\.gemini\antigravity\scratch\PelayananDigitalDesa\script.html", $scriptMatch.Value)
-    $content = $content.Replace($scriptMatch.Value, "<?!= include('script'); ?>")
-}
+$utils_lines = @("<script>") + (Get-Lines 2 13) + (Get-Lines 96 121) + (Get-Lines 234 260) + (Get-Lines 406 440) + (Get-Lines 444 489) + (Get-Lines 3371 3392) + @("</script>")
+$core_lines = @("<script>") + (Get-Lines 14 95) + (Get-Lines 170 233) + (Get-Lines 261 343) + (Get-Lines 352 388) + @("</script>")
+$warga_lines = @("<script>") + (Get-Lines 122 169) + (Get-Lines 344 351) + (Get-Lines 389 400) + (Get-Lines 490 1506) + @("</script>")
+$admin_lines = @("<script>") + (Get-Lines 401 405) + (Get-Lines 441 443) + (Get-Lines 1507 3370) + @("</script>")
 
-# Change parameter
-$content = $content.Replace('<input type="hidden" id="initial-page-param" value="warga">', '<input type="hidden" id="initial-page-param" value="<?= pageParam ?>">')
+$utils_lines | Set-Content "script_utils.html" -Encoding UTF8
+$core_lines | Set-Content "script_core.html" -Encoding UTF8
+$warga_lines | Set-Content "script_warga.html" -Encoding UTF8
+$admin_lines | Set-Content "script_admin.html" -Encoding UTF8
 
-[IO.File]::WriteAllText($indexFile, $content)
-
-Write-Host "Split completed"
+Write-Host "Split completed."

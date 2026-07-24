@@ -10,12 +10,30 @@ var AuthService = {
       var storedPass = setelan.password || props.getProperty('ADMIN_PASSWORD') || "";
       
       if (username === storedUser && password === storedPass) {
-        return { success: true };
+        var token = Utilities.getUuid();
+        var cache = CacheService.getScriptCache();
+        cache.put("AUTH_" + token, "valid", 21600); // 6 hours
+        return { success: true, token: token };
       }
       return { success: false, message: "Kredensial otorisasi administratif salah!" };
     } catch (e) {
       return { success: false, message: "Auth Error: " + e.toString() };
     }
+  },
+
+  verifyToken: function(token) {
+    if (!token) return false;
+    var cache = CacheService.getScriptCache();
+    var isValid = cache.get("AUTH_" + token);
+    return isValid === "valid";
+  },
+
+  logout: function(token) {
+    if (token) {
+      var cache = CacheService.getScriptCache();
+      cache.remove("AUTH_" + token);
+    }
+    return { success: true };
   }
 };
 
@@ -177,112 +195,6 @@ var LayananService = {
       SpreadsheetApp.flush();
       return { success: true };
     } catch (e) {
-      return { success: false, message: e.toString() };
-    } finally {
-      lock.releaseLock();
-    }
-  }
-};
-
-
-/**
- * DynamicLayananService - Pengelolaan Jenis Pelayanan & Jenis Persyaratan
- */
-var DynamicLayananService = {
-  getJenisPelayanan: function() {
-    try {
-      var sheet = BaseRepository.getSheet(ZettConstants.SHEET_JENIS_PELAYANAN);
-      var data = sheet.getDataRange().getDisplayValues();
-      var list = [];
-      for (var i = 1; i < data.length; i++) {
-        list.push({ id: data[i][0], nama: data[i][1] });
-      }
-      return list;
-    } catch(e) {
-      Logger.log("getJenisPelayanan Error: " + e.toString());
-      return [];
-    }
-  },
-  
-  crudJenisPelayanan: function(action, id, nama) {
-    var lock = LockService.getScriptLock();
-    try {
-      lock.waitLock(15000);
-      var sheet = BaseRepository.getSheet("Jenis_Pelayanan");
-      var data = sheet.getDataRange().getValues();
-      nama = Sanitizer.clean(nama);
-      
-      if (action === "create") {
-        var newId = "JP-" + Utilities.formatDate(new Date(), ZettConfig.TIMEZONE, "yyyyMMddHHmmss") + Math.floor(Math.random() * 1000);
-        sheet.appendRow([newId, nama]);
-      } else if (action === "update") {
-        for (var i = 1; i < data.length; i++) {
-          if (String(data[i][0]) === String(id)) {
-            sheet.getRange(i + 1, 2).setValue(nama);
-            break;
-          }
-        }
-      } else if (action === "delete") {
-        for (var i = 1; i < data.length; i++) {
-          if (String(data[i][0]) === String(id)) {
-            sheet.deleteRow(i + 1);
-            break;
-          }
-        }
-      }
-      SpreadsheetApp.flush();
-      return { success: true };
-    } catch(e) {
-      return { success: false, message: e.toString() };
-    } finally {
-      lock.releaseLock();
-    }
-  },
-
-  getJenisPersyaratan: function() {
-    try {
-      var sheet = BaseRepository.getSheet(ZettConstants.SHEET_JENIS_PERSYARATAN);
-      var data = sheet.getDataRange().getDisplayValues();
-      var list = [];
-      for (var i = 1; i < data.length; i++) {
-        list.push({ id: data[i][0], nama: data[i][1] });
-      }
-      return list;
-    } catch(e) {
-      Logger.log("getJenisPersyaratan Error: " + e.toString());
-      return [];
-    }
-  },
-  
-  crudJenisPersyaratan: function(action, id, nama) {
-    var lock = LockService.getScriptLock();
-    try {
-      lock.waitLock(15000);
-      var sheet = BaseRepository.getSheet(ZettConstants.SHEET_JENIS_PERSYARATAN);
-      var data = sheet.getDataRange().getValues();
-      nama = Sanitizer.clean(nama);
-      
-      if (action === "create") {
-        var newId = "JR-" + Utilities.formatDate(new Date(), ZettConfig.TIMEZONE, "yyyyMMddHHmmss") + Math.floor(Math.random() * 1000);
-        sheet.appendRow([newId, nama]);
-      } else if (action === "update") {
-        for (var i = 1; i < data.length; i++) {
-          if (String(data[i][0]) === String(id)) {
-            sheet.getRange(i + 1, 2).setValue(nama);
-            break;
-          }
-        }
-      } else if (action === "delete") {
-        for (var i = 1; i < data.length; i++) {
-          if (String(data[i][0]) === String(id)) {
-            sheet.deleteRow(i + 1);
-            break;
-          }
-        }
-      }
-      SpreadsheetApp.flush();
-      return { success: true };
-    } catch(e) {
       return { success: false, message: e.toString() };
     } finally {
       lock.releaseLock();
@@ -515,6 +427,79 @@ var PengajuanService = {
       return { success: true, message: "Status registrasi " + id + " sukses diperbarui!" };
     } catch (e) {
       return { success: false, message: e.toString() };
+    } finally {
+      lock.releaseLock();
+    }
+  }
+};
+
+/**
+ * PDFGeneratorService - Membuat Dokumen Surat secara Dinamis
+ */
+var PDFGeneratorService = {
+  generateSurat: function(idPengajuan) {
+    var lock = LockService.getScriptLock();
+    try {
+      lock.waitLock(30000); 
+      
+      // 1. Ambil Data Pengajuan
+      var allPengajuan = PengajuanRepository.search(idPengajuan);
+      if (!allPengajuan || allPengajuan.length === 0) {
+        return { success: false, message: "Pengajuan tidak ditemukan." };
+      }
+      var pengajuan = allPengajuan[0];
+      
+      // 2. Ambil Data Layanan
+      var layanan = LayananRepository.findMasterByName(pengajuan.layanan);
+      if (!layanan || !layanan.templateDocId) {
+        return { success: false, message: "Layanan ini belum memiliki ID Template Google Docs." };
+      }
+      
+      // 3. Tentukan Folder Output
+      var folderName = "Surat_Cetak";
+      var parentFolderIterator = DriveApp.getFoldersByName(ZettConfig.DRIVE_ROOT_FOLDER);
+      var rootFolder = parentFolderIterator.hasNext() ? parentFolderIterator.next() : DriveApp.getRootFolder().createFolder(ZettConfig.DRIVE_ROOT_FOLDER);
+      
+      var outputFolderIterator = rootFolder.getFoldersByName(folderName);
+      var outputFolder = outputFolderIterator.hasNext() ? outputFolderIterator.next() : rootFolder.createFolder(folderName);
+      
+      // 4. Salin Template
+      var templateFile = DriveApp.getFileById(layanan.templateDocId.trim());
+      var newFileName = "Surat_" + pengajuan.layanan + "_" + pengajuan.nama + "_" + pengajuan.id;
+      var tempFile = templateFile.makeCopy(newFileName, outputFolder);
+      
+      // 5. Manipulasi Teks di Dokumen Sementara
+      var tempDoc = DocumentApp.openById(tempFile.getId());
+      var body = tempDoc.getBody();
+      
+      body.replaceText("{NAMA}", pengajuan.nama || "");
+      body.replaceText("{NIK}", pengajuan.nik || "");
+      body.replaceText("{LAYANAN}", pengajuan.layanan || "");
+      body.replaceText("{ALAMAT}", pengajuan.alamat || "");
+      body.replaceText("{TANGGAL_PENGAJUAN}", pengajuan.tanggal || "");
+      body.replaceText("{NOMOR_WA}", pengajuan.wa || "");
+      
+      tempDoc.saveAndClose();
+      
+      // 6. Konversi ke PDF
+      var pdfBlob = tempFile.getAs('application/pdf');
+      var finalPdfFile = outputFolder.createFile(pdfBlob);
+      finalPdfFile.setName(newFileName + ".pdf");
+      
+      // Hapus file sementara
+      tempFile.setTrashed(true);
+      
+      // Ubah Hak Akses agar link bisa dibuka
+      finalPdfFile.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+      
+      return { 
+        success: true, 
+        message: "Surat PDF berhasil dibuat.", 
+        url: finalPdfFile.getUrl() 
+      };
+      
+    } catch (e) {
+      return { success: false, message: "Gagal membuat PDF: " + e.toString() };
     } finally {
       lock.releaseLock();
     }

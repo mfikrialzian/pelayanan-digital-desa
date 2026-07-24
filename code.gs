@@ -59,34 +59,32 @@ function checkAdminLogin(username, password) {
   return AuthService.login(username, password);
 }
 
-function getAdminDashboardData(filterKeyword, page, statusFilter) {
+function logoutAdmin(token) {
+  return AuthService.logout(token);
+}
+
+function getAdminDashboardData(token, filterKeyword, page, statusFilter) {
+  if (!AuthService.verifyToken(token)) return { data: [], totalPages: 1, currentPage: 1, totalItems: 0, error: "Sesi tidak valid atau telah berakhir. Silakan login kembali.", authError: true };
   return PengajuanService.getDashboardData(filterKeyword, page, statusFilter);
 }
 
-function updatePengajuanStatus(id, nextStatus, notes) {
+function updatePengajuanStatus(token, id, nextStatus, notes) {
+  if (!AuthService.verifyToken(token)) return { success: false, message: "Sesi tidak valid atau telah berakhir. Silakan login kembali.", authError: true };
   return PengajuanService.updateStatus(id, nextStatus, notes);
 }
 
-function crudLayanan(action, dataObj) {
+function crudLayanan(token, action, dataObj) {
+  if (!AuthService.verifyToken(token)) return { success: false, message: "Sesi tidak valid atau telah berakhir. Silakan login kembali.", authError: true };
   return LayananService.crud(action, dataObj);
 }
 
-function updateAdminSetelan(newSetelan) {
+function updateAdminSetelan(token, newSetelan) {
+  if (!AuthService.verifyToken(token)) return { success: false, message: "Sesi tidak valid atau telah berakhir. Silakan login kembali.", authError: true };
   return ConfigService.update(newSetelan);
 }
 
-function getJenisPelayanan() {
-  return DynamicLayananService.getJenisPelayanan();
-}
 
-function crudJenisPelayanan(action, id, nama) {
-  return DynamicLayananService.crudJenisPelayanan(action, id, nama);
-}
-
-function getJenisPersyaratan() {
-  return DynamicLayananService.getJenisPersyaratan();
-}
-
-function crudJenisPersyaratan(action, id, nama) {
-  return DynamicLayananService.crudJenisPersyaratan(action, id, nama);
+function generateSuratPDF(token, idPengajuan) {
+  if (!AuthService.verifyToken(token)) return { success: false, message: "Sesi tidak valid atau telah berakhir. Silakan login kembali.", authError: true };
+  return PDFGeneratorService.generateSurat(idPengajuan);
 }

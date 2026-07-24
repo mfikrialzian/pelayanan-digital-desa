@@ -23,8 +23,6 @@ var ZettConstants = {
   SHEET_FIELDS: "Layanan_Fields",
   SHEET_REQS: "Layanan_Requirements",
   SHEET_SETELAN: "Setelan",
-  SHEET_JENIS_PELAYANAN: "Jenis_Pelayanan",
-  SHEET_JENIS_PERSYARATAN: "Jenis_Persyaratan",
   
   STATUS_PENDING: "Pending",
   STATUS_VERIFIKASI: "Verifikasi",
@@ -130,7 +128,7 @@ function setupDatabase() {
       var props = PropertiesService.getScriptProperties();
       var defaultSetelan = [
         ["username", props.getProperty('ADMIN_USERNAME') || "admin_narmada"],
-        ["password", props.getProperty('ADMIN_PASSWORD') || "Narmada2026"],
+        ["password", props.getProperty('ADMIN_PASSWORD') || "GANTI_PASSWORD_ANDA"],
         ["kontak_wa", ZettConstants.DEFAULT_WA_CONTACT],
         ["nama_desa", "Narmada"],
         ["logo_url_desa", ZettConstants.DEFAULT_LOGO_URL],
@@ -145,27 +143,7 @@ function setupDatabase() {
       sSetelan.getRange(2, 1, defaultSetelan.length, 2).setValues(defaultSetelan);
     }
 
-    // 6. Inisialisasi Sheet Jenis_Pelayanan
-    var sJenisPelayanan = ss.getSheetByName(ZettConstants.SHEET_JENIS_PELAYANAN);
-    if (!sJenisPelayanan) {
-      sJenisPelayanan = ss.insertSheet(ZettConstants.SHEET_JENIS_PELAYANAN);
-      sJenisPelayanan.appendRow(["ID", "Nama"]);
-      sJenisPelayanan.getRange("A1:B1").setFontWeight("bold").setBackground("#059669").setFontColor("#FFFFFF");
-      sJenisPelayanan.appendRow(["JP-001", "Surat Keterangan Usaha (SKU)"]);
-      sJenisPelayanan.appendRow(["JP-002", "Surat Keterangan Domisili"]);
-    }
 
-    // 7. Inisialisasi Sheet Jenis_Persyaratan
-    var sJenisPersyaratan = ss.getSheetByName(ZettConstants.SHEET_JENIS_PERSYARATAN);
-    if (!sJenisPersyaratan) {
-      sJenisPersyaratan = ss.insertSheet(ZettConstants.SHEET_JENIS_PERSYARATAN);
-      sJenisPersyaratan.appendRow(["ID", "Nama"]);
-      sJenisPersyaratan.getRange("A1:B1").setFontWeight("bold").setBackground("#059669").setFontColor("#FFFFFF");
-      sJenisPersyaratan.appendRow(["JR-001", "Foto KTP Asli Pemohon"]);
-      sJenisPersyaratan.appendRow(["JR-002", "Foto Kartu Keluarga (KK)"]);
-      sJenisPersyaratan.appendRow(["JR-003", "Foto Lokasi Tempat Usaha"]);
-      sJenisPersyaratan.appendRow(["JR-004", "Foto Surat Pengantar RT/RW"]);
-    }
 
     SpreadsheetApp.flush();
     return "Database Narmada v3.0.0 berhasil dibangun & dimigrasikan secara mulus.";

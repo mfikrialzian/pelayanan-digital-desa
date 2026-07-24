@@ -69,7 +69,8 @@ var LayananRepository = {
         deskripsi: data[i][2],
         judulSectionIsian: data[i][3],
         deskripsiSectionIsian: data[i][4],
-        logikaKondisional: data[i][5]
+        logikaKondisional: data[i][5],
+        templateDocId: data[i][6] || ""
       });
     }
     return master;
@@ -88,7 +89,8 @@ var LayananRepository = {
       record.deskripsi,
       record.judulSectionIsian,
       record.deskripsiSectionIsian,
-      record.logikaKondisional
+      record.logikaKondisional,
+      record.templateDocId || ""
     ]);
   },
   
@@ -101,6 +103,7 @@ var LayananRepository = {
         sheet.getRange(i + 1, 4).setValue(record.judulSectionIsian);
         sheet.getRange(i + 1, 5).setValue(record.deskripsiSectionIsian);
         sheet.getRange(i + 1, 6).setValue(record.logikaKondisional);
+        sheet.getRange(i + 1, 7).setValue(record.templateDocId || "");
         break;
       }
     }

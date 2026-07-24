@@ -1,0 +1,25 @@
+{
+  "dependencies": {
+    "jsdom": "^29.1.1",
+    "puppeteer": "^25.3.0"
+  },
+  "name": "pelayanandigitaldesa",
+  "version": "1.0.0",
+  "description": "Sistem pelayanan administrasi desa berbasis **Google Apps Script** yang memungkinkan warga mengajukan surat dan dokumen secara digital.",
+  "main": "check.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/USERNAME/pelayanan-digital-desa.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/USERNAME/pelayanan-digital-desa/issues"
+  },
+  "homepage": "https://github.com/USERNAME/pelayanan-digital-desa#readme"
+}

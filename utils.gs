@@ -134,7 +134,7 @@ var WhatsAppHelper = {
  */
 function testKoneksiFonnte() {
   // Ganti dengan nomormu sendiri untuk testing
-  var nomorTes = "087750674422"; 
+  var nomorTes = PropertiesService.getScriptProperties().getProperty('ADMIN_PHONE') || "081234567890"; // Ganti via Script Properties
   var sukses = WhatsAppHelper.sendMessage(nomorTes, "Halo! Ini adalah pesan uji coba dari sistem Pelayanan Digital Desa.");
   if (sukses) {
     Logger.log("Berhasil memanggil fungsi Fonnte. Cek WA kamu!");
