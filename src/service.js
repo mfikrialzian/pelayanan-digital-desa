@@ -209,7 +209,6 @@ var LayananService = {
 var PengajuanService = {
   getStats: function() {
     try {
-      this.autoTransitionPending();
       var rawData = PengajuanRepository.getAll();
       
       var stats = {
@@ -237,34 +236,6 @@ var PengajuanService = {
       return stats;
     } catch (e) {
       return { total: 0, pending: 0, verifikasi: 0, selesai: 0, uploadUlang: 0, recent: [], error: e.toString() };
-    }
-  },
-  
-  autoTransitionPending: function() {
-    try {
-      var sheet = BaseRepository.getSheet(ZettConstants.SHEET_PENGAJUAN);
-      var lastRow = sheet.getLastRow();
-      if (lastRow < 2) return false;
-      
-      var range = sheet.getRange(2, 9, lastRow - 1, 1);
-      var values = range.getValues();
-      var updated = false;
-      
-      for (var i = 0; i < values.length; i++) {
-        if (values[i][0] === ZettConstants.STATUS_PENDING) {
-          values[i][0] = ZettConstants.STATUS_VERIFIKASI;
-          updated = true;
-        }
-      }
-      
-      if (updated) {
-        range.setValues(values);
-        SpreadsheetApp.flush();
-      }
-      return updated;
-    } catch (e) {
-      Logger.log("AutoTransition Error: " + e.toString());
-      return false;
     }
   },
   
@@ -408,7 +379,6 @@ var PengajuanService = {
   
   getDashboardData: function(filterKeyword, page, statusFilter) {
     try {
-      this.autoTransitionPending();
       return PengajuanRepository.getPaginated(filterKeyword, page, statusFilter);
     } catch (e) {
       return { data: [], totalPages: 1, currentPage: 1, totalItems: 0, error: e.toString() };

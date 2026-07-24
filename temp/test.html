@@ -1655,8 +1655,9 @@
             }
 
             if (initialPageParam === 'admin') {
-                if (sessionStorage.getItem('adminToken_Narmada')) {
+                if (localStorage.getItem('adminToken_Narmada')) {
                     switchView('admin');
+                    if (typeof switchAdminTab === 'function') switchAdminTab('dashboard');
                 } else {
                     switchView('admin');
                     triggerAdminLoginModal();
@@ -1814,8 +1815,7 @@
         }
 
 </script>
-</script>
-    <script>﻿<script>
+    <script>
         function saveWargaDraft() {
             if (!selectedLayananGlobal) return;
             var draft = {
@@ -1873,7 +1873,7 @@
             }
         }
         function handleMulaiPengajuan() {
-            var isAdmin = sessionStorage.getItem('adminToken_Narmada') !== null;
+            var isAdmin = localStorage.getItem('adminToken_Narmada') !== null;
             if (window.isServiceOpen === false && !isAdmin) {
                 pushToast("Maaf, pelayanan saat ini sedang tutup. Silakan kembali pada jam operasional.", "error");
                 return;
@@ -2194,6 +2194,7 @@
 
             var qWrappers = document.querySelectorAll('.dynamic-question-wrapper');
             qWrappers.forEach(function (el) {
+                if (el.closest('.repeater-block')) return;
                 var boundKeperluan = el.getAttribute('data-bind-keperluan');
                 if (boundKeperluan === "Wajib" || (activeKeperluan !== "" && boundKeperluan === activeKeperluan)) {
                     el.classList.remove('hidden');
@@ -2348,25 +2349,27 @@
                 isianContainer.innerHTML += '<div class="flex justify-between border-b border-slate-50 py-1"><span class="text-slate-555">Keperluan Surat:</span><span class="font-bold text-slate-800">' + keperl.value + '</span></div>';
             }
 
-            var qWrappers = document.querySelectorAll('.dynamic-question-wrapper');
+            var allDynamicInputs = document.querySelectorAll('.dynamic-question-field');
             var hasIsian = (keperl && keperl.value) ? true : false;
 
-            qWrappers.forEach(function (wrapper) {
-                if (!wrapper.classList.contains('hidden')) {
-                    var inps = wrapper.querySelectorAll('.dynamic-question-field');
-                    if (inps.length > 0) {
-                        var meta = parseQuestionMetadata(inps[0].getAttribute('data-question'));
-                        var vals = [];
-                        inps.forEach(function (inp) { if (inp.value.trim()) vals.push(inp.value.trim()); });
+            allDynamicInputs.forEach(function (inp) {
+                var wrapper = inp.closest('.dynamic-question-wrapper');
+                // Skip if parent wrapper is hidden (unless it's an inner repeater wrapper which relies on outer wrapper visibility)
+                if (wrapper && wrapper.classList.contains('hidden') && !wrapper.closest('.repeater-block')) return;
+                
+                // If it's in a repeater block, check if the outer wrapper is hidden
+                if (wrapper && wrapper.closest('.repeater-block')) {
+                    var outerWrapper = wrapper.closest('.repeater-block').closest('.dynamic-question-wrapper');
+                    if (outerWrapper && outerWrapper.classList.contains('hidden')) return;
+                }
 
-                        if (vals.length > 0) {
-                            isianContainer.innerHTML += '<div class="flex justify-between border-b border-slate-50 py-1">' +
-                                '<span class="text-slate-555">' + meta.cleanName + ':</span>' +
-                                '<span class="font-bold text-slate-800">' + vals.join(", ") + '</span>' +
-                                '</div>';
-                            hasIsian = true;
-                        }
-                    }
+                if (inp.value.trim()) {
+                    var meta = parseQuestionMetadata(inp.getAttribute('data-question'));
+                    isianContainer.innerHTML += '<div class="flex justify-between border-b border-slate-50 py-1">' +
+                        '<span class="text-slate-555">' + meta.cleanName + ':</span>' +
+                        '<span class="font-bold text-slate-800">' + inp.value.trim() + '</span>' +
+                        '</div>';
+                    hasIsian = true;
                 }
             });
 
@@ -2477,7 +2480,7 @@
             });
             var hidden = document.getElementById(containerId);
             if (hidden) {
-                hidden.value = result.length > 0 ? result.join(" | ") : "";
+                hidden.value = result.length > 0 ? result.join("; ") : "";
                 var event = new Event('input', { bubbles: true });
                 hidden.dispatchEvent(event);
             }
@@ -2624,7 +2627,7 @@
             });
             
             Object.keys(tempPayload).forEach(function(key) {
-                detailLayananPayload[key] = tempPayload[key].join(" | ");
+                detailLayananPayload[key] = tempPayload[key].join("; ");
             });
 
             var submitBtn = document.getElementById('btn-submit-warga');
@@ -2926,7 +2929,7 @@
                         btn.disabled = false;
                         btn.innerHTML = '<span>Login</span>';
                         if (res.success) {
-                            sessionStorage.setItem('adminToken_Narmada', res.token);
+                            localStorage.setItem('adminToken_Narmada', res.token);
                             closeAdminLoginModal();
                             switchView('admin');
                             pushToast("Otentikasi Sukses. Selamat Bekerja Admin.", "success");
@@ -2945,7 +2948,7 @@
                     btn.disabled = false;
                     btn.innerHTML = '<span>Login</span>';
                     if (u === dummySetelan.username && p === dummySetelan.password) {
-                        sessionStorage.setItem('adminToken_Narmada', 'dummy-token');
+                        localStorage.setItem('adminToken_Narmada', 'dummy-token');
                         closeAdminLoginModal();
                         switchView('admin');
                     } else {
@@ -2956,11 +2959,11 @@
         }
 
         function handleAdminLogout() {
-            var token = sessionStorage.getItem('adminToken_Narmada');
+            var token = localStorage.getItem('adminToken_Narmada');
             if (token && isGoogleEnv) {
                 google.script.run.logoutAdmin(token);
             }
-            sessionStorage.removeItem('adminToken_Narmada');
+            localStorage.removeItem('adminToken_Narmada');
             pushToast("Berhasil keluar dari Dashboard Admin.", "info");
             switchView('beranda');
         }
@@ -3098,7 +3101,7 @@
                             if (res && res.authError) { pushToast(res.error, "error"); handleAdminLogout(); return; }
                             renderAdminTable(res);
                         })
-                        .getAdminDashboardData(sessionStorage.getItem('adminToken_Narmada'), adminKeyword, currentAdminPage, activeStatusFilter);
+                        .getAdminDashboardData(localStorage.getItem('adminToken_Narmada'), adminKeyword, currentAdminPage, activeStatusFilter);
                 } catch (e) { }
             } else {
                 var fKeyword = adminKeyword.toLowerCase().trim();
@@ -3217,7 +3220,7 @@
                             pushToast(res.message, "error");
                         }
                     })
-                    .generateSuratPDF(sessionStorage.getItem('adminToken_Narmada'), idPengajuan);
+                    .generateSuratPDF(localStorage.getItem('adminToken_Narmada'), idPengajuan);
             } else {
                 setTimeout(function () {
                     pushToast("SIMULASI: PDF Surat berhasil digenerate.", "success");
@@ -3297,6 +3300,11 @@
                             }
                         }
                         
+                        // Jika isian ini berulang (memiliki titik koma), gabungkan paksa ke satu grup
+                        if (a && a.match(/\s*;\s*/)) {
+                            keperluan = submittedKeperluan || "Data Tambahan";
+                        }
+                        
                         if (!qMap[keperluan]) qMap[keperluan] = [];
                         qMap[keperluan].push({q: q, a: a});
                     } else {
@@ -3347,6 +3355,7 @@
                     var match = labelName.match(/^\[(.*?)\]\s*(.*)$/);
                     if (match) labelName = match[2];
                     
+                    var fileIndex = window.activeVerifFiles.length;
                     window.activeVerifFiles.push({ name: labelName });
 
                     var fileUrl = p.slice(1).join(":").trim();
@@ -3364,6 +3373,10 @@
                         }
                     }
 
+                    var safeNama = nama ? nama.replace(/'/g, "\\'") : "";
+                    var safeId = id ? id.replace(/'/g, "\\'") : "";
+                    var safeLayanan = layanan ? layanan.replace(/'/g, "\\'") : "";
+
                     var card = '<div class="bg-white p-2.5 rounded-xl border border-slate-200 shadow-sm">' +
                         '<div class="flex justify-between items-start mb-2">' +
                         '<h6 class="text-[10px] font-bold text-slate-800 leading-tight pr-2">' + labelName + '</h6>' +
@@ -3377,11 +3390,11 @@
                         '</div>' +
                         '<div class="flex items-center justify-between bg-slate-50 p-2 rounded-lg border border-slate-100">' +
                         '<label class="flex items-center gap-1.5 cursor-pointer select-none">' +
-                        '<input type="radio" name="verif_radio_' + idx + '" value="Sesuai" checked onchange="calculateAutoVerificationResult(\'' + nama + '\', \'' + id + '\', \'' + layanan + '\')" class="w-3.5 h-3.5 text-emerald-600 focus:ring-emerald-500">' +
+                        '<input type="radio" name="verif_radio_' + fileIndex + '" value="Sesuai" checked onchange="calculateAutoVerificationResult(\'' + safeNama + '\', \'' + safeId + '\', \'' + safeLayanan + '\')" class="w-3.5 h-3.5 text-emerald-600 focus:ring-emerald-500">' +
                         '<span class="text-emerald-700 font-bold text-[10px]">Sesuai</span>' +
                         '</label>' +
                         '<label class="flex items-center gap-1.5 cursor-pointer select-none">' +
-                        '<input type="radio" name="verif_radio_' + idx + '" value="Tidak Sesuai" onchange="calculateAutoVerificationResult(\'' + nama + '\', \'' + id + '\', \'' + layanan + '\')" class="w-3.5 h-3.5 text-red-600 focus:ring-red-500">' +
+                        '<input type="radio" name="verif_radio_' + fileIndex + '" value="Tidak Sesuai" onchange="calculateAutoVerificationResult(\'' + safeNama + '\', \'' + safeId + '\', \'' + safeLayanan + '\')" class="w-3.5 h-3.5 text-red-600 focus:ring-red-500">' +
                         '<span class="text-red-700 font-bold text-[10px]">Tidak Sesuai</span>' +
                         '</label>' +
                         '</div>' +
@@ -3457,7 +3470,7 @@
                                 fetchAdminStats();
                             }
                         })
-                        .updatePengajuanStatus(sessionStorage.getItem('adminToken_Narmada'), id, nextStat, nextNotes);
+                        .updatePengajuanStatus(localStorage.getItem('adminToken_Narmada'), id, nextStat, nextNotes);
                 } catch (e) { }
             } else {
                 var findIdx = dummyPengajuanList.findIndex(function (r) { return r.id === id; });
@@ -4330,7 +4343,7 @@
                             pushToast("Gagal menyimpan: " + res.message, "error");
                         }
                     })
-                    .crudLayanan(sessionStorage.getItem('adminToken_Narmada'), action, payload);
+                    .crudLayanan(localStorage.getItem('adminToken_Narmada'), action, payload);
             } else {
                 if (!payload.id) {
                     dummyLayananList.push({
@@ -4397,7 +4410,7 @@
                                 loadLayananDataWarga();
                             }
                         })
-                        .crudLayanan(sessionStorage.getItem('adminToken_Narmada'), "delete", { nama: nama });
+                        .crudLayanan(localStorage.getItem('adminToken_Narmada'), "delete", { nama: nama });
                 } else {
                     dummyLayananList = dummyLayananList.filter(l => l.nama !== nama);
                     pushToast("SIMULASI: Layanan terhapus.", "success");
@@ -4476,7 +4489,7 @@
                         resetJenisPelayananForm();
                         loadJenisPelayananAndPersyaratan();
                     }
-                }).crudJenisPelayanan(sessionStorage.getItem('adminToken_Narmada'), action, id, nama);
+                }).crudJenisPelayanan(localStorage.getItem('adminToken_Narmada'), action, id, nama);
             } else {
                 if (action === "create") {
                     dummyJenisPelayanan.push({ id: "JP-" + Math.floor(Math.random() * 1000), nama: nama });
@@ -4513,7 +4526,7 @@
                             pushToast("Jenis Pelayanan terhapus!", "success");
                             loadJenisPelayananAndPersyaratan();
                         }
-                    }).crudJenisPelayanan(sessionStorage.getItem('adminToken_Narmada'), "delete", id, "");
+                    }).crudJenisPelayanan(localStorage.getItem('adminToken_Narmada'), "delete", id, "");
                 } else {
                     dummyJenisPelayanan = dummyJenisPelayanan.filter(x => x.id !== id);
                     pushToast("Jenis Pelayanan terhapus (Simulasi)!", "success");
@@ -4537,7 +4550,7 @@
                         resetJenisPersyaratanForm();
                         loadJenisPelayananAndPersyaratan();
                     }
-                }).crudJenisPersyaratan(sessionStorage.getItem('adminToken_Narmada'), action, id, nama);
+                }).crudJenisPersyaratan(localStorage.getItem('adminToken_Narmada'), action, id, nama);
             } else {
                 if (action === "create") {
                     dummyJenisPersyaratan.push({ id: "JR-" + Math.floor(Math.random() * 1000), nama: nama });
@@ -4574,7 +4587,7 @@
                             pushToast("Jenis Persyaratan terhapus!", "success");
                             loadJenisPelayananAndPersyaratan();
                         }
-                    }).crudJenisPersyaratan(sessionStorage.getItem('adminToken_Narmada'), "delete", id, "");
+                    }).crudJenisPersyaratan(localStorage.getItem('adminToken_Narmada'), "delete", id, "");
                 } else {
                     dummyJenisPersyaratan = dummyJenisPersyaratan.filter(x => x.id !== id);
                     pushToast("Jenis Persyaratan terhapus (Simulasi)!", "success");
@@ -4654,7 +4667,7 @@
                         pushToast(res.message, "success");
                         loadCMSConfigurationAndLayanan();
                     }
-                }).updateAdminSetelan(sessionStorage.getItem('adminToken_Narmada'), payload);
+                }).updateAdminSetelan(localStorage.getItem('adminToken_Narmada'), payload);
             } else {
                 dummySetelan = payload;
                 globalSettings = payload;

@@ -1,4 +1,4 @@
-<script>
+
         function getTableSkeleton(cols, rows) {
             var html = '';
             for (var i = 0; i < rows; i++) {
@@ -168,4 +168,3 @@
                 setTimeout(function () { toast.remove(); }, 300);
             }, 3500);
         }
-</script>

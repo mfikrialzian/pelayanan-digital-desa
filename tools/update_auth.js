@@ -4,24 +4,24 @@ const path = './script.html';
 let content = fs.readFileSync(path, 'utf8');
 
 // 1. Storage checks
-content = content.replace(/localStorage\.getItem\('isAdminLoggedIn_Narmada'\) === 'true'/g, "sessionStorage.getItem('adminToken_Narmada') !== null");
+content = content.replace(/localStorage\.getItem\('isAdminLoggedIn_Narmada'\) === 'true'/g, "localStorage.getItem('adminToken_Narmada') !== null");
 
 // 2. Login success
 content = content.replace(
     /if \(res\.success\) \{\s*localStorage\.setItem\('isAdminLoggedIn_Narmada', 'true'\);/g,
-    "if (res.success) {\n                            sessionStorage.setItem('adminToken_Narmada', res.token);"
+    "if (res.success) {\n                            localStorage.setItem('adminToken_Narmada', res.token);"
 );
 
 // 3. Dummy login success (offline)
 content = content.replace(
     /if \(u === dummySetelan\.username && p === dummySetelan\.password\) \{\s*localStorage\.setItem\('isAdminLoggedIn_Narmada', 'true'\);/g,
-    "if (u === dummySetelan.username && p === dummySetelan.password) {\n                        sessionStorage.setItem('adminToken_Narmada', 'dummy-token');"
+    "if (u === dummySetelan.username && p === dummySetelan.password) {\n                        localStorage.setItem('adminToken_Narmada', 'dummy-token');"
 );
 
 // 4. Logout
 content = content.replace(
     /localStorage\.removeItem\('isAdminLoggedIn_Narmada'\);/g,
-    "var token = sessionStorage.getItem('adminToken_Narmada');\n            if (token && isGoogleEnv) {\n                google.script.run.logoutAdmin(token);\n            }\n            sessionStorage.removeItem('adminToken_Narmada');"
+    "var token = localStorage.getItem('adminToken_Narmada');\n            if (token && isGoogleEnv) {\n                google.script.run.logoutAdmin(token);\n            }\n            localStorage.removeItem('adminToken_Narmada');"
 );
 
 // 5. Admin endpoints
@@ -36,7 +36,7 @@ const endpoints = [
 
 endpoints.forEach(ep => {
     const regex = new RegExp(`\\.${ep}\\(`, 'g');
-    content = content.replace(regex, `.${ep}(sessionStorage.getItem('adminToken_Narmada'), `);
+    content = content.replace(regex, `.${ep}(localStorage.getItem('adminToken_Narmada'), `);
 });
 
 // 6. Handle the auth error globally

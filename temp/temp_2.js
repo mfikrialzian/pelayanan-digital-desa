@@ -1,4 +1,4 @@
-<script>
+
         var dummyLayananList = [
             {
                 id: "LAY-001",
@@ -19,7 +19,17 @@
             }
         ];
 
+        var dummyJenisPelayanan = [
+            { id: "JP-001", nama: "Surat Keterangan Usaha (SKU)" },
+            { id: "JP-002", nama: "Surat Keterangan Domisili" }
+        ];
 
+        var dummyJenisPersyaratan = [
+            { id: "JR-001", nama: "Foto KTP Asli Pemohon" },
+            { id: "JR-002", nama: "Foto Kartu Keluarga (KK)" },
+            { id: "JR-003", nama: "Foto Lokasi Tempat Usaha" },
+            { id: "JR-004", nama: "Foto Surat Pengantar RT/RW" }
+        ];
 
         var dummyPengajuanList = [
             {
@@ -100,7 +110,8 @@
                 if (sessionStorage.getItem('adminToken_Narmada')) {
                     switchView('admin');
                 } else {
-                    switchView('admin-login');
+                    switchView('admin');
+                    triggerAdminLoginModal();
                 }
             } else {
                 switchView('beranda');
@@ -219,25 +230,18 @@
 
 
         function switchView(viewId) {
-            var viewAdminLogin = document.getElementById('view-admin-login');
             if (viewId === 'admin') {
                 document.getElementById('citizen-workspace').classList.add('hidden');
-                if (viewAdminLogin) viewAdminLogin.classList.add('hidden');
-                document.getElementById('admin-workspace').classList.remove('hidden');
+                document.getElementById('admin-workspace-wrapper').classList.remove('hidden');
                 activeView = 'admin';
                 currentAdminPage = 1;
                 fetchAdminStats();
                 loadBuilderLayananList();
+                loadJenisPelayananAndPersyaratan();
                 loadAdminSettingsForm();
-            } else if (viewId === 'admin-login') {
-                document.getElementById('citizen-workspace').classList.add('hidden');
-                document.getElementById('admin-workspace').classList.add('hidden');
-                if (viewAdminLogin) viewAdminLogin.classList.remove('hidden');
-                activeView = 'admin-login';
             } else {
                 var prevView = activeView;
-                document.getElementById('admin-workspace').classList.add('hidden');
-                if (viewAdminLogin) viewAdminLogin.classList.add('hidden');
+                document.getElementById('admin-workspace-wrapper').classList.add('hidden');
                 document.getElementById('citizen-workspace').classList.remove('hidden');
 
                 document.getElementById('view-beranda').classList.add('hidden');
@@ -261,4 +265,3 @@
             }
         }
 
-</script>

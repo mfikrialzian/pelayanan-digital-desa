@@ -3,29 +3,15 @@
  * Berperan sebagai Web Server dan API Gateway untuk menangani transaksi frontend-backend.
  */
 function doGet(e) {
-  try {
-    var page = "warga";
-    if (e && e.parameter && e.parameter.page) {
-      page = String(e.parameter.page).trim().toLowerCase();
-    }
-    
-    var template = HtmlService.createTemplateFromFile('index');
-    template.pageParam = page;
-    
-    return template.evaluate()
-      .setTitle(ZettConfig.APP_NAME)
-      .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL)
-      .addMetaTag('viewport', 'width=device-width, initial-scale=1.0');
-  } catch (err) {
-    return HtmlService.createHtmlOutput("<h2>Terjadi Kesalahan Server: " + Sanitizer.escapeHtml(err.toString()) + "</h2>");
-  }
-}
-
-/**
- * Fungsi pembantu untuk include file HTML terpisah (seperti CSS/JS) ke dalam index.html
- */
-function include(filename) {
-  return HtmlService.createHtmlOutputFromFile(filename).getContent();
+  // Hanya menampilkan pesan teks sederhana bahwa API aktif
+  var response = {
+    status: "active",
+    message: "Backend API Pelayanan Digital Desa berjalan normal.",
+    frontend: "Gunakan web Vercel untuk mengakses UI."
+  };
+  
+  return ContentService.createTextOutput(JSON.stringify(response))
+    .setMimeType(ContentService.MimeType.JSON);
 }
 
 /**
@@ -87,4 +73,30 @@ function updateAdminSetelan(token, newSetelan) {
 function generateSuratPDF(token, idPengajuan) {
   if (!AuthService.verifyToken(token)) return { success: false, message: "Sesi tidak valid atau telah berakhir. Silakan login kembali.", authError: true };
   return PDFGeneratorService.generateSurat(idPengajuan);
+}
+
+/**
+ * REST API Gateway untuk Frontend Vercel
+ */
+function doPost(e) {
+  try {
+    var postData = JSON.parse(e.postData.contents);
+    var action = postData.action;
+    var params = postData.params || [];
+    
+    if (action.indexOf('_') === 0 || typeof this[action] !== 'function') {
+      throw new Error("Akses ditolak atau fungsi tidak ditemukan: " + action);
+    }
+    
+    var result = this[action].apply(this, params);
+    
+    var response = { success: true, data: result };
+    return ContentService.createTextOutput(JSON.stringify(response))
+      .setMimeType(ContentService.MimeType.JSON);
+      
+  } catch (err) {
+    var errResponse = { success: false, error: err.toString() };
+    return ContentService.createTextOutput(JSON.stringify(errResponse))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
 }

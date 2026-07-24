@@ -1,4 +1,4 @@
-﻿<script>
+﻿
         function saveWargaDraft() {
             if (!selectedLayananGlobal) return;
             var draft = {
@@ -377,6 +377,7 @@
 
             var qWrappers = document.querySelectorAll('.dynamic-question-wrapper');
             qWrappers.forEach(function (el) {
+                if (el.closest('.repeater-block')) return;
                 var boundKeperluan = el.getAttribute('data-bind-keperluan');
                 if (boundKeperluan === "Wajib" || (activeKeperluan !== "" && boundKeperluan === activeKeperluan)) {
                     el.classList.remove('hidden');
@@ -531,25 +532,27 @@
                 isianContainer.innerHTML += '<div class="flex justify-between border-b border-slate-50 py-1"><span class="text-slate-555">Keperluan Surat:</span><span class="font-bold text-slate-800">' + keperl.value + '</span></div>';
             }
 
-            var qWrappers = document.querySelectorAll('.dynamic-question-wrapper');
+            var allDynamicInputs = document.querySelectorAll('.dynamic-question-field');
             var hasIsian = (keperl && keperl.value) ? true : false;
 
-            qWrappers.forEach(function (wrapper) {
-                if (!wrapper.classList.contains('hidden')) {
-                    var inps = wrapper.querySelectorAll('.dynamic-question-field');
-                    if (inps.length > 0) {
-                        var meta = parseQuestionMetadata(inps[0].getAttribute('data-question'));
-                        var vals = [];
-                        inps.forEach(function (inp) { if (inp.value.trim()) vals.push(inp.value.trim()); });
+            allDynamicInputs.forEach(function (inp) {
+                var wrapper = inp.closest('.dynamic-question-wrapper');
+                // Skip if parent wrapper is hidden (unless it's an inner repeater wrapper which relies on outer wrapper visibility)
+                if (wrapper && wrapper.classList.contains('hidden') && !wrapper.closest('.repeater-block')) return;
+                
+                // If it's in a repeater block, check if the outer wrapper is hidden
+                if (wrapper && wrapper.closest('.repeater-block')) {
+                    var outerWrapper = wrapper.closest('.repeater-block').closest('.dynamic-question-wrapper');
+                    if (outerWrapper && outerWrapper.classList.contains('hidden')) return;
+                }
 
-                        if (vals.length > 0) {
-                            isianContainer.innerHTML += '<div class="flex justify-between border-b border-slate-50 py-1">' +
-                                '<span class="text-slate-555">' + meta.cleanName + ':</span>' +
-                                '<span class="font-bold text-slate-800">' + vals.join(", ") + '</span>' +
-                                '</div>';
-                            hasIsian = true;
-                        }
-                    }
+                if (inp.value.trim()) {
+                    var meta = parseQuestionMetadata(inp.getAttribute('data-question'));
+                    isianContainer.innerHTML += '<div class="flex justify-between border-b border-slate-50 py-1">' +
+                        '<span class="text-slate-555">' + meta.cleanName + ':</span>' +
+                        '<span class="font-bold text-slate-800">' + inp.value.trim() + '</span>' +
+                        '</div>';
+                    hasIsian = true;
                 }
             });
 
@@ -660,7 +663,7 @@
             });
             var hidden = document.getElementById(containerId);
             if (hidden) {
-                hidden.value = result.length > 0 ? result.join(" | ") : "";
+                hidden.value = result.length > 0 ? result.join("; ") : "";
                 var event = new Event('input', { bubbles: true });
                 hidden.dispatchEvent(event);
             }
@@ -807,7 +810,7 @@
             });
             
             Object.keys(tempPayload).forEach(function(key) {
-                detailLayananPayload[key] = tempPayload[key].join(" | ");
+                detailLayananPayload[key] = tempPayload[key].join("; ");
             });
 
             var submitBtn = document.getElementById('btn-submit-warga');
@@ -1084,4 +1087,3 @@
             reader.readAsDataURL(file);
         }
 
-</script>

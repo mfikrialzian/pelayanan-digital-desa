@@ -24,10 +24,10 @@ var ZettConstants = {
   SHEET_REQS: "Layanan_Requirements",
   SHEET_SETELAN: "Setelan",
   
-  STATUS_PENDING: "Pending",
+  STATUS_PENDING: "Menunggu",
   STATUS_VERIFIKASI: "Verifikasi",
-  STATUS_SELESAI: "Pelayanan Selesai",
-  STATUS_REUPLOAD: "Upload Ulang",
+  STATUS_SELESAI: "Selesai",
+  STATUS_REUPLOAD: "Perbaikan",
   
   DEFAULT_WA_CONTACT: "+6281234567890",
   DEFAULT_LOGO_URL: "https://upload.wikimedia.org/wikipedia/commons/e/e4/Coat_of_arms_of_Indonesia_Garuda_Pancasila.svg"

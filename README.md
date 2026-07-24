@@ -1,5 +1,7 @@
 # 🏛️ Pelayanan Digital Desa Narmada
 
+[![Live Website](https://img.shields.io/badge/Live-Website-success?style=for-the-badge&logo=vercel)](https://pelayanan-desa-narmada.vercel.app/)
+
 Sistem pelayanan administrasi desa berbasis **Google Apps Script** yang memungkinkan warga mengajukan surat dan dokumen secara digital.
 
 ## ✨ Fitur Utama

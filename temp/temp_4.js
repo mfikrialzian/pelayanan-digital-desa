@@ -1,4 +1,12 @@
-<script>
+
+        function triggerAdminLoginModal() {
+            document.getElementById('login-username').value = "";
+            document.getElementById('login-password').value = "";
+            document.getElementById('modal-login-admin').classList.remove('hidden');
+        }
+        function closeAdminLoginModal() {
+            document.getElementById('modal-login-admin').classList.add('hidden');
+        }
         function runAdminLoginAuth() {
             var u = document.getElementById('login-username').value.trim();
             var p = document.getElementById('login-password').value.trim();
@@ -14,6 +22,7 @@
                         btn.innerHTML = '<span>Login</span>';
                         if (res.success) {
                             sessionStorage.setItem('adminToken_Narmada', res.token);
+                            closeAdminLoginModal();
                             switchView('admin');
                             pushToast("Otentikasi Sukses. Selamat Bekerja Admin.", "success");
                         } else {
@@ -32,6 +41,7 @@
                     btn.innerHTML = '<span>Login</span>';
                     if (u === dummySetelan.username && p === dummySetelan.password) {
                         sessionStorage.setItem('adminToken_Narmada', 'dummy-token');
+                        closeAdminLoginModal();
                         switchView('admin');
                     } else {
                         pushToast("Kredensial login admin salah!", "error");
@@ -47,28 +57,13 @@
             }
             sessionStorage.removeItem('adminToken_Narmada');
             pushToast("Berhasil keluar dari Dashboard Admin.", "info");
-            switchView('admin-login');
+            switchView('beranda');
         }
 
         function switchAdminTab(tabId) {
-            // Berikan peringatan jika user mencoba keluar dari editor layanan
-            if (activeAdminTab === 'layanan' && tabId !== 'layanan') {
-                askConfirmation(
-                    "Tutup Editor?",
-                    "Anda sedang berada di mode Editor Layanan. Perubahan yang belum disimpan akan hilang. Apakah Anda yakin ingin berpindah halaman?",
-                    function() {
-                        executeSwitchAdminTab(tabId);
-                    }
-                );
-                return;
-            }
-            executeSwitchAdminTab(tabId);
-        }
-
-        function executeSwitchAdminTab(tabId) {
             document.getElementById('subview-admin-dashboard').classList.add('hidden');
-            document.getElementById('subview-admin-daftar-layanan').classList.add('hidden');
             document.getElementById('subview-admin-layanan').classList.add('hidden');
+            document.getElementById('subview-admin-daftar-layanan').classList.add('hidden');
             document.getElementById('subview-admin-kontak').classList.add('hidden');
             document.getElementById('subview-admin-beranda').classList.add('hidden');
             document.getElementById('subview-admin-kredensial').classList.add('hidden');
@@ -77,16 +72,14 @@
             var activeClass = "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left font-bold text-xs bg-slate-800 text-white shadow-sm border border-slate-700 transition-all";
 
             document.getElementById('tab-adm-dashboard').className = inactiveClass;
+            document.getElementById('tab-adm-layanan').className = inactiveClass;
             document.getElementById('tab-adm-daftar-layanan').className = inactiveClass;
             document.getElementById('tab-adm-kontak').className = inactiveClass;
             document.getElementById('tab-adm-beranda').className = inactiveClass;
             document.getElementById('tab-adm-kredensial').className = inactiveClass;
 
             document.getElementById('subview-admin-' + tabId).classList.remove('hidden');
-            var activeTabEl = document.getElementById('tab-adm-' + tabId);
-            if (activeTabEl) {
-                activeTabEl.className = activeClass;
-            }
+            document.getElementById('tab-adm-' + tabId).className = activeClass;
 
             // Jika di mobile, sembunyikan sidebar setelah klik menu
             if (window.innerWidth < 768) {
@@ -97,6 +90,11 @@
 
             if (tabId === 'dashboard') {
                 fetchAdminStats();
+            } else if (tabId === 'layanan') {
+                document.getElementById('subview-admin-layanan').classList.add('hidden');
+                document.getElementById('subview-admin-daftar-layanan').classList.remove('hidden');
+                loadBuilderLayananList();
+                loadJenisPelayananAndPersyaratan();
             } else if (tabId === 'daftar-layanan') {
                 loadBuilderDaftarLayananTab();
             }
@@ -608,9 +606,15 @@
                 selKeperluan.add(o, selKeperluan.options[0]);
             }
 
-            // Persyaratan sekarang menggunakan input teks dinamis dengan datalist
-            var reqInput = document.getElementById('builder-req-input');
-            if (reqInput) reqInput.value = '';
+            var selMaster = document.getElementById('builder-req-master');
+            selMaster.innerHTML = '<option value="">-- Pilih Persyaratan --</option>';
+            var list = isGoogleEnv ? window.jenisPersyaratanList : dummyJenisPersyaratan;
+
+            if (list) {
+                list.forEach(function (req) {
+                    selMaster.innerHTML += '<option value="' + req.nama + '">' + req.nama + '</option>';
+                });
+            }
 
             renderRequirementsMappingList();
         }
@@ -634,11 +638,10 @@
 
         function addRequirementToKeperluan() {
             var keperluan = document.getElementById('builder-req-keperluan').value;
-            var reqInput = document.getElementById('builder-req-input');
-            var reqName = reqInput.value.trim();
+            var reqName = document.getElementById('builder-req-master').value;
 
             if (!reqName) {
-                pushToast("Ketik atau pilih nama persyaratan!", "error");
+                pushToast("Pilih master persyaratan terlebih dahulu!", "error");
                 return;
             }
 
@@ -649,7 +652,6 @@
             if (!builderReqMap[keperluan].includes(reqName)) {
                 builderReqMap[keperluan].push(reqName);
                 renderRequirementsMappingList();
-                reqInput.value = '';
                 pushToast("Persyaratan ditambahkan ke '" + keperluan + "'", "success");
             } else {
                 pushToast("Persyaratan ini sudah ada di keperluan tersebut!", "error");
@@ -703,7 +705,6 @@
                 list.forEach(function (row) {
                     dropdownEditor.innerHTML += '<option value="' + row.nama + '">' + row.nama + '</option>';
                 });
-                extractSuggestions(list);
             };
 
             if (isGoogleEnv) {
@@ -714,63 +715,6 @@
                 }
             } else {
                 layHandler(dummyLayananList);
-            }
-        }
-
-        function extractSuggestions(list) {
-            var nameSet = new Set();
-            var reqSet = new Set();
-            list.forEach(function (layanan) {
-                if (layanan.nama) nameSet.add(layanan.nama);
-                if (layanan.persyaratan) {
-                    try {
-                        var reqObj = JSON.parse(layanan.persyaratan);
-                        Object.keys(reqObj).forEach(function(kep) {
-                            reqObj[kep].forEach(function(req) {
-                                reqSet.add(req);
-                            });
-                        });
-                    } catch(e) {}
-                }
-            });
-
-            var nameDatalist = document.getElementById('saran-nama-layanan');
-            if (nameDatalist) {
-                nameDatalist.innerHTML = '';
-                nameSet.forEach(function(n) {
-                    var opt = document.createElement('option');
-                    opt.value = n;
-                    nameDatalist.appendChild(opt);
-                });
-            }
-
-            var reqDatalist = document.getElementById('saran-persyaratan-list');
-            if (reqDatalist) {
-                reqDatalist.innerHTML = '';
-                reqSet.forEach(function(r) {
-                    var opt = document.createElement('option');
-                    opt.value = r;
-                    reqDatalist.appendChild(opt);
-                });
-            }
-
-            var reqSuggestions = document.getElementById('builder-req-suggestions');
-            if (reqSuggestions) {
-                reqSuggestions.innerHTML = '';
-                reqSet.forEach(function(r) {
-                    var btn = document.createElement('button');
-                    btn.type = 'button';
-                    btn.className = 'px-2 py-1 bg-slate-100 hover:bg-emerald-100 text-slate-600 hover:text-emerald-700 rounded text-[10px] font-semibold border border-slate-200 transition-colors cursor-pointer';
-                    btn.innerText = r;
-                    btn.onclick = function() {
-                        var input = document.getElementById('builder-req-input');
-                        if(input) {
-                            input.value = r;
-                            addRequirementToKeperluan();
-                        }
-                    };
-                    reqSuggestions.appendChild(btn);
-                });
             }
         }
 
@@ -793,6 +737,7 @@
                 document.getElementById('wrapper-builder-nama').classList.add('hidden');
             }
         }
+
         function handleKeperluanSelectChange() {
             var select = document.getElementById('builder-keperluan-select');
             var wrapper = document.getElementById('wrapper-new-keperluan');
@@ -1473,7 +1418,7 @@
                         if (res.success) {
                             pushToast("Layanan '" + name + "' sukses dipublikasikan ke warga!", "success");
                             resetBuilderFormState();
-                            executeSwitchAdminTab('daftar-layanan');
+                            closeLayananEditor();
                             loadBuilderLayananList();
                             loadLayananDataWarga();
                         } else {
@@ -1506,7 +1451,7 @@
                 }
                 pushToast("SIMULASI: Sukses mempublikasikan layanan baru.", "success");
                 resetBuilderFormState();
-                executeSwitchAdminTab('daftar-layanan');
+                closeLayananEditor();
                 loadBuilderLayananList();
                 renderLayananListWarga(dummyLayananList);
             }
@@ -1553,6 +1498,182 @@
                     pushToast("SIMULASI: Layanan terhapus.", "success");
                     loadBuilderLayananList();
                     renderLayananListWarga(dummyLayananList);
+                }
+            });
+        }
+
+        function loadJenisPelayananAndPersyaratan() {
+            var containerJP = document.getElementById('jp-list-container');
+            var containerJR = document.getElementById('jr-list-container');
+
+            if (containerJP) containerJP.innerHTML = "<p class='text-[11px] text-slate-400 italic'>Loading...</p>";
+            if (containerJR) containerJR.innerHTML = "<p class='text-[11px] text-slate-400 italic'>Loading...</p>";
+
+            var renderJP = function (list) {
+                window.jenisPelayananList = list;
+                containerJP.innerHTML = "";
+
+                if (!list || list.length === 0) {
+                    containerJP.innerHTML = "<p class='text-[11px] text-slate-400 italic py-2'>Belum ada Jenis Pelayanan.</p>";
+                    return;
+                }
+
+                list.forEach(function (item) {
+                    containerJP.innerHTML += '<div class="flex items-center justify-between p-2.5 bg-slate-50 border border-slate-200 rounded-xl hover:bg-emerald-50/20 transition-all text-xs font-semibold text-slate-700">' +
+                        '<span>' + item.nama + '</span>' +
+                        '<div class="flex gap-1.5">' +
+                        '<button onclick="editJenisPelayanan(\'' + item.id + '\', \'' + item.nama + '\')" class="p-1 text-blue-600 hover:bg-white rounded border border-slate-200"><i class="fa-solid fa-edit text-[10px]"></i></button>' +
+                        '<button onclick="deleteJenisPelayanan(\'' + item.id + '\', \'' + item.nama + '\')" class="p-1 text-red-600 hover:bg-white rounded border border-slate-200"><i class="fa-solid fa-trash text-[10px]"></i></button>' +
+                        '</div>' +
+                        '</div>';
+                });
+            };
+
+            var renderJR = function (list) {
+                window.jenisPersyaratanList = list;
+                containerJR.innerHTML = "";
+                if (!list || list.length === 0) {
+                    containerJR.innerHTML = "<p class='text-[11px] text-slate-400 italic py-2'>Belum ada Jenis Persyaratan.</p>";
+                    return;
+                }
+
+                list.forEach(function (item) {
+                    containerJR.innerHTML += '<div class="flex items-center justify-between p-2.5 bg-slate-50 border border-slate-200 rounded-xl hover:bg-emerald-50/20 transition-all text-xs font-semibold text-slate-700">' +
+                        '<span>' + item.nama + '</span>' +
+                        '<div class="flex gap-1.5">' +
+                        '<button onclick="editJenisPersyaratan(\'' + item.id + '\', \'' + item.nama + '\')" class="p-1 text-blue-600 hover:bg-white rounded border border-slate-200"><i class="fa-solid fa-edit text-[10px]"></i></button>' +
+                        '<button onclick="deleteJenisPersyaratan(\'' + item.id + '\', \'' + item.nama + '\')" class="p-1 text-red-600 hover:bg-white rounded border border-slate-200"><i class="fa-solid fa-trash text-[10px]"></i></button>' +
+                        '</div>' +
+                        '</div>';
+                });
+            };
+
+            if (isGoogleEnv) {
+                google.script.run.withSuccessHandler(renderJP).getJenisPelayanan();
+                google.script.run.withSuccessHandler(renderJR).getJenisPersyaratan();
+            } else {
+                setTimeout(function () { renderJP(dummyJenisPelayanan); renderJR(dummyJenisPersyaratan); }, 200);
+            }
+        }
+
+        function submitJenisPelayanan() {
+            var id = document.getElementById('jp-id').value;
+            var nama = document.getElementById('jp-nama').value.trim();
+            var action = id ? "update" : "create";
+
+            if (!nama) return;
+
+            if (isGoogleEnv) {
+                google.script.run.withSuccessHandler(function (res) {
+                    if (res && res.authError) { pushToast(res.message, "error"); handleAdminLogout(); return; }
+                    if (res.success) {
+                        pushToast("Jenis Pelayanan berhasil disimpan!", "success");
+                        resetJenisPelayananForm();
+                        loadJenisPelayananAndPersyaratan();
+                    }
+                }).crudJenisPelayanan(sessionStorage.getItem('adminToken_Narmada'), action, id, nama);
+            } else {
+                if (action === "create") {
+                    dummyJenisPelayanan.push({ id: "JP-" + Math.floor(Math.random() * 1000), nama: nama });
+                } else {
+                    var found = dummyJenisPelayanan.find(x => x.id === id);
+                    if (found) found.nama = nama;
+                }
+                pushToast("Jenis Pelayanan berhasil disimpan (Simulasi)!", "success");
+                resetJenisPelayananForm();
+                loadJenisPelayananAndPersyaratan();
+            }
+        }
+
+        function editJenisPelayanan(id, nama) {
+            document.getElementById('jp-id').value = id;
+            document.getElementById('jp-nama').value = nama;
+            document.getElementById('title-jenis-pelayanan-form').innerText = "Edit Jenis Pelayanan";
+            document.getElementById('btn-jp-cancel').classList.remove('hidden');
+        }
+
+        function resetJenisPelayananForm() {
+            document.getElementById('jp-id').value = "";
+            document.getElementById('jp-nama').value = "";
+            document.getElementById('title-jenis-pelayanan-form').innerText = "Tambah Jenis Pelayanan";
+            document.getElementById('btn-jp-cancel').classList.add('hidden');
+        }
+
+        function deleteJenisPelayanan(id, nama) {
+            askConfirmation("Hapus Jenis Pelayanan", "Apakah Anda yakin ingin menghapus '" + nama + "' dari list Jenis Pelayanan?", function () {
+                if (isGoogleEnv) {
+                    google.script.run.withSuccessHandler(function (res) {
+                        if (res && res.authError) { pushToast(res.message, "error"); handleAdminLogout(); return; }
+                        if (res.success) {
+                            pushToast("Jenis Pelayanan terhapus!", "success");
+                            loadJenisPelayananAndPersyaratan();
+                        }
+                    }).crudJenisPelayanan(sessionStorage.getItem('adminToken_Narmada'), "delete", id, "");
+                } else {
+                    dummyJenisPelayanan = dummyJenisPelayanan.filter(x => x.id !== id);
+                    pushToast("Jenis Pelayanan terhapus (Simulasi)!", "success");
+                    loadJenisPelayananAndPersyaratan();
+                }
+            });
+        }
+
+        function submitJenisPersyaratan() {
+            var id = document.getElementById('jr-id').value;
+            var nama = document.getElementById('jr-nama').value.trim();
+            var action = id ? "update" : "create";
+
+            if (!nama) return;
+
+            if (isGoogleEnv) {
+                google.script.run.withSuccessHandler(function (res) {
+                    if (res && res.authError) { pushToast(res.message, "error"); handleAdminLogout(); return; }
+                    if (res.success) {
+                        pushToast("Jenis Persyaratan berhasil disimpan!", "success");
+                        resetJenisPersyaratanForm();
+                        loadJenisPelayananAndPersyaratan();
+                    }
+                }).crudJenisPersyaratan(sessionStorage.getItem('adminToken_Narmada'), action, id, nama);
+            } else {
+                if (action === "create") {
+                    dummyJenisPersyaratan.push({ id: "JR-" + Math.floor(Math.random() * 1000), nama: nama });
+                } else {
+                    var found = dummyJenisPersyaratan.find(x => x.id === id);
+                    if (found) found.nama = nama;
+                }
+                pushToast("Jenis Persyaratan berhasil disimpan (Simulasi)!", "success");
+                resetJenisPersyaratanForm();
+                loadJenisPelayananAndPersyaratan();
+            }
+        }
+
+        function editJenisPersyaratan(id, nama) {
+            document.getElementById('jr-id').value = id;
+            document.getElementById('jr-nama').value = nama;
+            document.getElementById('title-jenis-persyaratan-form').innerText = "Edit Jenis Persyaratan";
+            document.getElementById('btn-jr-cancel').classList.remove('hidden');
+        }
+
+        function resetJenisPersyaratanForm() {
+            document.getElementById('jr-id').value = "";
+            document.getElementById('jr-nama').value = "";
+            document.getElementById('title-jenis-persyaratan-form').innerText = "Tambah Jenis Persyaratan";
+            document.getElementById('btn-jr-cancel').classList.add('hidden');
+        }
+
+        function deleteJenisPersyaratan(id, nama) {
+            askConfirmation("Hapus Jenis Persyaratan", "Apakah Anda yakin ingin menghapus '" + nama + "' dari list Jenis Persyaratan?", function () {
+                if (isGoogleEnv) {
+                    google.script.run.withSuccessHandler(function (res) {
+                        if (res && res.authError) { pushToast(res.message, "error"); handleAdminLogout(); return; }
+                        if (res.success) {
+                            pushToast("Jenis Persyaratan terhapus!", "success");
+                            loadJenisPelayananAndPersyaratan();
+                        }
+                    }).crudJenisPersyaratan(sessionStorage.getItem('adminToken_Narmada'), "delete", id, "");
+                } else {
+                    dummyJenisPersyaratan = dummyJenisPersyaratan.filter(x => x.id !== id);
+                    pushToast("Jenis Persyaratan terhapus (Simulasi)!", "success");
+                    loadJenisPelayananAndPersyaratan();
                 }
             });
         }
@@ -1636,4 +1757,3 @@
                 pushToast("SIMULASI: Konfigurasi setelan disimpan.", "success");
             }
         }
-</script>
