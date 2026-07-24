@@ -89,6 +89,34 @@
         });
     </script>
 
+    <style>
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #subview-admin-dashboard, #subview-admin-dashboard * {
+                visibility: visible;
+            }
+            #subview-admin-dashboard {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
+            /* Hide specific buttons inside dashboard */
+            #subview-admin-dashboard button, 
+            #subview-admin-dashboard .grid-cols-2 {
+                display: none !important;
+            }
+            .sidebar, header, #admin-right-column {
+                display: none !important;
+            }
+            #table-admin-rows td, #table-admin-rows th {
+                color: black !important;
+                border-bottom: 1px solid #ccc;
+            }
+        }
+    </style>
 </head>
 
 <body class="text-slate-900 antialiased flex flex-col justify-between min-h-screen">
@@ -784,7 +812,7 @@
                     <div class="pt-4 pb-2">
                         <span class="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Lainnya</span>
                     </div>
-                    <a href="javascript:alert('Panduan penggunaan sistem belum diunggah.');" class="flex items-center px-3 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-semibold text-sm transition-colors">
+                    <a href="https://docs.google.com/document/d/dummy-link-panduan-admin" target="_blank" class="flex items-center px-3 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-semibold text-sm transition-colors">
                         <i class="fa-regular fa-circle-question w-5 text-center mr-2"></i> Bantuan & Panduan
                     </a>
                 </nav>

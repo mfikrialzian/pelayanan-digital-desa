@@ -2003,12 +2003,17 @@ function renderNotifications(res, container) {
 }
 
 function exportDataExcel() {
+    if (!window.currentAdminData || window.currentAdminData.length === 0) {
+        pushToast("Tidak ada data untuk diexport.", "warning");
+        return;
+    }
+
     Swal.fire({
-        title: "Konfirmasi",
-        text: "Apakah Anda ingin mengunduh rekapitulasi data pengajuan ke Excel?",
+        title: "Konfirmasi Export",
+        text: "Unduh data yang tampil di tabel saat ini sebagai CSV?",
         icon: "question",
         showCancelButton: true,
-        confirmButtonText: "Ya, Export",
+        confirmButtonText: "Ya, Unduh CSV",
         cancelButtonText: "Batal",
         customClass: {
             popup: "rounded-2xl border border-slate-100 shadow-sm",
@@ -2017,28 +2022,33 @@ function exportDataExcel() {
         }
     }).then((result) => {
         if (result.isConfirmed) {
-            Swal.fire({
-                icon: "info",
-                title: "Proses Export",
-                text: "Export berhasil. Data telah diunduh (Simulasi).",
-                timer: 2000,
-                showConfirmButton: false
+            let csvContent = "ID Pengajuan,Tanggal,NIK,Nama Pemohon,Layanan,Status\n";
+            window.currentAdminData.forEach(row => {
+                let nama = (row.nama || "").replace(/,/g, " ");
+                let lay = (row.layanan || "").replace(/,/g, " ");
+                csvContent += `${row.id},${row.tanggal},${row.nik},${nama},${lay},${row.status}\n`;
             });
+            
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.setAttribute("href", url);
+            link.setAttribute("download", `Data_Pengajuan_${new Date().toISOString().slice(0,10)}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            pushToast("Export CSV berhasil.", "success");
         }
     });
 }
 
 function cetakMassal() {
-    Swal.fire({
-        title: "Fitur Dalam Pengembangan",
-        text: "Cetak Massal akan segera hadir pada update berikutnya.",
-        icon: "info",
-        confirmButtonText: "Mengerti",
-        customClass: {
-            popup: "rounded-2xl border border-slate-100 shadow-sm",
-            confirmButton: "bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl px-4 py-2"
-        }
-    });
+    if (!window.currentAdminData || window.currentAdminData.length === 0) {
+        pushToast("Tidak ada data untuk dicetak.", "warning");
+        return;
+    }
+    window.print();
 }
 
 function updateLaporanStats() {
