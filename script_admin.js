@@ -2132,3 +2132,93 @@ function toggleDarkModeUI(element) {
         localStorage.setItem('theme', 'dark');
     }
 }
+
+// --- Profil Logic ---
+function toggleEditProfile() {
+    const inputs = document.querySelectorAll('.profil-input');
+    const actionButtons = document.getElementById('profil-action-buttons');
+    const btnEdit = document.getElementById('btn-edit-profil');
+    
+    let isEditing = !inputs[0].hasAttribute('readonly');
+    
+    if (isEditing) {
+        // Cancel edit
+        inputs.forEach(input => {
+            input.setAttribute('readonly', true);
+            input.classList.remove('bg-white', 'border-narmadaGreen');
+            input.classList.add('bg-slate-50', 'border-slate-200');
+        });
+        actionButtons.classList.add('hidden');
+        btnEdit.classList.remove('hidden');
+    } else {
+        // Start edit
+        inputs.forEach(input => {
+            input.removeAttribute('readonly');
+            input.classList.remove('bg-slate-50', 'border-slate-200');
+            input.classList.add('bg-white', 'border-slate-300'); // Or narmadaGreen on focus
+        });
+        inputs[0].focus();
+        actionButtons.classList.remove('hidden');
+        btnEdit.classList.add('hidden');
+    }
+}
+
+function saveProfileData(e) {
+    e.preventDefault();
+    // Simulate API call
+    Swal.fire({
+        title: 'Menyimpan...',
+        text: 'Mohon tunggu sebentar',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
+    setTimeout(() => {
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil',
+            text: 'Data profil berhasil diperbarui.',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#059669'
+        }).then(() => {
+            toggleEditProfile(); // Exit edit mode
+        });
+    }, 1500);
+}
+
+function changePasswordMock(e) {
+    e.preventDefault();
+    const newPass = document.getElementById('new-password').value;
+    const confirmPass = document.getElementById('confirm-password').value;
+    const errorText = document.getElementById('password-error');
+    
+    if (newPass !== confirmPass) {
+        errorText.classList.remove('hidden');
+        return;
+    } else {
+        errorText.classList.add('hidden');
+    }
+    
+    // Simulate API call
+    Swal.fire({
+        title: 'Memperbarui Password...',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
+    setTimeout(() => {
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil',
+            text: 'Password Anda telah berhasil diubah.',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#059669'
+        }).then(() => {
+            document.getElementById('form-password').reset();
+        });
+    }, 1500);
+}
