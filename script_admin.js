@@ -1753,3 +1753,109 @@ function runAdminLoginAuth() {
                 pushToast("SIMULASI: Konfigurasi setelan disimpan.", "success");
             }
         }
+
+// =========================================================
+// FASE 3: INIT CHART.JS ADMIN DASHBOARD
+// =========================================================
+let adminCharts = {
+    mingguan: null,
+    status: null,
+    layanan: null
+};
+
+function initAdminCharts() {
+    const narmadaGreen = '#059669';
+    const narmadaBlue = '#0ea5e9';
+    
+    // 1. Chart Pengajuan Mingguan (Line)
+    const ctxMingguan = document.getElementById('chartPengajuanMingguan');
+    if (ctxMingguan && !adminCharts.mingguan) {
+        adminCharts.mingguan = new Chart(ctxMingguan, {
+            type: 'line',
+            data: {
+                labels: ['18 Jul', '19 Jul', '20 Jul', '21 Jul', '22 Jul', '23 Jul', '24 Jul'],
+                datasets: [{
+                    label: 'Jumlah Pengajuan',
+                    data: [45, 62, 38, 60, 39, 85, 75],
+                    borderColor: narmadaGreen,
+                    backgroundColor: 'rgba(5, 150, 105, 0.1)',
+                    borderWidth: 2,
+                    pointBackgroundColor: narmadaGreen,
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 4,
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, grid: { borderDash: [5, 5] }, max: 100 },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+    }
+
+    // 2. Chart Status Pengajuan (Donut)
+    const ctxStatus = document.getElementById('chartStatusPengajuan');
+    if (ctxStatus && !adminCharts.status) {
+        adminCharts.status = new Chart(ctxStatus, {
+            type: 'doughnut',
+            data: {
+                labels: ['Menunggu', 'Verifikasi', 'Selesai', 'Perbaikan'],
+                datasets: [{
+                    data: [47, 36, 112, 18],
+                    backgroundColor: [narmadaBlue, '#f59e0b', narmadaGreen, '#ef4444'],
+                    borderWidth: 0,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '70%',
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            usePointStyle: true,
+                            padding: 20,
+                            font: { size: 11, family: "'Plus Jakarta Sans', sans-serif" }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // 3. Chart Jenis Layanan (Bar)
+    const ctxLayanan = document.getElementById('chartJenisLayanan');
+    if (ctxLayanan && !adminCharts.layanan) {
+        adminCharts.layanan = new Chart(ctxLayanan, {
+            type: 'bar',
+            data: {
+                labels: ['KK', 'KTP', 'BPJS', 'SKTM', 'Domisili', 'Lainnya'],
+                datasets: [{
+                    label: 'Pengajuan',
+                    data: [65, 45, 32, 26, 15, 12],
+                    backgroundColor: narmadaGreen,
+                    borderRadius: 4,
+                    barPercentage: 0.6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, grid: { borderDash: [5, 5] }, max: 80 },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+    }
+}

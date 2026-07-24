@@ -266,6 +266,10 @@ var dummyLayananList = [
                 fetchAdminStats();
                 loadBuilderLayananList();
                 loadAdminSettingsForm();
+                
+                if (typeof initAdminCharts === 'function') {
+                    setTimeout(initAdminCharts, 100); // Tunggu DOM render sejenak
+                }
             } else if (viewId === 'admin-login') {
                 document.getElementById('citizen-workspace').classList.add('hidden');
                 document.getElementById('admin-workspace').classList.add('hidden');

@@ -1417,6 +1417,523 @@
         </div>
     </div>
 
+    <!-- ========================================== -->
+    <!-- 2. ANTARMUKA ADMIN DASHBOARD               -->
+    <!-- ========================================== -->
+    <div id="admin-workspace" class="hidden w-full h-screen bg-slate-50 text-slate-800 flex flex-row overflow-hidden absolute inset-0 z-50">
+        
+        <!-- SIDEBAR -->
+        <aside class="w-64 bg-white border-r border-slate-200 flex flex-col justify-between shrink-0 h-full relative z-20">
+            <div>
+                <!-- Branding -->
+                <div class="h-16 flex items-center px-6 border-b border-slate-100">
+                    <img src="favicon.png" alt="Logo" class="w-8 h-8 object-contain mr-3">
+                    <div>
+                        <h1 class="font-black text-sm uppercase tracking-tight leading-none text-slate-900">DESA NARMADA</h1>
+                        <span class="text-[10px] font-semibold text-slate-500">Admin Panel</span>
+                    </div>
+                </div>
+                
+                <!-- Menu -->
+                <nav class="p-4 space-y-1">
+                    <a href="#" class="flex items-center px-3 py-2.5 bg-emerald-50 text-narmadaGreen rounded-xl font-bold text-sm transition-colors">
+                        <i class="fa-solid fa-house w-5 text-center mr-2"></i> Dashboard
+                    </a>
+                    <a href="#" class="flex items-center px-3 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-semibold text-sm transition-colors">
+                        <i class="fa-solid fa-layer-group w-5 text-center mr-2"></i> Layanan
+                    </a>
+                    <a href="#" class="flex items-center px-3 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-semibold text-sm transition-colors">
+                        <i class="fa-solid fa-file-lines w-5 text-center mr-2"></i> Pengajuan
+                    </a>
+                    <a href="#" class="flex items-center px-3 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-semibold text-sm transition-colors">
+                        <i class="fa-solid fa-address-book w-5 text-center mr-2"></i> Kontak Pelayanan
+                    </a>
+                    <a href="#" class="flex items-center px-3 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-semibold text-sm transition-colors">
+                        <i class="fa-solid fa-folder-open w-5 text-center mr-2"></i> Dokumen & Surat
+                    </a>
+                    <a href="#" class="flex items-center px-3 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-semibold text-sm transition-colors">
+                        <i class="fa-solid fa-chart-simple w-5 text-center mr-2"></i> Laporan
+                    </a>
+                    <a href="#" class="flex items-center px-3 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-semibold text-sm transition-colors">
+                        <i class="fa-solid fa-gear w-5 text-center mr-2"></i> Pengaturan
+                    </a>
+                    <a href="#" class="flex items-center px-3 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-semibold text-sm transition-colors">
+                        <i class="fa-regular fa-user w-5 text-center mr-2"></i> Pengguna
+                    </a>
+                    <a href="#" class="flex items-center px-3 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-semibold text-sm transition-colors">
+                        <i class="fa-solid fa-clock-rotate-left w-5 text-center mr-2"></i> Log Aktivitas
+                    </a>
+                    
+                    <div class="pt-4 pb-2">
+                        <span class="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Lainnya</span>
+                    </div>
+                    <a href="#" class="flex items-center px-3 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-semibold text-sm transition-colors">
+                        <i class="fa-regular fa-circle-question w-5 text-center mr-2"></i> Bantuan & Panduan
+                    </a>
+                </nav>
+            </div>
+            
+            <!-- Logout -->
+            <div class="p-4 border-t border-slate-100">
+                <button onclick="logoutAdmin()" class="w-full flex items-center px-3 py-2.5 text-red-500 hover:bg-red-50 rounded-xl font-semibold text-sm transition-colors">
+                    <i class="fa-solid fa-arrow-right-from-bracket w-5 text-center mr-2"></i> Keluar
+                </button>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT AREA -->
+        <main class="flex-grow flex flex-col h-full overflow-hidden relative z-10">
+            
+            <!-- HEADER -->
+            <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 shrink-0 relative z-10">
+                
+                <!-- Left Header: Greeting -->
+                <div class="flex items-center gap-4">
+                    <button class="lg:hidden text-slate-500 hover:text-slate-900">
+                        <i class="fa-solid fa-bars text-xl"></i>
+                    </button>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h2 class="font-bold text-slate-800 text-sm">Selamat Pagi, 👋</h2>
+                        </div>
+                        <div class="flex items-center gap-2 mt-0.5">
+                            <span class="font-black text-slate-900 text-base leading-none">Muhamad Alzian</span>
+                            <span class="px-2 py-0.5 bg-emerald-100 text-narmadaGreen text-[10px] font-bold rounded-full leading-none flex items-center h-4">Administrator</span>
+                        </div>
+                        <p class="text-[10px] text-slate-500 mt-1 font-medium" id="admin-current-time">Kamis, 24 Juli 2026 • 09:41 WITA</p>
+                    </div>
+                </div>
+
+                <!-- Right Header: Search & Profile -->
+                <div class="flex items-center gap-4">
+                    
+                    <!-- Search Bar -->
+                    <div class="relative hidden md:block">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fa-solid fa-magnifying-glass text-slate-400 text-sm"></i>
+                        </div>
+                        <input type="text" class="bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-full focus:ring-narmadaGreen focus:border-narmadaGreen block w-64 pl-9 pr-12 py-2 outline-none transition-all" placeholder="Cari pengajuan, NIK...">
+                        <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                            <span class="text-[10px] font-bold text-slate-400 bg-white border border-slate-200 rounded px-1.5 py-0.5">Ctrl+K</span>
+                        </div>
+                    </div>
+
+                    <!-- Notifications -->
+                    <button class="relative p-2 text-slate-500 hover:bg-slate-50 rounded-full transition-colors">
+                        <i class="fa-regular fa-bell text-lg"></i>
+                        <span class="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 border-2 border-white rounded-full"></span>
+                    </button>
+
+                    <!-- Divider -->
+                    <div class="w-px h-8 bg-slate-200 hidden md:block"></div>
+
+                    <!-- Profile Dropdown -->
+                    <div class="flex items-center gap-3 cursor-pointer hidden md:flex">
+                        <img src="https://ui-avatars.com/api/?name=Muhamad+Alzian&background=0D8ABC&color=fff" alt="Profile" class="w-9 h-9 rounded-full shadow-sm">
+                        <div class="text-right">
+                            <p class="text-sm font-bold text-slate-800 leading-none">Muhamad Alzian</p>
+                            <p class="text-[10px] font-semibold text-slate-500 mt-0.5">Administrator</p>
+                        </div>
+                        <i class="fa-solid fa-chevron-down text-slate-400 text-xs"></i>
+                    </div>
+
+                </div>
+            </header>
+
+            <!-- SCROLLABLE CONTENT BODY -->
+            <div class="flex-grow overflow-y-auto p-6 scroll-smooth bg-slate-50">
+                
+                <div class="flex flex-col lg:flex-row gap-6">
+                    <!-- LEFT COLUMN (Main Admin Tools) -->
+                    <div class="flex-grow space-y-6 overflow-hidden w-full lg:w-3/4" id="admin-main-column">
+                        
+                        <!-- FASE 2: METRIK KPI & AKSI CEPAT -->
+                        <!-- KPI Cards -->
+                        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                            <!-- Total Pengajuan -->
+                            <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex flex-col justify-between hover:shadow-md transition-shadow relative overflow-hidden group">
+                                <div class="absolute -right-4 -top-4 w-16 h-16 bg-emerald-50 rounded-full group-hover:scale-150 transition-transform duration-500 z-0"></div>
+                                <div class="relative z-10">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Total Pengajuan</h3>
+                                        <div class="w-8 h-8 rounded-lg bg-emerald-100 text-narmadaGreen flex items-center justify-center shrink-0">
+                                            <i class="fa-solid fa-file-invoice text-sm"></i>
+                                        </div>
+                                    </div>
+                                    <h2 class="text-3xl font-black text-slate-800 tracking-tight" id="kpi-total">213</h2>
+                                    <div class="mt-2 flex items-center gap-1.5 text-[10px] font-semibold text-emerald-600">
+                                        <i class="fa-solid fa-arrow-trend-up"></i>
+                                        <span>+18% dari minggu lalu</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Menunggu -->
+                            <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex flex-col justify-between hover:shadow-md transition-shadow relative overflow-hidden group">
+                                <div class="absolute -right-4 -top-4 w-16 h-16 bg-blue-50 rounded-full group-hover:scale-150 transition-transform duration-500 z-0"></div>
+                                <div class="relative z-10">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Menunggu</h3>
+                                        <div class="w-8 h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">
+                                            <i class="fa-solid fa-clock text-sm"></i>
+                                        </div>
+                                    </div>
+                                    <h2 class="text-3xl font-black text-slate-800 tracking-tight" id="kpi-menunggu">47</h2>
+                                    <div class="mt-2 flex items-center gap-1.5 text-[10px] font-semibold text-blue-600">
+                                        <i class="fa-solid fa-arrow-trend-up"></i>
+                                        <span>+12% dari kemarin</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Verifikasi -->
+                            <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex flex-col justify-between hover:shadow-md transition-shadow relative overflow-hidden group">
+                                <div class="absolute -right-4 -top-4 w-16 h-16 bg-amber-50 rounded-full group-hover:scale-150 transition-transform duration-500 z-0"></div>
+                                <div class="relative z-10">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Verifikasi</h3>
+                                        <div class="w-8 h-8 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center shrink-0">
+                                            <i class="fa-solid fa-magnifying-glass text-sm"></i>
+                                        </div>
+                                    </div>
+                                    <h2 class="text-3xl font-black text-slate-800 tracking-tight" id="kpi-verifikasi">36</h2>
+                                    <div class="mt-2 flex items-center gap-1.5 text-[10px] font-semibold text-amber-600">
+                                        <i class="fa-solid fa-arrow-trend-up"></i>
+                                        <span>+8% dari kemarin</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Selesai -->
+                            <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex flex-col justify-between hover:shadow-md transition-shadow relative overflow-hidden group">
+                                <div class="absolute -right-4 -top-4 w-16 h-16 bg-green-50 rounded-full group-hover:scale-150 transition-transform duration-500 z-0"></div>
+                                <div class="relative z-10">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Selesai</h3>
+                                        <div class="w-8 h-8 rounded-lg bg-green-100 text-green-600 flex items-center justify-center shrink-0">
+                                            <i class="fa-solid fa-circle-check text-sm"></i>
+                                        </div>
+                                    </div>
+                                    <h2 class="text-3xl font-black text-slate-800 tracking-tight" id="kpi-selesai">112</h2>
+                                    <div class="mt-2 flex items-center gap-1.5 text-[10px] font-semibold text-green-600">
+                                        <i class="fa-solid fa-arrow-trend-up"></i>
+                                        <span>+22% dari minggu lalu</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Perbaikan -->
+                            <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex flex-col justify-between hover:shadow-md transition-shadow relative overflow-hidden group">
+                                <div class="absolute -right-4 -top-4 w-16 h-16 bg-red-50 rounded-full group-hover:scale-150 transition-transform duration-500 z-0"></div>
+                                <div class="relative z-10">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Perbaikan</h3>
+                                        <div class="w-8 h-8 rounded-lg bg-red-100 text-red-600 flex items-center justify-center shrink-0">
+                                            <i class="fa-solid fa-triangle-exclamation text-sm"></i>
+                                        </div>
+                                    </div>
+                                    <h2 class="text-3xl font-black text-slate-800 tracking-tight" id="kpi-perbaikan">18</h2>
+                                    <div class="mt-2 flex items-center gap-1.5 text-[10px] font-semibold text-red-600">
+                                        <i class="fa-solid fa-arrow-trend-down"></i>
+                                        <span>-5% dari kemarin</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quick Actions -->
+                        <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
+                            <h3 class="text-[11px] font-bold text-slate-800 uppercase tracking-wider mb-4">Aksi Cepat</h3>
+                            <div class="flex flex-wrap gap-3">
+                                <button class="px-4 py-2 bg-emerald-50 text-narmadaGreen border border-emerald-100 rounded-xl text-xs font-bold hover:bg-narmadaGreen hover:text-white transition-colors flex items-center gap-2">
+                                    <i class="fa-solid fa-plus"></i> Pengajuan Baru
+                                </button>
+                                <button class="px-4 py-2 bg-slate-50 text-slate-600 border border-slate-200 rounded-xl text-xs font-bold hover:bg-slate-100 transition-colors flex items-center gap-2">
+                                    <i class="fa-solid fa-layer-group"></i> Tambah Layanan
+                                </button>
+                                <button class="px-4 py-2 bg-slate-50 text-slate-600 border border-slate-200 rounded-xl text-xs font-bold hover:bg-slate-100 transition-colors flex items-center gap-2">
+                                    <i class="fa-solid fa-file-excel text-green-600"></i> Export Excel
+                                </button>
+                                <button class="px-4 py-2 bg-slate-50 text-slate-600 border border-slate-200 rounded-xl text-xs font-bold hover:bg-slate-100 transition-colors flex items-center gap-2">
+                                    <i class="fa-brands fa-whatsapp text-emerald-500"></i> Broadcast WA
+                                </button>
+                                <button class="px-4 py-2 bg-slate-50 text-slate-600 border border-slate-200 rounded-xl text-xs font-bold hover:bg-slate-100 transition-colors flex items-center gap-2">
+                                    <i class="fa-solid fa-qrcode"></i> Scan QR
+                                </button>
+                                <button class="px-4 py-2 bg-slate-50 text-slate-600 border border-slate-200 rounded-xl text-xs font-bold hover:bg-slate-100 transition-colors flex items-center gap-2">
+                                    <i class="fa-solid fa-print"></i> Cetak Massal
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- FASE 3: INTEGRASI GRAFIK -->
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <!-- Pengajuan Mingguan -->
+                            <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 col-span-1 lg:col-span-2 flex flex-col">
+                                <div class="flex justify-between items-center mb-4">
+                                    <h3 class="text-sm font-bold text-slate-800">Pengajuan Mingguan</h3>
+                                    <select class="text-xs text-slate-500 border-none bg-slate-50 rounded-lg px-2 py-1 outline-none font-semibold cursor-pointer">
+                                        <option>7 Hari Terakhir</option>
+                                        <option>Bulan Ini</option>
+                                    </select>
+                                </div>
+                                <div class="relative h-64 w-full flex-grow">
+                                    <canvas id="chartPengajuanMingguan"></canvas>
+                                </div>
+                            </div>
+                            
+                            <!-- Status Pengajuan -->
+                            <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 flex flex-col">
+                                <h3 class="text-sm font-bold text-slate-800 mb-4">Status Pengajuan</h3>
+                                <div class="relative h-64 w-full flex-grow flex justify-center items-center">
+                                    <canvas id="chartStatusPengajuan"></canvas>
+                                </div>
+                            </div>
+
+                            <!-- Jenis Layanan -->
+                            <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 flex flex-col">
+                                <div class="flex justify-between items-center mb-4">
+                                    <h3 class="text-sm font-bold text-slate-800">Jenis Layanan</h3>
+                                    <select class="text-xs text-slate-500 border-none bg-slate-50 rounded-lg px-2 py-1 outline-none font-semibold cursor-pointer">
+                                        <option>7 Hari Terakhir</option>
+                                        <option>Bulan Ini</option>
+                                    </select>
+                                </div>
+                                <div class="relative h-64 w-full flex-grow">
+                                    <canvas id="chartJenisLayanan"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- FASE 4: TABEL PENGAJUAN -->
+                        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col overflow-hidden">
+                            <!-- Table Header & Filters -->
+                            <div class="p-5 border-b border-slate-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                                <h3 class="text-sm font-bold text-slate-800">Daftar Pengajuan Masuk</h3>
+                                <div class="flex items-center gap-2 overflow-x-auto w-full md:w-auto pb-1 md:pb-0">
+                                    <button class="px-4 py-1.5 bg-emerald-50 text-narmadaGreen font-bold text-xs rounded-full whitespace-nowrap">Semua</button>
+                                    <button class="px-4 py-1.5 bg-transparent text-slate-500 hover:bg-slate-50 hover:text-slate-700 font-semibold text-xs rounded-full whitespace-nowrap transition-colors">Hari Ini</button>
+                                    <button class="px-4 py-1.5 bg-transparent text-slate-500 hover:bg-slate-50 hover:text-slate-700 font-semibold text-xs rounded-full whitespace-nowrap transition-colors">Minggu Ini</button>
+                                    <button class="px-4 py-1.5 bg-transparent text-slate-500 hover:bg-slate-50 hover:text-slate-700 font-semibold text-xs rounded-full whitespace-nowrap transition-colors">Bulan Ini</button>
+                                    <button class="px-3 py-1.5 bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold text-xs rounded-lg transition-colors flex items-center gap-1.5 ml-2">
+                                        <i class="fa-solid fa-filter"></i> Filter
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Table Wrapper -->
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left border-collapse">
+                                    <thead>
+                                        <tr class="bg-slate-50/50 text-[10px] uppercase tracking-wider text-slate-500 font-bold border-b border-slate-100">
+                                            <th class="p-4 w-10 text-center"><input type="checkbox" class="rounded border-slate-300 text-narmadaGreen focus:ring-narmadaGreen"></th>
+                                            <th class="py-4 px-2 w-12 text-center">NO</th>
+                                            <th class="py-4 px-4 w-48">WAKTU & TEMPAT</th>
+                                            <th class="py-4 px-4">DETAIL PEMOHON</th>
+                                            <th class="py-4 px-4">LAYANAN</th>
+                                            <th class="py-4 px-4 text-center">STATUS</th>
+                                            <th class="py-4 px-4 text-center">OPERATOR</th>
+                                            <th class="py-4 px-4 text-center w-16">AKSI</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="text-xs text-slate-700">
+                                        <!-- Row 1 -->
+                                        <tr class="border-b border-slate-50 hover:bg-slate-50/50 transition-colors group">
+                                            <td class="p-4 text-center"><input type="checkbox" class="rounded border-slate-300 text-narmadaGreen focus:ring-narmadaGreen"></td>
+                                            <td class="py-4 px-2 text-center font-semibold text-slate-500">1</td>
+                                            <td class="py-4 px-4">
+                                                <div class="font-bold text-slate-800">24/07/2026 09:20:11</div>
+                                                <div class="text-[10px] text-slate-500 mt-1 flex items-center gap-1"><i class="fa-solid fa-location-dot"></i> Kantor Desa Narmada</div>
+                                            </td>
+                                            <td class="py-4 px-4">
+                                                <div class="text-[10px] text-slate-500 font-bold">No Req: <span class="text-slate-700">REQ-20260724-0001</span></div>
+                                                <div class="font-bold text-slate-900 mt-1">SITI HAJAR</div>
+                                                <div class="text-[10px] text-slate-500 font-semibold mt-0.5">NIK: 5201031812000002</div>
+                                                <div class="text-[10px] font-bold text-emerald-600 mt-1 flex items-center gap-1 cursor-pointer"><i class="fa-brands fa-whatsapp"></i> +6285955203036</div>
+                                            </td>
+                                            <td class="py-4 px-4 font-bold text-narmadaGreen">Aktivasi Ulang BPJS PBI</td>
+                                            <td class="py-4 px-4 text-center">
+                                                <span class="px-3 py-1 bg-amber-50 text-amber-600 border border-amber-100 rounded-md text-[10px] font-bold">Verifikasi</span>
+                                            </td>
+                                            <td class="py-4 px-4 text-center text-slate-500 font-semibold">admin01</td>
+                                            <td class="py-4 px-4 text-center">
+                                                <button class="w-8 h-8 rounded-lg bg-slate-50 text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition-colors flex items-center justify-center">
+                                                    <i class="fa-solid fa-ellipsis"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <!-- Row 2 -->
+                                        <tr class="border-b border-slate-50 hover:bg-slate-50/50 transition-colors group">
+                                            <td class="p-4 text-center"><input type="checkbox" class="rounded border-slate-300 text-narmadaGreen focus:ring-narmadaGreen"></td>
+                                            <td class="py-4 px-2 text-center font-semibold text-slate-500">2</td>
+                                            <td class="py-4 px-4">
+                                                <div class="font-bold text-slate-800">24/07/2026 08:45:32</div>
+                                                <div class="text-[10px] text-slate-500 mt-1 flex items-center gap-1"><i class="fa-solid fa-location-dot"></i> Kantor Desa Narmada</div>
+                                            </td>
+                                            <td class="py-4 px-4">
+                                                <div class="text-[10px] text-slate-500 font-bold">No Req: <span class="text-slate-700">REQ-20260724-0002</span></div>
+                                                <div class="font-bold text-slate-900 mt-1">IAN</div>
+                                                <div class="text-[10px] text-slate-500 font-semibold mt-0.5">NIK: 5201031812000002</div>
+                                                <div class="text-[10px] font-bold text-emerald-600 mt-1 flex items-center gap-1 cursor-pointer"><i class="fa-brands fa-whatsapp"></i> +6285955203036</div>
+                                            </td>
+                                            <td class="py-4 px-4 font-bold text-narmadaGreen">Permohonan KK Barcode</td>
+                                            <td class="py-4 px-4 text-center">
+                                                <span class="px-3 py-1 bg-blue-50 text-blue-600 border border-blue-100 rounded-md text-[10px] font-bold">Menunggu</span>
+                                            </td>
+                                            <td class="py-4 px-4 text-center text-slate-500 font-semibold">admin02</td>
+                                            <td class="py-4 px-4 text-center">
+                                                <button class="w-8 h-8 rounded-lg bg-slate-50 text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition-colors flex items-center justify-center">
+                                                    <i class="fa-solid fa-ellipsis"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Pagination -->
+                            <div class="p-4 border-t border-slate-100 flex justify-between items-center bg-slate-50/30">
+                                <span class="text-[11px] font-semibold text-slate-500">Menampilkan 1 - 10 dari 213 data</span>
+                                <div class="flex items-center gap-1">
+                                    <button class="w-7 h-7 rounded-lg bg-white border border-slate-200 text-slate-400 hover:bg-slate-50 flex items-center justify-center transition-colors"><i class="fa-solid fa-chevron-left text-[10px]"></i></button>
+                                    <button class="w-7 h-7 rounded-lg bg-narmadaGreen text-white font-bold text-[11px] flex items-center justify-center shadow-sm">1</button>
+                                    <button class="w-7 h-7 rounded-lg bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold text-[11px] flex items-center justify-center transition-colors">2</button>
+                                    <button class="w-7 h-7 rounded-lg bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold text-[11px] flex items-center justify-center transition-colors">3</button>
+                                    <span class="px-1 text-slate-400 text-xs">...</span>
+                                    <button class="w-7 h-7 rounded-lg bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold text-[11px] flex items-center justify-center transition-colors">22</button>
+                                    <button class="w-7 h-7 rounded-lg bg-white border border-slate-200 text-slate-400 hover:bg-slate-50 flex items-center justify-center transition-colors"><i class="fa-solid fa-chevron-right text-[10px]"></i></button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- RIGHT COLUMN (Notifications & Activities) -->
+                    <div class="w-full lg:w-1/4 shrink-0 space-y-6" id="admin-right-column">
+                        
+                        <!-- FASE 5: PANEL KANAN -->
+                        <!-- Notifikasi -->
+                        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col">
+                            <div class="p-5 border-b border-slate-100 flex justify-between items-center">
+                                <h3 class="text-sm font-bold text-slate-800">Notifikasi</h3>
+                                <a href="#" class="text-[10px] font-bold text-narmadaGreen hover:underline">Lihat Semua</a>
+                            </div>
+                            <div class="p-5 space-y-4">
+                                <!-- Notif 1 -->
+                                <div class="flex gap-3">
+                                    <div class="w-8 h-8 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center shrink-0">
+                                        <i class="fa-solid fa-file-arrow-up text-xs"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs font-bold text-slate-800">Pengajuan baru masuk</p>
+                                        <p class="text-[10px] text-slate-500 mt-0.5">IAN - Permohonan KK Barcode</p>
+                                        <p class="text-[9px] font-bold text-slate-400 mt-1">5 menit yang lalu</p>
+                                    </div>
+                                    <div class="w-2 h-2 rounded-full bg-blue-500 mt-1 ml-auto shrink-0"></div>
+                                </div>
+                                <!-- Notif 2 -->
+                                <div class="flex gap-3">
+                                    <div class="w-8 h-8 rounded-full bg-amber-50 text-amber-500 flex items-center justify-center shrink-0">
+                                        <i class="fa-solid fa-triangle-exclamation text-xs"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs font-bold text-slate-800">Data revisi diperlukan</p>
+                                        <p class="text-[10px] text-slate-500 mt-0.5">REQ-20260723-0004</p>
+                                        <p class="text-[9px] font-bold text-slate-400 mt-1">15 menit yang lalu</p>
+                                    </div>
+                                    <div class="w-2 h-2 rounded-full bg-amber-500 mt-1 ml-auto shrink-0"></div>
+                                </div>
+                                <!-- Notif 3 -->
+                                <div class="flex gap-3">
+                                    <div class="w-8 h-8 rounded-full bg-red-50 text-red-500 flex items-center justify-center shrink-0">
+                                        <i class="fa-solid fa-circle-xmark text-xs"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs font-bold text-slate-800">WA gagal terkirim</p>
+                                        <p class="text-[10px] text-slate-500 mt-0.5">REQ-20260723-0003</p>
+                                        <p class="text-[9px] font-bold text-slate-400 mt-1">30 menit yang lalu</p>
+                                    </div>
+                                    <div class="w-2 h-2 rounded-full bg-red-500 mt-1 ml-auto shrink-0"></div>
+                                </div>
+                                <!-- Notif 4 -->
+                                <div class="flex gap-3">
+                                    <div class="w-8 h-8 rounded-full bg-emerald-50 text-emerald-500 flex items-center justify-center shrink-0">
+                                        <i class="fa-solid fa-file-pdf text-xs"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs font-bold text-slate-800">PDF berhasil dibuat</p>
+                                        <p class="text-[10px] text-slate-500 mt-0.5">REQ-20260724-0001</p>
+                                        <p class="text-[9px] font-bold text-slate-400 mt-1">1 jam yang lalu</p>
+                                    </div>
+                                    <div class="w-2 h-2 rounded-full bg-emerald-500 mt-1 ml-auto shrink-0"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Aktivitas Terbaru -->
+                        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col">
+                            <div class="p-5 border-b border-slate-100 flex justify-between items-center">
+                                <h3 class="text-sm font-bold text-slate-800">Aktivitas Terbaru</h3>
+                                <a href="#" class="text-[10px] font-bold text-narmadaGreen hover:underline">Lihat Semua</a>
+                            </div>
+                            <div class="p-5">
+                                <div class="relative border-l-2 border-slate-100 ml-3 space-y-6">
+                                    <!-- Log 1 -->
+                                    <div class="relative pl-5">
+                                        <div class="absolute -left-[23px] top-1 w-5 h-5 rounded-full bg-white border-2 border-emerald-500 text-emerald-500 flex items-center justify-center">
+                                            <i class="fa-solid fa-check text-[8px]"></i>
+                                        </div>
+                                        <p class="text-[10px] font-bold text-slate-500 mb-1">09:20</p>
+                                        <p class="text-xs font-bold text-slate-800">Pengajuan REQ-20260724-0001</p>
+                                        <p class="text-[10px] text-slate-500 mt-0.5">diverifikasi oleh admin01</p>
+                                    </div>
+                                    <!-- Log 2 -->
+                                    <div class="relative pl-5">
+                                        <div class="absolute -left-[23px] top-1 w-5 h-5 rounded-full bg-white border-2 border-emerald-500 text-emerald-500 flex items-center justify-center">
+                                            <i class="fa-solid fa-print text-[8px]"></i>
+                                        </div>
+                                        <p class="text-[10px] font-bold text-slate-500 mb-1">09:10</p>
+                                        <p class="text-xs font-bold text-slate-800">PDF surat berhasil dicetak</p>
+                                        <p class="text-[10px] text-slate-500 mt-0.5">REQ-20260724-0001</p>
+                                    </div>
+                                    <!-- Log 3 -->
+                                    <div class="relative pl-5">
+                                        <div class="absolute -left-[23px] top-1 w-5 h-5 rounded-full bg-white border-2 border-slate-300 text-slate-400 flex items-center justify-center">
+                                            <i class="fa-solid fa-cloud-arrow-up text-[8px]"></i>
+                                        </div>
+                                        <p class="text-[10px] font-bold text-slate-500 mb-1">08:45</p>
+                                        <p class="text-xs font-bold text-slate-800">Pengajuan baru dari IAN</p>
+                                        <p class="text-[10px] text-slate-500 mt-0.5">Permohonan KK Barcode</p>
+                                    </div>
+                                    <!-- Log 4 -->
+                                    <div class="relative pl-5">
+                                        <div class="absolute -left-[23px] top-1 w-5 h-5 rounded-full bg-white border-2 border-emerald-500 text-emerald-500 flex items-center justify-center">
+                                            <i class="fa-brands fa-whatsapp text-[8px]"></i>
+                                        </div>
+                                        <p class="text-[10px] font-bold text-slate-500 mb-1">08:30</p>
+                                        <p class="text-xs font-bold text-slate-800">WhatsApp berhasil dikirim</p>
+                                        <p class="text-[10px] text-slate-500 mt-0.5">REQ-20260723-0002</p>
+                                    </div>
+                                    <!-- Log 5 -->
+                                    <div class="relative pl-5">
+                                        <div class="absolute -left-[23px] top-1 w-5 h-5 rounded-full bg-white border-2 border-amber-500 text-amber-500 flex items-center justify-center">
+                                            <i class="fa-solid fa-triangle-exclamation text-[8px]"></i>
+                                        </div>
+                                        <p class="text-[10px] font-bold text-slate-500 mb-1">08:15</p>
+                                        <p class="text-xs font-bold text-slate-800">Data revisi diperbarui</p>
+                                        <p class="text-[10px] text-slate-500 mt-0.5">REQ-20260723-0004</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                
+            </div>
+        </main>
+    </div>
+
 
     <!-- LIGHTBOX MODAL -->
     <div id="lightbox-modal" onclick="closeLightbox()" class="hidden fixed inset-0 bg-slate-950/90 backdrop-blur-md z-[60] flex flex-col items-center justify-center p-4 cursor-zoom-out transition-all opacity-0">
@@ -1455,6 +1972,7 @@
     <div id="toast-wrapper" class="fixed bottom-5 right-5 z-50 space-y-2 pointer-events-none"></div>
 
     <!-- JAVASCRIPT UTAMA -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="script_utils.js"></script>
     <script src="script_core.js"></script>
     <script src="script_warga.js"></script>
