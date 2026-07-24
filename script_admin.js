@@ -98,10 +98,12 @@ function runAdminLoginAuth() {
             document.getElementById('subview-admin-beranda').classList.add('hidden');
             document.getElementById('subview-admin-kredensial').classList.add('hidden');
 
-            var inactiveClass = "relative w-full flex items-center px-4 py-3 rounded-xl text-left font-medium text-xs text-slate-500 hover:bg-slate-50 hover:text-slate-900 hover:translate-x-1.5 transition-all duration-300 ease-out active:scale-95 group overflow-hidden";
-            var activeClass = "relative w-full flex items-center px-4 py-3 rounded-xl text-left font-bold text-xs bg-emerald-50 text-narmadaGreen shadow-sm hover:translate-x-1 transition-all duration-300 ease-out active:scale-95 group overflow-hidden before:absolute before:left-0 before:top-2 before:bottom-2 before:w-[4px] before:bg-narmadaGreen before:rounded-r-md";
+            var inactiveClass = "w-full text-left flex items-center px-3 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-semibold text-sm transition-colors";
+            var activeClass = "w-full text-left flex items-center px-3 py-2.5 bg-emerald-50 text-narmadaGreen rounded-xl font-bold text-sm transition-colors";
 
             document.getElementById('tab-adm-dashboard').className = inactiveClass;
+            var tabPengajuan = document.getElementById('tab-adm-pengajuan');
+            if (tabPengajuan) tabPengajuan.className = inactiveClass;
             document.getElementById('tab-adm-daftar-layanan').className = inactiveClass;
             document.getElementById('tab-adm-kontak').className = inactiveClass;
             document.getElementById('tab-adm-beranda').className = inactiveClass;
@@ -111,6 +113,9 @@ function runAdminLoginAuth() {
             var activeTabEl = document.getElementById('tab-adm-' + tabId);
             if (activeTabEl) {
                 activeTabEl.className = activeClass;
+            }
+            if (tabId === 'dashboard' && tabPengajuan) {
+                tabPengajuan.className = activeClass;
             }
 
             // Jika di mobile, sembunyikan sidebar setelah klik menu
