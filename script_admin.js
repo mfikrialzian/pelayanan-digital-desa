@@ -2507,49 +2507,69 @@ function toggleEditProfile(isCancel = false) {
 
 function saveProfileData(e) {
     e.preventDefault();
-    // Simulate API call
+    
+    // Add confirmation before saving
     Swal.fire({
-        title: 'Menyimpan...',
-        text: 'Mohon tunggu sebentar',
-        allowOutsideClick: false,
-        didOpen: () => {
-            Swal.showLoading();
+        title: 'Konfirmasi Simpan',
+        text: 'Apakah Anda yakin ingin menyimpan perubahan profil ini?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#059669',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Ya, Simpan!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Simulate API call
+            Swal.fire({
+                title: 'Menyimpan...',
+                text: 'Mohon tunggu sebentar',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            setTimeout(() => {
+                // Update header and local storage
+                const nama = document.getElementById('input-profil-nama')?.value;
+                const email = document.getElementById('input-profil-email')?.value;
+                let wa = document.getElementById('input-profil-wa')?.value;
+                
+                // Format phone number 08 to +62
+                if (wa && wa.startsWith('08')) {
+                    wa = '+628' + wa.substring(2);
+                    const elWa = document.getElementById('input-profil-wa');
+                    if (elWa) elWa.value = wa;
+                }
+                
+                if (nama) {
+                    localStorage.setItem('userName', nama);
+                    const headerNama = document.getElementById('profil-header-nama');
+                    if (headerNama) headerNama.innerText = nama;
+                    
+                    const topbarName = document.querySelector('.admin-topbar-name');
+                    if (topbarName) topbarName.innerText = nama;
+                }
+                if (email) {
+                    localStorage.setItem('userEmail', email);
+                    const headerEmail = document.getElementById('profil-header-email');
+                    if (headerEmail) headerEmail.innerText = email;
+                }
+                if (wa) localStorage.setItem('userPhone', wa);
+
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil',
+                    text: 'Data profil berhasil diperbarui.',
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: '#059669'
+                }).then(() => {
+                    toggleEditProfile(false); // Exit edit mode without reverting
+                });
+            }, 1500);
         }
     });
-
-    setTimeout(() => {
-        // Update header and local storage
-        const nama = document.getElementById('input-profil-nama')?.value;
-        const email = document.getElementById('input-profil-email')?.value;
-        const nik = document.getElementById('input-profil-nik')?.value;
-        const wa = document.getElementById('input-profil-wa')?.value;
-        
-        if (nama) {
-            localStorage.setItem('userName', nama);
-            const headerNama = document.getElementById('profil-header-nama');
-            if (headerNama) headerNama.innerText = nama;
-            
-            const topbarName = document.querySelector('.admin-topbar-name');
-            if (topbarName) topbarName.innerText = nama;
-        }
-        if (email) {
-            localStorage.setItem('userEmail', email);
-            const headerEmail = document.getElementById('profil-header-email');
-            if (headerEmail) headerEmail.innerText = email;
-        }
-        if (nik) localStorage.setItem('userNIK', nik);
-        if (wa) localStorage.setItem('userPhone', wa);
-
-        Swal.fire({
-            icon: 'success',
-            title: 'Berhasil',
-            text: 'Data profil berhasil diperbarui.',
-            confirmButtonText: 'OK',
-            confirmButtonColor: '#059669'
-        }).then(() => {
-            toggleEditProfile(false); // Exit edit mode without reverting
-        });
-    }, 1500);
 }
 
 function changePasswordMock(e) {
@@ -2632,15 +2652,12 @@ function showPengaturanAkunMenu() {
     // Populate profile inputs with current user data
     const nama = localStorage.getItem('userName') || 'Muhamad Alzian';
     const email = localStorage.getItem('userEmail') || 'alzian@desa-narmada.go.id';
-    const nik = localStorage.getItem('userNIK') || '5201140000000000';
     const phone = localStorage.getItem('userPhone') || '081234567890';
     const role = localStorage.getItem('userRole') || 'Administrator Desa';
     const userId = localStorage.getItem('userId') || 'alzian_admin';
 
     const elNama = document.getElementById('input-profil-nama');
     if (elNama) elNama.value = nama;
-    const elNik = document.getElementById('input-profil-nik');
-    if (elNik) elNik.value = nik;
     const elEmail = document.getElementById('input-profil-email');
     if (elEmail) elEmail.value = email;
     const elWa = document.getElementById('input-profil-wa');
