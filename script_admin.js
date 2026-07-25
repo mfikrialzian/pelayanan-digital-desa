@@ -13,6 +13,9 @@ function runAdminLoginAuth() {
                         btn.innerHTML = '<span>Login</span>';
                         if (res.success) {
                             localStorage.setItem('adminToken_Narmada', res.token);
+                            localStorage.setItem('userRole', res.role || 'Super Admin');
+                            localStorage.setItem('userName', res.name || 'Admin');
+                            initRBAC();
                             switchView('admin');
                             pushToast("Otentikasi Sukses. Selamat Bekerja Admin.", "success");
                         } else {
@@ -29,8 +32,25 @@ function runAdminLoginAuth() {
                 setTimeout(function () {
                     btn.disabled = false;
                     btn.innerHTML = '<span>Login</span>';
-                    if (u === dummySetelan.username && p === dummySetelan.password) {
+                    
+                    var dummyUsers = [
+                        { u: "superadmin", p: "123", role: "Super Admin", name: "Budi (Super Admin)" },
+                        { u: "op1", p: "123", role: "Operator Pelayanan 1", name: "Siti (OP 1)" },
+                        { u: "op2", p: "123", role: "Operator Pelayanan 2", name: "Andi (OP 2)" },
+                        { u: "sekdes", p: "123", role: "Sekretaris Desa", name: "Ahmad (Sekdes)" },
+                        { u: "kades", p: "123", role: "Kepala Desa", name: "Joko (Kades)" },
+                        { u: dummySetelan.username, p: dummySetelan.password, role: "Super Admin", name: "Admin Utama" }
+                    ];
+                    
+                    var userMatch = dummyUsers.find(function(user) {
+                        return user.u === u && user.p === p;
+                    });
+
+                    if (userMatch) {
                         localStorage.setItem('adminToken_Narmada', 'dummy-token');
+                        localStorage.setItem('userRole', userMatch.role);
+                        localStorage.setItem('userName', userMatch.name);
+                        initRBAC();
                         switchView('admin');
                     } else {
                         pushToast("Kredensial login admin salah!", "error");
@@ -51,8 +71,121 @@ function runAdminLoginAuth() {
                 google.script.run.logoutAdmin(token);
             }
             localStorage.removeItem('adminToken_Narmada');
+            localStorage.removeItem('userRole');
+            localStorage.removeItem('userName');
             pushToast("Berhasil keluar dari Dashboard Admin.", "info");
             switchView('admin-login');
+        }
+
+        const SIDEBAR_ITEMS = [
+            { id: 'dashboard', icon: 'fa-house', label: 'Dashboard', action: "switchAdminTab('dashboard')" },
+            { id: 'daftar-layanan', icon: 'fa-layer-group', label: 'Layanan', action: "switchAdminTab('daftar-layanan')" },
+            { id: 'pengajuan', icon: 'fa-file-lines', label: 'Pengajuan', action: "switchAdminTab('dashboard')" },
+            { id: 'kontak', icon: 'fa-address-book', label: 'Kontak Pelayanan', action: "switchAdminTab('kontak')" },
+            { id: 'verifikasi', icon: 'fa-check-to-slot', label: 'Verifikasi Berkas', action: "switchAdminTab('dashboard')" },
+            { id: 'tte', icon: 'fa-signature', label: 'Persetujuan & TTE', action: "pushToast('Fitur Persetujuan & TTE segera hadir', 'info')" },
+            { id: 'data-penduduk', icon: 'fa-users', label: 'Data Penduduk', action: "pushToast('Fitur Data Penduduk segera hadir', 'info')" },
+            { id: 'dokumen', icon: 'fa-folder-open', label: 'Dokumen & Surat', action: "", disabled: true },
+            { id: 'laporan', icon: 'fa-chart-simple', label: 'Laporan', action: "switchAdminTab('laporan')" },
+            { id: 'beranda', icon: 'fa-gear', label: 'Pengaturan Web', action: "switchAdminTab('beranda')" },
+            { id: 'kredensial', icon: 'fa-regular fa-user', label: 'Manajemen Pengguna', action: "switchAdminTab('kredensial')" },
+            { id: 'aktivitas', icon: 'fa-clock-rotate-left', label: 'Log Aktivitas', action: "switchAdminTab('aktivitas')" }
+        ];
+
+        const AVATAR_ITEMS = [
+            { id: 'pengaturan-akun', icon: 'fa-gear', label: 'Pengaturan Akun', action: "javascript:switchAdminTab('pengaturan-akun');", onclick: "document.getElementById('admin-profile-trigger').click()", colorClass: "text-slate-500", groupHoverClass: "group-hover:text-narmadaGreen", bgClass: "bg-slate-100", groupBgClass: "group-hover:bg-emerald-50", textClass: "text-slate-700 hover:bg-slate-50 hover:text-narmadaGreen" },
+            { id: 'panduan', icon: 'fa-regular fa-circle-question', label: 'Bantuan & Panduan', action: "https://docs.google.com/document/d/dummy-link-panduan-admin", target: "_blank", colorClass: "text-slate-500", groupHoverClass: "group-hover:text-narmadaGreen", bgClass: "bg-slate-100", groupBgClass: "group-hover:bg-emerald-50", textClass: "text-slate-700 hover:bg-slate-50 hover:text-narmadaGreen" },
+            { id: 'log-saya', icon: 'fa-clock-rotate-left', label: 'Riwayat Aktivitas', action: "javascript:switchAdminTab('aktivitas');", onclick: "document.getElementById('admin-profile-trigger').click()", colorClass: "text-slate-500", groupHoverClass: "group-hover:text-narmadaGreen", bgClass: "bg-slate-100", groupBgClass: "group-hover:bg-emerald-50", textClass: "text-slate-700 hover:bg-slate-50 hover:text-narmadaGreen" },
+            { id: 'divider', type: 'divider' },
+            { id: 'logout', icon: 'fa-arrow-right-from-bracket', label: 'Keluar', action: "javascript:void(0)", onclick: "confirmAdminLogout()", colorClass: "text-red-500", groupHoverClass: "", bgClass: "bg-red-50", groupBgClass: "group-hover:bg-red-100", textClass: "text-red-600 hover:bg-red-50" }
+        ];
+
+        const ROLE_MAPPINGS = {
+            "Super Admin": {
+                sidebar: ['dashboard', 'daftar-layanan', 'pengajuan', 'kontak', 'verifikasi', 'tte', 'data-penduduk', 'dokumen', 'laporan', 'beranda', 'kredensial', 'aktivitas'],
+                avatar: ['pengaturan-akun', 'panduan', 'log-saya', 'divider', 'logout']
+            },
+            "Operator Pelayanan 1": {
+                sidebar: ['dashboard', 'pengajuan', 'verifikasi', 'data-penduduk', 'laporan'],
+                avatar: ['pengaturan-akun', 'log-saya', 'divider', 'logout']
+            },
+            "Operator Pelayanan 2": {
+                sidebar: ['dashboard', 'pengajuan', 'verifikasi', 'data-penduduk', 'laporan'],
+                avatar: ['pengaturan-akun', 'log-saya', 'divider', 'logout']
+            },
+            "Sekretaris Desa": {
+                sidebar: ['dashboard', 'pengajuan', 'verifikasi', 'tte', 'data-penduduk', 'laporan'],
+                avatar: ['pengaturan-akun', 'log-saya', 'divider', 'logout']
+            },
+            "Kepala Desa": {
+                sidebar: ['dashboard', 'pengajuan', 'tte', 'data-penduduk', 'laporan'],
+                avatar: ['pengaturan-akun', 'log-saya', 'divider', 'logout']
+            }
+        };
+
+        function initRBAC() {
+            var role = localStorage.getItem('userRole') || 'Super Admin';
+            var userName = localStorage.getItem('userName') || 'Administrator';
+            var mapping = ROLE_MAPPINGS[role] || ROLE_MAPPINGS['Super Admin'];
+            
+            // Update Profile Name and Role in UI (Header)
+            var profileNames = document.querySelectorAll('.admin-profile-name');
+            var profileRoles = document.querySelectorAll('.admin-profile-role');
+            if (profileNames.length === 0) {
+                // Specific targeted updates for the layout
+                var hName = document.querySelector('header span.text-base.leading-none');
+                if (hName) hName.innerText = userName;
+                var hRole = document.querySelector('header span.bg-emerald-100');
+                if (hRole) hRole.innerText = role;
+                
+                var dName = document.querySelector('#admin-profile-trigger p.text-sm');
+                if (dName) dName.innerText = userName;
+                var dRole = document.querySelector('#admin-profile-trigger p.text-\\[10px\\]');
+                if (dRole) dRole.innerText = role;
+            }
+
+            // Render Sidebar
+            var sidebarNav = document.getElementById('admin-sidebar-nav');
+            if (sidebarNav) {
+                sidebarNav.innerHTML = '';
+                mapping.sidebar.forEach(function(itemId) {
+                    var item = SIDEBAR_ITEMS.find(function(i) { return i.id === itemId; });
+                    if (item) {
+                        var disabledAttr = item.disabled ? 'disabled=""' : '';
+                        var btnHtml = '<button id="tab-adm-' + item.id + '" onclick="' + item.action + '" ' + disabledAttr + ' class="w-full text-left flex items-center px-3 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-semibold text-sm transition-colors">' +
+                                      '<i class="fa-solid ' + item.icon + ' w-5 text-center mr-2"></i> ' + item.label +
+                                      '</button>';
+                        sidebarNav.innerHTML += btnHtml;
+                    }
+                });
+            }
+
+            // Render Avatar Menu
+            var avatarMenu = document.getElementById('admin-profile-menu');
+            if (avatarMenu) {
+                avatarMenu.innerHTML = '<div class="px-4 py-2 border-b border-slate-100 mb-2">' +
+                                       '<p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Akun Saya</p>' +
+                                       '</div>';
+                
+                mapping.avatar.forEach(function(itemId) {
+                    var item = AVATAR_ITEMS.find(function(i) { return i.id === itemId; });
+                    if (item) {
+                        if (item.type === 'divider') {
+                            avatarMenu.innerHTML += '<div class="my-1 border-t border-slate-100"></div>';
+                        } else {
+                            var targetAttr = item.target ? 'target="' + item.target + '"' : '';
+                            var clickAttr = item.onclick ? 'onclick="' + item.onclick + '"' : '';
+                            var linkHtml = '<a href="' + item.action + '" ' + targetAttr + ' ' + clickAttr + ' class="flex items-center gap-3 px-4 py-2 text-sm transition-colors group ' + item.textClass + '">' +
+                                           '<div class="w-8 h-8 rounded-full flex items-center justify-center transition-colors ' + item.bgClass + ' ' + item.groupBgClass + '">' +
+                                           '<i class="fa-solid ' + item.icon + ' ' + item.colorClass + ' ' + item.groupHoverClass + '"></i>' +
+                                           '</div>' +
+                                           '<span class="font-medium">' + item.label + '</span>' +
+                                           '</a>';
+                            avatarMenu.innerHTML += linkHtml;
+                        }
+                    }
+                });
+            }
         }
 
         window.isVerifikasiDirty = false;
@@ -64,6 +197,30 @@ function runAdminLoginAuth() {
         }
 
         function switchAdminTab(tabId, updateUrl = true) {
+            // RBAC Protection
+            if (typeof ROLE_MAPPINGS !== 'undefined') {
+                var role = localStorage.getItem('userRole') || 'Super Admin';
+                var mapping = ROLE_MAPPINGS[role] || ROLE_MAPPINGS['Super Admin'];
+                
+                // Normalisasi ID untuk pengecekan (misal 'pengaturan-akun' diijinkan jika ada di avatar)
+                var allowed = false;
+                
+                // Dashboard is always allowed for admin roles
+                if (tabId === 'dashboard') allowed = true;
+                
+                if (!allowed && mapping.sidebar.includes(tabId)) allowed = true;
+                if (!allowed && mapping.avatar.includes(tabId)) allowed = true;
+                
+                // Special mapping logic for avatar items to tabIds
+                if (!allowed && tabId === 'aktivitas' && mapping.avatar.includes('log-saya')) allowed = true;
+                if (!allowed && tabId === 'aktivitas' && mapping.avatar.includes('aktivitas-semua')) allowed = true;
+                
+                if (!allowed && tabId !== 'verifikasi' && tabId !== 'layanan') {
+                    pushToast("Akses Ditolak: Peran Anda (" + role + ") tidak memiliki akses ke menu ini.", "error");
+                    return;
+                }
+            }
+
             // Berikan peringatan jika user mencoba keluar dari editor layanan
             if (activeAdminTab === 'layanan' && tabId !== 'layanan') {
                 askConfirmation(

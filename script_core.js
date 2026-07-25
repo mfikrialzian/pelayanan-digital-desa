@@ -266,6 +266,7 @@ var dummyLayananList = [
                 fetchAdminStats();
                 loadBuilderLayananList();
                 loadAdminSettingsForm();
+                if (typeof initRBAC === 'function') initRBAC();
                 
                 if (typeof initAdminCharts === 'function') {
                     setTimeout(initAdminCharts, 100); // Tunggu DOM render sejenak
