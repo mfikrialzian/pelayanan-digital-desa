@@ -271,10 +271,8 @@ function runAdminLoginAuth() {
                 var dropdownId = 'dropdown-aksi-' + u.username;
                 
                 var tr = '<tr class="border-b border-slate-50 hover:bg-slate-50 transition-colors">' +
-                            '<td class="py-3 px-4">' +
-                                '<div class="font-bold text-slate-800">' + u.nama + '</div>' +
-                                '<div class="text-xs text-slate-500">@' + u.username + '</div>' +
-                            '</td>' +
+                            '<td class="py-3 px-4 font-bold text-slate-800">' + (u.nama || '-') + '</td>' +
+                            '<td class="py-3 px-4 text-xs text-slate-500">@' + (u.username || '-') + '</td>' +
                             '<td class="py-3 px-4">' + roleBadge + '</td>' +
                             '<td class="py-3 px-4">' + statusBadge + '</td>' +
                             '<td class="py-3 px-4 text-xs text-slate-500">' + (u.terakhirLogin || '-') + '</td>' +
@@ -2837,7 +2835,7 @@ function simpanPenggunaBaru(event) {
             var peran = document.getElementById('tp-peran').value;
             var status = document.getElementById('tp-status').value;
             
-            var akunBaru = { u: username, p: password, role: peran, name: nama, status: status, unit: "-", terakhirLogin: "-" };
+            var akunBaru = { username: username, password: password, peran: peran, nama: nama, status: status };
             
             document.getElementById('btn-submit-tambah-pengguna').disabled = true;
             document.getElementById('btn-submit-tambah-pengguna').innerHTML = '<i class="fa-solid fa-spinner animate-spin"></i> Menyimpan...';
@@ -2935,7 +2933,7 @@ function simpanEditPengguna(event) {
             var peran = document.getElementById('te-peran').value;
             var status = document.getElementById('te-status').value;
             
-            var payload = { u: username, name: nama, role: peran, unit: "-", status: status };
+            var payload = { username: username, updateData: { nama: nama, peran: peran, status: status } };
             
             document.getElementById('btn-submit-edit-pengguna').disabled = true;
             document.getElementById('btn-submit-edit-pengguna').innerHTML = '<i class="fa-solid fa-spinner animate-spin"></i> Menyimpan...';
