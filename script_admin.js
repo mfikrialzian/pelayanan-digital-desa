@@ -3,8 +3,7 @@ window.dummyUsersData = [
             { u: "op1", p: "123", role: "Operator Pelayanan 1", name: "Siti (OP 1)", status: "Aktif" },
             { u: "op2", p: "123", role: "Operator Pelayanan 2", name: "Andi (OP 2)", status: "Aktif" },
             { u: "sekdes", p: "123", role: "Sekretaris Desa", name: "Ahmad (Sekdes)", status: "Aktif" },
-            { u: "kades", p: "123", role: "Kepala Desa", name: "Joko (Kades)", status: "Aktif" },
-            { u: "viewer1", p: "123", role: "Viewer", name: "Tamu (Viewer)", status: "Aktif" }
+            { u: "kades", p: "123", role: "Kepala Desa", name: "Joko (Kades)", status: "Aktif" }
         ];
 
         function runAdminLoginAuth() {
@@ -229,8 +228,9 @@ window.dummyUsersData = [
                 if (u.role === 'Super Admin') stats.admin++;
                 if (u.role.includes('Operator')) stats.operator++;
                 if (u.role.includes('Desa')) stats.pimpinan++; // Kades & Sekdes
-                if (u.role === 'Viewer') stats.viewer++;
             });
+            // Simulate active online users accessing the web admin
+            stats.viewer = Math.floor(Math.random() * 3) + 1;
 
             var elTotal = document.getElementById('stat-user-total');
             if (elTotal) elTotal.innerText = stats.total;
