@@ -2575,6 +2575,35 @@ function saveProfileData(e) {
     });
 }
 
+function handleProfilePhotoChange(e) {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            const avatarImg = document.getElementById('profil-avatar-img');
+            if (avatarImg) {
+                avatarImg.src = event.target.result;
+            }
+            localStorage.setItem('userAvatar', event.target.result);
+            
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: 'Foto profil berhasil diperbarui!',
+                confirmButtonColor: '#059669'
+            });
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const formProfil = document.getElementById('form-profil');
+    if (formProfil) {
+        formProfil.addEventListener('submit', saveProfileData);
+    }
+});
+
 function changePasswordMock(e) {
     e.preventDefault();
     const newPass = document.getElementById('new-password').value;
@@ -2658,6 +2687,7 @@ function showPengaturanAkunMenu() {
     const phone = localStorage.getItem('userPhone') || '081234567890';
     const role = localStorage.getItem('userRole') || 'Administrator Desa';
     const userId = localStorage.getItem('userId') || 'alzian_admin';
+    const avatar = localStorage.getItem('userAvatar');
 
     const elNama = document.getElementById('input-profil-nama');
     if (elNama) elNama.value = nama;
@@ -2665,6 +2695,11 @@ function showPengaturanAkunMenu() {
     if (elEmail) elEmail.value = email;
     const elWa = document.getElementById('input-profil-wa');
     if (elWa) elWa.value = phone;
+
+    const avatarImg = document.getElementById('profil-avatar-img');
+    if (avatarImg && avatar) {
+        avatarImg.src = avatar;
+    }
 
     const headNama = document.getElementById('profil-header-nama');
     if (headNama) headNama.innerText = nama;

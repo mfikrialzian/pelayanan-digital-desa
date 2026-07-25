@@ -1184,10 +1184,11 @@
                                     <!-- Header Profil -->
                             <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 flex items-center gap-6">
                                 <div class="relative">
-                                    <img src="https://ui-avatars.com/api/?name=Muhamad+Alzian&amp;background=0D8ABC&amp;color=fff&amp;size=100" alt="Avatar" class="w-20 h-20 md:w-24 md:h-24 rounded-full border-4 border-slate-50 shadow-sm object-cover">
-                                    <button class="absolute bottom-0 right-0 w-8 h-8 bg-white border border-slate-200 rounded-full flex items-center justify-center text-slate-500 hover:text-narmadaGreen hover:border-narmadaGreen transition-colors shadow-sm" onclick="alert('Fitur ganti foto akan datang!')">
+                                    <img id="profil-avatar-img" src="https://ui-avatars.com/api/?name=Muhamad+Alzian&amp;background=0D8ABC&amp;color=fff&amp;size=100" alt="Avatar" class="w-20 h-20 md:w-24 md:h-24 rounded-full border-4 border-slate-50 shadow-sm object-cover">
+                                    <button class="absolute bottom-0 right-0 w-8 h-8 bg-white border border-slate-200 rounded-full flex items-center justify-center text-slate-500 hover:text-narmadaGreen hover:border-narmadaGreen transition-colors shadow-sm" onclick="document.getElementById('input-profil-foto').click()">
                                         <i class="fa-solid fa-camera text-xs"></i>
                                     </button>
+                                    <input type="file" id="input-profil-foto" accept="image/*" class="hidden" onchange="handleProfilePhotoChange(event)">
                                 </div>
                                 <div>
                                     <h2 id="profil-header-nama" class="text-xl md:text-2xl font-black text-slate-800">Muhamad Alzian</h2>
@@ -1209,7 +1210,7 @@
                                     </button>
                                 </div>
                                 <div class="p-4 md:p-6">
-                                    <form id="form-profil" class="space-y-4" onsubmit="saveProfileData(event)">
+                                    <form id="form-profil" class="space-y-4">
                                         <div class="flex flex-col gap-4">
                                             <div>
                                                 <label class="block text-[9px] md:text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Nama Lengkap</label>
