@@ -39,8 +39,12 @@ function runAdminLoginAuth() {
 
                     if (userMatch) {
                         localStorage.setItem('adminToken_Narmada', 'dummy-token');
-                        localStorage.setItem('userRole', userMatch.role);
-                        localStorage.setItem('userName', userMatch.name);
+                        localStorage.setItem('userRole', userMatch.role || 'Super Admin');
+                        localStorage.setItem('userName', userMatch.name || 'Admin');
+                        localStorage.setItem('userEmail', userMatch.email || 'alzian@desa-narmada.go.id');
+                        localStorage.setItem('userNIK', userMatch.nik || '5201140000000000');
+                        localStorage.setItem('userPhone', userMatch.phone || '081234567890');
+                        localStorage.setItem('userId', userMatch.username || 'admin');
                         initRBAC();
                         switchView('admin');
                     } else {
@@ -64,6 +68,10 @@ function runAdminLoginAuth() {
             localStorage.removeItem('adminToken_Narmada');
             localStorage.removeItem('userRole');
             localStorage.removeItem('userName');
+            localStorage.removeItem('userEmail');
+            localStorage.removeItem('userNIK');
+            localStorage.removeItem('userPhone');
+            localStorage.removeItem('userId');
             pushToast("Berhasil keluar dari Dashboard Admin.", "info");
             switchView('admin-login');
         }
@@ -2510,18 +2518,27 @@ function saveProfileData(e) {
     });
 
     setTimeout(() => {
-        // Update header
+        // Update header and local storage
         const nama = document.getElementById('input-profil-nama')?.value;
         const email = document.getElementById('input-profil-email')?.value;
+        const nik = document.getElementById('input-profil-nik')?.value;
+        const wa = document.getElementById('input-profil-wa')?.value;
         
         if (nama) {
+            localStorage.setItem('userName', nama);
             const headerNama = document.getElementById('profil-header-nama');
             if (headerNama) headerNama.innerText = nama;
+            
+            const topbarName = document.querySelector('.admin-topbar-name');
+            if (topbarName) topbarName.innerText = nama;
         }
         if (email) {
+            localStorage.setItem('userEmail', email);
             const headerEmail = document.getElementById('profil-header-email');
             if (headerEmail) headerEmail.innerText = email;
         }
+        if (nik) localStorage.setItem('userNIK', nik);
+        if (wa) localStorage.setItem('userPhone', wa);
 
         Swal.fire({
             icon: 'success',
@@ -2611,6 +2628,37 @@ function showPengaturanAkunMenu() {
     if (contentContainer) {
         contentContainer.classList.add('hidden');
     }
+    
+    // Populate profile inputs with current user data
+    const nama = localStorage.getItem('userName') || 'Muhamad Alzian';
+    const email = localStorage.getItem('userEmail') || 'alzian@desa-narmada.go.id';
+    const nik = localStorage.getItem('userNIK') || '5201140000000000';
+    const phone = localStorage.getItem('userPhone') || '081234567890';
+    const role = localStorage.getItem('userRole') || 'Administrator Desa';
+    const userId = localStorage.getItem('userId') || 'alzian_admin';
+
+    const elNama = document.getElementById('input-profil-nama');
+    if (elNama) elNama.value = nama;
+    const elNik = document.getElementById('input-profil-nik');
+    if (elNik) elNik.value = nik;
+    const elEmail = document.getElementById('input-profil-email');
+    if (elEmail) elEmail.value = email;
+    const elWa = document.getElementById('input-profil-wa');
+    if (elWa) elWa.value = phone;
+
+    const headNama = document.getElementById('profil-header-nama');
+    if (headNama) headNama.innerText = nama;
+    const headEmail = document.getElementById('profil-header-email');
+    if (headEmail) headEmail.innerText = email;
+    
+    const roleBadge = document.querySelector('#pa-content-profil .bg-emerald-100');
+    if (roleBadge) roleBadge.innerText = role;
+
+    const usernameInput = document.querySelector('#pa-content-profil input[value="alzian_admin"]');
+    if (usernameInput) usernameInput.value = userId;
+
+    const roleInput = document.querySelector('#pa-content-profil input[value="Administrator Utama"]');
+    if (roleInput) roleInput.value = role;
 }
 
 function switchPengaturanAkunTab(tabId) {
