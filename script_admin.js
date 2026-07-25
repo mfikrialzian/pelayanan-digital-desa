@@ -99,8 +99,7 @@ function runAdminLoginAuth() {
             document.getElementById('subview-admin-kredensial').classList.add('hidden');
             document.getElementById('subview-admin-laporan').classList.add('hidden');
             document.getElementById('subview-admin-aktivitas').classList.add('hidden');
-            document.getElementById('subview-admin-profil').classList.add('hidden');
-            document.getElementById('subview-admin-pengaturan').classList.add('hidden');
+            document.getElementById('subview-admin-pengaturan-akun').classList.add('hidden');
 
             const allTabs = ['tab-adm-dashboard', 'tab-adm-pengajuan', 'tab-adm-daftar-layanan', 'tab-adm-kontak', 'tab-adm-beranda', 'tab-adm-kredensial', 'tab-adm-laporan', 'tab-adm-aktivitas'];
 
@@ -2277,6 +2276,44 @@ function toggleSettingSwitch(button, settingName) {
 
 function mockSaveSetting(settingName) {
     pushToast(`Pengaturan ${settingName} disimpan.`, 'success');
+}
+
+// --- Pengaturan Akun Tabs ---
+function switchPengaturanAkunTab(tabId) {
+    const allTabs = ['profil', 'keamanan', 'tampilan', 'notifikasi', 'aktivitas'];
+    
+    // Sembunyikan semua konten
+    allTabs.forEach(id => {
+        const el = document.getElementById('pa-content-' + id);
+        if (el) {
+            el.classList.remove('block');
+            el.classList.add('hidden');
+        }
+    });
+
+    // Reset semua tab link ke state tidak aktif
+    const inactiveClass = "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors";
+    const activeClass = "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-bold bg-emerald-50 text-narmadaGreen transition-colors";
+
+    allTabs.forEach(id => {
+        const navEl = document.getElementById('tab-pa-' + id);
+        if (navEl) {
+            navEl.className = inactiveClass;
+        }
+    });
+
+    // Tampilkan konten aktif
+    const activeContent = document.getElementById('pa-content-' + tabId);
+    if (activeContent) {
+        activeContent.classList.remove('hidden');
+        activeContent.classList.add('block');
+    }
+
+    // Set class aktif pada nav
+    const activeNav = document.getElementById('tab-pa-' + tabId);
+    if (activeNav) {
+        activeNav.className = activeClass;
+    }
 }
 
 // --- Initial Route Logic ---
