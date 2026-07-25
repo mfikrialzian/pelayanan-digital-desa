@@ -1675,11 +1675,12 @@
                 </div>
 
                 <!-- SUB-TAB J: PENGATURAN AKUN (VIEW FULL) -->
-                <div id="subview-admin-pengaturan-akun" class="hidden w-full max-w-3xl mx-auto flex flex-col gap-6 text-left">
+                <div id="subview-admin-pengaturan-akun" class="hidden w-full gap-6 text-left">
                     
                     <!-- Menu Utama (Vertical Menu in a Frame) -->
-                    <div id="pa-menu-utama" class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden block">
-                        <div class="p-5 border-b border-slate-100 bg-slate-50/50">
+                    <div class="w-full flex justify-center">
+                        <div id="pa-menu-utama" class="w-full max-w-2xl bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden block">
+                            <div class="p-5 border-b border-slate-100 bg-slate-50/50">
                             <h3 class="text-lg font-black text-slate-800"><i class="fa-solid fa-gear text-narmadaGreen mr-2"></i> Pengaturan Akun</h3>
                             <p class="text-xs text-slate-500 mt-1">Kelola informasi profil, preferensi, dan keamanan akun Anda.</p>
                         </div>
@@ -1740,16 +1741,19 @@
                             </div>
                         </div>
                     </div>
+                    </div>
 
                     <!-- Konten Aktif -->
                     <div id="pa-content-container" class="w-full hidden">
-                        <button onclick="showPengaturanAkunMenu()" class="mb-4 flex items-center gap-2 text-xs md:text-sm font-bold text-slate-500 hover:text-narmadaGreen transition-colors">
-                            <i class="fa-solid fa-arrow-left"></i> Kembali ke Menu Pengaturan
-                        </button>
-                        
-                        <!-- TAB PROFIL -->
-                        <div id="pa-content-profil" class="space-y-6 hidden">
-                            <!-- Header Profil -->
+                        <div class="w-full flex justify-center">
+                            <div class="w-full max-w-3xl">
+                                <button onclick="showPengaturanAkunMenu()" class="mb-4 flex items-center gap-2 text-xs md:text-sm font-bold text-slate-500 hover:text-narmadaGreen transition-colors">
+                                    <i class="fa-solid fa-arrow-left"></i> Kembali ke Menu Pengaturan
+                                </button>
+                                
+                                <!-- TAB PROFIL -->
+                                <div id="pa-content-profil" class="space-y-6 hidden">
+                                    <!-- Header Profil -->
                             <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 flex items-center gap-6">
                                 <div class="relative">
                                     <img src="https://ui-avatars.com/api/?name=Muhamad+Alzian&background=0D8ABC&color=fff&size=100" alt="Avatar" class="w-20 h-20 md:w-24 md:h-24 rounded-full border-4 border-slate-50 shadow-sm object-cover">
@@ -2003,9 +2007,9 @@
                                 </div>
                             </div>
                         </div>
-
+                            </div>
+                        </div>
                     </div>
-                </div>
                 </div> <!-- END admin-main-column -->
 
                 <!-- RIGHT COLUMN (Notifications & Activities) -->
