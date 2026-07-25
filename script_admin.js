@@ -2844,16 +2844,17 @@ function callCrudPengguna(action, payload, onSuccess) {
 
 function simpanPenggunaBaru(event) {
     event.preventDefault();
+
+    var nama = document.getElementById('tp-nama').value;
+    var username = document.getElementById('tp-username').value;
+    var password = document.getElementById('tp-password').value;
+    var peran = document.getElementById('tp-peran').value;
+    var status = document.getElementById('tp-status').value;
+    
     showCustomConfirm(
         '<i class="fa-solid fa-floppy-disk text-narmadaGreen"></i> Konfirmasi Simpan',
         'Apakah Anda yakin ingin menyimpan pengguna baru ini?',
         function() {
-            var nama = document.getElementById('tp-nama').value;
-            var username = document.getElementById('tp-username').value;
-            var password = document.getElementById('tp-password').value;
-            var peran = document.getElementById('tp-peran').value;
-            var status = document.getElementById('tp-status').value;
-            
             var akunBaru = { username: username, password: password, peran: peran, nama: nama, status: status };
             
             document.getElementById('btn-submit-tambah-pengguna').disabled = true;
@@ -2943,14 +2944,17 @@ function closeModalEditPengguna() {
 
 function simpanEditPengguna(event) {
     event.preventDefault();
+
+    var username = document.getElementById('te-username-hidden').value;
+    var nama = document.getElementById('te-nama').value;
+    var peran = document.getElementById('te-peran').value;
+    var status = document.getElementById('te-status').value;
+
     showCustomConfirm(
         '<i class="fa-solid fa-floppy-disk text-blue-600"></i> Konfirmasi Perubahan',
         'Apakah Anda yakin ingin menyimpan perubahan data pengguna ini?',
         function() {
-            var username = document.getElementById('te-username-hidden').value;
-            var nama = document.getElementById('te-nama').value;
-            var peran = document.getElementById('te-peran').value;
-            var status = document.getElementById('te-status').value;
+
             
             var payload = { username: username, updateData: { nama: nama, peran: peran, status: status } };
             
