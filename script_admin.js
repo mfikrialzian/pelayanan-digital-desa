@@ -2520,7 +2520,6 @@ function saveProfileData(e) {
         cancelButtonText: 'Batal'
     }).then((result) => {
         if (result.isConfirmed) {
-            // Simulate API call
             Swal.fire({
                 title: 'Menyimpan...',
                 text: 'Mohon tunggu sebentar',
@@ -2530,47 +2529,86 @@ function saveProfileData(e) {
                 }
             });
 
-            setTimeout(() => {
-                // Update header and local storage
-                const elNama = document.getElementById('input-profil-nama');
-                const elEmail = document.getElementById('input-profil-email');
-                const elWa = document.getElementById('input-profil-wa');
+            // Update local storage first
+            const elNama = document.getElementById('input-profil-nama');
+            const elEmail = document.getElementById('input-profil-email');
+            const elWa = document.getElementById('input-profil-wa');
+            
+            const nama = elNama ? elNama.value : '';
+            const email = elEmail ? elEmail.value : '';
+            let wa = elWa ? elWa.value : '';
+            
+            if (wa && wa.startsWith('08')) {
+                wa = '+628' + wa.substring(2);
+                if (elWa) elWa.value = wa;
+            }
+            
+            if (nama) {
+                localStorage.setItem('userName', nama);
+                const headerNama = document.getElementById('profil-header-nama');
+                if (headerNama) headerNama.innerText = nama;
                 
-                const nama = elNama ? elNama.value : '';
-                const email = elEmail ? elEmail.value : '';
-                let wa = elWa ? elWa.value : '';
-                
-                // Format phone number 08 to +62
-                if (wa && wa.startsWith('08')) {
-                    wa = '+628' + wa.substring(2);
-                    if (elWa) elWa.value = wa;
-                }
-                
-                if (nama) {
-                    localStorage.setItem('userName', nama);
-                    const headerNama = document.getElementById('profil-header-nama');
-                    if (headerNama) headerNama.innerText = nama;
-                    
-                    const topbarName = document.querySelector('.admin-topbar-name');
-                    if (topbarName) topbarName.innerText = nama;
-                }
-                if (email) {
-                    localStorage.setItem('userEmail', email);
-                    const headerEmail = document.getElementById('profil-header-email');
-                    if (headerEmail) headerEmail.innerText = email;
-                }
-                if (wa) localStorage.setItem('userPhone', wa);
+                const topbarName = document.querySelector('.admin-topbar-name');
+                if (topbarName) topbarName.innerText = nama;
+            }
+            if (email) {
+                localStorage.setItem('userEmail', email);
+                const headerEmail = document.getElementById('profil-header-email');
+                if (headerEmail) headerEmail.innerText = email;
+            }
+            if (wa) localStorage.setItem('userPhone', wa);
 
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Berhasil',
-                    text: 'Data profil berhasil diperbarui.',
-                    confirmButtonText: 'OK',
-                    confirmButtonColor: '#059669'
-                }).then(() => {
-                    toggleEditProfile(false); // Exit edit mode without reverting
-                });
-            }, 1500);
+            const payload = {
+                username: localStorage.getItem('userId'),
+                nama: nama,
+                email: email,
+                wa: wa
+            };
+
+            if (typeof google !== 'undefined' && google.script && google.script.run) {
+                // Real backend call
+                google.script.run
+                    .withSuccessHandler(function (res) {
+                        if (res && res.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Berhasil',
+                                text: 'Data profil berhasil diperbarui di database.',
+                                confirmButtonText: 'OK',
+                                confirmButtonColor: '#059669'
+                            }).then(() => {
+                                toggleEditProfile(false);
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Gagal',
+                                text: res ? res.message : 'Terjadi kesalahan saat menyimpan.',
+                            });
+                        }
+                    })
+                    .withFailureHandler(function (err) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error Jaringan',
+                            text: 'Gagal terhubung ke server backend.',
+                        });
+                    })
+                    .updateProfilPengguna(payload);
+            } else {
+                // Fallback / Simulation for local dev
+                setTimeout(() => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil (Simulasi)',
+                        text: 'Data profil berhasil diperbarui secara lokal (Development Mode).',
+                        confirmButtonText: 'OK',
+                        confirmButtonColor: '#059669'
+                    }).then(() => {
+                        toggleEditProfile(false);
+                    });
+                }, 1500);
+            }
         }
     });
 }
