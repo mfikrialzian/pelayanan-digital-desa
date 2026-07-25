@@ -1190,11 +1190,11 @@
                                     </button>
                                 </div>
                                 <div>
-                                    <h2 class="text-xl md:text-2xl font-black text-slate-800">Muhamad Alzian</h2>
+                                    <h2 id="profil-header-nama" class="text-xl md:text-2xl font-black text-slate-800">Muhamad Alzian</h2>
                                     <div class="flex items-center gap-2 mt-1.5 mb-1">
                                         <span class="px-2 py-0.5 bg-emerald-100 text-narmadaGreen text-[10px] font-bold rounded uppercase tracking-wider">Administrator Desa</span>
                                     </div>
-                                    <p class="text-xs text-slate-500"><i class="fa-regular fa-envelope mr-1"></i> alzian@desa-narmada.go.id</p>
+                                    <p class="text-xs text-slate-500"><i class="fa-regular fa-envelope mr-1"></i> <span id="profil-header-email">alzian@desa-narmada.go.id</span></p>
                                 </div>
                             </div>
 
@@ -1213,24 +1213,24 @@
                                         <div class="flex flex-col gap-4">
                                             <div>
                                                 <label class="block text-[9px] md:text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Nama Lengkap</label>
-                                                <input type="text" value="Muhamad Alzian" readonly="" class="profil-input w-full bg-slate-50 border border-slate-200 text-slate-800 text-xs md:text-sm rounded-xl focus:ring-narmadaGreen focus:border-narmadaGreen block px-4 py-2.5 outline-none transition-all">
+                                                <input type="text" id="input-profil-nama" value="Muhamad Alzian" readonly="" class="profil-input w-full bg-slate-50 border border-slate-200 text-slate-800 text-xs md:text-sm rounded-xl focus:ring-narmadaGreen focus:border-narmadaGreen block px-4 py-2.5 outline-none transition-all">
                                             </div>
                                             <div>
                                                 <label class="block text-[9px] md:text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">NIK / No. Pegawai</label>
-                                                <input type="text" value="5201140000000000" readonly="" class="profil-input w-full bg-slate-50 border border-slate-200 text-slate-800 text-xs md:text-sm rounded-xl focus:ring-narmadaGreen focus:border-narmadaGreen block px-4 py-2.5 outline-none transition-all">
+                                                <input type="text" id="input-profil-nik" value="5201140000000000" readonly="" class="profil-input w-full bg-slate-50 border border-slate-200 text-slate-800 text-xs md:text-sm rounded-xl focus:ring-narmadaGreen focus:border-narmadaGreen block px-4 py-2.5 outline-none transition-all">
                                             </div>
                                             <div>
                                                 <label class="block text-[9px] md:text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Email Aktif</label>
-                                                <input type="email" value="alzian@desa-narmada.go.id" readonly="" class="profil-input w-full bg-slate-50 border border-slate-200 text-slate-800 text-xs md:text-sm rounded-xl focus:ring-narmadaGreen focus:border-narmadaGreen block px-4 py-2.5 outline-none transition-all">
+                                                <input type="email" id="input-profil-email" value="alzian@desa-narmada.go.id" readonly="" class="profil-input w-full bg-slate-50 border border-slate-200 text-slate-800 text-xs md:text-sm rounded-xl focus:ring-narmadaGreen focus:border-narmadaGreen block px-4 py-2.5 outline-none transition-all">
                                             </div>
                                             <div>
                                                 <label class="block text-[9px] md:text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Nomor Telepon / WA</label>
-                                                <input type="text" value="081234567890" readonly="" class="profil-input w-full bg-slate-50 border border-slate-200 text-slate-800 text-xs md:text-sm rounded-xl focus:ring-narmadaGreen focus:border-narmadaGreen block px-4 py-2.5 outline-none transition-all">
+                                                <input type="text" id="input-profil-wa" value="081234567890" readonly="" class="profil-input w-full bg-slate-50 border border-slate-200 text-slate-800 text-xs md:text-sm rounded-xl focus:ring-narmadaGreen focus:border-narmadaGreen block px-4 py-2.5 outline-none transition-all">
                                             </div>
                                         </div>
                                         <!-- Action Buttons (Hidden by default) -->
                                         <div id="profil-action-buttons" class="hidden flex justify-end gap-2 pt-4 border-t border-slate-100 mt-4">
-                                            <button type="button" onclick="toggleEditProfile()" class="px-5 py-2 text-[10px] md:text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors">
+                                            <button type="button" onclick="toggleEditProfile(true)" class="px-5 py-2 text-[10px] md:text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors">
                                                 Batal
                                             </button>
                                             <button type="submit" class="px-5 py-2 text-[10px] md:text-xs font-bold text-white bg-narmadaGreen hover:bg-emerald-700 rounded-xl transition-colors shadow-sm">

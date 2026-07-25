@@ -82,13 +82,12 @@ function runAdminLoginAuth() {
             { id: 'kredensial', icon: 'fa-regular fa-user', label: 'Manajemen Pengguna', action: "switchAdminTab('kredensial')" },
             { id: 'aktivitas', icon: 'fa-clock-rotate-left', label: 'Log Aktivitas', action: "switchAdminTab('aktivitas')" }
         ];
-
         const AVATAR_ITEMS = [
             { id: 'pengaturan-akun', icon: 'fa-gear', label: 'Pengaturan Akun', action: "javascript:switchAdminTab('pengaturan-akun');", onclick: "document.getElementById('admin-profile-trigger').click()", colorClass: "text-slate-500", groupHoverClass: "group-hover:text-narmadaGreen", bgClass: "bg-slate-100", groupBgClass: "group-hover:bg-emerald-50", textClass: "text-slate-700 hover:bg-slate-50 hover:text-narmadaGreen" },
-            { id: 'panduan', icon: 'fa-regular fa-circle-question', label: 'Bantuan & Panduan', action: "https://docs.google.com/document/d/dummy-link-panduan-admin", target: "_blank", colorClass: "text-slate-500", groupHoverClass: "group-hover:text-narmadaGreen", bgClass: "bg-slate-100", groupBgClass: "group-hover:bg-emerald-50", textClass: "text-slate-700 hover:bg-slate-50 hover:text-narmadaGreen" },
+            { id: 'panduan', icon: 'fa-regular fa-circle-question', label: 'Bantuan & Panduan', action: "javascript:void(0);", onclick: "pushToast('Fitur Bantuan & Panduan segera hadir', 'info'); document.getElementById('admin-profile-trigger').click()", colorClass: "text-slate-500", groupHoverClass: "group-hover:text-narmadaGreen", bgClass: "bg-slate-100", groupBgClass: "group-hover:bg-emerald-50", textClass: "text-slate-700 hover:bg-slate-50 hover:text-narmadaGreen" },
             { id: 'log-saya', icon: 'fa-clock-rotate-left', label: 'Riwayat Aktivitas', action: "javascript:switchAdminTab('aktivitas');", onclick: "document.getElementById('admin-profile-trigger').click()", colorClass: "text-slate-500", groupHoverClass: "group-hover:text-narmadaGreen", bgClass: "bg-slate-100", groupBgClass: "group-hover:bg-emerald-50", textClass: "text-slate-700 hover:bg-slate-50 hover:text-narmadaGreen" },
             { id: 'divider', type: 'divider' },
-            { id: 'logout', icon: 'fa-arrow-right-from-bracket', label: 'Keluar', action: "javascript:void(0)", onclick: "confirmAdminLogout()", colorClass: "text-red-500", groupHoverClass: "", bgClass: "bg-red-50", groupBgClass: "group-hover:bg-red-100", textClass: "text-red-600 hover:bg-red-50" }
+            { id: 'logout', icon: 'fa-arrow-right-from-bracket', label: 'Keluar', action: "javascript:void(0)", onclick: "document.getElementById('admin-profile-trigger').click(); confirmAdminLogout();", colorClass: "text-red-500", groupHoverClass: "", bgClass: "bg-red-50", groupBgClass: "group-hover:bg-red-100", textClass: "text-red-600 hover:bg-red-50" }
         ];
 
         const ROLE_MAPPINGS = {
@@ -2461,7 +2460,9 @@ function toggleDarkModeUI(element) {
 }
 
 // --- Profil Logic ---
-function toggleEditProfile() {
+let originalProfileData = {};
+
+function toggleEditProfile(isCancel = false) {
     const inputs = document.querySelectorAll('.profil-input');
     const actionButtons = document.getElementById('profil-action-buttons');
     const btnEdit = document.getElementById('btn-edit-profil');
@@ -2471,6 +2472,9 @@ function toggleEditProfile() {
     if (isEditing) {
         // Cancel edit
         inputs.forEach(input => {
+            if (isCancel && input.id && originalProfileData[input.id] !== undefined) {
+                input.value = originalProfileData[input.id];
+            }
             input.setAttribute('readonly', true);
             input.classList.remove('bg-white', 'border-narmadaGreen');
             input.classList.add('bg-slate-50', 'border-slate-200');
@@ -2480,6 +2484,9 @@ function toggleEditProfile() {
     } else {
         // Start edit
         inputs.forEach(input => {
+            if (input.id) {
+                originalProfileData[input.id] = input.value;
+            }
             input.removeAttribute('readonly');
             input.classList.remove('bg-slate-50', 'border-slate-200');
             input.classList.add('bg-white', 'border-slate-300'); // Or narmadaGreen on focus
@@ -2503,6 +2510,19 @@ function saveProfileData(e) {
     });
 
     setTimeout(() => {
+        // Update header
+        const nama = document.getElementById('input-profil-nama')?.value;
+        const email = document.getElementById('input-profil-email')?.value;
+        
+        if (nama) {
+            const headerNama = document.getElementById('profil-header-nama');
+            if (headerNama) headerNama.innerText = nama;
+        }
+        if (email) {
+            const headerEmail = document.getElementById('profil-header-email');
+            if (headerEmail) headerEmail.innerText = email;
+        }
+
         Swal.fire({
             icon: 'success',
             title: 'Berhasil',
@@ -2510,7 +2530,7 @@ function saveProfileData(e) {
             confirmButtonText: 'OK',
             confirmButtonColor: '#059669'
         }).then(() => {
-            toggleEditProfile(); // Exit edit mode
+            toggleEditProfile(false); // Exit edit mode without reverting
         });
     }, 1500);
 }
