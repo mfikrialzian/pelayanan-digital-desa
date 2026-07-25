@@ -291,14 +291,15 @@
                             '<td class="py-3 px-4 text-right relative">' +
                                 '<button onclick="toggleDropdown(\'' + dropdownId + '\')" class="w-8 h-8 rounded-lg bg-slate-50 text-slate-500 hover:bg-slate-200 hover:text-slate-800 transition-colors"><i class="fa-solid fa-ellipsis-vertical"></i></button>' +
                                 '<div id="' + dropdownId + '" class="hidden absolute right-4 top-10 w-48 bg-white border border-slate-100 shadow-lg rounded-xl z-10 overflow-hidden text-left">' +
-                                    '<button onclick="pushToast(\'Edit Pengguna: ' + u.u + '\', \'info\'); toggleDropdown(\'' + dropdownId + '\')" class="w-full text-left px-4 py-2.5 text-xs font-medium text-slate-700 hover:bg-slate-50 transition-colors flex items-center gap-2"><i class="fa-solid fa-pen-to-square w-4"></i> Edit Pengguna</button>' +
-                                    '<button onclick="pushToast(\'Reset Sandi: ' + u.u + '\', \'info\'); toggleDropdown(\'' + dropdownId + '\')" class="w-full text-left px-4 py-2.5 text-xs font-medium text-slate-700 hover:bg-slate-50 transition-colors flex items-center gap-2"><i class="fa-solid fa-key w-4"></i> Reset Password</button>' +
+                                    '<button onclick="openModalEditPengguna(\'' + u.u + '\'); toggleDropdown(\'' + dropdownId + '\')" class="w-full text-left px-4 py-2.5 text-xs font-medium text-slate-700 hover:bg-slate-50 transition-colors flex items-center gap-2"><i class="fa-solid fa-pen-to-square w-4"></i> Edit Pengguna</button>' +
+                                    '<button onclick="resetPasswordPengguna(\'' + u.u + '\'); toggleDropdown(\'' + dropdownId + '\')" class="w-full text-left px-4 py-2.5 text-xs font-medium text-slate-700 hover:bg-slate-50 transition-colors flex items-center gap-2"><i class="fa-solid fa-key w-4"></i> Reset Password</button>' +
                                     '<div class="h-px bg-slate-100 w-full my-1"></div>' +
                                     (u.status === 'Aktif' 
-                                        ? '<button onclick="pushToast(\'Nonaktifkan Akun: ' + u.u + '\', \'warning\'); toggleDropdown(\'' + dropdownId + '\')" class="w-full text-left px-4 py-2.5 text-xs font-medium text-amber-600 hover:bg-amber-50 transition-colors flex items-center gap-2"><i class="fa-solid fa-user-slash w-4"></i> Nonaktifkan Akun</button>'
-                                        : '<button onclick="pushToast(\'Aktifkan Akun: ' + u.u + '\', \'success\'); toggleDropdown(\'' + dropdownId + '\')" class="w-full text-left px-4 py-2.5 text-xs font-medium text-narmadaGreen hover:bg-emerald-50 transition-colors flex items-center gap-2"><i class="fa-solid fa-user-check w-4"></i> Aktifkan Akun</button>'
+                                        ? '<button onclick="toggleStatusPengguna(\'' + u.u + '\', \'Aktif\'); toggleDropdown(\'' + dropdownId + '\')" class="w-full text-left px-4 py-2.5 text-xs font-medium text-amber-600 hover:bg-amber-50 transition-colors flex items-center gap-2"><i class="fa-solid fa-user-slash w-4"></i> Nonaktifkan Akun</button>'
+                                        : '<button onclick="toggleStatusPengguna(\'' + u.u + '\', \'Nonaktif\'); toggleDropdown(\'' + dropdownId + '\')" class="w-full text-left px-4 py-2.5 text-xs font-medium text-narmadaGreen hover:bg-emerald-50 transition-colors flex items-center gap-2"><i class="fa-solid fa-user-check w-4"></i> Aktifkan Akun</button>'
                                     ) +
-                                    '<button onclick="pushToast(\'Hapus Pengguna: ' + u.u + '\', \'error\'); toggleDropdown(\'' + dropdownId + '\')" class="w-full text-left px-4 py-2.5 text-xs font-medium text-red-600 hover:bg-red-50 transition-colors flex items-center gap-2"><i class="fa-solid fa-trash w-4"></i> Hapus Pengguna</button>' +
+                                    '<div class="h-px bg-slate-100 w-full my-1"></div>' +
+                                    '<button onclick="hapusPengguna(\'' + u.u + '\'); toggleDropdown(\'' + dropdownId + '\')" class="w-full text-left px-4 py-2.5 text-xs font-medium text-red-600 hover:bg-red-50 transition-colors flex items-center gap-2"><i class="fa-solid fa-trash w-4"></i> Hapus Pengguna</button>' +
                                 '</div>' +
                             '</td>' +
                          '</tr>';
@@ -2700,20 +2701,8 @@ function simpanPenggunaBaru(event) {
             renderUserTable(window.dummyUsersData);
         }
         
-        // Update statistik secara manual
-        var elTotal = document.getElementById('stat-user-total');
-        if (elTotal) elTotal.innerText = parseInt(elTotal.innerText) + 1;
-        
-        if (peran.includes('Operator')) {
-            var elOperator = document.getElementById('stat-user-operator');
-            if (elOperator) elOperator.innerText = parseInt(elOperator.innerText) + 1;
-        } else if (peran.includes('Pimpinan') || peran.includes('Desa')) {
-            var elPimpinan = document.getElementById('stat-user-pimpinan');
-            if (elPimpinan) elPimpinan.innerText = parseInt(elPimpinan.innerText) + 1;
-        } else if (peran === 'Super Admin') {
-            var elAdmin = document.getElementById('stat-user-admin');
-            if (elAdmin) elAdmin.innerText = parseInt(elAdmin.innerText) + 1;
-        }
+        // Update statistik
+        updateStatistikPengguna();
         
         // Tutup modal
         closeModalTambahPengguna();
@@ -2723,6 +2712,167 @@ function simpanPenggunaBaru(event) {
     } else {
         pushToast('Gagal menambahkan pengguna.', 'error');
     }
+}
+
+// --- Helper Update Statistik ---
+function updateStatistikPengguna() {
+    if (!window.dummyUsersData) return;
+    var stats = { total: 0, admin: 0, operator: 0, pimpinan: 0, viewer: 0 };
+    window.dummyUsersData.forEach(function(u) {
+        stats.total++;
+        if (u.role === 'Super Admin') stats.admin++;
+        if (u.role.includes('Operator')) stats.operator++;
+        if (u.role.includes('Desa') || u.role === 'Pimpinan') stats.pimpinan++;
+    });
+    // Viewer is simulated
+    stats.viewer = Math.floor(Math.random() * 3) + 1;
+
+    var elTotal = document.getElementById('stat-user-total');
+    if (elTotal) elTotal.innerText = stats.total;
+    var elAdmin = document.getElementById('stat-user-admin');
+    if (elAdmin) elAdmin.innerText = stats.admin;
+    var elOperator = document.getElementById('stat-user-operator');
+    if (elOperator) elOperator.innerText = stats.operator;
+    var elPimpinan = document.getElementById('stat-user-pimpinan');
+    if (elPimpinan) elPimpinan.innerText = stats.pimpinan;
+    var elViewer = document.getElementById('stat-user-viewer');
+    if (elViewer) elViewer.innerText = stats.viewer;
+}
+
+// --- Helper Modal Konfirmasi Custom ---
+function showCustomConfirm(title, message, onConfirm) {
+    var modal = document.getElementById('modal-custom-confirm');
+    var titleEl = document.getElementById('confirm-modal-title');
+    var messageEl = document.getElementById('confirm-modal-message');
+    var btnOk = document.getElementById('confirm-modal-btn-ok');
+    var btnCancel = document.getElementById('confirm-modal-btn-cancel');
+    
+    if (modal && titleEl && messageEl && btnOk && btnCancel) {
+        titleEl.innerHTML = title;
+        messageEl.innerHTML = message;
+        
+        // Buat clone untuk menghapus event listener lama
+        var newBtnOk = btnOk.cloneNode(true);
+        btnOk.parentNode.replaceChild(newBtnOk, btnOk);
+        
+        var newBtnCancel = btnCancel.cloneNode(true);
+        btnCancel.parentNode.replaceChild(newBtnCancel, btnCancel);
+        
+        newBtnCancel.addEventListener('click', function() {
+            modal.classList.add('hidden');
+        });
+        
+        newBtnOk.addEventListener('click', function() {
+            modal.classList.add('hidden');
+            if(typeof onConfirm === 'function') onConfirm();
+        });
+        
+        modal.classList.remove('hidden');
+    }
+}
+
+// --- Edit Pengguna Logic ---
+function openModalEditPengguna(username) {
+    var user = window.dummyUsersData.find(function(u) { return u.u === username; });
+    if (!user) {
+        pushToast('Data pengguna tidak ditemukan!', 'error');
+        return;
+    }
+    
+    document.getElementById('te-username-hidden').value = user.u;
+    document.getElementById('te-username').value = user.u;
+    document.getElementById('te-nama').value = user.name;
+    document.getElementById('te-peran').value = user.role;
+    document.getElementById('te-unit').value = user.unit;
+    document.getElementById('te-status').value = user.status;
+    
+    var modal = document.getElementById('modal-edit-pengguna');
+    if (modal) modal.classList.remove('hidden');
+}
+
+function closeModalEditPengguna() {
+    var modal = document.getElementById('modal-edit-pengguna');
+    if (modal) {
+        modal.classList.add('hidden');
+        var form = document.getElementById('form-edit-pengguna');
+        if (form) form.reset();
+    }
+}
+
+function simpanEditPengguna(event) {
+    event.preventDefault();
+    var username = document.getElementById('te-username-hidden').value;
+    var userIndex = window.dummyUsersData.findIndex(function(u) { return u.u === username; });
+    
+    if (userIndex !== -1) {
+        window.dummyUsersData[userIndex].name = document.getElementById('te-nama').value;
+        window.dummyUsersData[userIndex].role = document.getElementById('te-peran').value;
+        window.dummyUsersData[userIndex].unit = document.getElementById('te-unit').value;
+        window.dummyUsersData[userIndex].status = document.getElementById('te-status').value;
+        
+        localStorage.setItem('narmada_users', JSON.stringify(window.dummyUsersData));
+        if (typeof filterUserTable === 'function') filterUserTable();
+        else renderUserTable(window.dummyUsersData);
+        updateStatistikPengguna();
+        
+        closeModalEditPengguna();
+        pushToast('Perubahan pada pengguna @' + username + ' berhasil disimpan!', 'success');
+    }
+}
+
+// --- Reset Password Logic ---
+function resetPasswordPengguna(username) {
+    showCustomConfirm(
+        '<i class="fa-solid fa-triangle-exclamation text-amber-500"></i> Konfirmasi Reset Password', 
+        'Apakah Anda yakin ingin mengatur ulang sandi untuk akun <b>@' + username + '</b> menjadi standar (123)?', 
+        function() {
+            var userIndex = window.dummyUsersData.findIndex(function(u) { return u.u === username; });
+            if (userIndex !== -1) {
+                window.dummyUsersData[userIndex].p = "123";
+                localStorage.setItem('narmada_users', JSON.stringify(window.dummyUsersData));
+                pushToast('Password untuk @' + username + ' berhasil direset.', 'success');
+            }
+        }
+    );
+}
+
+// --- Toggle Status Logic ---
+function toggleStatusPengguna(username, currentStatus) {
+    var action = currentStatus === 'Aktif' ? 'menonaktifkan' : 'mengaktifkan';
+    showCustomConfirm(
+        '<i class="fa-solid fa-power-off text-blue-500"></i> Konfirmasi Ubah Status',
+        'Apakah Anda yakin ingin ' + action + ' akun <b>@' + username + '</b>?',
+        function() {
+            var userIndex = window.dummyUsersData.findIndex(function(u) { return u.u === username; });
+            if (userIndex !== -1) {
+                window.dummyUsersData[userIndex].status = currentStatus === 'Aktif' ? 'Nonaktif' : 'Aktif';
+                localStorage.setItem('narmada_users', JSON.stringify(window.dummyUsersData));
+                if (typeof filterUserTable === 'function') filterUserTable();
+                else renderUserTable(window.dummyUsersData);
+                pushToast('Status akun @' + username + ' berhasil diubah.', 'success');
+            }
+        }
+    );
+}
+
+// --- Hapus Pengguna Logic ---
+function hapusPengguna(username) {
+    if (username === 'superadmin') {
+        pushToast('Akun Super Admin utama tidak dapat dihapus!', 'error');
+        return;
+    }
+    showCustomConfirm(
+        '<i class="fa-solid fa-trash text-red-600"></i> Konfirmasi Hapus Akun',
+        'Apakah Anda yakin ingin menghapus akun <b>@' + username + '</b> secara permanen? Data yang telah dihapus tidak dapat dikembalikan.',
+        function() {
+            window.dummyUsersData = window.dummyUsersData.filter(function(u) { return u.u !== username; });
+            localStorage.setItem('narmada_users', JSON.stringify(window.dummyUsersData));
+            updateStatistikPengguna();
+            if (typeof filterUserTable === 'function') filterUserTable();
+            else renderUserTable(window.dummyUsersData);
+            pushToast('Akun @' + username + ' berhasil dihapus.', 'success');
+        }
+    );
 }
 
 // --- Initial Route Logic ---

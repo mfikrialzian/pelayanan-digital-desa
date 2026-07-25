@@ -2302,6 +2302,79 @@
         </div>
     </div>
 
+    <!-- MODAL EDIT PENGGUNA -->
+    <div id="modal-edit-pengguna" class="hidden fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl w-full max-w-md shadow-xl border border-slate-100 flex flex-col max-h-[90vh]">
+            <!-- Header -->
+            <div class="p-5 border-b border-slate-100 flex items-center justify-between flex-shrink-0">
+                <h4 class="font-bold text-slate-800 flex items-center gap-2"><i class="fa-solid fa-pen-to-square text-blue-600"></i> Edit Pengguna</h4>
+                <button onclick="closeModalEditPengguna()" class="text-slate-400 hover:text-slate-600 transition-colors">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            
+            <!-- Body -->
+            <div class="p-5 overflow-y-auto custom-scrollbar space-y-4">
+                <form id="form-edit-pengguna" onsubmit="simpanEditPengguna(event)">
+                    <!-- Hidden Username as reference key -->
+                    <input type="hidden" id="te-username-hidden">
+                    
+                    <!-- Username (Disabled) -->
+                    <div class="mb-4">
+                        <label class="block text-xs font-bold text-slate-700 mb-1.5">Username (Tidak dapat diubah)</label>
+                        <input type="text" id="te-username" disabled class="w-full text-sm px-3 py-2 border border-slate-200 rounded-xl bg-slate-100 text-slate-500 cursor-not-allowed">
+                    </div>
+
+                    <!-- Nama Lengkap -->
+                    <div class="mb-4">
+                        <label class="block text-xs font-bold text-slate-700 mb-1.5">Nama Lengkap</label>
+                        <input type="text" id="te-nama" required class="w-full text-sm px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600 bg-slate-50 transition-colors">
+                    </div>
+                    
+                    <!-- Peran & Unit -->
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1.5">Peran (Role)</label>
+                            <select id="te-peran" required class="w-full text-sm px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600 bg-slate-50 transition-colors">
+                                <option value="Operator Pelayanan">Operator Pelayanan</option>
+                                <option value="Operator Pelayanan 1">Operator Pelayanan 1</option>
+                                <option value="Operator Pelayanan 2">Operator Pelayanan 2</option>
+                                <option value="Pimpinan">Pimpinan</option>
+                                <option value="Sekretaris Desa">Sekretaris Desa</option>
+                                <option value="Kepala Desa">Kepala Desa</option>
+                                <option value="Super Admin">Super Admin</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1.5">Unit Kerja</label>
+                            <input type="text" id="te-unit" required class="w-full text-sm px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600 bg-slate-50 transition-colors">
+                        </div>
+                    </div>
+
+                    <!-- Status -->
+                    <div class="mb-4">
+                        <label class="block text-xs font-bold text-slate-700 mb-1.5">Status Akun</label>
+                        <select id="te-status" required class="w-full text-sm px-3 py-2 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600 bg-slate-50 transition-colors">
+                            <option value="Aktif">Aktif</option>
+                            <option value="Nonaktif">Nonaktif</option>
+                        </select>
+                    </div>
+
+                    <!-- Submit trigger (hidden) -->
+                    <button type="submit" id="btn-submit-te-hidden" class="hidden"></button>
+                </form>
+            </div>
+
+            <!-- Footer -->
+            <div class="p-4 border-t border-slate-100 bg-slate-50 rounded-b-2xl flex justify-end gap-2 flex-shrink-0">
+                <button type="button" onclick="closeModalEditPengguna()" class="px-4 py-2 text-xs font-bold text-slate-600 bg-white hover:bg-slate-100 border border-slate-200 rounded-xl transition-colors">Batal</button>
+                <button type="button" onclick="document.getElementById('btn-submit-te-hidden').click()" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl shadow-sm transition-colors flex items-center gap-1.5">
+                    <i class="fa-solid fa-floppy-disk"></i> Simpan Perubahan
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- MODAL TAMBAH PENGGUNA -->
     <div id="modal-tambah-pengguna" class="hidden fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl w-full max-w-md shadow-xl border border-slate-100 flex flex-col max-h-[90vh]">
