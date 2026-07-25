@@ -747,9 +747,9 @@
                     </div>
 
                     <!-- Notifications -->
-                    <button class="relative p-2 text-slate-500 hover:bg-slate-50 rounded-full transition-colors">
-                        <i class="fa-regular fa-bell text-lg"></i>
-                        <span class="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 border-2 border-white rounded-full"></span>
+                    <button onclick="document.getElementById('admin-right-column').scrollIntoView({behavior: 'smooth'});" class="relative p-2 text-slate-500 hover:bg-slate-50 rounded-full transition-colors">
+                        <i id="header-bell-icon" class="fa-regular fa-bell text-lg"></i>
+                        <span id="header-bell-dot" class="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 border-2 border-white rounded-full hidden"></span>
                     </button>
 
                     <!-- Divider -->

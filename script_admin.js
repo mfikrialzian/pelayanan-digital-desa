@@ -2888,3 +2888,91 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 });
+
+// --- FITUR NOTIFIKASI LONCENG ---
+function playNotificationSound() {
+    try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) return;
+        const ctx = new AudioContext();
+        
+        const playNote = (freq, startTime, duration) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, ctx.currentTime + startTime);
+            
+            gain.gain.setValueAtTime(0, ctx.currentTime + startTime);
+            gain.gain.linearRampToValueAtTime(0.5, ctx.currentTime + startTime + 0.05);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + startTime + duration);
+            
+            osc.start(ctx.currentTime + startTime);
+            osc.stop(ctx.currentTime + startTime + duration);
+        };
+        
+        playNote(523.25, 0, 0.3); // C5
+        playNote(659.25, 0.15, 0.4); // E5
+    } catch(e) {
+        console.log("Audio play failed:", e);
+    }
+}
+
+window.triggerNewNotification = function(tipe, detailPemohon) {
+    // 1. Play Sound
+    playNotificationSound();
+    
+    // 2. Animate Bell Logo
+    const bellIcon = document.getElementById('header-bell-icon');
+    if (bellIcon) {
+        bellIcon.classList.add('animate-ring', 'text-amber-500');
+        setTimeout(() => {
+            bellIcon.classList.remove('animate-ring', 'text-amber-500');
+        }, 3000); // Animasi 3 detik
+    }
+    
+    // 3. Show Red Dot (Tanda Merah)
+    const redDot = document.getElementById('header-bell-dot');
+    if (redDot) {
+        redDot.classList.remove('hidden');
+    }
+
+    // 4. Update the Notification Container
+    const container = document.getElementById("notification-container");
+    if (container) {
+        let icon = "fa-info-circle";
+        let colorClass = "bg-blue-50 text-blue-500";
+        let dotClass = "bg-blue-500";
+        let judul = tipe;
+        
+        let tipeLower = tipe.toLowerCase();
+        if (tipeLower.includes("baru")) { 
+            icon = "fa-file-arrow-up"; colorClass = "bg-emerald-50 text-emerald-500"; dotClass = "bg-emerald-500"; 
+        } else if (tipeLower.includes("gagal")) { 
+            icon = "fa-triangle-exclamation"; colorClass = "bg-red-50 text-red-500"; dotClass = "bg-red-500"; 
+        } else if (tipeLower.includes("belum lengkap") || tipeLower.includes("revisi")) { 
+            icon = "fa-file-pen"; colorClass = "bg-amber-50 text-amber-500"; dotClass = "bg-amber-500"; 
+        }
+
+        let html = `
+        <div class="flex gap-3 slide-in-forward bg-slate-50 p-2 -mx-2 rounded-lg mb-2">
+            <div class="w-8 h-8 rounded-full ${colorClass} flex items-center justify-center shrink-0">
+                <i class="fa-solid ${icon} text-xs"></i>
+            </div>
+            <div>
+                <p class="text-xs font-bold text-slate-800">${judul}</p>
+                <p class="text-[10px] text-slate-500 mt-0.5">Pemohon: ${detailPemohon}</p>
+                <p class="text-[9px] font-bold text-slate-400 mt-1">Baru saja</p>
+            </div>
+            <div class="w-2 h-2 rounded-full ${dotClass} mt-1 ml-auto shrink-0"></div>
+        </div>`;
+        
+        // Remove empty state if exists
+        if (container.innerHTML.includes("Belum ada notifikasi") || container.innerHTML.includes("Memuat")) {
+            container.innerHTML = "";
+        }
+        
+        container.insertAdjacentHTML('afterbegin', html);
+    }
+};
