@@ -140,6 +140,8 @@ function runAdminLoginAuth() {
                     updateLaporanStats();
                 } else if (tabId === 'aktivitas') {
                     fetchActivities();
+                } else if (tabId === 'pengaturan-akun') {
+                    showPengaturanAkunMenu();
                 }
             }
 
@@ -2278,11 +2280,37 @@ function mockSaveSetting(settingName) {
     pushToast(`Pengaturan ${settingName} disimpan.`, 'success');
 }
 
-// --- Pengaturan Akun Tabs ---
+// --- Pengaturan Akun Tabs (Drill-Down) ---
+function showPengaturanAkunMenu() {
+    const menuUtama = document.getElementById('pa-menu-utama');
+    const contentContainer = document.getElementById('pa-content-container');
+    
+    if (menuUtama) {
+        menuUtama.classList.remove('hidden');
+        menuUtama.classList.add('grid');
+    }
+    if (contentContainer) {
+        contentContainer.classList.add('hidden');
+    }
+}
+
 function switchPengaturanAkunTab(tabId) {
     const allTabs = ['profil', 'keamanan', 'tampilan', 'notifikasi', 'aktivitas'];
     
-    // Sembunyikan semua konten
+    // Sembunyikan menu utama
+    const menuUtama = document.getElementById('pa-menu-utama');
+    if (menuUtama) {
+        menuUtama.classList.add('hidden');
+        menuUtama.classList.remove('grid');
+    }
+    
+    // Tampilkan container konten
+    const contentContainer = document.getElementById('pa-content-container');
+    if (contentContainer) {
+        contentContainer.classList.remove('hidden');
+    }
+    
+    // Sembunyikan semua spesifik konten
     allTabs.forEach(id => {
         const el = document.getElementById('pa-content-' + id);
         if (el) {
@@ -2291,28 +2319,11 @@ function switchPengaturanAkunTab(tabId) {
         }
     });
 
-    // Reset semua tab link ke state tidak aktif
-    const inactiveClass = "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors";
-    const activeClass = "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-bold bg-emerald-50 text-narmadaGreen transition-colors";
-
-    allTabs.forEach(id => {
-        const navEl = document.getElementById('tab-pa-' + id);
-        if (navEl) {
-            navEl.className = inactiveClass;
-        }
-    });
-
-    // Tampilkan konten aktif
+    // Tampilkan konten yang dipilih
     const activeContent = document.getElementById('pa-content-' + tabId);
     if (activeContent) {
         activeContent.classList.remove('hidden');
         activeContent.classList.add('block');
-    }
-
-    // Set class aktif pada nav
-    const activeNav = document.getElementById('tab-pa-' + tabId);
-    if (activeNav) {
-        activeNav.className = activeClass;
     }
 }
 
