@@ -2809,7 +2809,8 @@ function callCrudPengguna(action, payload, onSuccess) {
     google.script.run
         .withSuccessHandler(function (res) {
             if (res.success) {
-                pushToast(res.message, "success");
+                var successMsg = res.message || "Tindakan berhasil dilakukan.";
+                pushToast(successMsg, "success");
                 if (onSuccess) onSuccess(res.data);
                 initManajemenPengguna(); // Refresh table
             } else {
@@ -2952,7 +2953,7 @@ function resetPasswordPengguna(username) {
         '<i class="fa-solid fa-triangle-exclamation text-amber-500"></i> Konfirmasi Reset Password', 
         'Apakah Anda yakin ingin mengatur ulang sandi untuk akun <b>@' + username + '</b> menjadi standar (123)?', 
         function() {
-            callCrudPengguna('reset_password', { u: username });
+            callCrudPengguna('resetPassword', { username: username, password: '123' });
         }
     );
 }
@@ -2964,7 +2965,7 @@ function toggleStatusPengguna(username, currentStatus) {
         'Apakah Anda yakin ingin ' + action + ' akun <b>@' + username + '</b>?',
         function() {
             var newStatus = currentStatus === 'Aktif' ? 'Nonaktif' : 'Aktif';
-            callCrudPengguna('update', { u: username, status: newStatus });
+            callCrudPengguna('toggleStatus', { username: username, status: newStatus });
         }
     );
 }
@@ -2978,7 +2979,7 @@ function hapusPengguna(username) {
         '<i class="fa-solid fa-trash text-red-600"></i> Konfirmasi Hapus Akun',
         'Apakah Anda yakin ingin menghapus akun <b>@' + username + '</b> secara permanen? Data yang telah dihapus tidak dapat dikembalikan.',
         function() {
-            callCrudPengguna('delete', { u: username });
+            callCrudPengguna('delete', { username: username });
         }
     );
 }
