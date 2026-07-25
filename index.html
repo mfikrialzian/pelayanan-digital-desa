@@ -1962,68 +1962,87 @@
 
                     <!-- Content Containers -->
                     <!-- Daftar Pengguna -->
-                    <div id="mp-content-daftar" class="hidden bg-white rounded-2xl shadow-sm border border-slate-100 p-5 mt-4 max-w-4xl mx-auto">
-                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
-                            <h4 class="text-sm font-bold text-slate-800 flex items-center gap-2">
-                                <i class="fa-solid fa-users text-narmadaGreen"></i> Daftar Pengguna Sistem
-                            </h4>
-                            <button onclick="pushToast('Fitur Tambah Pengguna segera hadir', 'info')" class="px-3 py-1.5 bg-narmadaGreen hover:bg-emerald-600 text-white text-xs font-bold rounded-lg transition-colors shadow-sm flex items-center gap-2 shrink-0">
-                                <i class="fa-solid fa-plus"></i> Tambah Pengguna
-                            </button>
-                        </div>
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left border-collapse min-w-[600px]">
-                                <thead>
-                                    <tr class="bg-slate-50 text-slate-500 text-[10px] uppercase tracking-wider">
-                                        <th class="py-3 px-4 font-bold rounded-tl-lg">Nama / Username</th>
-                                        <th class="py-3 px-4 font-bold">Peran (Role)</th>
-                                        <th class="py-3 px-4 font-bold">Status</th>
-                                        <th class="py-3 px-4 font-bold rounded-tr-lg text-right">Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="mp-table-body" class="text-sm">
-                                    <!-- Populated by JS -->
-                                </tbody>
-                            </table>
+                    <div id="mp-content-daftar" class="hidden w-full max-w-5xl mx-auto mt-4">
+                        <button onclick="backToManajemenPengguna()" class="text-sm font-semibold text-slate-500 hover:text-narmadaGreen transition-colors flex items-center gap-2 mb-4">
+                            <i class="fa-solid fa-arrow-left"></i> Kembali ke Menu Manajemen
+                        </button>
+                        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5">
+                            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6">
+                                <h4 class="text-base font-bold text-slate-800 flex items-center gap-2">
+                                    <i class="fa-solid fa-users text-narmadaGreen"></i> Daftar Pengguna Sistem
+                                </h4>
+                                <div class="flex flex-wrap items-center gap-3">
+                                    <div class="relative">
+                                        <i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                                        <input type="text" id="mp-search-user" placeholder="Cari nama atau username..." class="pl-8 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-narmadaGreen focus:ring-1 focus:ring-narmadaGreen w-full md:w-48 transition-all">
+                                    </div>
+                                    <select id="mp-filter-role" class="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-600 focus:outline-none focus:border-narmadaGreen focus:ring-1 focus:ring-narmadaGreen cursor-pointer transition-all">
+                                        <option value="all">Semua Peran</option>
+                                        <option value="Super Admin">Super Admin</option>
+                                        <option value="Operator">Operator</option>
+                                        <option value="Pimpinan">Pimpinan</option>
+                                    </select>
+                                    <button onclick="pushToast('Modal Tambah Pengguna segera hadir', 'info')" class="px-4 py-1.5 bg-narmadaGreen hover:bg-emerald-600 text-white text-sm font-bold rounded-lg transition-colors shadow-sm flex items-center gap-2 shrink-0">
+                                        <i class="fa-solid fa-plus"></i> Tambah Pengguna
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="overflow-x-auto rounded-xl border border-slate-100">
+                                <table class="w-full text-left border-collapse min-w-[800px]">
+                                    <thead>
+                                        <tr class="bg-slate-50 text-slate-500 text-[10px] uppercase tracking-wider border-b border-slate-100">
+                                            <th class="py-3 px-4 font-bold">Nama / Username</th>
+                                            <th class="py-3 px-4 font-bold">Peran</th>
+                                            <th class="py-3 px-4 font-bold">Unit</th>
+                                            <th class="py-3 px-4 font-bold">Status</th>
+                                            <th class="py-3 px-4 font-bold">Terakhir Login</th>
+                                            <th class="py-3 px-4 font-bold text-right">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="mp-table-body" class="text-sm divide-y divide-slate-50">
+                                        <!-- Populated by JS -->
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
 
                     <!-- Peran & Hak Akses -->
-                    <div id="mp-content-akses" class="hidden bg-white rounded-2xl shadow-sm border border-slate-100 p-5 mt-4 max-w-4xl mx-auto">
-                        <h4 class="text-sm font-bold text-slate-800 border-b border-slate-100 pb-3 flex items-center gap-2 mb-4">
-                            <i class="fa-solid fa-shield-halved text-narmadaGreen"></i> Penjelasan Peran & Hak Akses
-                        </h4>
-                        <div class="space-y-4">
-                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-100">
-                                <h5 class="text-xs font-bold text-slate-800 mb-1 flex items-center gap-2"><i class="fa-solid fa-user-shield text-red-500 w-5"></i> Super Admin</h5>
-                                <p class="text-xs text-slate-600 leading-relaxed ml-7">Memiliki akses tak terbatas ke semua fitur sistem. Termasuk memodifikasi data penduduk, mengubah setelan web, dan mengelola pengguna lain.</p>
-                            </div>
-                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-100">
-                                <h5 class="text-xs font-bold text-slate-800 mb-1 flex items-center gap-2"><i class="fa-solid fa-user-pen text-blue-500 w-5"></i> Operator Pelayanan</h5>
-                                <p class="text-xs text-slate-600 leading-relaxed ml-7">Dapat mengelola permohonan surat warga, melakukan verifikasi berkas, dan memproses layanan operasional sehari-hari.</p>
-                            </div>
-                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-100">
-                                <h5 class="text-xs font-bold text-slate-800 mb-1 flex items-center gap-2"><i class="fa-solid fa-user-tie text-purple-500 w-5"></i> Pimpinan (Kades / Sekdes)</h5>
-                                <p class="text-xs text-slate-600 leading-relaxed ml-7">Berhak melihat laporan statistik, memantau pengajuan, dan memberikan TTE (Tanda Tangan Elektronik) untuk persetujuan dokumen.</p>
-                            </div>
-                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-100">
-                                <h5 class="text-xs font-bold text-slate-800 mb-1 flex items-center gap-2"><i class="fa-solid fa-eye text-amber-500 w-5"></i> Viewer</h5>
-                                <p class="text-xs text-slate-600 leading-relaxed ml-7">Hanya dapat melihat (read-only) data-data tertentu pada dashboard dan laporan tanpa hak modifikasi.</p>
+                    <div id="mp-content-akses" class="hidden w-full max-w-4xl mx-auto mt-4">
+                        <button onclick="backToManajemenPengguna()" class="text-sm font-semibold text-slate-500 hover:text-narmadaGreen transition-colors flex items-center gap-2 mb-4">
+                            <i class="fa-solid fa-arrow-left"></i> Kembali ke Menu Manajemen
+                        </button>
+                        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5">
+                            <h4 class="text-sm font-bold text-slate-800 border-b border-slate-100 pb-3 flex items-center gap-2 mb-4">
+                                <i class="fa-solid fa-shield-halved text-narmadaGreen"></i> Penjelasan Peran & Hak Akses
+                            </h4>
+                            <div class="space-y-4">
+                                <div class="p-3 bg-slate-50 rounded-xl border border-slate-100">
+                                    <h5 class="text-xs font-bold text-slate-800 mb-1 flex items-center gap-2"><i class="fa-solid fa-user-shield text-red-500 w-5"></i> Super Admin</h5>
+                                    <p class="text-xs text-slate-600 leading-relaxed ml-7">Memiliki akses tak terbatas ke semua fitur sistem. Termasuk memodifikasi data penduduk, mengubah setelan web, dan mengelola pengguna lain.</p>
+                                </div>
+                                <div class="p-3 bg-slate-50 rounded-xl border border-slate-100">
+                                    <h5 class="text-xs font-bold text-slate-800 mb-1 flex items-center gap-2"><i class="fa-solid fa-user-pen text-blue-500 w-5"></i> Operator Pelayanan</h5>
+                                    <p class="text-xs text-slate-600 leading-relaxed ml-7">Dapat mengelola permohonan surat warga, melakukan verifikasi berkas, dan memproses layanan operasional sehari-hari.</p>
+                                </div>
+                                <div class="p-3 bg-slate-50 rounded-xl border border-slate-100">
+                                    <h5 class="text-xs font-bold text-slate-800 mb-1 flex items-center gap-2"><i class="fa-solid fa-user-tie text-purple-500 w-5"></i> Pimpinan (Kades / Sekdes)</h5>
+                                    <p class="text-xs text-slate-600 leading-relaxed ml-7">Berhak melihat laporan statistik, memantau pengajuan, dan memberikan TTE (Tanda Tangan Elektronik) untuk persetujuan dokumen.</p>
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Aktifitas -->
-                    <div id="mp-content-aktifitas" class="hidden bg-white rounded-2xl shadow-sm border border-slate-100 p-5 mt-4 max-w-4xl mx-auto">
-                        <h4 class="text-sm font-bold text-slate-800 border-b border-slate-100 pb-3 flex items-center gap-2 mb-4">
-                            <i class="fa-solid fa-clock-rotate-left text-narmadaGreen"></i> Log Aktifitas Sistem
-                        </h4>
-                        <div class="flex flex-col items-center justify-center py-10 text-center">
-                            <div class="w-16 h-16 rounded-full bg-slate-50 text-slate-300 flex items-center justify-center text-2xl mb-3">
-                                <i class="fa-solid fa-screwdriver-wrench"></i>
-                            </div>
-                            <p class="text-sm font-medium text-slate-600">Modul Log Sedang Disiapkan</p>
-                            <p class="text-xs text-slate-500 mt-1">Nantinya, semua riwayat login dan perubahan data oleh pengguna akan tercatat di sini.</p>
+                    <div id="mp-content-aktifitas" class="hidden w-full max-w-4xl mx-auto mt-4">
+                        <button onclick="backToManajemenPengguna()" class="text-sm font-semibold text-slate-500 hover:text-narmadaGreen transition-colors flex items-center gap-2 mb-4">
+                            <i class="fa-solid fa-arrow-left"></i> Kembali ke Menu Manajemen
+                        </button>
+                        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5">
+                            <h4 class="text-sm font-bold text-slate-800 border-b border-slate-100 pb-3 flex items-center gap-2 mb-4">
+                                <i class="fa-solid fa-clock-rotate-left text-narmadaGreen"></i> Log Aktifitas Sistem
+                            </h4>
+                            <p class="text-xs text-slate-500">Belum ada aktifitas yang tercatat.</p>
                         </div>
                     </div>
                 </div><div id="subview-admin-laporan" class="hidden max-w-4xl mx-auto text-left space-y-4">

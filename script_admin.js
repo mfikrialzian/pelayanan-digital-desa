@@ -1,9 +1,9 @@
 window.dummyUsersData = [
-            { u: "superadmin", p: "123", role: "Super Admin", name: "Budi (Super Admin)", status: "Aktif" },
-            { u: "op1", p: "123", role: "Operator Pelayanan 1", name: "Siti (OP 1)", status: "Aktif" },
-            { u: "op2", p: "123", role: "Operator Pelayanan 2", name: "Andi (OP 2)", status: "Aktif" },
-            { u: "sekdes", p: "123", role: "Sekretaris Desa", name: "Ahmad (Sekdes)", status: "Aktif" },
-            { u: "kades", p: "123", role: "Kepala Desa", name: "Joko (Kades)", status: "Aktif" }
+            { u: "superadmin", p: "123", role: "Super Admin", name: "Budi (Super Admin)", status: "Aktif", unit: "Pusat", terakhirLogin: "Hari ini, 08:15 WITA" },
+            { u: "op1", p: "123", role: "Operator Pelayanan 1", name: "Siti (OP 1)", status: "Aktif", unit: "Pelayanan", terakhirLogin: "Kemarin, 14:30 WITA" },
+            { u: "op2", p: "123", role: "Operator Pelayanan 2", name: "Andi (OP 2)", status: "Nonaktif", unit: "Pelayanan", terakhirLogin: "23 Jul 2026, 09:12 WITA" },
+            { u: "sekdes", p: "123", role: "Sekretaris Desa", name: "Ahmad (Sekdes)", status: "Aktif", unit: "Sekretariat", terakhirLogin: "Hari ini, 09:00 WITA" },
+            { u: "kades", p: "123", role: "Kepala Desa", name: "Joko (Kades)", status: "Aktif", unit: "Pimpinan", terakhirLogin: "20 Jul 2026, 11:45 WITA" }
         ];
 
         function runAdminLoginAuth() {
@@ -195,31 +195,8 @@ window.dummyUsersData = [
         function initManajemenPengguna() {
             var users = window.dummyUsersData || [];
             
-            // Hide all contents initially
-            ['daftar', 'akses', 'aktifitas'].forEach(function(t) {
-                var content = document.getElementById('mp-content-' + t);
-                if (content) content.classList.add('hidden');
-                
-                var btn = document.getElementById('mp-btn-' + t);
-                var icon = document.getElementById('mp-icon-' + t);
-                if (btn) {
-                    btn.classList.remove('bg-emerald-50', 'border-l-2', 'border-narmadaGreen');
-                    var btnIconBg = btn.querySelector('div');
-                    var btnIcon = btn.querySelector('i');
-                    if (btnIconBg) {
-                        btnIconBg.classList.remove('bg-narmadaGreen');
-                        btnIconBg.classList.add('bg-slate-100');
-                    }
-                    if (btnIcon) {
-                        btnIcon.classList.remove('text-white');
-                        btnIcon.classList.add('text-slate-500');
-                    }
-                }
-                if (icon) {
-                    icon.classList.remove('rotate-180', 'text-narmadaGreen');
-                    icon.classList.add('text-slate-300');
-                }
-            });
+            // Hide all contents and show menu initially
+            backToManajemenPengguna();
 
             // Calculate Stats
             var stats = { total: 0, admin: 0, operator: 0, pimpinan: 0, viewer: 0 };
@@ -243,86 +220,121 @@ window.dummyUsersData = [
             var elViewer = document.getElementById('stat-user-viewer');
             if (elViewer) elViewer.innerText = stats.viewer;
 
-            // Populate Table
-            var tbody = document.getElementById('mp-table-body');
-            if (tbody) {
-                tbody.innerHTML = '';
-                users.forEach(function(u) {
-                    var roleBadge = '';
-                    if (u.role === 'Super Admin') roleBadge = '<span class="px-2 py-1 bg-red-100 text-red-700 rounded-lg text-[10px] font-bold">' + u.role + '</span>';
-                    else if (u.role.includes('Operator')) roleBadge = '<span class="px-2 py-1 bg-blue-100 text-blue-700 rounded-lg text-[10px] font-bold">' + u.role + '</span>';
-                    else if (u.role.includes('Desa')) roleBadge = '<span class="px-2 py-1 bg-purple-100 text-purple-700 rounded-lg text-[10px] font-bold">' + u.role + '</span>';
-                    else roleBadge = '<span class="px-2 py-1 bg-amber-100 text-amber-700 rounded-lg text-[10px] font-bold">' + u.role + '</span>';
-                    
-                    var statusBadge = '<span class="px-2 py-1 bg-emerald-100 text-narmadaGreen rounded-lg text-[10px] font-bold"><i class="fa-solid fa-circle text-[8px] mr-1"></i>Aktif</span>';
-                    
-                    var tr = '<tr class="border-b border-slate-50 hover:bg-slate-50 transition-colors">' +
-                                '<td class="py-3 px-4">' +
-                                    '<div class="font-bold text-slate-800">' + u.name + '</div>' +
-                                    '<div class="text-xs text-slate-500">@' + u.u + '</div>' +
-                                '</td>' +
-                                '<td class="py-3 px-4">' + roleBadge + '</td>' +
-                                '<td class="py-3 px-4">' + statusBadge + '</td>' +
-                                '<td class="py-3 px-4 text-right">' +
-                                    '<button onclick="pushToast(\'Fitur Edit segera hadir\', \'info\')" class="w-8 h-8 rounded-lg bg-slate-100 text-slate-500 hover:bg-slate-200 hover:text-slate-800 transition-colors"><i class="fa-solid fa-pen-to-square"></i></button>' +
-                                '</td>' +
-                             '</tr>';
-                    tbody.innerHTML += tr;
-                });
+            renderUserTable(users);
+            
+            // Attach event listeners for search and filter
+            var searchInput = document.getElementById('mp-search-user');
+            var filterRole = document.getElementById('mp-filter-role');
+            if (searchInput) {
+                searchInput.addEventListener('input', filterUserTable);
+            }
+            if (filterRole) {
+                filterRole.addEventListener('change', filterUserTable);
             }
         }
 
-        function switchManajemenPenggunaTab(tabId) {
-            var tabs = ['daftar', 'akses', 'aktifitas'];
+        function filterUserTable() {
+            var searchVal = document.getElementById('mp-search-user').value.toLowerCase();
+            var roleVal = document.getElementById('mp-filter-role').value;
             
+            var users = window.dummyUsersData || [];
+            var filtered = users.filter(function(u) {
+                var matchSearch = u.name.toLowerCase().includes(searchVal) || u.u.toLowerCase().includes(searchVal);
+                var matchRole = true;
+                if (roleVal !== 'all') {
+                    if (roleVal === 'Super Admin' && u.role !== 'Super Admin') matchRole = false;
+                    if (roleVal === 'Operator' && !u.role.includes('Operator')) matchRole = false;
+                    if (roleVal === 'Pimpinan' && !u.role.includes('Desa')) matchRole = false;
+                }
+                return matchSearch && matchRole;
+            });
+            renderUserTable(filtered);
+        }
+
+        function renderUserTable(users) {
+            var tbody = document.getElementById('mp-table-body');
+            if (!tbody) return;
+            
+            tbody.innerHTML = '';
+            if (users.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="py-6 text-center text-slate-500 text-sm">Tidak ada data pengguna ditemukan.</td></tr>';
+                return;
+            }
+
+            users.forEach(function(u) {
+                var roleBadge = '';
+                if (u.role === 'Super Admin') roleBadge = '<span class="px-2 py-1 bg-red-100 text-red-700 rounded-lg text-[10px] font-bold">' + u.role + '</span>';
+                else if (u.role.includes('Operator')) roleBadge = '<span class="px-2 py-1 bg-blue-100 text-blue-700 rounded-lg text-[10px] font-bold">' + u.role + '</span>';
+                else if (u.role.includes('Desa')) roleBadge = '<span class="px-2 py-1 bg-purple-100 text-purple-700 rounded-lg text-[10px] font-bold">' + u.role + '</span>';
+                else roleBadge = '<span class="px-2 py-1 bg-amber-100 text-amber-700 rounded-lg text-[10px] font-bold">' + u.role + '</span>';
+                
+                var statusBadge = u.status === 'Aktif' 
+                    ? '<span class="px-2 py-1 bg-emerald-100 text-narmadaGreen rounded-lg text-[10px] font-bold"><i class="fa-solid fa-circle text-[8px] mr-1"></i>Aktif</span>'
+                    : '<span class="px-2 py-1 bg-slate-100 text-slate-500 rounded-lg text-[10px] font-bold"><i class="fa-solid fa-circle text-[8px] mr-1"></i>Nonaktif</span>';
+                
+                var dropdownId = 'dropdown-aksi-' + u.u;
+                
+                var tr = '<tr class="border-b border-slate-50 hover:bg-slate-50 transition-colors">' +
+                            '<td class="py-3 px-4">' +
+                                '<div class="font-bold text-slate-800">' + u.name + '</div>' +
+                                '<div class="text-xs text-slate-500">@' + u.u + '</div>' +
+                            '</td>' +
+                            '<td class="py-3 px-4">' + roleBadge + '</td>' +
+                            '<td class="py-3 px-4 text-xs font-semibold text-slate-600">' + (u.unit || '-') + '</td>' +
+                            '<td class="py-3 px-4">' + statusBadge + '</td>' +
+                            '<td class="py-3 px-4 text-xs text-slate-500">' + (u.terakhirLogin || '-') + '</td>' +
+                            '<td class="py-3 px-4 text-right relative">' +
+                                '<button onclick="toggleDropdown(\'' + dropdownId + '\')" class="w-8 h-8 rounded-lg bg-slate-50 text-slate-500 hover:bg-slate-200 hover:text-slate-800 transition-colors"><i class="fa-solid fa-ellipsis-vertical"></i></button>' +
+                                '<div id="' + dropdownId + '" class="hidden absolute right-4 top-10 w-48 bg-white border border-slate-100 shadow-lg rounded-xl z-10 overflow-hidden text-left">' +
+                                    '<button onclick="pushToast(\'Edit Pengguna: ' + u.u + '\', \'info\'); toggleDropdown(\'' + dropdownId + '\')" class="w-full text-left px-4 py-2.5 text-xs font-medium text-slate-700 hover:bg-slate-50 transition-colors flex items-center gap-2"><i class="fa-solid fa-pen-to-square w-4"></i> Edit Pengguna</button>' +
+                                    '<button onclick="pushToast(\'Reset Sandi: ' + u.u + '\', \'info\'); toggleDropdown(\'' + dropdownId + '\')" class="w-full text-left px-4 py-2.5 text-xs font-medium text-slate-700 hover:bg-slate-50 transition-colors flex items-center gap-2"><i class="fa-solid fa-key w-4"></i> Reset Password</button>' +
+                                    '<div class="h-px bg-slate-100 w-full my-1"></div>' +
+                                    (u.status === 'Aktif' 
+                                        ? '<button onclick="pushToast(\'Nonaktifkan Akun: ' + u.u + '\', \'warning\'); toggleDropdown(\'' + dropdownId + '\')" class="w-full text-left px-4 py-2.5 text-xs font-medium text-amber-600 hover:bg-amber-50 transition-colors flex items-center gap-2"><i class="fa-solid fa-user-slash w-4"></i> Nonaktifkan Akun</button>'
+                                        : '<button onclick="pushToast(\'Aktifkan Akun: ' + u.u + '\', \'success\'); toggleDropdown(\'' + dropdownId + '\')" class="w-full text-left px-4 py-2.5 text-xs font-medium text-narmadaGreen hover:bg-emerald-50 transition-colors flex items-center gap-2"><i class="fa-solid fa-user-check w-4"></i> Aktifkan Akun</button>'
+                                    ) +
+                                    '<button onclick="pushToast(\'Hapus Pengguna: ' + u.u + '\', \'error\'); toggleDropdown(\'' + dropdownId + '\')" class="w-full text-left px-4 py-2.5 text-xs font-medium text-red-600 hover:bg-red-50 transition-colors flex items-center gap-2"><i class="fa-solid fa-trash w-4"></i> Hapus Pengguna</button>' +
+                                '</div>' +
+                            '</td>' +
+                         '</tr>';
+                tbody.innerHTML += tr;
+            });
+        }
+
+        // Helper function for table row dropdowns
+        function toggleDropdown(id) {
+            var el = document.getElementById(id);
+            if (el) el.classList.toggle('hidden');
+        }
+
+        function switchManajemenPenggunaTab(tabId) {
+            // Sembunyikan menu container utama
+            var menuContainer = document.getElementById('mp-menu-container');
+            if (menuContainer) menuContainer.classList.add('hidden');
+
+            // Sembunyikan semua konten terlebih dahulu
+            var tabs = ['daftar', 'akses', 'aktifitas'];
             tabs.forEach(function(t) {
                 var content = document.getElementById('mp-content-' + t);
-                var btn = document.getElementById('mp-btn-' + t);
-                var icon = document.getElementById('mp-icon-' + t);
-                
                 if (content) content.classList.add('hidden');
-                if (btn) {
-                    btn.classList.remove('bg-emerald-50', 'border-l-2', 'border-narmadaGreen');
-                    // Reset group styles
-                    var btnIconBg = btn.querySelector('div');
-                    var btnIcon = btn.querySelector('i');
-                    if (btnIconBg) {
-                        btnIconBg.classList.remove('bg-narmadaGreen');
-                        btnIconBg.classList.add('bg-slate-100');
-                    }
-                    if (btnIcon) {
-                        btnIcon.classList.remove('text-white');
-                        btnIcon.classList.add('text-slate-500');
-                    }
-                }
-                if (icon) {
-                    icon.classList.remove('rotate-180', 'text-narmadaGreen');
-                    icon.classList.add('text-slate-300');
-                }
             });
 
+            // Tampilkan konten yang dipilih
             var activeContent = document.getElementById('mp-content-' + tabId);
-            var activeBtn = document.getElementById('mp-btn-' + tabId);
-            var activeIcon = document.getElementById('mp-icon-' + tabId);
-            
             if (activeContent) activeContent.classList.remove('hidden');
-            if (activeBtn) {
-                activeBtn.classList.add('bg-emerald-50', 'border-l-2', 'border-narmadaGreen');
-                var aBtnIconBg = activeBtn.querySelector('div');
-                var aBtnIcon = activeBtn.querySelector('i');
-                if (aBtnIconBg) {
-                    aBtnIconBg.classList.add('bg-narmadaGreen');
-                    aBtnIconBg.classList.remove('bg-slate-100', 'group-hover:bg-emerald-50');
-                }
-                if (aBtnIcon) {
-                    aBtnIcon.classList.add('text-white');
-                    aBtnIcon.classList.remove('text-slate-500', 'group-hover:text-narmadaGreen');
-                }
-            }
-            if (activeIcon) {
-                activeIcon.classList.add('rotate-180', 'text-narmadaGreen');
-                activeIcon.classList.remove('text-slate-300');
-            }
+        }
+
+        function backToManajemenPengguna() {
+            // Sembunyikan semua konten
+            var tabs = ['daftar', 'akses', 'aktifitas'];
+            tabs.forEach(function(t) {
+                var content = document.getElementById('mp-content-' + t);
+                if (content) content.classList.add('hidden');
+            });
+
+            // Tampilkan kembali menu container utama
+            var menuContainer = document.getElementById('mp-menu-container');
+            if (menuContainer) menuContainer.classList.remove('hidden');
         }
         function resetVerifikasiDirty() {
             window.isVerifikasiDirty = false;
