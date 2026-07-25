@@ -276,7 +276,6 @@ function runAdminLoginAuth() {
                                 '<div class="text-xs text-slate-500">@' + u.username + '</div>' +
                             '</td>' +
                             '<td class="py-3 px-4">' + roleBadge + '</td>' +
-                            '<td class="py-3 px-4 text-xs font-semibold text-slate-600">' + (u.unit || '-') + '</td>' +
                             '<td class="py-3 px-4">' + statusBadge + '</td>' +
                             '<td class="py-3 px-4 text-xs text-slate-500">' + (u.terakhirLogin || '-') + '</td>' +
                             '<td class="py-3 px-4 text-right relative">' +
@@ -2828,23 +2827,28 @@ function callCrudPengguna(action, payload, onSuccess) {
 
 function simpanPenggunaBaru(event) {
     event.preventDefault();
-    var nama = document.getElementById('tp-nama').value;
-    var username = document.getElementById('tp-username').value;
-    var password = document.getElementById('tp-password').value;
-    var peran = document.getElementById('tp-peran').value;
-    var unit = document.getElementById('tp-unit').value;
-    var status = document.getElementById('tp-status').value;
-    
-    var akunBaru = { u: username, p: password, role: peran, name: nama, status: status, unit: unit, terakhirLogin: "-" };
-    
-    document.getElementById('btn-submit-tambah-pengguna').disabled = true;
-    document.getElementById('btn-submit-tambah-pengguna').innerHTML = '<i class="fa-solid fa-spinner animate-spin"></i> Menyimpan...';
-    
-    callCrudPengguna('create', akunBaru, function() {
-        closeModalTambahPengguna();
-        document.getElementById('btn-submit-tambah-pengguna').disabled = false;
-        document.getElementById('btn-submit-tambah-pengguna').innerHTML = 'Simpan Pengguna';
-    });
+    showCustomConfirm(
+        '<i class="fa-solid fa-floppy-disk text-narmadaGreen"></i> Konfirmasi Simpan',
+        'Apakah Anda yakin ingin menyimpan pengguna baru ini?',
+        function() {
+            var nama = document.getElementById('tp-nama').value;
+            var username = document.getElementById('tp-username').value;
+            var password = document.getElementById('tp-password').value;
+            var peran = document.getElementById('tp-peran').value;
+            var status = document.getElementById('tp-status').value;
+            
+            var akunBaru = { u: username, p: password, role: peran, name: nama, status: status, unit: "-", terakhirLogin: "-" };
+            
+            document.getElementById('btn-submit-tambah-pengguna').disabled = true;
+            document.getElementById('btn-submit-tambah-pengguna').innerHTML = '<i class="fa-solid fa-spinner animate-spin"></i> Menyimpan...';
+            
+            callCrudPengguna('create', akunBaru, function() {
+                closeModalTambahPengguna();
+                document.getElementById('btn-submit-tambah-pengguna').disabled = false;
+                document.getElementById('btn-submit-tambah-pengguna').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Simpan Pengguna';
+            });
+        }
+    );
 }
 
 function updateStatistikPengguna() {
@@ -2905,7 +2909,6 @@ function openModalEditPengguna(username) {
     document.getElementById('te-username').value = user.username;
     document.getElementById('te-nama').value = user.nama;
     document.getElementById('te-peran').value = user.peran;
-    document.getElementById('te-unit').value = user.unit;
     document.getElementById('te-status').value = user.status;
     
     var modal = document.getElementById('modal-edit-pengguna');
@@ -2923,22 +2926,27 @@ function closeModalEditPengguna() {
 
 function simpanEditPengguna(event) {
     event.preventDefault();
-    var username = document.getElementById('te-username-hidden').value;
-    var nama = document.getElementById('te-nama').value;
-    var peran = document.getElementById('te-peran').value;
-    var unit = document.getElementById('te-unit').value;
-    var status = document.getElementById('te-status').value;
-    
-    var payload = { u: username, name: nama, role: peran, unit: unit, status: status };
-    
-    document.getElementById('btn-submit-edit-pengguna').disabled = true;
-    document.getElementById('btn-submit-edit-pengguna').innerHTML = '<i class="fa-solid fa-spinner animate-spin"></i> Menyimpan...';
-    
-    callCrudPengguna('update', payload, function() {
-        closeModalEditPengguna();
-        document.getElementById('btn-submit-edit-pengguna').disabled = false;
-        document.getElementById('btn-submit-edit-pengguna').innerHTML = 'Simpan Perubahan';
-    });
+    showCustomConfirm(
+        '<i class="fa-solid fa-floppy-disk text-blue-600"></i> Konfirmasi Perubahan',
+        'Apakah Anda yakin ingin menyimpan perubahan data pengguna ini?',
+        function() {
+            var username = document.getElementById('te-username-hidden').value;
+            var nama = document.getElementById('te-nama').value;
+            var peran = document.getElementById('te-peran').value;
+            var status = document.getElementById('te-status').value;
+            
+            var payload = { u: username, name: nama, role: peran, unit: "-", status: status };
+            
+            document.getElementById('btn-submit-edit-pengguna').disabled = true;
+            document.getElementById('btn-submit-edit-pengguna').innerHTML = '<i class="fa-solid fa-spinner animate-spin"></i> Menyimpan...';
+            
+            callCrudPengguna('update', payload, function() {
+                closeModalEditPengguna();
+                document.getElementById('btn-submit-edit-pengguna').disabled = false;
+                document.getElementById('btn-submit-edit-pengguna').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Simpan Perubahan';
+            });
+        }
+    );
 }
 
 function resetPasswordPengguna(username) {
