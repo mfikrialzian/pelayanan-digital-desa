@@ -1,17 +1,4 @@
-        var savedUsers = localStorage.getItem('narmada_users');
-        if (savedUsers) {
-            window.dummyUsersData = JSON.parse(savedUsers);
-        } else {
-            window.dummyUsersData = [
-                { u: "superadmin", p: "123", role: "Super Admin", name: "Budi (Super Admin)", status: "Aktif", unit: "Pusat", terakhirLogin: "Hari ini, 08:15 WITA" },
-                { u: "op1", p: "123", role: "Operator Pelayanan 1", name: "Siti (OP 1)", status: "Aktif", unit: "Pelayanan", terakhirLogin: "Kemarin, 14:30 WITA" },
-                { u: "op2", p: "123", role: "Operator Pelayanan 2", name: "Andi (OP 2)", status: "Nonaktif", unit: "Pelayanan", terakhirLogin: "23 Jul 2026, 09:12 WITA" },
-                { u: "sekdes", p: "123", role: "Sekretaris Desa", name: "Ahmad (Sekdes)", status: "Aktif", unit: "Sekretariat", terakhirLogin: "Hari ini, 09:00 WITA" },
-                { u: "kades", p: "123", role: "Kepala Desa", name: "Joko (Kades)", status: "Aktif", unit: "Pimpinan", terakhirLogin: "20 Jul 2026, 11:45 WITA" }
-            ];
-        }
-
-        function runAdminLoginAuth() {
+function runAdminLoginAuth() {
             var u = document.getElementById('login-username').value.trim();
             var p = document.getElementById('login-password').value.trim();
             var btn = document.getElementById('btn-submit-login');
@@ -46,7 +33,7 @@
                     btn.disabled = false;
                     btn.innerHTML = '<span>Login</span>';
                     
-                    var userMatch = window.dummyUsersData.find(function(user) {
+                    var userMatch = window.usersData.find(function(user) {
                         return user.u === u && user.p === p;
                     });
 
@@ -198,51 +185,48 @@
         }
 
         function initManajemenPengguna() {
-            var users = window.dummyUsersData || [];
+    var token = localStorage.getItem('adminToken_Narmada');
+    if (!token || !isGoogleEnv) return;
+    
+    backToManajemenPengguna();
+    var tbody = document.getElementById('mp-table-body');
+    if (tbody) tbody.innerHTML = '<tr><td colspan="6" class="py-6 text-center text-slate-500 text-sm"><i class="fa-solid fa-spinner animate-spin mr-2"></i>Memuat data pengguna...</td></tr>';
+    
+    google.script.run
+        .withSuccessHandler(function (res) {
+            if (res.error) {
+                pushToast(res.error, "error");
+                if (res.authError) handleAdminLogout();
+                return;
+            }
+            window.usersData = res || [];
             
-            // Hide all contents and show menu initially
-            backToManajemenPengguna();
-
-            // Calculate Stats
-            var stats = { total: 0, admin: 0, operator: 0, pimpinan: 0, viewer: 0 };
-            users.forEach(function(u) {
-                stats.total++;
-                if (u.role === 'Super Admin') stats.admin++;
-                if (u.role.includes('Operator')) stats.operator++;
-                if (u.role.includes('Desa')) stats.pimpinan++; // Kades & Sekdes
-            });
-            // Simulate active online users accessing the web admin
-            stats.viewer = Math.floor(Math.random() * 3) + 1;
-
-            var elTotal = document.getElementById('stat-user-total');
-            if (elTotal) elTotal.innerText = stats.total;
-            var elAdmin = document.getElementById('stat-user-admin');
-            if (elAdmin) elAdmin.innerText = stats.admin;
-            var elOperator = document.getElementById('stat-user-operator');
-            if (elOperator) elOperator.innerText = stats.operator;
-            var elPimpinan = document.getElementById('stat-user-pimpinan');
-            if (elPimpinan) elPimpinan.innerText = stats.pimpinan;
-            var elViewer = document.getElementById('stat-user-viewer');
-            if (elViewer) elViewer.innerText = stats.viewer;
-
-            renderUserTable(users);
+            updateStatistikPengguna();
+            renderUserTable(window.usersData);
             
-            // Attach event listeners for search and filter
             var searchInput = document.getElementById('mp-search-user');
             var filterRole = document.getElementById('mp-filter-role');
             if (searchInput) {
+                searchInput.removeEventListener('input', filterUserTable);
                 searchInput.addEventListener('input', filterUserTable);
             }
             if (filterRole) {
+                filterRole.removeEventListener('change', filterUserTable);
                 filterRole.addEventListener('change', filterUserTable);
             }
-        }
+        })
+        .withFailureHandler(function (err) {
+            pushToast("Gagal mengambil data pengguna: " + err, "error");
+            if (tbody) tbody.innerHTML = '<tr><td colspan="6" class="py-6 text-center text-red-500 text-sm">Gagal memuat data.</td></tr>';
+        })
+        .getPenggunaList(token);
+}
 
         function filterUserTable() {
             var searchVal = document.getElementById('mp-search-user').value.toLowerCase();
             var roleVal = document.getElementById('mp-filter-role').value;
             
-            var users = window.dummyUsersData || [];
+            var users = window.usersData || [];
             var filtered = users.filter(function(u) {
                 var matchSearch = u.name.toLowerCase().includes(searchVal) || u.u.toLowerCase().includes(searchVal);
                 var matchRole = true;
@@ -2660,10 +2644,29 @@ function closeModalTambahPengguna() {
     }
 }
 
-function simpanPenggunaBaru(event) {
-    event.preventDefault(); // Mencegah reload halaman
+function callCrudPengguna(action, payload, onSuccess) {
+    var token = localStorage.getItem('adminToken_Narmada');
+    if (!token || !isGoogleEnv) return;
     
-    // Ambil nilai dari input
+    google.script.run
+        .withSuccessHandler(function (res) {
+            if (res.success) {
+                pushToast(res.message, "success");
+                if (onSuccess) onSuccess(res.data);
+                initManajemenPengguna(); // Refresh table
+            } else {
+                pushToast(res.message, "error");
+                if (res.authError) handleAdminLogout();
+            }
+        })
+        .withFailureHandler(function (err) {
+            pushToast("Error: " + err, "error");
+        })
+        .crudPengguna(token, action, payload);
+}
+
+function simpanPenggunaBaru(event) {
+    event.preventDefault();
     var nama = document.getElementById('tp-nama').value;
     var username = document.getElementById('tp-username').value;
     var password = document.getElementById('tp-password').value;
@@ -2671,60 +2674,27 @@ function simpanPenggunaBaru(event) {
     var unit = document.getElementById('tp-unit').value;
     var status = document.getElementById('tp-status').value;
     
-    // Buat format tanggal hari ini untuk "Terakhir Login"
-    var today = new Date();
-    var dd = String(today.getDate()).padStart(2, '0');
-    var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-    var yyyy = today.getFullYear();
-    var tanggalFormatted = dd + '/' + mm + '/' + yyyy + ', -'; // Belum pernah login
-
-    // Buat object akun baru
-    var akunBaru = {
-        u: username,
-        p: password,
-        role: peran,
-        name: nama,
-        status: status,
-        unit: unit,
-        terakhirLogin: tanggalFormatted
-    };
+    var akunBaru = { u: username, p: password, role: peran, name: nama, status: status, unit: unit, terakhirLogin: "-" };
     
-    // Tambahkan ke database dummy
-    if(window.dummyUsersData) {
-        window.dummyUsersData.push(akunBaru);
-        localStorage.setItem('narmada_users', JSON.stringify(window.dummyUsersData));
-        
-        // Render ulang tabel pengguna (mempertahankan filter jika ada)
-        if (typeof filterUserTable === 'function') {
-            filterUserTable();
-        } else {
-            renderUserTable(window.dummyUsersData);
-        }
-        
-        // Update statistik
-        updateStatistikPengguna();
-        
-        // Tutup modal
+    document.getElementById('btn-submit-tambah-pengguna').disabled = true;
+    document.getElementById('btn-submit-tambah-pengguna').innerHTML = '<i class="fa-solid fa-spinner animate-spin"></i> Menyimpan...';
+    
+    callCrudPengguna('create', akunBaru, function() {
         closeModalTambahPengguna();
-        
-        // Tampilkan notifikasi
-        pushToast('Akun ' + nama + ' berhasil dibuat!', 'success');
-    } else {
-        pushToast('Gagal menambahkan pengguna.', 'error');
-    }
+        document.getElementById('btn-submit-tambah-pengguna').disabled = false;
+        document.getElementById('btn-submit-tambah-pengguna').innerHTML = 'Simpan Pengguna';
+    });
 }
 
-// --- Helper Update Statistik ---
 function updateStatistikPengguna() {
-    if (!window.dummyUsersData) return;
+    if (!window.usersData) return;
     var stats = { total: 0, admin: 0, operator: 0, pimpinan: 0, viewer: 0 };
-    window.dummyUsersData.forEach(function(u) {
+    window.usersData.forEach(function(u) {
         stats.total++;
         if (u.role === 'Super Admin') stats.admin++;
         if (u.role.includes('Operator')) stats.operator++;
         if (u.role.includes('Desa') || u.role === 'Pimpinan') stats.pimpinan++;
     });
-    // Viewer is simulated
     stats.viewer = Math.floor(Math.random() * 3) + 1;
 
     var elTotal = document.getElementById('stat-user-total');
@@ -2739,7 +2709,6 @@ function updateStatistikPengguna() {
     if (elViewer) elViewer.innerText = stats.viewer;
 }
 
-// --- Helper Modal Konfirmasi Custom ---
 function showCustomConfirm(title, message, onConfirm) {
     var modal = document.getElementById('modal-custom-confirm');
     var titleEl = document.getElementById('confirm-modal-title');
@@ -2751,17 +2720,12 @@ function showCustomConfirm(title, message, onConfirm) {
         titleEl.innerHTML = title;
         messageEl.innerHTML = message;
         
-        // Buat clone untuk menghapus event listener lama
         var newBtnOk = btnOk.cloneNode(true);
         btnOk.parentNode.replaceChild(newBtnOk, btnOk);
-        
         var newBtnCancel = btnCancel.cloneNode(true);
         btnCancel.parentNode.replaceChild(newBtnCancel, btnCancel);
         
-        newBtnCancel.addEventListener('click', function() {
-            modal.classList.add('hidden');
-        });
-        
+        newBtnCancel.addEventListener('click', function() { modal.classList.add('hidden'); });
         newBtnOk.addEventListener('click', function() {
             modal.classList.add('hidden');
             if(typeof onConfirm === 'function') onConfirm();
@@ -2771,13 +2735,10 @@ function showCustomConfirm(title, message, onConfirm) {
     }
 }
 
-// --- Edit Pengguna Logic ---
 function openModalEditPengguna(username) {
-    var user = window.dummyUsersData.find(function(u) { return u.u === username; });
-    if (!user) {
-        pushToast('Data pengguna tidak ditemukan!', 'error');
-        return;
-    }
+    if (!window.usersData) return;
+    var user = window.usersData.find(function(u) { return u.u === username; });
+    if (!user) { pushToast('Data pengguna tidak ditemukan!', 'error'); return; }
     
     document.getElementById('te-username-hidden').value = user.u;
     document.getElementById('te-username').value = user.u;
@@ -2802,60 +2763,45 @@ function closeModalEditPengguna() {
 function simpanEditPengguna(event) {
     event.preventDefault();
     var username = document.getElementById('te-username-hidden').value;
-    var userIndex = window.dummyUsersData.findIndex(function(u) { return u.u === username; });
+    var nama = document.getElementById('te-nama').value;
+    var peran = document.getElementById('te-peran').value;
+    var unit = document.getElementById('te-unit').value;
+    var status = document.getElementById('te-status').value;
     
-    if (userIndex !== -1) {
-        window.dummyUsersData[userIndex].name = document.getElementById('te-nama').value;
-        window.dummyUsersData[userIndex].role = document.getElementById('te-peran').value;
-        window.dummyUsersData[userIndex].unit = document.getElementById('te-unit').value;
-        window.dummyUsersData[userIndex].status = document.getElementById('te-status').value;
-        
-        localStorage.setItem('narmada_users', JSON.stringify(window.dummyUsersData));
-        if (typeof filterUserTable === 'function') filterUserTable();
-        else renderUserTable(window.dummyUsersData);
-        updateStatistikPengguna();
-        
+    var payload = { u: username, name: nama, role: peran, unit: unit, status: status };
+    
+    document.getElementById('btn-submit-edit-pengguna').disabled = true;
+    document.getElementById('btn-submit-edit-pengguna').innerHTML = '<i class="fa-solid fa-spinner animate-spin"></i> Menyimpan...';
+    
+    callCrudPengguna('update', payload, function() {
         closeModalEditPengguna();
-        pushToast('Perubahan pada pengguna @' + username + ' berhasil disimpan!', 'success');
-    }
+        document.getElementById('btn-submit-edit-pengguna').disabled = false;
+        document.getElementById('btn-submit-edit-pengguna').innerHTML = 'Simpan Perubahan';
+    });
 }
 
-// --- Reset Password Logic ---
 function resetPasswordPengguna(username) {
     showCustomConfirm(
         '<i class="fa-solid fa-triangle-exclamation text-amber-500"></i> Konfirmasi Reset Password', 
         'Apakah Anda yakin ingin mengatur ulang sandi untuk akun <b>@' + username + '</b> menjadi standar (123)?', 
         function() {
-            var userIndex = window.dummyUsersData.findIndex(function(u) { return u.u === username; });
-            if (userIndex !== -1) {
-                window.dummyUsersData[userIndex].p = "123";
-                localStorage.setItem('narmada_users', JSON.stringify(window.dummyUsersData));
-                pushToast('Password untuk @' + username + ' berhasil direset.', 'success');
-            }
+            callCrudPengguna('reset_password', { u: username });
         }
     );
 }
 
-// --- Toggle Status Logic ---
 function toggleStatusPengguna(username, currentStatus) {
     var action = currentStatus === 'Aktif' ? 'menonaktifkan' : 'mengaktifkan';
     showCustomConfirm(
         '<i class="fa-solid fa-power-off text-blue-500"></i> Konfirmasi Ubah Status',
         'Apakah Anda yakin ingin ' + action + ' akun <b>@' + username + '</b>?',
         function() {
-            var userIndex = window.dummyUsersData.findIndex(function(u) { return u.u === username; });
-            if (userIndex !== -1) {
-                window.dummyUsersData[userIndex].status = currentStatus === 'Aktif' ? 'Nonaktif' : 'Aktif';
-                localStorage.setItem('narmada_users', JSON.stringify(window.dummyUsersData));
-                if (typeof filterUserTable === 'function') filterUserTable();
-                else renderUserTable(window.dummyUsersData);
-                pushToast('Status akun @' + username + ' berhasil diubah.', 'success');
-            }
+            var newStatus = currentStatus === 'Aktif' ? 'Nonaktif' : 'Aktif';
+            callCrudPengguna('update', { u: username, status: newStatus });
         }
     );
 }
 
-// --- Hapus Pengguna Logic ---
 function hapusPengguna(username) {
     if (username === 'superadmin') {
         pushToast('Akun Super Admin utama tidak dapat dihapus!', 'error');
@@ -2865,12 +2811,7 @@ function hapusPengguna(username) {
         '<i class="fa-solid fa-trash text-red-600"></i> Konfirmasi Hapus Akun',
         'Apakah Anda yakin ingin menghapus akun <b>@' + username + '</b> secara permanen? Data yang telah dihapus tidak dapat dikembalikan.',
         function() {
-            window.dummyUsersData = window.dummyUsersData.filter(function(u) { return u.u !== username; });
-            localStorage.setItem('narmada_users', JSON.stringify(window.dummyUsersData));
-            updateStatistikPengguna();
-            if (typeof filterUserTable === 'function') filterUserTable();
-            else renderUserTable(window.dummyUsersData);
-            pushToast('Akun @' + username + ' berhasil dihapus.', 'success');
+            callCrudPengguna('delete', { u: username });
         }
     );
 }
