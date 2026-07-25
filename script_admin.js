@@ -2802,22 +2802,22 @@ function switchPengaturanAkunTab(tabId) {
     }
 }
 
-// --- Tambah Pengguna Logic ---
 function openModalTambahPengguna() {
-    var modal = document.getElementById('modal-tambah-pengguna');
-    if (modal) {
-        modal.classList.remove('hidden');
-    }
+    document.getElementById('mp-main-menu').classList.add('hidden');
+    document.getElementById('mp-content-daftar').classList.add('hidden');
+    var subview = document.getElementById('subview-admin-tambah-pengguna');
+    if (subview) subview.classList.remove('hidden');
 }
 
 function closeModalTambahPengguna() {
-    var modal = document.getElementById('modal-tambah-pengguna');
-    if (modal) {
-        modal.classList.add('hidden');
-        // Reset form
-        var form = document.getElementById('form-tambah-pengguna');
-        if (form) form.reset();
-    }
+    var subview = document.getElementById('subview-admin-tambah-pengguna');
+    if (subview) subview.classList.add('hidden');
+    document.getElementById('mp-main-menu').classList.remove('hidden');
+    document.getElementById('mp-content-daftar').classList.remove('hidden');
+    
+    // Reset form
+    var form = document.getElementById('form-tambah-pengguna');
+    if (form) form.reset();
 }
 
 function callCrudPengguna(action, payload, onSuccess) {
@@ -2929,17 +2929,20 @@ function openModalEditPengguna(username) {
     document.getElementById('te-peran').value = user.peran;
     document.getElementById('te-status').value = user.status;
     
-    var modal = document.getElementById('modal-edit-pengguna');
-    if (modal) modal.classList.remove('hidden');
+    document.getElementById('mp-main-menu').classList.add('hidden');
+    document.getElementById('mp-content-daftar').classList.add('hidden');
+    var subview = document.getElementById('subview-admin-edit-pengguna');
+    if (subview) subview.classList.remove('hidden');
 }
 
 function closeModalEditPengguna() {
-    var modal = document.getElementById('modal-edit-pengguna');
-    if (modal) {
-        modal.classList.add('hidden');
-        var form = document.getElementById('form-edit-pengguna');
-        if (form) form.reset();
-    }
+    var subview = document.getElementById('subview-admin-edit-pengguna');
+    if (subview) subview.classList.add('hidden');
+    document.getElementById('mp-main-menu').classList.remove('hidden');
+    document.getElementById('mp-content-daftar').classList.remove('hidden');
+    
+    var form = document.getElementById('form-edit-pengguna');
+    if (form) form.reset();
 }
 
 function simpanEditPengguna(event) {

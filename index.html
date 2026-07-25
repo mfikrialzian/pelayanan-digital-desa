@@ -2268,7 +2268,191 @@
                             </table>
                         </div>
                     </div>
-                </div></div>
+                </div>
+
+                <!-- SUBVIEW EDIT PENGGUNA -->
+                <div id="subview-admin-edit-pengguna" class="hidden w-full max-w-5xl mx-auto mt-4">
+                    <div class="bg-slate-50 rounded-2xl shadow-sm border border-slate-100 flex flex-col">
+                        <!-- Header -->
+                        <div class="w-full flex justify-between items-center bg-white p-5 border-b border-slate-100 rounded-t-2xl">
+                            <div>
+                                <h2 class="text-lg font-bold text-slate-800"><i class="fa-solid fa-pen-to-square text-blue-600 mr-2"></i> Edit Pengguna</h2>
+                                <p class="text-[10px] text-slate-500 mt-0.5">Ubah informasi dan peran untuk pengguna ini.</p>
+                            </div>
+                            <div class="flex gap-2">
+                                <button onclick="closeModalEditPengguna()" class="px-4 py-2 text-xs font-bold text-slate-600 bg-slate-50 border border-slate-200 hover:bg-slate-100 rounded-xl transition-colors">Batal</button>
+                                <button type="button" id="btn-submit-edit-pengguna" onclick="document.getElementById('btn-submit-te-hidden').click()" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl shadow-sm transition-colors flex items-center gap-1.5">
+                                    <i class="fa-solid fa-save"></i> Simpan Perubahan
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Body -->
+                        <div class="p-5">
+                            <form id="form-edit-pengguna" onsubmit="simpanEditPengguna(event)">
+                                <input type="hidden" id="te-username-hidden">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <!-- Left Column: Data Profil -->
+                                    <div class="space-y-4">
+                                        <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 space-y-4 h-full">
+                                            <h3 class="text-sm font-bold text-slate-800 border-b border-slate-100 pb-3"><i class="fa-solid fa-address-card text-blue-600 mr-1.5"></i> Informasi Dasar</h3>
+                                            <div>
+                                                <label class="block text-[10px] font-bold text-slate-600 mb-1">Username (Tidak dapat diubah)</label>
+                                                <input type="text" id="te-username" disabled class="w-full px-3 py-2 rounded-xl bg-slate-100 border border-slate-200 text-xs text-slate-500 cursor-not-allowed">
+                                            </div>
+                                            <div>
+                                                <label class="block text-[10px] font-bold text-slate-600 mb-1">Nama Lengkap *</label>
+                                                <input type="text" id="te-nama" required class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:ring-blue-600 focus:border-blue-600 outline-none transition-colors" oninput="this.value = this.value.replace(/\b\w/g, l => l.toUpperCase());">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Right Column: Peran & Akses -->
+                                    <div class="space-y-4">
+                                        <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 space-y-4 h-full">
+                                            <h3 class="text-sm font-bold text-slate-800 border-b border-slate-100 pb-3"><i class="fa-solid fa-user-shield text-blue-600 mr-1.5"></i> Peran & Akses</h3>
+                                            <div>
+                                                <label class="block text-[10px] font-bold text-slate-600 mb-1">Peran (Role) *</label>
+                                                <select id="te-peran" required class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:ring-blue-600 focus:border-blue-600 outline-none transition-colors">
+                                                    <option value="Admin">Admin</option>
+                                                    <option value="Pimpinan">Pimpinan</option>
+                                                    <option value="Admin Utama">Admin Utama</option>
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label class="block text-[10px] font-bold text-slate-600 mb-1">Status Akun *</label>
+                                                <select id="te-status" required class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:ring-blue-600 focus:border-blue-600 outline-none transition-colors">
+                                                    <option value="Aktif">Aktif</option>
+                                                    <option value="Nonaktif">Nonaktif</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="submit" id="btn-submit-te-hidden" class="hidden"></button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SUBVIEW TAMBAH PENGGUNA -->
+                <div id="subview-admin-tambah-pengguna" class="hidden w-full max-w-5xl mx-auto mt-4">
+                    <div class="bg-slate-50 rounded-2xl shadow-sm border border-slate-100 flex flex-col">
+                        <!-- Header -->
+                        <div class="w-full flex justify-between items-center bg-white p-5 border-b border-slate-100 rounded-t-2xl">
+                            <div>
+                                <h2 class="text-lg font-bold text-slate-800"><i class="fa-solid fa-user-plus text-narmadaGreen mr-2"></i> Tambah Pengguna Baru</h2>
+                                <p class="text-[10px] text-slate-500 mt-0.5">Lengkapi informasi di bawah ini untuk membuat akun pengguna.</p>
+                            </div>
+                            <div class="flex gap-2">
+                                <button onclick="closeModalTambahPengguna()" class="px-4 py-2 text-xs font-bold text-slate-600 bg-slate-50 border border-slate-200 hover:bg-slate-100 rounded-xl transition-colors">Batal</button>
+                                <button type="button" id="btn-submit-tambah-pengguna" onclick="document.getElementById('btn-submit-tp-hidden').click()" class="px-5 py-2 bg-narmadaGreen hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-sm transition-colors flex items-center gap-1.5">
+                                    <i class="fa-solid fa-save"></i> Simpan Pengguna
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Body -->
+                        <div class="p-5">
+                            <form id="form-tambah-pengguna" onsubmit="simpanPenggunaBaru(event)">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    
+                                    <!-- Left Column: Data Profil & Akses -->
+                                    <div class="space-y-6">
+                                        <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 space-y-4">
+                                            <h3 class="text-sm font-bold text-slate-800 border-b border-slate-100 pb-3"><i class="fa-solid fa-address-card text-narmadaGreen mr-1.5"></i> Informasi Dasar</h3>
+                                            <div>
+                                                <label class="block text-[10px] font-bold text-slate-600 mb-1">Nama Lengkap *</label>
+                                                <input type="text" id="tp-nama" required class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors" placeholder="Masukkan nama lengkap" oninput="this.value = this.value.replace(/\b\w/g, l => l.toUpperCase());">
+                                            </div>
+                                            <div>
+                                                <label class="block text-[10px] font-bold text-slate-600 mb-1">Username *</label>
+                                                <input type="text" id="tp-username" required class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors" placeholder="Masukkan username" oninput="this.value = this.value.toLowerCase().replace(/\s+/g, '_');">
+                                            </div>
+                                        </div>
+
+                                        <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 space-y-4">
+                                            <h3 class="text-sm font-bold text-slate-800 border-b border-slate-100 pb-3"><i class="fa-solid fa-user-shield text-narmadaGreen mr-1.5"></i> Peran & Akses</h3>
+                                            <div>
+                                                <label class="block text-[10px] font-bold text-slate-600 mb-1">Peran (Role) *</label>
+                                                <select id="tp-peran" required class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors">
+                                                    <option value="Admin">Admin</option>
+                                                    <option value="Pimpinan">Pimpinan</option>
+                                                    <option value="Admin Utama">Admin Utama</option>
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label class="block text-[10px] font-bold text-slate-600 mb-1">Status Akun *</label>
+                                                <select id="tp-status" required class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors">
+                                                    <option value="Aktif">Aktif</option>
+                                                    <option value="Nonaktif">Nonaktif</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Right Column: Keamanan -->
+                                    <div class="space-y-6">
+                                        <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 space-y-4">
+                                            <h3 class="text-sm font-bold text-slate-800 border-b border-slate-100 pb-3"><i class="fa-solid fa-lock text-narmadaGreen mr-1.5"></i> Kredensial Keamanan</h3>
+                                            <div>
+                                                <label class="block text-[10px] font-bold text-slate-600 mb-1">Kata Sandi *</label>
+                                                <div class="relative">
+                                                    <input type="password" id="tp-password" required class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors pr-10" placeholder="Masukkan kata sandi">
+                                                    <button type="button" onclick="const p = document.getElementById('tp-password'); const i = this.querySelector('i'); if(p.type === 'password'){p.type = 'text'; i.classList.replace('fa-eye', 'fa-eye-slash');}else{p.type = 'password'; i.classList.replace('fa-eye-slash', 'fa-eye');}" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                                                        <i class="fa-solid fa-eye"></i>
+                                                    </button>
+                                                </div>
+                                                <p class="text-[9px] text-slate-500 mt-1.5">*Saran: Gunakan huruf besar di awal, kombinasikan dengan angka dan tanda baca.</p>
+                                                <div class="mt-2 flex gap-1 h-1.5 w-full rounded-full overflow-hidden bg-slate-100 hidden" id="pw-strength-bar">
+                                                    <div class="h-full transition-all w-1/3 bg-slate-200"></div>
+                                                    <div class="h-full transition-all w-1/3 bg-slate-200"></div>
+                                                    <div class="h-full transition-all w-1/3 bg-slate-200"></div>
+                                                </div>
+                                                <p class="text-[9px] mt-1 font-semibold hidden" id="pw-strength-text"></p>
+                                            </div>
+                                            <script>
+                                                document.getElementById('tp-password').addEventListener('input', function() {
+                                                    const val = this.value;
+                                                    const bar = document.getElementById('pw-strength-bar');
+                                                    const text = document.getElementById('pw-strength-text');
+                                                    const divs = bar.querySelectorAll('#pw-strength-bar div');
+                                                    if (!val) { bar.classList.add('hidden'); text.classList.add('hidden'); return; }
+                                                    bar.classList.remove('hidden'); text.classList.remove('hidden');
+                                                    
+                                                    let strength = 0;
+                                                    if (val.length >= 6) strength++;
+                                                    if (val.match(/[A-Z]/)) strength++;
+                                                    if (val.match(/[0-9]/) || val.match(/[^A-Za-z0-9]/)) strength++;
+                                                    
+                                                    divs.forEach(d => d.className = 'h-full transition-all w-1/3 bg-slate-200');
+                                                    
+                                                    if (strength === 1 || val.length < 6) {
+                                                        divs[0].classList.replace('bg-slate-200', 'bg-red-500');
+                                                        text.textContent = 'Kekuatan: Lemah'; text.className = 'text-[9px] mt-1 font-semibold text-red-500';
+                                                    } else if (strength === 2) {
+                                                        divs[0].classList.replace('bg-slate-200', 'bg-amber-400');
+                                                        divs[1].classList.replace('bg-slate-200', 'bg-amber-400');
+                                                        text.textContent = 'Kekuatan: Sedang'; text.className = 'text-[9px] mt-1 font-semibold text-amber-500';
+                                                    } else if (strength >= 3) {
+                                                        divs[0].classList.replace('bg-slate-200', 'bg-emerald-500');
+                                                        divs[1].classList.replace('bg-slate-200', 'bg-emerald-500');
+                                                        divs[2].classList.replace('bg-slate-200', 'bg-emerald-500');
+                                                        text.textContent = 'Kekuatan: Kuat'; text.className = 'text-[9px] mt-1 font-semibold text-emerald-600';
+                                                    }
+                                                });
+                                            </script>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <button type="submit" id="btn-submit-tp-hidden" class="hidden"></button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
         </main>
     </div>
 
@@ -2295,204 +2479,6 @@
             <div class="flex justify-end gap-2 pt-2">
                 <button type="button" id="confirm-modal-btn-cancel" class="px-4 py-2 text-xs font-bold text-slate-550 hover:bg-slate-100 rounded-xl">Batal</button>
                 <button type="button" id="confirm-modal-btn-ok" class="px-5 py-2 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded-xl shadow-md">Ya, Lanjutkan</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL EDIT PENGGUNA -->
-    <div id="modal-edit-pengguna" class="hidden fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
-        <div class="bg-slate-50 rounded-2xl w-full max-w-2xl shadow-xl border border-slate-100 flex flex-col max-h-[90vh] overflow-hidden">
-            <!-- Header -->
-            <div class="w-full flex justify-between items-center bg-white p-5 border-b border-slate-100 flex-shrink-0 z-10">
-                <div>
-                    <h2 class="text-lg font-bold text-slate-800"><i class="fa-solid fa-pen-to-square text-blue-600 mr-2"></i> Edit Pengguna</h2>
-                    <p class="text-[10px] text-slate-500 mt-0.5">Ubah informasi dan peran untuk pengguna ini.</p>
-                </div>
-                <div class="flex gap-2">
-                    <button onclick="closeModalEditPengguna()" class="px-4 py-2 text-xs font-bold text-slate-600 bg-slate-50 border border-slate-200 hover:bg-slate-100 rounded-xl transition-colors">Batal</button>
-                    <button type="button" id="btn-submit-edit-pengguna" onclick="document.getElementById('btn-submit-te-hidden').click()" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl shadow-sm transition-colors flex items-center gap-1.5">
-                        <i class="fa-solid fa-save"></i> Simpan Perubahan
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Body -->
-            <div class="p-5 overflow-y-auto custom-scrollbar flex-grow">
-                <form id="form-edit-pengguna" onsubmit="simpanEditPengguna(event)">
-                    <!-- Hidden Username as reference key -->
-                    <input type="hidden" id="te-username-hidden">
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- Left Column: Data Profil -->
-                        <div class="space-y-4">
-                            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 space-y-4 h-full">
-                                <h3 class="text-sm font-bold text-slate-800 border-b border-slate-100 pb-3"><i class="fa-solid fa-address-card text-blue-600 mr-1.5"></i> Informasi Dasar</h3>
-                                
-                                <div>
-                                    <label class="block text-[10px] font-bold text-slate-600 mb-1">Username (Tidak dapat diubah)</label>
-                                    <input type="text" id="te-username" disabled class="w-full px-3 py-2 rounded-xl bg-slate-100 border border-slate-200 text-xs text-slate-500 cursor-not-allowed">
-                                </div>
-
-                                <div>
-                                    <label class="block text-[10px] font-bold text-slate-600 mb-1">Nama Lengkap *</label>
-                                    <input type="text" id="te-nama" required class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:ring-blue-600 focus:border-blue-600 outline-none transition-colors" oninput="this.value = this.value.replace(/\b\w/g, l => l.toUpperCase());">
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Right Column: Peran & Akses -->
-                        <div class="space-y-4">
-                            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 space-y-4 h-full">
-                                <h3 class="text-sm font-bold text-slate-800 border-b border-slate-100 pb-3"><i class="fa-solid fa-user-shield text-blue-600 mr-1.5"></i> Peran & Akses</h3>
-                                
-                                <div>
-                                    <label class="block text-[10px] font-bold text-slate-600 mb-1">Peran (Role) *</label>
-                                    <select id="te-peran" required class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:ring-blue-600 focus:border-blue-600 outline-none transition-colors">
-                                        <option value="Admin">Admin</option>
-                                        <option value="Pimpinan">Pimpinan</option>
-                                        <option value="Admin Utama">Admin Utama</option>
-                                    </select>
-                                </div>
-
-                                <div>
-                                    <label class="block text-[10px] font-bold text-slate-600 mb-1">Status Akun *</label>
-                                    <select id="te-status" required class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:ring-blue-600 focus:border-blue-600 outline-none transition-colors">
-                                        <option value="Aktif">Aktif</option>
-                                        <option value="Nonaktif">Nonaktif</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Submit trigger (hidden) -->
-                    <button type="submit" id="btn-submit-te-hidden" class="hidden"></button>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL TAMBAH PENGGUNA -->
-    <div id="modal-tambah-pengguna" class="hidden fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
-        <div class="bg-slate-50 rounded-2xl w-full max-w-4xl shadow-xl border border-slate-100 flex flex-col max-h-[90vh] overflow-hidden">
-            <!-- Header -->
-            <div class="w-full flex justify-between items-center bg-white p-5 border-b border-slate-100 flex-shrink-0 z-10">
-                <div>
-                    <h2 class="text-lg font-bold text-slate-800"><i class="fa-solid fa-user-plus text-narmadaGreen mr-2"></i> Tambah Pengguna Baru</h2>
-                    <p class="text-[10px] text-slate-500 mt-0.5">Lengkapi informasi di bawah ini untuk membuat akun pengguna.</p>
-                </div>
-                <div class="flex gap-2">
-                    <button onclick="closeModalTambahPengguna()" class="px-4 py-2 text-xs font-bold text-slate-600 bg-slate-50 border border-slate-200 hover:bg-slate-100 rounded-xl transition-colors">Batal</button>
-                    <button type="button" id="btn-submit-tambah-pengguna" onclick="document.getElementById('btn-submit-tp-hidden').click()" class="px-5 py-2 bg-narmadaGreen hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-sm transition-colors flex items-center gap-1.5">
-                        <i class="fa-solid fa-save"></i> Simpan Pengguna
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Body -->
-            <div class="p-5 overflow-y-auto custom-scrollbar flex-grow">
-                <form id="form-tambah-pengguna" onsubmit="simpanPenggunaBaru(event)">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        
-                        <!-- Left Column: Data Profil & Akses -->
-                        <div class="space-y-6">
-                            <!-- Data Profil Card -->
-                            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 space-y-4">
-                                <h3 class="text-sm font-bold text-slate-800 border-b border-slate-100 pb-3"><i class="fa-solid fa-address-card text-narmadaGreen mr-1.5"></i> Informasi Dasar</h3>
-                                
-                                <div>
-                                    <label class="block text-[10px] font-bold text-slate-600 mb-1">Nama Lengkap *</label>
-                                    <input type="text" id="tp-nama" required class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors" placeholder="Masukkan nama lengkap" oninput="this.value = this.value.replace(/\b\w/g, l => l.toUpperCase());">
-                                </div>
-                                
-                                <div>
-                                    <label class="block text-[10px] font-bold text-slate-600 mb-1">Username *</label>
-                                    <input type="text" id="tp-username" required class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors" placeholder="Masukkan username" oninput="this.value = this.value.toLowerCase().replace(/\s+/g, '_');">
-                                </div>
-                            </div>
-
-                            <!-- Akses & Peran Card -->
-                            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 space-y-4">
-                                <h3 class="text-sm font-bold text-slate-800 border-b border-slate-100 pb-3"><i class="fa-solid fa-user-shield text-narmadaGreen mr-1.5"></i> Peran & Akses</h3>
-                                
-                                <div>
-                                    <label class="block text-[10px] font-bold text-slate-600 mb-1">Peran (Role) *</label>
-                                    <select id="tp-peran" required class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors">
-                                        <option value="Admin">Admin</option>
-                                        <option value="Pimpinan">Pimpinan</option>
-                                        <option value="Admin Utama">Admin Utama</option>
-                                    </select>
-                                </div>
-
-                                <div>
-                                    <label class="block text-[10px] font-bold text-slate-600 mb-1">Status Akun *</label>
-                                    <select id="tp-status" required class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors">
-                                        <option value="Aktif">Aktif</option>
-                                        <option value="Nonaktif">Nonaktif</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Right Column: Keamanan -->
-                        <div class="space-y-6">
-                            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 space-y-4">
-                                <h3 class="text-sm font-bold text-slate-800 border-b border-slate-100 pb-3"><i class="fa-solid fa-lock text-narmadaGreen mr-1.5"></i> Kredensial Keamanan</h3>
-                                
-                                <div>
-                                    <label class="block text-[10px] font-bold text-slate-600 mb-1">Kata Sandi *</label>
-                                    <div class="relative">
-                                        <input type="password" id="tp-password" required class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors pr-10" placeholder="Masukkan kata sandi">
-                                        <button type="button" onclick="const p = document.getElementById('tp-password'); const i = this.querySelector('i'); if(p.type === 'password'){p.type = 'text'; i.classList.replace('fa-eye', 'fa-eye-slash');}else{p.type = 'password'; i.classList.replace('fa-eye-slash', 'fa-eye');}" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
-                                            <i class="fa-solid fa-eye"></i>
-                                        </button>
-                                    </div>
-                                    <p class="text-[9px] text-slate-500 mt-1.5">*Saran: Gunakan huruf besar di awal, kombinasikan dengan angka dan tanda baca.</p>
-                                    <div class="mt-2 flex gap-1 h-1.5 w-full rounded-full overflow-hidden bg-slate-100 hidden" id="pw-strength-bar">
-                                        <div class="h-full transition-all w-1/3 bg-slate-200"></div>
-                                        <div class="h-full transition-all w-1/3 bg-slate-200"></div>
-                                        <div class="h-full transition-all w-1/3 bg-slate-200"></div>
-                                    </div>
-                                    <p class="text-[9px] mt-1 font-semibold hidden" id="pw-strength-text"></p>
-                                </div>
-                                <script>
-                                    document.getElementById('tp-password').addEventListener('input', function() {
-                                        const val = this.value;
-                                        const bar = document.getElementById('pw-strength-bar');
-                                        const text = document.getElementById('pw-strength-text');
-                                        const divs = bar.querySelectorAll('#pw-strength-bar div');
-                                        if (!val) { bar.classList.add('hidden'); text.classList.add('hidden'); return; }
-                                        bar.classList.remove('hidden'); text.classList.remove('hidden');
-                                        
-                                        let strength = 0;
-                                        if (val.length >= 6) strength++;
-                                        if (val.match(/[A-Z]/)) strength++;
-                                        if (val.match(/[0-9]/) || val.match(/[^A-Za-z0-9]/)) strength++;
-                                        
-                                        divs.forEach(d => d.className = 'h-full transition-all w-1/3 bg-slate-200');
-                                        
-                                        if (strength === 1 || val.length < 6) {
-                                            divs[0].classList.replace('bg-slate-200', 'bg-red-500');
-                                            text.textContent = 'Kekuatan: Lemah'; text.className = 'text-[9px] mt-1 font-semibold text-red-500';
-                                        } else if (strength === 2) {
-                                            divs[0].classList.replace('bg-slate-200', 'bg-amber-400');
-                                            divs[1].classList.replace('bg-slate-200', 'bg-amber-400');
-                                            text.textContent = 'Kekuatan: Sedang'; text.className = 'text-[9px] mt-1 font-semibold text-amber-500';
-                                        } else if (strength >= 3) {
-                                            divs[0].classList.replace('bg-slate-200', 'bg-emerald-500');
-                                            divs[1].classList.replace('bg-slate-200', 'bg-emerald-500');
-                                            divs[2].classList.replace('bg-slate-200', 'bg-emerald-500');
-                                            text.textContent = 'Kekuatan: Kuat'; text.className = 'text-[9px] mt-1 font-semibold text-emerald-600';
-                                        }
-                                    });
-                                </script>
-                            </div>
-                        </div>
-
-                    </div>
-                    <!-- Submit trigger (hidden) -->
-                    <button type="submit" id="btn-submit-tp-hidden" class="hidden"></button>
-                </form>
             </div>
         </div>
     </div>
