@@ -34,7 +34,7 @@ function runAdminLoginAuth() {
                     btn.innerHTML = '<span>Login</span>';
                     
                     var userMatch = window.usersData.find(function(user) {
-                        return user.u === u && user.p === p;
+                        return user.username === u && user.password === p;
                     });
 
                     if (userMatch) {
@@ -228,12 +228,12 @@ function runAdminLoginAuth() {
             
             var users = window.usersData || [];
             var filtered = users.filter(function(u) {
-                var matchSearch = u.name.toLowerCase().includes(searchVal) || u.u.toLowerCase().includes(searchVal);
+                var matchSearch = u.nama.toLowerCase().includes(searchVal) || u.username.toLowerCase().includes(searchVal);
                 var matchRole = true;
                 if (roleVal !== 'all') {
-                    if (roleVal === 'Super Admin' && u.role !== 'Super Admin') matchRole = false;
-                    if (roleVal === 'Operator' && !u.role.includes('Operator')) matchRole = false;
-                    if (roleVal === 'Pimpinan' && !u.role.includes('Desa')) matchRole = false;
+                    if (roleVal === 'Super Admin' && u.peran !== 'Super Admin') matchRole = false;
+                    if (roleVal === 'Operator' && !u.peran.includes('Operator')) matchRole = false;
+                    if (roleVal === 'Pimpinan' && !u.peran.includes('Desa')) matchRole = false;
                 }
                 return matchSearch && matchRole;
             });
@@ -252,21 +252,21 @@ function runAdminLoginAuth() {
 
             users.forEach(function(u) {
                 var roleBadge = '';
-                if (u.role === 'Super Admin') roleBadge = '<span class="px-2 py-1 bg-red-100 text-red-700 rounded-lg text-[10px] font-bold">' + u.role + '</span>';
-                else if (u.role.includes('Operator')) roleBadge = '<span class="px-2 py-1 bg-blue-100 text-blue-700 rounded-lg text-[10px] font-bold">' + u.role + '</span>';
-                else if (u.role.includes('Desa')) roleBadge = '<span class="px-2 py-1 bg-purple-100 text-purple-700 rounded-lg text-[10px] font-bold">' + u.role + '</span>';
-                else roleBadge = '<span class="px-2 py-1 bg-amber-100 text-amber-700 rounded-lg text-[10px] font-bold">' + u.role + '</span>';
+                if (u.peran === 'Super Admin') roleBadge = '<span class="px-2 py-1 bg-red-100 text-red-700 rounded-lg text-[10px] font-bold">' + u.peran + '</span>';
+                else if (u.peran.includes('Operator')) roleBadge = '<span class="px-2 py-1 bg-blue-100 text-blue-700 rounded-lg text-[10px] font-bold">' + u.peran + '</span>';
+                else if (u.peran.includes('Desa')) roleBadge = '<span class="px-2 py-1 bg-purple-100 text-purple-700 rounded-lg text-[10px] font-bold">' + u.peran + '</span>';
+                else roleBadge = '<span class="px-2 py-1 bg-amber-100 text-amber-700 rounded-lg text-[10px] font-bold">' + u.peran + '</span>';
                 
                 var statusBadge = u.status === 'Aktif' 
                     ? '<span class="px-2 py-1 bg-emerald-100 text-narmadaGreen rounded-lg text-[10px] font-bold"><i class="fa-solid fa-circle text-[8px] mr-1"></i>Aktif</span>'
                     : '<span class="px-2 py-1 bg-slate-100 text-slate-500 rounded-lg text-[10px] font-bold"><i class="fa-solid fa-circle text-[8px] mr-1"></i>Nonaktif</span>';
                 
-                var dropdownId = 'dropdown-aksi-' + u.u;
+                var dropdownId = 'dropdown-aksi-' + u.username;
                 
                 var tr = '<tr class="border-b border-slate-50 hover:bg-slate-50 transition-colors">' +
                             '<td class="py-3 px-4">' +
-                                '<div class="font-bold text-slate-800">' + u.name + '</div>' +
-                                '<div class="text-xs text-slate-500">@' + u.u + '</div>' +
+                                '<div class="font-bold text-slate-800">' + u.nama + '</div>' +
+                                '<div class="text-xs text-slate-500">@' + u.username + '</div>' +
                             '</td>' +
                             '<td class="py-3 px-4">' + roleBadge + '</td>' +
                             '<td class="py-3 px-4 text-xs font-semibold text-slate-600">' + (u.unit || '-') + '</td>' +
@@ -275,15 +275,15 @@ function runAdminLoginAuth() {
                             '<td class="py-3 px-4 text-right relative">' +
                                 '<button onclick="toggleDropdown(\'' + dropdownId + '\')" class="w-8 h-8 rounded-lg bg-slate-50 text-slate-500 hover:bg-slate-200 hover:text-slate-800 transition-colors"><i class="fa-solid fa-ellipsis-vertical"></i></button>' +
                                 '<div id="' + dropdownId + '" class="hidden absolute right-4 top-10 w-48 bg-white border border-slate-100 shadow-lg rounded-xl z-10 overflow-hidden text-left">' +
-                                    '<button onclick="openModalEditPengguna(\'' + u.u + '\'); toggleDropdown(\'' + dropdownId + '\')" class="w-full text-left px-4 py-2.5 text-xs font-medium text-slate-700 hover:bg-slate-50 transition-colors flex items-center gap-2"><i class="fa-solid fa-pen-to-square w-4"></i> Edit Pengguna</button>' +
-                                    '<button onclick="resetPasswordPengguna(\'' + u.u + '\'); toggleDropdown(\'' + dropdownId + '\')" class="w-full text-left px-4 py-2.5 text-xs font-medium text-slate-700 hover:bg-slate-50 transition-colors flex items-center gap-2"><i class="fa-solid fa-key w-4"></i> Reset Password</button>' +
+                                    '<button onclick="openModalEditPengguna(\'' + u.username + '\'); toggleDropdown(\'' + dropdownId + '\')" class="w-full text-left px-4 py-2.5 text-xs font-medium text-slate-700 hover:bg-slate-50 transition-colors flex items-center gap-2"><i class="fa-solid fa-pen-to-square w-4"></i> Edit Pengguna</button>' +
+                                    '<button onclick="resetPasswordPengguna(\'' + u.username + '\'); toggleDropdown(\'' + dropdownId + '\')" class="w-full text-left px-4 py-2.5 text-xs font-medium text-slate-700 hover:bg-slate-50 transition-colors flex items-center gap-2"><i class="fa-solid fa-key w-4"></i> Reset Password</button>' +
                                     '<div class="h-px bg-slate-100 w-full my-1"></div>' +
                                     (u.status === 'Aktif' 
-                                        ? '<button onclick="toggleStatusPengguna(\'' + u.u + '\', \'Aktif\'); toggleDropdown(\'' + dropdownId + '\')" class="w-full text-left px-4 py-2.5 text-xs font-medium text-amber-600 hover:bg-amber-50 transition-colors flex items-center gap-2"><i class="fa-solid fa-user-slash w-4"></i> Nonaktifkan Akun</button>'
-                                        : '<button onclick="toggleStatusPengguna(\'' + u.u + '\', \'Nonaktif\'); toggleDropdown(\'' + dropdownId + '\')" class="w-full text-left px-4 py-2.5 text-xs font-medium text-narmadaGreen hover:bg-emerald-50 transition-colors flex items-center gap-2"><i class="fa-solid fa-user-check w-4"></i> Aktifkan Akun</button>'
+                                        ? '<button onclick="toggleStatusPengguna(\'' + u.username + '\', \'Aktif\'); toggleDropdown(\'' + dropdownId + '\')" class="w-full text-left px-4 py-2.5 text-xs font-medium text-amber-600 hover:bg-amber-50 transition-colors flex items-center gap-2"><i class="fa-solid fa-user-slash w-4"></i> Nonaktifkan Akun</button>'
+                                        : '<button onclick="toggleStatusPengguna(\'' + u.username + '\', \'Nonaktif\'); toggleDropdown(\'' + dropdownId + '\')" class="w-full text-left px-4 py-2.5 text-xs font-medium text-narmadaGreen hover:bg-emerald-50 transition-colors flex items-center gap-2"><i class="fa-solid fa-user-check w-4"></i> Aktifkan Akun</button>'
                                     ) +
                                     '<div class="h-px bg-slate-100 w-full my-1"></div>' +
-                                    '<button onclick="hapusPengguna(\'' + u.u + '\'); toggleDropdown(\'' + dropdownId + '\')" class="w-full text-left px-4 py-2.5 text-xs font-medium text-red-600 hover:bg-red-50 transition-colors flex items-center gap-2"><i class="fa-solid fa-trash w-4"></i> Hapus Pengguna</button>' +
+                                    '<button onclick="hapusPengguna(\'' + u.username + '\'); toggleDropdown(\'' + dropdownId + '\')" class="w-full text-left px-4 py-2.5 text-xs font-medium text-red-600 hover:bg-red-50 transition-colors flex items-center gap-2"><i class="fa-solid fa-trash w-4"></i> Hapus Pengguna</button>' +
                                 '</div>' +
                             '</td>' +
                          '</tr>';
@@ -2691,9 +2691,9 @@ function updateStatistikPengguna() {
     var stats = { total: 0, admin: 0, operator: 0, pimpinan: 0, viewer: 0 };
     window.usersData.forEach(function(u) {
         stats.total++;
-        if (u.role === 'Super Admin') stats.admin++;
-        if (u.role.includes('Operator')) stats.operator++;
-        if (u.role.includes('Desa') || u.role === 'Pimpinan') stats.pimpinan++;
+        if (u.peran === 'Super Admin') stats.admin++;
+        if (u.peran.includes('Operator')) stats.operator++;
+        if (u.peran.includes('Desa') || u.peran === 'Pimpinan') stats.pimpinan++;
     });
     stats.viewer = Math.floor(Math.random() * 3) + 1;
 
@@ -2737,13 +2737,13 @@ function showCustomConfirm(title, message, onConfirm) {
 
 function openModalEditPengguna(username) {
     if (!window.usersData) return;
-    var user = window.usersData.find(function(u) { return u.u === username; });
+    var user = window.usersData.find(function(u) { return u.username === username; });
     if (!user) { pushToast('Data pengguna tidak ditemukan!', 'error'); return; }
     
-    document.getElementById('te-username-hidden').value = user.u;
-    document.getElementById('te-username').value = user.u;
-    document.getElementById('te-nama').value = user.name;
-    document.getElementById('te-peran').value = user.role;
+    document.getElementById('te-username-hidden').value = user.username;
+    document.getElementById('te-username').value = user.username;
+    document.getElementById('te-nama').value = user.nama;
+    document.getElementById('te-peran').value = user.peran;
     document.getElementById('te-unit').value = user.unit;
     document.getElementById('te-status').value = user.status;
     
