@@ -295,6 +295,11 @@ var PengajuanService = {
       };
       
       PengajuanRepository.insert(pengajuanRecord);
+      
+      // --- LOG AKTIVITAS & NOTIFIKASI ---
+      ActivityService.logActivity("NEW_REQUEST", "Pengajuan baru masuk dari " + wargaData.nama + " (" + newId + ")", "Warga");
+      NotificationService.addNotification("NEW_REQUEST", "Pengajuan Baru Masuk", "Ada pengajuan dari " + wargaData.nama + " (" + wargaData.layanan + ").", newId);
+
       SpreadsheetApp.flush();
       
       // --- NOTIFIKASI OTOMATIS VIA WA (FONNTE) ---
@@ -393,6 +398,9 @@ var PengajuanService = {
         status: nextStatus,
         catatan: Sanitizer.clean(notes)
       });
+      
+      ActivityService.logActivity("UPDATE_STATUS", "Status pengajuan " + id + " diubah menjadi: " + nextStatus, "Admin");
+      
       SpreadsheetApp.flush();
       return { success: true, message: "Status registrasi " + id + " sukses diperbarui!" };
     } catch (e) {
@@ -475,3 +483,67 @@ var PDFGeneratorService = {
     }
   }
 };
+
+/**
+ * ActivityService - Layanan pencatatan dan pengambilan aktivitas
+ */
+var ActivityService = {
+  logActivity: function(tipe, pesan, pelaku) {
+    try {
+      var record = {
+        id: "ACT-" + Utilities.formatDate(new Date(), "Asia/Jakarta", "yyyyMMddHHmmss") + "-" + Math.floor(Math.random() * 1000),
+        waktu: Utilities.formatDate(new Date(), "Asia/Jakarta", "dd/MM/yyyy HH:mm:ss"),
+        tipe: tipe || "INFO",
+        pesan: pesan || "Sistem diperbarui.",
+        pelaku: pelaku || "System"
+      };
+      ActivityRepository.insert(record);
+      return { success: true };
+    } catch(e) {
+      Logger.log("ActivityService Error: " + e.toString());
+      return { success: false, message: e.toString() };
+    }
+  },
+  
+  getRecent: function(limit) {
+    try {
+      return ActivityRepository.getAll(limit || 50);
+    } catch(e) {
+      Logger.log("ActivityService.getRecent Error: " + e.toString());
+      return [];
+    }
+  }
+};
+
+/**
+ * NotificationService - Layanan notifikasi
+ */
+var NotificationService = {
+  addNotification: function(tipe, judul, pesan, idReferensi) {
+    try {
+      var record = {
+        id: "NOTIF-" + Utilities.formatDate(new Date(), "Asia/Jakarta", "yyyyMMddHHmmss") + "-" + Math.floor(Math.random() * 1000),
+        waktu: Utilities.formatDate(new Date(), "Asia/Jakarta", "dd/MM/yyyy HH:mm:ss"),
+        tipe: tipe || "INFO",
+        judul: judul || "Pemberitahuan",
+        pesan: pesan || "",
+        idReferensi: idReferensi || ""
+      };
+      NotificationRepository.insert(record);
+      return { success: true };
+    } catch(e) {
+      Logger.log("NotificationService Error: " + e.toString());
+      return { success: false, message: e.toString() };
+    }
+  },
+  
+  getRecent: function(limit) {
+    try {
+      return NotificationRepository.getAll(limit || 20);
+    } catch(e) {
+      Logger.log("NotificationService.getRecent Error: " + e.toString());
+      return [];
+    }
+  }
+};
+

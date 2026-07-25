@@ -100,3 +100,14 @@ function doPost(e) {
       .setMimeType(ContentService.MimeType.JSON);
   }
 }
+
+function getActivities(token, limit) {
+  if (!AuthService.verifyToken(token)) return { success: false, message: "Sesi tidak valid.", authError: true };
+  return ActivityService.getRecent(limit);
+}
+
+function getNotifications(token, limit) {
+  if (!AuthService.verifyToken(token)) return { success: false, message: "Sesi tidak valid.", authError: true };
+  return NotificationService.getRecent(limit);
+}
+

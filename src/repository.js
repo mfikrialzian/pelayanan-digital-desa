@@ -305,3 +305,60 @@ var PengajuanRepository = {
     };
   }
 };
+
+/**
+ * ActivityRepository - Log aktivitas sistem
+ */
+var ActivityRepository = {
+  getAll: function(limit) {
+    var sheet = BaseRepository.getSheet(ZettConstants.SHEET_AKTIVITAS);
+    var data = sheet.getDataRange().getDisplayValues();
+    var list = [];
+    // Baca dari bawah ke atas agar aktivitas terbaru di awal
+    var max = limit ? Math.min(data.length - 1, limit) : data.length - 1;
+    for (var i = data.length - 1; i > data.length - 1 - max; i--) {
+      if (i === 0) break;
+      list.push({
+        id: data[i][0],
+        waktu: data[i][1],
+        tipe: data[i][2],
+        pesan: data[i][3],
+        pelaku: data[i][4]
+      });
+    }
+    return list;
+  },
+  insert: function(record) {
+    var sheet = BaseRepository.getSheet(ZettConstants.SHEET_AKTIVITAS);
+    sheet.appendRow([record.id, record.waktu, record.tipe, record.pesan, record.pelaku]);
+  }
+};
+
+/**
+ * NotificationRepository - Notifikasi admin
+ */
+var NotificationRepository = {
+  getAll: function(limit) {
+    var sheet = BaseRepository.getSheet(ZettConstants.SHEET_NOTIFIKASI);
+    var data = sheet.getDataRange().getDisplayValues();
+    var list = [];
+    var max = limit ? Math.min(data.length - 1, limit) : data.length - 1;
+    for (var i = data.length - 1; i > data.length - 1 - max; i--) {
+      if (i === 0) break;
+      list.push({
+        id: data[i][0],
+        waktu: data[i][1],
+        tipe: data[i][2],
+        judul: data[i][3],
+        pesan: data[i][4],
+        dibaca: data[i][5] === "TRUE",
+        idReferensi: data[i][6]
+      });
+    }
+    return list;
+  },
+  insert: function(record) {
+    var sheet = BaseRepository.getSheet(ZettConstants.SHEET_NOTIFIKASI);
+    sheet.appendRow([record.id, record.waktu, record.tipe, record.judul, record.pesan, "FALSE", record.idReferensi]);
+  }
+};

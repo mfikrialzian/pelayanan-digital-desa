@@ -23,6 +23,8 @@ var ZettConstants = {
   SHEET_FIELDS: "Layanan_Fields",
   SHEET_REQS: "Layanan_Requirements",
   SHEET_SETELAN: "Setelan",
+  SHEET_AKTIVITAS: "Aktivitas",
+  SHEET_NOTIFIKASI: "Notifikasi",
   
   STATUS_PENDING: "Menunggu",
   STATUS_VERIFIKASI: "Verifikasi",
@@ -143,6 +145,21 @@ function setupDatabase() {
       sSetelan.getRange(2, 1, defaultSetelan.length, 2).setValues(defaultSetelan);
     }
 
+    // 6. Inisialisasi Sheet Aktivitas
+    var sAktivitas = ss.getSheetByName(ZettConstants.SHEET_AKTIVITAS);
+    if (!sAktivitas) {
+      sAktivitas = ss.insertSheet(ZettConstants.SHEET_AKTIVITAS);
+      sAktivitas.appendRow(["ID", "Waktu", "Tipe", "Pesan", "Pelaku"]);
+      sAktivitas.getRange("A1:E1").setFontWeight("bold").setBackground("#059669").setFontColor("#FFFFFF");
+    }
+
+    // 7. Inisialisasi Sheet Notifikasi
+    var sNotifikasi = ss.getSheetByName(ZettConstants.SHEET_NOTIFIKASI);
+    if (!sNotifikasi) {
+      sNotifikasi = ss.insertSheet(ZettConstants.SHEET_NOTIFIKASI);
+      sNotifikasi.appendRow(["ID", "Waktu", "Tipe", "Judul", "Pesan", "Dibaca", "ID Referensi"]);
+      sNotifikasi.getRange("A1:G1").setFontWeight("bold").setBackground("#059669").setFontColor("#FFFFFF");
+    }
 
 
     SpreadsheetApp.flush();
