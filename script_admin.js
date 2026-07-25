@@ -2287,7 +2287,7 @@ function showPengaturanAkunMenu() {
     
     if (menuUtama) {
         menuUtama.classList.remove('hidden');
-        menuUtama.classList.add('grid');
+        menuUtama.classList.add('block');
     }
     if (contentContainer) {
         contentContainer.classList.add('hidden');
@@ -2301,7 +2301,7 @@ function switchPengaturanAkunTab(tabId) {
     const menuUtama = document.getElementById('pa-menu-utama');
     if (menuUtama) {
         menuUtama.classList.add('hidden');
-        menuUtama.classList.remove('grid');
+        menuUtama.classList.remove('block');
     }
     
     // Tampilkan container konten
