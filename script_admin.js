@@ -2636,6 +2636,70 @@ function switchPengaturanAkunTab(tabId) {
     }
 }
 
+// --- Tambah Pengguna Logic ---
+function openModalTambahPengguna() {
+    var modal = document.getElementById('modal-tambah-pengguna');
+    if (modal) {
+        modal.classList.remove('hidden');
+    }
+}
+
+function closeModalTambahPengguna() {
+    var modal = document.getElementById('modal-tambah-pengguna');
+    if (modal) {
+        modal.classList.add('hidden');
+        // Reset form
+        var form = document.getElementById('form-tambah-pengguna');
+        if (form) form.reset();
+    }
+}
+
+function simpanPenggunaBaru(event) {
+    event.preventDefault(); // Mencegah reload halaman
+    
+    // Ambil nilai dari input
+    var nama = document.getElementById('tp-nama').value;
+    var username = document.getElementById('tp-username').value;
+    var password = document.getElementById('tp-password').value;
+    var peran = document.getElementById('tp-peran').value;
+    var unit = document.getElementById('tp-unit').value;
+    var status = document.getElementById('tp-status').value;
+    
+    // Buat format tanggal hari ini untuk "Terakhir Login"
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    var yyyy = today.getFullYear();
+    var tanggalFormatted = dd + '/' + mm + '/' + yyyy + ', -'; // Belum pernah login
+
+    // Buat object akun baru
+    var akunBaru = {
+        u: username,
+        p: password,
+        role: peran,
+        name: nama,
+        status: status,
+        unit: unit,
+        terakhirLogin: tanggalFormatted
+    };
+    
+    // Tambahkan ke database dummy
+    if(window.dummyUsersData) {
+        window.dummyUsersData.push(akunBaru);
+        
+        // Render ulang tabel pengguna dan update statistik
+        renderUserTable();
+        
+        // Tutup modal
+        closeModalTambahPengguna();
+        
+        // Tampilkan notifikasi
+        pushToast('Akun ' + nama + ' berhasil dibuat!', 'success');
+    } else {
+        pushToast('Gagal menambahkan pengguna.', 'error');
+    }
+}
+
 // --- Initial Route Logic ---
 document.addEventListener('DOMContentLoaded', function() {
     var path = window.location.pathname;
