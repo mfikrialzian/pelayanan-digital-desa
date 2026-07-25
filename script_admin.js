@@ -127,12 +127,14 @@ function runAdminLoginAuth() {
             if (tabId === 'dashboard') {
                 document.getElementById('admin-right-column').classList.remove('hidden');
                 document.getElementById('admin-main-column').classList.remove('w-full');
-                document.getElementById('admin-main-column').classList.add('lg:w-3/4');
+                if (!document.getElementById('admin-main-column').className.includes('lg:w-3/4')) {
+                    document.getElementById('admin-main-column').className += ' lg:w-3/4';
+                }
                 fetchAdminStats();
             } else {
                 document.getElementById('admin-right-column').classList.add('hidden');
                 document.getElementById('admin-main-column').classList.add('w-full');
-                document.getElementById('admin-main-column').classList.remove('lg:w-3/4');
+                document.getElementById('admin-main-column').className = document.getElementById('admin-main-column').className.replace('lg:w-3/4', '').trim();
                 
                 if (tabId === 'daftar-layanan') {
                     loadBuilderDaftarLayananTab();
