@@ -1,4 +1,4 @@
-const CACHE_NAME = 'desa-narmada-pwa-v1';
+const CACHE_NAME = 'desa-narmada-pwa-v2';
 const urlsToCache = [
   '/',
   '/index.html',
