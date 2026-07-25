@@ -1916,36 +1916,46 @@
                         </div>
                     </div>
 
-                    <!-- Center Menu (Avatar style) -->
+                    <!-- Center Menu (Pengaturan Akun style) -->
                     <div class="flex flex-col items-center mt-8">
-                        <div class="w-full max-w-sm bg-white rounded-2xl shadow-lg border border-slate-100 overflow-hidden" id="mp-menu-container">
-                            <div class="px-4 py-3 border-b border-slate-100 bg-slate-50">
-                                <p class="text-xs font-bold text-slate-600 uppercase tracking-wider text-center">Menu Manajemen Pengguna</p>
+                        <div class="w-full max-w-2xl bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden block" id="mp-menu-container">
+                            <div class="p-5 border-b border-slate-100 bg-slate-50/50">
+                                <h3 class="text-lg font-black text-slate-800"><i class="fa-solid fa-users-gear text-narmadaGreen mr-2"></i> Manajemen Pengguna</h3>
+                                <p class="text-xs text-slate-500 mt-1">Kelola data pengguna, hak akses peran, serta pantau aktivitas di dalam sistem.</p>
                             </div>
-                            <div class="py-1">
-                                <a href="javascript:switchManajemenPenggunaTab('daftar');" id="mp-btn-daftar" class="flex items-center gap-3 px-4 py-3 text-sm transition-colors group text-slate-700 hover:bg-slate-50 hover:text-narmadaGreen">
-                                    <div class="w-8 h-8 rounded-full flex items-center justify-center transition-colors bg-slate-100 group-hover:bg-emerald-50 shrink-0">
-                                        <i class="fa-solid fa-users-viewfinder text-slate-500 group-hover:text-narmadaGreen"></i>
+                            <div class="divide-y divide-slate-100">
+                                <div onclick="switchManajemenPenggunaTab('daftar')" id="mp-btn-daftar" class="flex items-center gap-4 p-5 hover:bg-slate-50 cursor-pointer transition-colors group">
+                                    <div class="w-10 h-10 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:bg-emerald-50 group-hover:text-narmadaGreen transition-all">
+                                        <i class="fa-solid fa-users-viewfinder"></i>
                                     </div>
-                                    <span class="font-medium">Daftar Pengguna</span>
-                                    <i class="fa-solid fa-chevron-down ml-auto text-slate-300 text-xs transition-transform" id="mp-icon-daftar"></i>
-                                </a>
-                                <div class="border-t border-slate-100 my-1 mx-2"></div>
-                                <a href="javascript:switchManajemenPenggunaTab('akses');" id="mp-btn-akses" class="flex items-center gap-3 px-4 py-3 text-sm transition-colors group text-slate-700 hover:bg-slate-50 hover:text-narmadaGreen">
-                                    <div class="w-8 h-8 rounded-full flex items-center justify-center transition-colors bg-slate-100 group-hover:bg-emerald-50 shrink-0">
-                                        <i class="fa-solid fa-shield-halved text-slate-500 group-hover:text-narmadaGreen"></i>
+                                    <div class="flex-grow">
+                                        <h4 class="font-bold text-slate-800">Daftar Pengguna</h4>
+                                        <p class="text-[11px] text-slate-500">Lihat dan kelola seluruh daftar akun pengguna yang terdaftar di sistem.</p>
                                     </div>
-                                    <span class="font-medium">Peran & Hak Akses</span>
-                                    <i class="fa-solid fa-chevron-down ml-auto text-slate-300 text-xs transition-transform" id="mp-icon-akses"></i>
-                                </a>
-                                <div class="border-t border-slate-100 my-1 mx-2"></div>
-                                <a href="javascript:switchManajemenPenggunaTab('aktifitas');" id="mp-btn-aktifitas" class="flex items-center gap-3 px-4 py-3 text-sm transition-colors group text-slate-700 hover:bg-slate-50 hover:text-narmadaGreen">
-                                    <div class="w-8 h-8 rounded-full flex items-center justify-center transition-colors bg-slate-100 group-hover:bg-emerald-50 shrink-0">
-                                        <i class="fa-solid fa-clock-rotate-left text-slate-500 group-hover:text-narmadaGreen"></i>
+                                    <i class="fa-solid fa-chevron-right text-slate-300 group-hover:text-narmadaGreen transition-colors" id="mp-icon-daftar"></i>
+                                </div>
+                                
+                                <div onclick="switchManajemenPenggunaTab('akses')" id="mp-btn-akses" class="flex items-center gap-4 p-5 hover:bg-slate-50 cursor-pointer transition-colors group">
+                                    <div class="w-10 h-10 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:bg-emerald-50 group-hover:text-narmadaGreen transition-all">
+                                        <i class="fa-solid fa-shield-halved"></i>
                                     </div>
-                                    <span class="font-medium">Aktifitas Pengguna</span>
-                                    <i class="fa-solid fa-chevron-down ml-auto text-slate-300 text-xs transition-transform" id="mp-icon-aktifitas"></i>
-                                </a>
+                                    <div class="flex-grow">
+                                        <h4 class="font-bold text-slate-800">Peran & Hak Akses</h4>
+                                        <p class="text-[11px] text-slate-500">Lihat panduan lengkap mengenai batasan wewenang dari setiap peran (role).</p>
+                                    </div>
+                                    <i class="fa-solid fa-chevron-right text-slate-300 group-hover:text-narmadaGreen transition-colors" id="mp-icon-akses"></i>
+                                </div>
+                                
+                                <div onclick="switchManajemenPenggunaTab('aktifitas')" id="mp-btn-aktifitas" class="flex items-center gap-4 p-5 hover:bg-slate-50 cursor-pointer transition-colors group">
+                                    <div class="w-10 h-10 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:bg-emerald-50 group-hover:text-narmadaGreen transition-all">
+                                        <i class="fa-solid fa-clock-rotate-left"></i>
+                                    </div>
+                                    <div class="flex-grow">
+                                        <h4 class="font-bold text-slate-800">Aktifitas Pengguna</h4>
+                                        <p class="text-[11px] text-slate-500">Pantau riwayat aksi yang dilakukan oleh pengguna akhir-akhir ini.</p>
+                                    </div>
+                                    <i class="fa-solid fa-chevron-right text-slate-300 group-hover:text-narmadaGreen transition-colors" id="mp-icon-aktifitas"></i>
+                                </div>
                             </div>
                         </div>
                     </div>
