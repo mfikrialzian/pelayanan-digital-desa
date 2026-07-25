@@ -2875,8 +2875,71 @@ function hapusPengguna(username) {
     );
 }
 
+// --- Admin Header Logic ---
+function initAdminHeader() {
+    const greetingEl = document.getElementById('admin-header-greeting');
+    const nameEl = document.getElementById('admin-header-name');
+    const roleEl = document.getElementById('admin-header-role');
+    const timeEl = document.getElementById('admin-current-time');
+
+    if (!timeEl) return; // Exit if not on admin page
+
+    // Update Name and Role
+    const userName = localStorage.getItem('userName') || 'Administrator';
+    const userRole = localStorage.getItem('userRole') || 'Super Admin';
+    if (nameEl) nameEl.textContent = userName;
+    if (roleEl) roleEl.textContent = userRole;
+
+    function updateDateTime() {
+        const now = new Date();
+        const hour = now.getHours();
+        
+        // Greeting logic
+        let greeting = 'Selamat Pagi';
+        if (hour >= 11 && hour < 15) {
+            greeting = 'Selamat Siang';
+        } else if (hour >= 15 && hour < 18) {
+            greeting = 'Selamat Sore';
+        } else if (hour >= 18 || hour < 4) {
+            greeting = 'Selamat Malam';
+        }
+        if (greetingEl) greetingEl.innerHTML = `${greeting}, 👋`;
+
+        // Time logic
+        const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+        const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+        
+        const dayName = days[now.getDay()];
+        const day = now.getDate();
+        const monthName = months[now.getMonth()];
+        const year = now.getFullYear();
+        
+        const hoursStr = String(now.getHours()).padStart(2, '0');
+        const minutesStr = String(now.getMinutes()).padStart(2, '0');
+        
+        // Try to get timezone abbreviation (e.g., WITA)
+        let timeZoneName = '';
+        try {
+            const parts = new Intl.DateTimeFormat('id-ID', { timeZoneName: 'short' }).formatToParts(now);
+            const tzPart = parts.find(p => p.type === 'timeZoneName');
+            if (tzPart) timeZoneName = tzPart.value;
+        } catch(e) {
+            timeZoneName = 'WITA'; // fallback
+        }
+        
+        if (timeEl) {
+            timeEl.textContent = `${dayName}, ${day} ${monthName} ${year} • ${hoursStr}:${minutesStr} ${timeZoneName}`;
+        }
+    }
+
+    updateDateTime();
+    setInterval(updateDateTime, 1000);
+}
+
 // --- Initial Route Logic ---
 document.addEventListener('DOMContentLoaded', function() {
+    initAdminHeader();
+    
     var path = window.location.pathname;
     if (path.startsWith('/admin/')) {
         var tab = path.replace('/admin/', '');
