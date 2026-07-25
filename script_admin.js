@@ -324,6 +324,10 @@ window.dummyUsersData = [
             if (activeContent) activeContent.classList.remove('hidden');
         }
 
+        function saveRoleAccess() {
+            pushToast('Perubahan Hak Akses berhasil disimpan!', 'success');
+        }
+
         function backToManajemenPengguna() {
             // Sembunyikan semua konten
             var tabs = ['daftar', 'akses', 'aktifitas'];
