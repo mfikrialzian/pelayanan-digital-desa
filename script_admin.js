@@ -99,6 +99,8 @@ function runAdminLoginAuth() {
             document.getElementById('subview-admin-kredensial').classList.add('hidden');
             document.getElementById('subview-admin-laporan').classList.add('hidden');
             document.getElementById('subview-admin-aktivitas').classList.add('hidden');
+            document.getElementById('subview-admin-profil').classList.add('hidden');
+            document.getElementById('subview-admin-pengaturan').classList.add('hidden');
 
             const allTabs = ['tab-adm-dashboard', 'tab-adm-pengajuan', 'tab-adm-daftar-layanan', 'tab-adm-kontak', 'tab-adm-beranda', 'tab-adm-kredensial', 'tab-adm-laporan', 'tab-adm-aktivitas'];
 
