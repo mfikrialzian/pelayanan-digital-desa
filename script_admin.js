@@ -15,6 +15,10 @@ function runAdminLoginAuth() {
                             localStorage.setItem('adminToken_Narmada', res.token);
                             localStorage.setItem('userRole', res.role || 'Super Admin');
                             localStorage.setItem('userName', res.name || 'Admin');
+                            localStorage.setItem('userId', u);
+                            if (res.email) localStorage.setItem('userEmail', res.email);
+                            if (res.wa) localStorage.setItem('userPhone', res.wa);
+                            if (res.avatar) localStorage.setItem('userAvatar', res.avatar);
                             initRBAC();
                             switchView('admin');
                             pushToast("Otentikasi Sukses. Selamat Bekerja Admin.", "success");
@@ -140,6 +144,16 @@ function runAdminLoginAuth() {
                 if (dName) dName.innerText = userName;
                 var dRole = document.querySelector('#admin-profile-trigger p.text-\\[10px\\]');
                 if (dRole) dRole.innerText = role;
+                
+                var userAvatar = localStorage.getItem('userAvatar');
+                var headerAvatarImg = document.querySelector('#admin-profile-trigger img');
+                if (headerAvatarImg) {
+                    if (userAvatar && userAvatar.trim() !== '') {
+                        headerAvatarImg.src = userAvatar;
+                    } else {
+                        headerAvatarImg.src = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(userName) + '&background=0D8ABC&color=fff';
+                    }
+                }
             }
 
             // Render Sidebar
@@ -2559,8 +2573,11 @@ function saveProfileData(e) {
                 username: localStorage.getItem('userId'),
                 nama: nama,
                 email: email,
-                wa: wa
+                wa: wa,
+                avatar: localStorage.getItem('userAvatar') || ''
             };
+            const token = localStorage.getItem('adminToken_Narmada');
+
 
             if (typeof google !== 'undefined' && google.script && google.script.run) {
                 // Real backend call
@@ -2575,6 +2592,7 @@ function saveProfileData(e) {
                                 confirmButtonColor: '#059669'
                             }).then(() => {
                                 toggleEditProfile(false);
+                                initRBAC();
                             });
                         } else {
                             Swal.fire({
@@ -2591,7 +2609,7 @@ function saveProfileData(e) {
                             text: 'Gagal terhubung ke server backend.',
                         });
                     })
-                    .updateProfilPengguna(payload);
+                    .updateProfilPengguna(token, payload);
             } else {
                 // Fallback / Simulation for local dev
                 setTimeout(() => {
