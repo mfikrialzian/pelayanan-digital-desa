@@ -1,4 +1,13 @@
-function runAdminLoginAuth() {
+window.dummyUsersData = [
+            { u: "superadmin", p: "123", role: "Super Admin", name: "Budi (Super Admin)", status: "Aktif" },
+            { u: "op1", p: "123", role: "Operator Pelayanan 1", name: "Siti (OP 1)", status: "Aktif" },
+            { u: "op2", p: "123", role: "Operator Pelayanan 2", name: "Andi (OP 2)", status: "Aktif" },
+            { u: "sekdes", p: "123", role: "Sekretaris Desa", name: "Ahmad (Sekdes)", status: "Aktif" },
+            { u: "kades", p: "123", role: "Kepala Desa", name: "Joko (Kades)", status: "Aktif" },
+            { u: "viewer1", p: "123", role: "Viewer", name: "Tamu (Viewer)", status: "Aktif" }
+        ];
+
+        function runAdminLoginAuth() {
             var u = document.getElementById('login-username').value.trim();
             var p = document.getElementById('login-password').value.trim();
             var btn = document.getElementById('btn-submit-login');
@@ -33,16 +42,7 @@ function runAdminLoginAuth() {
                     btn.disabled = false;
                     btn.innerHTML = '<span>Login</span>';
                     
-                    var dummyUsers = [
-                        { u: "superadmin", p: "123", role: "Super Admin", name: "Budi (Super Admin)" },
-                        { u: "op1", p: "123", role: "Operator Pelayanan 1", name: "Siti (OP 1)" },
-                        { u: "op2", p: "123", role: "Operator Pelayanan 2", name: "Andi (OP 2)" },
-                        { u: "sekdes", p: "123", role: "Sekretaris Desa", name: "Ahmad (Sekdes)" },
-                        { u: "kades", p: "123", role: "Kepala Desa", name: "Joko (Kades)" },
-                        { u: dummySetelan.username, p: dummySetelan.password, role: "Super Admin", name: "Admin Utama" }
-                    ];
-                    
-                    var userMatch = dummyUsers.find(function(user) {
+                    var userMatch = window.dummyUsersData.find(function(user) {
                         return user.u === u && user.p === p;
                     });
 
@@ -192,6 +192,138 @@ function runAdminLoginAuth() {
         function markVerifikasiDirty() {
             window.isVerifikasiDirty = true;
         }
+
+        function initManajemenPengguna() {
+            var users = window.dummyUsersData || [];
+            
+            // Hide all contents initially
+            ['daftar', 'akses', 'aktifitas'].forEach(function(t) {
+                var content = document.getElementById('mp-content-' + t);
+                if (content) content.classList.add('hidden');
+                
+                var btn = document.getElementById('mp-btn-' + t);
+                var icon = document.getElementById('mp-icon-' + t);
+                if (btn) {
+                    btn.classList.remove('bg-emerald-50', 'border-l-2', 'border-narmadaGreen');
+                    var btnIconBg = btn.querySelector('div');
+                    var btnIcon = btn.querySelector('i');
+                    if (btnIconBg) {
+                        btnIconBg.classList.remove('bg-narmadaGreen');
+                        btnIconBg.classList.add('bg-slate-100');
+                    }
+                    if (btnIcon) {
+                        btnIcon.classList.remove('text-white');
+                        btnIcon.classList.add('text-slate-500');
+                    }
+                }
+                if (icon) {
+                    icon.classList.remove('rotate-180', 'text-narmadaGreen');
+                    icon.classList.add('text-slate-300');
+                }
+            });
+
+            // Calculate Stats
+            var stats = { total: 0, admin: 0, operator: 0, pimpinan: 0, viewer: 0 };
+            users.forEach(function(u) {
+                stats.total++;
+                if (u.role === 'Super Admin') stats.admin++;
+                if (u.role.includes('Operator')) stats.operator++;
+                if (u.role.includes('Desa')) stats.pimpinan++; // Kades & Sekdes
+                if (u.role === 'Viewer') stats.viewer++;
+            });
+
+            var elTotal = document.getElementById('stat-user-total');
+            if (elTotal) elTotal.innerText = stats.total;
+            var elAdmin = document.getElementById('stat-user-admin');
+            if (elAdmin) elAdmin.innerText = stats.admin;
+            var elOperator = document.getElementById('stat-user-operator');
+            if (elOperator) elOperator.innerText = stats.operator;
+            var elPimpinan = document.getElementById('stat-user-pimpinan');
+            if (elPimpinan) elPimpinan.innerText = stats.pimpinan;
+            var elViewer = document.getElementById('stat-user-viewer');
+            if (elViewer) elViewer.innerText = stats.viewer;
+
+            // Populate Table
+            var tbody = document.getElementById('mp-table-body');
+            if (tbody) {
+                tbody.innerHTML = '';
+                users.forEach(function(u) {
+                    var roleBadge = '';
+                    if (u.role === 'Super Admin') roleBadge = '<span class="px-2 py-1 bg-red-100 text-red-700 rounded-lg text-[10px] font-bold">' + u.role + '</span>';
+                    else if (u.role.includes('Operator')) roleBadge = '<span class="px-2 py-1 bg-blue-100 text-blue-700 rounded-lg text-[10px] font-bold">' + u.role + '</span>';
+                    else if (u.role.includes('Desa')) roleBadge = '<span class="px-2 py-1 bg-purple-100 text-purple-700 rounded-lg text-[10px] font-bold">' + u.role + '</span>';
+                    else roleBadge = '<span class="px-2 py-1 bg-amber-100 text-amber-700 rounded-lg text-[10px] font-bold">' + u.role + '</span>';
+                    
+                    var statusBadge = '<span class="px-2 py-1 bg-emerald-100 text-narmadaGreen rounded-lg text-[10px] font-bold"><i class="fa-solid fa-circle text-[8px] mr-1"></i>Aktif</span>';
+                    
+                    var tr = '<tr class="border-b border-slate-50 hover:bg-slate-50 transition-colors">' +
+                                '<td class="py-3 px-4">' +
+                                    '<div class="font-bold text-slate-800">' + u.name + '</div>' +
+                                    '<div class="text-xs text-slate-500">@' + u.u + '</div>' +
+                                '</td>' +
+                                '<td class="py-3 px-4">' + roleBadge + '</td>' +
+                                '<td class="py-3 px-4">' + statusBadge + '</td>' +
+                                '<td class="py-3 px-4 text-right">' +
+                                    '<button onclick="pushToast(\'Fitur Edit segera hadir\', \'info\')" class="w-8 h-8 rounded-lg bg-slate-100 text-slate-500 hover:bg-slate-200 hover:text-slate-800 transition-colors"><i class="fa-solid fa-pen-to-square"></i></button>' +
+                                '</td>' +
+                             '</tr>';
+                    tbody.innerHTML += tr;
+                });
+            }
+        }
+
+        function switchManajemenPenggunaTab(tabId) {
+            var tabs = ['daftar', 'akses', 'aktifitas'];
+            
+            tabs.forEach(function(t) {
+                var content = document.getElementById('mp-content-' + t);
+                var btn = document.getElementById('mp-btn-' + t);
+                var icon = document.getElementById('mp-icon-' + t);
+                
+                if (content) content.classList.add('hidden');
+                if (btn) {
+                    btn.classList.remove('bg-emerald-50', 'border-l-2', 'border-narmadaGreen');
+                    // Reset group styles
+                    var btnIconBg = btn.querySelector('div');
+                    var btnIcon = btn.querySelector('i');
+                    if (btnIconBg) {
+                        btnIconBg.classList.remove('bg-narmadaGreen');
+                        btnIconBg.classList.add('bg-slate-100');
+                    }
+                    if (btnIcon) {
+                        btnIcon.classList.remove('text-white');
+                        btnIcon.classList.add('text-slate-500');
+                    }
+                }
+                if (icon) {
+                    icon.classList.remove('rotate-180', 'text-narmadaGreen');
+                    icon.classList.add('text-slate-300');
+                }
+            });
+
+            var activeContent = document.getElementById('mp-content-' + tabId);
+            var activeBtn = document.getElementById('mp-btn-' + tabId);
+            var activeIcon = document.getElementById('mp-icon-' + tabId);
+            
+            if (activeContent) activeContent.classList.remove('hidden');
+            if (activeBtn) {
+                activeBtn.classList.add('bg-emerald-50', 'border-l-2', 'border-narmadaGreen');
+                var aBtnIconBg = activeBtn.querySelector('div');
+                var aBtnIcon = activeBtn.querySelector('i');
+                if (aBtnIconBg) {
+                    aBtnIconBg.classList.add('bg-narmadaGreen');
+                    aBtnIconBg.classList.remove('bg-slate-100', 'group-hover:bg-emerald-50');
+                }
+                if (aBtnIcon) {
+                    aBtnIcon.classList.add('text-white');
+                    aBtnIcon.classList.remove('text-slate-500', 'group-hover:text-narmadaGreen');
+                }
+            }
+            if (activeIcon) {
+                activeIcon.classList.add('rotate-180', 'text-narmadaGreen');
+                activeIcon.classList.remove('text-slate-300');
+            }
+        }
         function resetVerifikasiDirty() {
             window.isVerifikasiDirty = false;
         }
@@ -301,6 +433,8 @@ function runAdminLoginAuth() {
                     fetchActivities();
                 } else if (tabId === 'pengaturan-akun') {
                     showPengaturanAkunMenu();
+                } else if (tabId === 'kredensial') {
+                    initManajemenPengguna();
                 }
             }
 

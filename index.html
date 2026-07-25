@@ -1861,25 +1861,160 @@
                             </button>
                         </form>
                     </div>
-                </div><div id="subview-admin-kredensial" class="hidden max-w-md mx-auto text-left">
-                    <div class="bg-white p-5 rounded-2xl space-y-4 shadow-sm border border-slate-100">
-                        <h4 class="text-sm font-bold text-slate-800 border-b border-slate-100 pb-3 flex items-center gap-2">
-                            <i class="fa-solid fa-key text-narmadaGreen"></i> Keamanan Kredensial Login
-                        </h4>
-                        <form onsubmit="event.preventDefault(); saveAdminSettings();" class="space-y-4">
-                            <div>
-                                <label class="block text-xs font-bold text-slate-600 mb-1">Username Akun Admin</label>
-                                <input type="text" id="setelan-user" required="" class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors">
+                </div><div id="subview-admin-kredensial" class="hidden w-full mx-auto text-left space-y-6">
+                    <!-- Cards -->
+                    <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+                        <!-- Total -->
+                        <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-slate-50 text-slate-500 flex items-center justify-center text-lg shrink-0">
+                                <i class="fa-solid fa-users"></i>
                             </div>
                             <div>
-                                <label class="block text-xs font-bold text-slate-600 mb-1">Kata Sandi (Password)
-                                    Admin</label>
-                                <input type="password" id="setelan-pass" required="" class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors">
+                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Total Pengguna</p>
+                                <h3 class="text-xl font-bold text-slate-800 leading-none mt-1" id="stat-user-total">0</h3>
                             </div>
-                            <button type="submit" class="w-full py-2.5 bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs rounded-xl transition-colors shadow-sm">
-                                Perbarui Kredensial Admin
+                        </div>
+                        <!-- Admin -->
+                        <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-red-50 text-red-500 flex items-center justify-center text-lg shrink-0">
+                                <i class="fa-solid fa-user-shield"></i>
+                            </div>
+                            <div>
+                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Super Admin</p>
+                                <h3 class="text-xl font-bold text-slate-800 leading-none mt-1" id="stat-user-admin">0</h3>
+                            </div>
+                        </div>
+                        <!-- Operator -->
+                        <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center text-lg shrink-0">
+                                <i class="fa-solid fa-user-pen"></i>
+                            </div>
+                            <div>
+                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Operator</p>
+                                <h3 class="text-xl font-bold text-slate-800 leading-none mt-1" id="stat-user-operator">0</h3>
+                            </div>
+                        </div>
+                        <!-- Pimpinan -->
+                        <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-purple-50 text-purple-500 flex items-center justify-center text-lg shrink-0">
+                                <i class="fa-solid fa-user-tie"></i>
+                            </div>
+                            <div>
+                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Pimpinan</p>
+                                <h3 class="text-xl font-bold text-slate-800 leading-none mt-1" id="stat-user-pimpinan">0</h3>
+                            </div>
+                        </div>
+                        <!-- Viewer -->
+                        <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-amber-50 text-amber-500 flex items-center justify-center text-lg shrink-0">
+                                <i class="fa-solid fa-eye"></i>
+                            </div>
+                            <div>
+                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Viewer</p>
+                                <h3 class="text-xl font-bold text-slate-800 leading-none mt-1" id="stat-user-viewer">0</h3>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Center Menu (Avatar style) -->
+                    <div class="flex flex-col items-center mt-8">
+                        <div class="w-full max-w-sm bg-white rounded-2xl shadow-lg border border-slate-100 overflow-hidden" id="mp-menu-container">
+                            <div class="px-4 py-3 border-b border-slate-100 bg-slate-50">
+                                <p class="text-xs font-bold text-slate-600 uppercase tracking-wider text-center">Menu Manajemen Pengguna</p>
+                            </div>
+                            <div class="py-1">
+                                <a href="javascript:switchManajemenPenggunaTab('daftar');" id="mp-btn-daftar" class="flex items-center gap-3 px-4 py-3 text-sm transition-colors group text-slate-700 hover:bg-slate-50 hover:text-narmadaGreen">
+                                    <div class="w-8 h-8 rounded-full flex items-center justify-center transition-colors bg-slate-100 group-hover:bg-emerald-50 shrink-0">
+                                        <i class="fa-solid fa-users-viewfinder text-slate-500 group-hover:text-narmadaGreen"></i>
+                                    </div>
+                                    <span class="font-medium">Daftar Pengguna</span>
+                                    <i class="fa-solid fa-chevron-down ml-auto text-slate-300 text-xs transition-transform" id="mp-icon-daftar"></i>
+                                </a>
+                                <div class="border-t border-slate-100 my-1 mx-2"></div>
+                                <a href="javascript:switchManajemenPenggunaTab('akses');" id="mp-btn-akses" class="flex items-center gap-3 px-4 py-3 text-sm transition-colors group text-slate-700 hover:bg-slate-50 hover:text-narmadaGreen">
+                                    <div class="w-8 h-8 rounded-full flex items-center justify-center transition-colors bg-slate-100 group-hover:bg-emerald-50 shrink-0">
+                                        <i class="fa-solid fa-shield-halved text-slate-500 group-hover:text-narmadaGreen"></i>
+                                    </div>
+                                    <span class="font-medium">Peran & Hak Akses</span>
+                                    <i class="fa-solid fa-chevron-down ml-auto text-slate-300 text-xs transition-transform" id="mp-icon-akses"></i>
+                                </a>
+                                <div class="border-t border-slate-100 my-1 mx-2"></div>
+                                <a href="javascript:switchManajemenPenggunaTab('aktifitas');" id="mp-btn-aktifitas" class="flex items-center gap-3 px-4 py-3 text-sm transition-colors group text-slate-700 hover:bg-slate-50 hover:text-narmadaGreen">
+                                    <div class="w-8 h-8 rounded-full flex items-center justify-center transition-colors bg-slate-100 group-hover:bg-emerald-50 shrink-0">
+                                        <i class="fa-solid fa-clock-rotate-left text-slate-500 group-hover:text-narmadaGreen"></i>
+                                    </div>
+                                    <span class="font-medium">Aktifitas Pengguna</span>
+                                    <i class="fa-solid fa-chevron-down ml-auto text-slate-300 text-xs transition-transform" id="mp-icon-aktifitas"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Content Containers -->
+                    <!-- Daftar Pengguna -->
+                    <div id="mp-content-daftar" class="hidden bg-white rounded-2xl shadow-sm border border-slate-100 p-5 mt-4 max-w-4xl mx-auto">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+                            <h4 class="text-sm font-bold text-slate-800 flex items-center gap-2">
+                                <i class="fa-solid fa-users text-narmadaGreen"></i> Daftar Pengguna Sistem
+                            </h4>
+                            <button onclick="pushToast('Fitur Tambah Pengguna segera hadir', 'info')" class="px-3 py-1.5 bg-narmadaGreen hover:bg-emerald-600 text-white text-xs font-bold rounded-lg transition-colors shadow-sm flex items-center gap-2 shrink-0">
+                                <i class="fa-solid fa-plus"></i> Tambah Pengguna
                             </button>
-                        </form>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse min-w-[600px]">
+                                <thead>
+                                    <tr class="bg-slate-50 text-slate-500 text-[10px] uppercase tracking-wider">
+                                        <th class="py-3 px-4 font-bold rounded-tl-lg">Nama / Username</th>
+                                        <th class="py-3 px-4 font-bold">Peran (Role)</th>
+                                        <th class="py-3 px-4 font-bold">Status</th>
+                                        <th class="py-3 px-4 font-bold rounded-tr-lg text-right">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="mp-table-body" class="text-sm">
+                                    <!-- Populated by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Peran & Hak Akses -->
+                    <div id="mp-content-akses" class="hidden bg-white rounded-2xl shadow-sm border border-slate-100 p-5 mt-4 max-w-4xl mx-auto">
+                        <h4 class="text-sm font-bold text-slate-800 border-b border-slate-100 pb-3 flex items-center gap-2 mb-4">
+                            <i class="fa-solid fa-shield-halved text-narmadaGreen"></i> Penjelasan Peran & Hak Akses
+                        </h4>
+                        <div class="space-y-4">
+                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-100">
+                                <h5 class="text-xs font-bold text-slate-800 mb-1 flex items-center gap-2"><i class="fa-solid fa-user-shield text-red-500 w-5"></i> Super Admin</h5>
+                                <p class="text-xs text-slate-600 leading-relaxed ml-7">Memiliki akses tak terbatas ke semua fitur sistem. Termasuk memodifikasi data penduduk, mengubah setelan web, dan mengelola pengguna lain.</p>
+                            </div>
+                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-100">
+                                <h5 class="text-xs font-bold text-slate-800 mb-1 flex items-center gap-2"><i class="fa-solid fa-user-pen text-blue-500 w-5"></i> Operator Pelayanan</h5>
+                                <p class="text-xs text-slate-600 leading-relaxed ml-7">Dapat mengelola permohonan surat warga, melakukan verifikasi berkas, dan memproses layanan operasional sehari-hari.</p>
+                            </div>
+                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-100">
+                                <h5 class="text-xs font-bold text-slate-800 mb-1 flex items-center gap-2"><i class="fa-solid fa-user-tie text-purple-500 w-5"></i> Pimpinan (Kades / Sekdes)</h5>
+                                <p class="text-xs text-slate-600 leading-relaxed ml-7">Berhak melihat laporan statistik, memantau pengajuan, dan memberikan TTE (Tanda Tangan Elektronik) untuk persetujuan dokumen.</p>
+                            </div>
+                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-100">
+                                <h5 class="text-xs font-bold text-slate-800 mb-1 flex items-center gap-2"><i class="fa-solid fa-eye text-amber-500 w-5"></i> Viewer</h5>
+                                <p class="text-xs text-slate-600 leading-relaxed ml-7">Hanya dapat melihat (read-only) data-data tertentu pada dashboard dan laporan tanpa hak modifikasi.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Aktifitas -->
+                    <div id="mp-content-aktifitas" class="hidden bg-white rounded-2xl shadow-sm border border-slate-100 p-5 mt-4 max-w-4xl mx-auto">
+                        <h4 class="text-sm font-bold text-slate-800 border-b border-slate-100 pb-3 flex items-center gap-2 mb-4">
+                            <i class="fa-solid fa-clock-rotate-left text-narmadaGreen"></i> Log Aktifitas Sistem
+                        </h4>
+                        <div class="flex flex-col items-center justify-center py-10 text-center">
+                            <div class="w-16 h-16 rounded-full bg-slate-50 text-slate-300 flex items-center justify-center text-2xl mb-3">
+                                <i class="fa-solid fa-screwdriver-wrench"></i>
+                            </div>
+                            <p class="text-sm font-medium text-slate-600">Modul Log Sedang Disiapkan</p>
+                            <p class="text-xs text-slate-500 mt-1">Nantinya, semua riwayat login dan perubahan data oleh pengguna akan tercatat di sini.</p>
+                        </div>
                     </div>
                 </div><div id="subview-admin-laporan" class="hidden max-w-4xl mx-auto text-left space-y-4">
                     <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center justify-center text-center space-y-4 min-h-[400px]">
