@@ -2687,8 +2687,27 @@ function simpanPenggunaBaru(event) {
     if(window.dummyUsersData) {
         window.dummyUsersData.push(akunBaru);
         
-        // Render ulang tabel pengguna dan update statistik
-        renderUserTable();
+        // Render ulang tabel pengguna (mempertahankan filter jika ada)
+        if (typeof filterUserTable === 'function') {
+            filterUserTable();
+        } else {
+            renderUserTable(window.dummyUsersData);
+        }
+        
+        // Update statistik secara manual
+        var elTotal = document.getElementById('stat-user-total');
+        if (elTotal) elTotal.innerText = parseInt(elTotal.innerText) + 1;
+        
+        if (peran.includes('Operator')) {
+            var elOperator = document.getElementById('stat-user-operator');
+            if (elOperator) elOperator.innerText = parseInt(elOperator.innerText) + 1;
+        } else if (peran.includes('Pimpinan') || peran.includes('Desa')) {
+            var elPimpinan = document.getElementById('stat-user-pimpinan');
+            if (elPimpinan) elPimpinan.innerText = parseInt(elPimpinan.innerText) + 1;
+        } else if (peran === 'Super Admin') {
+            var elAdmin = document.getElementById('stat-user-admin');
+            if (elAdmin) elAdmin.innerText = parseInt(elAdmin.innerText) + 1;
+        }
         
         // Tutup modal
         closeModalTambahPengguna();
