@@ -2532,14 +2532,17 @@ function saveProfileData(e) {
 
             setTimeout(() => {
                 // Update header and local storage
-                const nama = document.getElementById('input-profil-nama')?.value;
-                const email = document.getElementById('input-profil-email')?.value;
-                let wa = document.getElementById('input-profil-wa')?.value;
+                const elNama = document.getElementById('input-profil-nama');
+                const elEmail = document.getElementById('input-profil-email');
+                const elWa = document.getElementById('input-profil-wa');
+                
+                const nama = elNama ? elNama.value : '';
+                const email = elEmail ? elEmail.value : '';
+                let wa = elWa ? elWa.value : '';
                 
                 // Format phone number 08 to +62
                 if (wa && wa.startsWith('08')) {
                     wa = '+628' + wa.substring(2);
-                    const elWa = document.getElementById('input-profil-wa');
                     if (elWa) elWa.value = wa;
                 }
                 
