@@ -1674,7 +1674,37 @@
                     </div>
                 </div>
 
-                <!-- SUB-TAB J: PENGATURAN AKUN (VIEW FULL) -->
+                </div> <!-- END admin-main-column -->
+
+                <!-- RIGHT COLUMN (Notifications & Activities) -->
+                <div class="w-full lg:w-1/4 shrink-0 space-y-6" id="admin-right-column">
+                        
+                        <!-- FASE 5: PANEL KANAN -->
+                        <!-- Notifikasi -->
+                        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col">
+                            <div class="p-5 border-b border-slate-100 flex justify-between items-center">
+                                <h3 class="text-sm font-bold text-slate-800">Notifikasi</h3>
+                                <a href="javascript:switchAdminTab('aktivitas');" class="text-[10px] font-bold text-narmadaGreen hover:underline">Lihat Semua</a>
+                            </div>
+                            <div class="p-5 space-y-4" id="notification-container">
+                                <div class="text-center text-slate-400 py-4 text-xs">Memuat notifikasi...</div>
+                            </div>
+                        </div>
+
+                        <!-- Aktivitas Terbaru -->
+                        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col">
+                            <div class="p-5 border-b border-slate-100 flex justify-between items-center">
+                                <h3 class="text-sm font-bold text-slate-800">Aktivitas Terbaru</h3>
+                                <a href="javascript:switchAdminTab('aktivitas');" class="text-[10px] font-bold text-narmadaGreen hover:underline">Lihat Semua</a>
+                            </div>
+                            <div class="p-5">
+                                <div class="relative border-l-2 border-slate-100 ml-3 space-y-6" id="activity-container">
+                                    <div class="text-center text-slate-400 py-4 text-xs ml-4">Memuat log aktivitas...</div>
+                                </div>
+                            </div>
+                        </div>
+
+                    <!-- SUB-TAB J: PENGATURAN AKUN (VIEW FULL) -->
                 <div id="subview-admin-pengaturan-akun" class="hidden w-full gap-6 text-left">
                     
                     <!-- Menu Utama (Vertical Menu in a Frame) -->
@@ -2010,37 +2040,7 @@
                             </div>
                         </div>
                     </div>
-                </div> <!-- END admin-main-column -->
-
-                <!-- RIGHT COLUMN (Notifications & Activities) -->
-                <div class="w-full lg:w-1/4 shrink-0 space-y-6" id="admin-right-column">
-                        
-                        <!-- FASE 5: PANEL KANAN -->
-                        <!-- Notifikasi -->
-                        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col">
-                            <div class="p-5 border-b border-slate-100 flex justify-between items-center">
-                                <h3 class="text-sm font-bold text-slate-800">Notifikasi</h3>
-                                <a href="javascript:switchAdminTab('aktivitas');" class="text-[10px] font-bold text-narmadaGreen hover:underline">Lihat Semua</a>
-                            </div>
-                            <div class="p-5 space-y-4" id="notification-container">
-                                <div class="text-center text-slate-400 py-4 text-xs">Memuat notifikasi...</div>
-                            </div>
-                        </div>
-
-                        <!-- Aktivitas Terbaru -->
-                        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col">
-                            <div class="p-5 border-b border-slate-100 flex justify-between items-center">
-                                <h3 class="text-sm font-bold text-slate-800">Aktivitas Terbaru</h3>
-                                <a href="javascript:switchAdminTab('aktivitas');" class="text-[10px] font-bold text-narmadaGreen hover:underline">Lihat Semua</a>
-                            </div>
-                            <div class="p-5">
-                                <div class="relative border-l-2 border-slate-100 ml-3 space-y-6" id="activity-container">
-                                    <div class="text-center text-slate-400 py-4 text-xs ml-4">Memuat log aktivitas...</div>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
+                </div>
                 </div>
                 
             </div>
