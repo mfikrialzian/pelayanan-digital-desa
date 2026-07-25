@@ -1,7 +1,4 @@
-<!DOCTYPE html>
-<html lang="id">
-
-<head>
+<!DOCTYPE html><html lang="id"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pelayanan Digital Desa Narmada v3.6.1</title>
@@ -9,8 +6,7 @@
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#059669">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <script>
@@ -122,11 +118,9 @@
 <body class="text-slate-900 antialiased flex flex-col justify-between min-h-screen">
     <input type="hidden" id="initial-page-param" value="">
 
-    <div
-        class="fixed top-[-10%] left-[-10%] w-[45%] h-[45%] bg-blue-300/30 rounded-full blur-[120px] pointer-events-none -z-10 animate-mesh-1">
+    <div class="fixed top-[-10%] left-[-10%] w-[45%] h-[45%] bg-blue-300/30 rounded-full blur-[120px] pointer-events-none -z-10 animate-mesh-1">
     </div>
-    <div
-        class="fixed bottom-[-5%] right-[-5%] w-[40%] h-[40%] bg-emerald-300/30 rounded-full blur-[100px] pointer-events-none -z-10 animate-mesh-2">
+    <div class="fixed bottom-[-5%] right-[-5%] w-[40%] h-[40%] bg-emerald-300/30 rounded-full blur-[100px] pointer-events-none -z-10 animate-mesh-2">
     </div>
 
     <div class="w-full flex-grow flex flex-col justify-start z-10 transition-all duration-300">
@@ -136,20 +130,17 @@
         <!-- ========================================== -->
         <div id="citizen-workspace" class="responsive-frame">
 
-            <header
-                class="relative bg-white/90 border border-slate-200/50 rounded-3xl p-3 mb-6 shadow-2xl sticky top-0 z-50 overflow-hidden flex flex-row justify-between items-center">
+            <header class="relative bg-white/90 border border-slate-200/50 rounded-3xl p-3 mb-6 shadow-2xl sticky top-0 z-50 overflow-hidden flex flex-row justify-between items-center">
                 <div class="absolute inset-0 bg-gradient-to-br from-blue-50/80 via-emerald-50/50 to-white z-0"></div>
                 <div class="absolute -top-10 -right-10 w-32 h-32 bg-blue-300/40 rounded-full blur-3xl z-0 animate-mesh-1"></div>
                 
                 <div class="flex items-center space-x-2.5 cursor-pointer relative z-10" onclick="switchView('beranda')">
                     <!-- LOGO ADJUSTMENT: Mengubah object-cover menjadi object-contain untuk support PNG transparent -->
                     <div class="w-11 h-11 flex items-center justify-center shrink-0 overflow-hidden">
-                        <img id="warga-logo-img" src="" class="w-full h-full object-contain drop-shadow-sm"
-                            alt="Logo Desa">
+                        <img id="warga-logo-img" src="" class="w-full h-full object-contain drop-shadow-sm" alt="Logo Desa">
                     </div>
                     <div class="text-left">
-                        <h1
-                            class="font-black text-sm md:text-base tracking-tight text-slate-900 leading-none uppercase">
+                        <h1 class="font-black text-sm md:text-base tracking-tight text-slate-900 leading-none uppercase">
                             DESA <span class="text-narmadaGreen" id="warga-title-view">NARMADA</span>
                         </h1>
                         <p class="text-[10px] text-slate-500 font-extrabold tracking-wide mt-1">Sistem Pelayanan Digital
@@ -159,8 +150,7 @@
             </header>
 
             <section id="view-beranda" class="space-y-5">
-                <div
-                    class="relative bg-white/90 border border-slate-200/50 rounded-3xl shadow-2xl overflow-hidden flex flex-col justify-start min-h-[220px] lg:min-h-[280px]">
+                <div class="relative bg-white/90 border border-slate-200/50 rounded-3xl shadow-2xl overflow-hidden flex flex-col justify-start min-h-[220px] lg:min-h-[280px]">
                     <!-- Background Dynamic Gradient -->
                     <div class="absolute inset-0 bg-gradient-to-br from-blue-50/80 via-emerald-50/50 to-white z-0"></div>
                     
@@ -169,71 +159,62 @@
                     <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-emerald-300/40 rounded-full blur-3xl z-0 animate-mesh-2"></div>
 
                     <!-- Text Container -->
-                    <div
-                        class="relative z-10 p-6 md:p-8 w-full max-w-[100%] rounded-br-[40px] mt-0 ml-0 space-y-3 text-left h-full flex flex-col justify-center">
+                    <div class="relative z-10 p-6 md:p-8 w-full max-w-[100%] rounded-br-[40px] mt-0 ml-0 space-y-3 text-left h-full flex flex-col justify-center">
                         <span class="text-xs md:text-sm font-semibold text-slate-500 block tracking-wider uppercase">Selamat datang,</span>
-                        <h2
-                            class="text-2xl md:text-4xl lg:text-5xl font-black text-slate-900 tracking-tight leading-tight drop-shadow-sm">
+                        <h2 class="text-2xl md:text-4xl lg:text-5xl font-black text-slate-900 tracking-tight leading-tight drop-shadow-sm">
                             Pelayanan Digital<br>
                             <span class="text-transparent bg-clip-text bg-gradient-to-r from-narmadaBlue to-narmadaGreen" id="banner-desa-name">Desa Narmada</span>
                         </h2>
-                        <p class="text-[11px] md:text-sm text-slate-600 font-medium leading-relaxed max-w-md mt-2"
-                            id="banner-desa-desc">
+                        <p class="text-[11px] md:text-sm text-slate-600 font-medium leading-relaxed max-w-md mt-2" id="banner-desa-desc">
                             Urus kebutuhan administrasi desa lebih mudah, cepat, dan transparan. Akses layanan masyarakat dalam genggaman Anda.
                         </p>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-3 gap-3 md:gap-4 pt-4 w-full">
-                    <div onclick="handleMulaiPengajuan()"
-                        class="relative bg-white/90 border border-slate-200/50 rounded-2xl md:rounded-3xl shadow-xl hover:shadow-2xl overflow-hidden p-2 md:p-4 text-center cursor-pointer group flex flex-col items-center justify-start pt-4 md:pt-6 h-full aspect-square lg:aspect-auto lg:h-36 tap-squish">
+                    <div onclick="handleMulaiPengajuan()" class="relative bg-white/90 border border-slate-200/50 rounded-2xl md:rounded-3xl shadow-xl hover:shadow-2xl overflow-hidden p-2 md:p-4 text-center cursor-pointer group flex flex-col items-center justify-start pt-4 md:pt-6 h-full aspect-square lg:aspect-auto lg:h-36 tap-squish">
                         <div class="absolute inset-0 bg-gradient-to-br from-blue-50/80 via-emerald-50/50 to-white z-0 opacity-60"></div>
                         <div class="absolute -top-6 -right-6 w-20 h-20 bg-emerald-300/30 rounded-full blur-2xl z-0 group-hover:scale-150 transition-transform duration-700"></div>
                         
-                        <div
-                            class="relative z-10 bg-gradient-to-br from-narmadaGreen to-narmadaGreen-dark w-10 h-10 md:w-14 md:h-14 rounded-xl flex items-center justify-center text-white text-lg md:text-2xl border border-emerald-400/30 transition-transform group-hover:scale-110 group-hover:rotate-3 shadow-lg mb-2 md:mb-3 shrink-0">
+                        <div class="relative z-10 bg-gradient-to-br from-narmadaGreen to-narmadaGreen-dark w-10 h-10 md:w-14 md:h-14 rounded-xl flex items-center justify-center text-white text-lg md:text-2xl border border-emerald-400/30 transition-transform group-hover:scale-110 group-hover:rotate-3 shadow-lg mb-2 md:mb-3 shrink-0">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-6 h-6 md:w-7 md:h-7 drop-shadow-sm" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M7 3h7l5 5v10a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" class="fill-current opacity-20" stroke="none" />
-                                <path d="M7 3h7l5 5v10a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" />
-                                <path d="M14 3v5h5" />
-                                <path d="M14.5 13.5l-4 4-2 .5 .5-2 4-4a1.414 1.414 0 0 1 2 2z" />
+                                <path d="M7 3h7l5 5v10a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" class="fill-current opacity-20" stroke="none"></path>
+                                <path d="M7 3h7l5 5v10a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"></path>
+                                <path d="M14 3v5h5"></path>
+                                <path d="M14.5 13.5l-4 4-2 .5 .5-2 4-4a1.414 1.414 0 0 1 2 2z"></path>
                             </svg>
                         </div>
                         <h3 class="relative z-10 font-bold text-sm text-slate-800 leading-tight flex-1 flex items-center justify-center">Mulai Pengajuan</h3>
                     </div>
 
-                    <div onclick="switchView('status')"
-                        class="relative bg-white/90 border border-slate-200/50 rounded-2xl md:rounded-3xl shadow-xl hover:shadow-2xl overflow-hidden p-2 md:p-4 text-center cursor-pointer group flex flex-col items-center justify-start pt-4 md:pt-6 h-full aspect-square lg:aspect-auto lg:h-36 tap-squish">
+                    <div onclick="switchView('status')" class="relative bg-white/90 border border-slate-200/50 rounded-2xl md:rounded-3xl shadow-xl hover:shadow-2xl overflow-hidden p-2 md:p-4 text-center cursor-pointer group flex flex-col items-center justify-start pt-4 md:pt-6 h-full aspect-square lg:aspect-auto lg:h-36 tap-squish">
                         <div class="absolute inset-0 bg-gradient-to-br from-blue-50/80 via-emerald-50/50 to-white z-0 opacity-60"></div>
                         <div class="absolute -top-6 -right-6 w-20 h-20 bg-blue-300/30 rounded-full blur-2xl z-0 group-hover:scale-150 transition-transform duration-700"></div>
 
-                        <div
-                            class="relative z-10 bg-gradient-to-br from-narmadaGreen to-narmadaGreen-dark w-10 h-10 md:w-14 md:h-14 rounded-xl flex items-center justify-center text-white text-lg md:text-2xl border border-emerald-400/30 transition-transform group-hover:scale-110 group-hover:-rotate-3 shadow-lg mb-2 md:mb-3 shrink-0">
+                        <div class="relative z-10 bg-gradient-to-br from-narmadaGreen to-narmadaGreen-dark w-10 h-10 md:w-14 md:h-14 rounded-xl flex items-center justify-center text-white text-lg md:text-2xl border border-emerald-400/30 transition-transform group-hover:scale-110 group-hover:-rotate-3 shadow-lg mb-2 md:mb-3 shrink-0">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-6 h-6 md:w-7 md:h-7 drop-shadow-sm" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                <circle cx="11" cy="11" r="7" class="fill-current opacity-20" stroke="none" />
-                                <circle cx="11" cy="11" r="7" />
-                                <path d="M21 21l-4.35-4.35" />
-                                <path d="M7 11h8" stroke-width="1" class="opacity-50" />
-                                <path d="M7 8h5" stroke-width="1" class="opacity-50" />
+                                <circle cx="11" cy="11" r="7" class="fill-current opacity-20" stroke="none"></circle>
+                                <circle cx="11" cy="11" r="7"></circle>
+                                <path d="M21 21l-4.35-4.35"></path>
+                                <path d="M7 11h8" stroke-width="1" class="opacity-50"></path>
+                                <path d="M7 8h5" stroke-width="1" class="opacity-50"></path>
                             </svg>
                         </div>
                         <h3 class="relative z-10 font-bold text-sm text-slate-800 leading-tight flex-1 flex items-center justify-center">Cek Status Pengajuan</h3>
                     </div>
 
-                    <a id="link-wa-warga-beranda" href="https://wa.me/6281234567890" target="_blank"
-                        class="relative bg-white/90 border border-slate-200/50 rounded-2xl md:rounded-3xl shadow-xl hover:shadow-2xl overflow-hidden p-2 md:p-4 text-center group flex flex-col items-center justify-start pt-4 md:pt-6 h-full aspect-square lg:aspect-auto lg:h-36 tap-squish">
+                    <a id="link-wa-warga-beranda" href="https://wa.me/6281234567890" target="_blank" class="relative bg-white/90 border border-slate-200/50 rounded-2xl md:rounded-3xl shadow-xl hover:shadow-2xl overflow-hidden p-2 md:p-4 text-center group flex flex-col items-center justify-start pt-4 md:pt-6 h-full aspect-square lg:aspect-auto lg:h-36 tap-squish">
                         <div class="absolute inset-0 bg-gradient-to-br from-blue-50/80 via-emerald-50/50 to-white z-0 opacity-60"></div>
                         <div class="absolute -top-6 -right-6 w-20 h-20 bg-amber-300/30 rounded-full blur-2xl z-0 group-hover:scale-150 transition-transform duration-700"></div>
 
-                        <div
-                            class="relative z-10 bg-gradient-to-br from-narmadaGreen to-narmadaGreen-dark w-10 h-10 md:w-14 md:h-14 rounded-xl flex items-center justify-center text-white text-lg md:text-2xl border border-emerald-400/30 transition-transform group-hover:scale-110 group-hover:rotate-3 shadow-lg mb-2 md:mb-3 shrink-0">
+                        <div class="relative z-10 bg-gradient-to-br from-narmadaGreen to-narmadaGreen-dark w-10 h-10 md:w-14 md:h-14 rounded-xl flex items-center justify-center text-white text-lg md:text-2xl border border-emerald-400/30 transition-transform group-hover:scale-110 group-hover:rotate-3 shadow-lg mb-2 md:mb-3 shrink-0">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-6 h-6 md:w-7 md:h-7 drop-shadow-sm" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M3 12a9 9 0 0 1 18 0" class="fill-current opacity-20" stroke="none" />
-                                <path d="M3 12a9 9 0 0 1 18 0" />
-                                <path d="M4 12h1v4c0 1.1-.9 2-2 2H3v-6z" class="fill-current" stroke="none" />
-                                <path d="M21 12v6h-1c-1.1 0-2-.9-2-2v-4h3z" class="fill-current" stroke="none" />
-                                <path d="M18 16c-1 3.5-4 5-6 5s-5-1.5-6-5" stroke-dasharray="2 4" stroke-width="1.5" opacity="0.6"/>
-                                <path d="M21 17s-1.5 2-4 2" />
+                                <path d="M3 12a9 9 0 0 1 18 0" class="fill-current opacity-20" stroke="none"></path>
+                                <path d="M3 12a9 9 0 0 1 18 0"></path>
+                                <path d="M4 12h1v4c0 1.1-.9 2-2 2H3v-6z" class="fill-current" stroke="none"></path>
+                                <path d="M21 12v6h-1c-1.1 0-2-.9-2-2v-4h3z" class="fill-current" stroke="none"></path>
+                                <path d="M18 16c-1 3.5-4 5-6 5s-5-1.5-6-5" stroke-dasharray="2 4" stroke-width="1.5" opacity="0.6"></path>
+                                <path d="M21 17s-1.5 2-4 2"></path>
                             </svg>
                         </div>
                         <h3 class="relative z-10 font-bold text-sm text-slate-800 leading-tight flex-1 flex items-center justify-center">Hubungi Kantor Desa</h3>
@@ -242,19 +223,17 @@
 
                 <div class="space-y-2.5 w-full pt-2 mt-4">
                     <div class="grid grid-cols-1 gap-4">
-                        <div id="warga-info-jam" onclick="toggleInfoDetail('jam-detail')"
-                            class="relative bg-white/90 border border-slate-200/50 rounded-3xl shadow-2xl overflow-hidden p-4 cursor-pointer hover:border-emerald-500/50 transition-all flex flex-col justify-start group">
+                        <div id="warga-info-jam" onclick="toggleInfoDetail('jam-detail')" class="relative bg-white/90 border border-slate-200/50 rounded-3xl shadow-2xl overflow-hidden p-4 cursor-pointer hover:border-emerald-500/50 transition-all flex flex-col justify-start group">
                             <div class="absolute inset-0 bg-gradient-to-br from-blue-50/80 via-emerald-50/50 to-white z-0 opacity-60"></div>
                             <div class="absolute -top-10 -right-10 w-32 h-32 bg-emerald-300/20 rounded-full blur-3xl z-0 group-hover:scale-125 transition-transform duration-700"></div>
 
                             <div class="flex items-center justify-between w-full relative z-10">
                                 <div class="flex items-center space-x-3 flex-1 min-w-0 pr-2">
-                                    <div
-                                        class="bg-gradient-to-br from-narmadaGreen to-narmadaGreen-dark w-10 h-10 shrink-0 rounded-xl flex items-center justify-center text-white border border-emerald-400/30 shadow-lg">
+                                    <div class="bg-gradient-to-br from-narmadaGreen to-narmadaGreen-dark w-10 h-10 shrink-0 rounded-xl flex items-center justify-center text-white border border-emerald-400/30 shadow-lg">
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-6 h-6 drop-shadow-sm" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                            <circle cx="12" cy="12" r="9" class="fill-current opacity-20" stroke="none" />
-                                            <circle cx="12" cy="12" r="9" />
-                                            <path d="M12 7v5l3 3" />
+                                            <circle cx="12" cy="12" r="9" class="fill-current opacity-20" stroke="none"></circle>
+                                            <circle cx="12" cy="12" r="9"></circle>
+                                            <path d="M12 7v5l3 3"></path>
                                         </svg>
                                     </div>
                                     <div class="text-left w-full overflow-hidden">
@@ -263,64 +242,51 @@
                                     </div>
                                 </div>
                                 <div class="bg-white/50 rounded-full p-2 shadow-sm border border-slate-200/50 shrink-0 flex items-center justify-center">
-                                    <i id="jam-detail-icon"
-                                        class="fa-solid fa-chevron-down text-slate-500 text-xs transition-transform duration-300"></i>
+                                    <i id="jam-detail-icon" class="fa-solid fa-chevron-down text-slate-500 text-xs transition-transform duration-300"></i>
                                 </div>
                             </div>
                             <div id="jam-detail" class="accordion-wrapper mt-4 border-slate-200/60 w-full relative z-10">
                                 <div class="accordion-inner text-xs text-slate-700 space-y-1.5 text-left font-medium w-full">
                                     <div class="pt-3 border-t border-slate-200/60 w-full mt-1">
-                                        <div
-                                            class="grid grid-cols-2 border-b border-slate-200/60 pb-1.5 mb-1.5 font-bold text-slate-900">
+                                        <div class="grid grid-cols-2 border-b border-slate-200/60 pb-1.5 mb-1.5 font-bold text-slate-900">
                                             <span>Hari</span>
                                             <span>Jam Pelayanan</span>
                                         </div>
-                                        <div class="grid grid-cols-2"><span>Senin</span><span
-                                                class="text-narmadaGreen font-bold">08.00 - 14.00 WITA</span></div>
-                                        <div class="grid grid-cols-2"><span>Selasa</span><span
-                                                class="text-narmadaGreen font-bold">08.00 - 14.00 WITA</span></div>
-                                        <div class="grid grid-cols-2"><span>Rabu</span><span
-                                                class="text-narmadaGreen font-bold">08.00 - 14.00 WITA</span></div>
-                                        <div class="grid grid-cols-2"><span>Kamis</span><span
-                                                class="text-narmadaGreen font-bold">08.00 - 14.00 WITA</span></div>
-                                        <div class="grid grid-cols-2"><span>Jumat</span><span
-                                                class="text-narmadaGreen font-bold">08.00 - 14.00 WITA</span></div>
-                                        <div class="grid grid-cols-2"><span>Sabtu</span><span
-                                                class="text-red-500 font-bold">Tutup/Libur</span></div>
-                                        <div class="grid grid-cols-2"><span>Minggu</span><span
-                                                class="text-red-500 font-bold">Tutup/Libur</span></div>
+                                        <div class="grid grid-cols-2"><span>Senin</span><span class="text-narmadaGreen font-bold">08.00 - 14.00 WITA</span></div>
+                                        <div class="grid grid-cols-2"><span>Selasa</span><span class="text-narmadaGreen font-bold">08.00 - 14.00 WITA</span></div>
+                                        <div class="grid grid-cols-2"><span>Rabu</span><span class="text-narmadaGreen font-bold">08.00 - 14.00 WITA</span></div>
+                                        <div class="grid grid-cols-2"><span>Kamis</span><span class="text-narmadaGreen font-bold">08.00 - 14.00 WITA</span></div>
+                                        <div class="grid grid-cols-2"><span>Jumat</span><span class="text-narmadaGreen font-bold">08.00 - 14.00 WITA</span></div>
+                                        <div class="grid grid-cols-2"><span>Sabtu</span><span class="text-red-500 font-bold">Tutup/Libur</span></div>
+                                        <div class="grid grid-cols-2"><span>Minggu</span><span class="text-red-500 font-bold">Tutup/Libur</span></div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div id="warga-info-alur" onclick="toggleInfoDetail('alur-detail')"
-                            class="relative bg-white/90 border border-slate-200/50 rounded-3xl shadow-2xl overflow-hidden p-4 cursor-pointer hover:border-blue-500/50 transition-all flex flex-col justify-start group">
+                        <div id="warga-info-alur" onclick="toggleInfoDetail('alur-detail')" class="relative bg-white/90 border border-slate-200/50 rounded-3xl shadow-2xl overflow-hidden p-4 cursor-pointer hover:border-blue-500/50 transition-all flex flex-col justify-start group">
                             <div class="absolute inset-0 bg-gradient-to-br from-blue-50/80 via-emerald-50/50 to-white z-0 opacity-60"></div>
                             <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-blue-300/20 rounded-full blur-3xl z-0 group-hover:scale-125 transition-transform duration-700"></div>
 
                             <div class="flex items-center justify-between w-full relative z-10">
                                 <div class="flex items-center space-x-3 flex-1 min-w-0 pr-2">
-                                    <div
-                                        class="bg-gradient-to-br from-narmadaGreen to-narmadaGreen-dark w-10 h-10 shrink-0 rounded-xl flex items-center justify-center text-white border border-emerald-400/30 shadow-lg">
+                                    <div class="bg-gradient-to-br from-narmadaGreen to-narmadaGreen-dark w-10 h-10 shrink-0 rounded-xl flex items-center justify-center text-white border border-emerald-400/30 shadow-lg">
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-6 h-6 drop-shadow-sm" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                            <rect x="2" y="4" width="20" height="16" rx="2" class="fill-current opacity-20" stroke="none" />
-                                            <rect x="2" y="4" width="20" height="16" rx="2" />
-                                            <path d="M6 14s1-3 6-3 4 5 8 5" stroke-dasharray="3 3" />
-                                            <circle cx="6" cy="14" r="2" class="fill-current" stroke="none" />
-                                            <circle cx="12" cy="11" r="2" class="fill-current" stroke="none" />
-                                            <circle cx="18" cy="16" r="2" class="fill-current" stroke="none" />
+                                            <rect x="2" y="4" width="20" height="16" rx="2" class="fill-current opacity-20" stroke="none"></rect>
+                                            <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+                                            <path d="M6 14s1-3 6-3 4 5 8 5" stroke-dasharray="3 3"></path>
+                                            <circle cx="6" cy="14" r="2" class="fill-current" stroke="none"></circle>
+                                            <circle cx="12" cy="11" r="2" class="fill-current" stroke="none"></circle>
+                                            <circle cx="18" cy="16" r="2" class="fill-current" stroke="none"></circle>
                                         </svg>
                                     </div>
                                     <div class="text-left w-full overflow-hidden">
                                         <h4 class="font-bold text-sm text-slate-800">Alur Pengurusan</h4>
-                                        <p class="text-xs text-slate-700 font-medium leading-relaxed mt-0.5"
-                                            id="lbl-desc-alur-pelayanan">Ajukan online -> Verifikasi -> Serahkan berkas fisik -> Selesai</p>
+                                        <p class="text-xs text-slate-700 font-medium leading-relaxed mt-0.5" id="lbl-desc-alur-pelayanan">Ajukan online -&gt; Verifikasi -&gt; Serahkan berkas fisik -&gt; Selesai</p>
                                     </div>
                                 </div>
                                 <div class="bg-white/50 rounded-full p-2 shadow-sm border border-slate-200/50 shrink-0 flex items-center justify-center">
-                                    <i id="alur-detail-icon"
-                                        class="fa-solid fa-chevron-down text-slate-500 text-xs transition-transform duration-300"></i>
+                                    <i id="alur-detail-icon" class="fa-solid fa-chevron-down text-slate-500 text-xs transition-transform duration-300"></i>
                                 </div>
                             </div>
                             <div id="alur-detail" class="accordion-wrapper mt-4 border-slate-200/60 w-full relative z-10">
@@ -329,8 +295,7 @@
                                         <p class="font-bold text-blue-600 uppercase tracking-wider text-[10px] mb-2">Tahapan Pengurusan
                                             Dokumen:</p>
                                         <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-center text-[10px] font-bold">
-                                            <div
-                                                class="p-2.5 bg-emerald-50 text-emerald-700 rounded-xl border border-emerald-200 shadow-sm flex items-center justify-center">
+                                            <div class="p-2.5 bg-emerald-50 text-emerald-700 rounded-xl border border-emerald-200 shadow-sm flex items-center justify-center">
                                                 1. Ajukan Online</div>
                                             <div class="p-2.5 bg-blue-50 text-blue-700 rounded-xl border border-blue-200 shadow-sm flex items-center justify-center">2.
                                                 Verifikasi</div>
@@ -347,23 +312,22 @@
                 </div>
 
                 <div class="w-full animate-fade-in" id="warga-info-banner-semi">
-                    <div
-                        class="relative bg-white/90 border border-slate-200/50 rounded-3xl p-4 shadow-2xl overflow-hidden flex flex-col justify-start">
+                    <div class="relative bg-white/90 border border-slate-200/50 rounded-3xl p-4 shadow-2xl overflow-hidden flex flex-col justify-start">
                         <div class="absolute inset-0 bg-gradient-to-br from-emerald-50/80 via-blue-50/50 to-white z-0 opacity-80"></div>
                         <div class="absolute -bottom-8 -right-8 w-24 h-24 bg-emerald-300/40 rounded-full blur-2xl z-0 animate-pulse"></div>
 
                         <div class="flex items-start space-x-3 w-full relative z-10">
                             <div class="bg-gradient-to-br from-narmadaGreen to-narmadaGreen-dark w-10 h-10 shrink-0 rounded-xl flex items-center justify-center text-white border border-emerald-400/30 shadow-lg mt-0.5">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-6 h-6 drop-shadow-md" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M9 18h6" />
-                                    <path d="M10 21h4" />
-                                    <path d="M12 2v1" />
-                                    <path d="M12 7a5 5 0 1 0 5 8.3V16a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1v-.7A5 5 0 0 0 12 7z" class="fill-white opacity-20" stroke="none" />
-                                    <path d="M12 7a5 5 0 1 0 5 8.3V16a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1v-.7A5 5 0 0 0 12 7z" />
-                                    <path d="M21 12h1" opacity="0.6"/>
-                                    <path d="M2 12h1" opacity="0.6"/>
-                                    <path d="M18.36 5.64l.71-.71" opacity="0.6"/>
-                                    <path d="M5.64 5.64l-.71-.71" opacity="0.6"/>
+                                    <path d="M9 18h6"></path>
+                                    <path d="M10 21h4"></path>
+                                    <path d="M12 2v1"></path>
+                                    <path d="M12 7a5 5 0 1 0 5 8.3V16a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1v-.7A5 5 0 0 0 12 7z" class="fill-white opacity-20" stroke="none"></path>
+                                    <path d="M12 7a5 5 0 1 0 5 8.3V16a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1v-.7A5 5 0 0 0 12 7z"></path>
+                                    <path d="M21 12h1" opacity="0.6"></path>
+                                    <path d="M2 12h1" opacity="0.6"></path>
+                                    <path d="M18.36 5.64l.71-.71" opacity="0.6"></path>
+                                    <path d="M5.64 5.64l-.71-.71" opacity="0.6"></path>
                                 </svg>
                             </div>
                             <div class="text-left w-full">
@@ -382,53 +346,44 @@
             <!-- VIEW B: PILIH SURAT & FORM PENGAJUAN (5-STEP WIZARD) -->
             <section id="view-layanan" class="hidden space-y-4">
                 <div class="flex items-center space-x-2 text-left">
-                    <button id="btn-back-warga-nav" onclick="backToPrevStepOrMenu()"
-                        class="bg-narmadaGreen px-3 py-1.5 rounded-xl text-white hover:bg-narmadaGreen-dark border border-narmadaGreen text-[10px] font-extrabold transition-all flex items-center gap-1.5 shadow-md tap-squish">
+                    <button id="btn-back-warga-nav" onclick="backToPrevStepOrMenu()" class="bg-narmadaGreen px-3 py-1.5 rounded-xl text-white hover:bg-narmadaGreen-dark border border-narmadaGreen text-[10px] font-extrabold transition-all flex items-center gap-1.5 shadow-md tap-squish">
                         <i class="fa-solid fa-arrow-left"></i> Kembali
                     </button>
                     <span class="text-slate-400 text-xs">/</span>
                     <span class="text-[10px] font-extrabold text-slate-500">Pengajuan Pelayanan</span>
                 </div>
 
-                <div id="wrapper-select-layanan"
-                    class="light-glass-card p-4 rounded-2xl space-y-3 shadow-xl border border-slate-101">
+                <div id="wrapper-select-layanan" class="light-glass-card p-4 rounded-2xl space-y-3 shadow-xl border border-slate-101">
                     <h3 class="text-xs font-bold text-slate-900 flex items-center gap-1.5 text-left">
                         <span>📁</span> Pilih Jenis Pelayanan Administrasi
                     </h3>
                     <div class="grid grid-cols-1 gap-2.5" id="container-list-layanan"></div>
                 </div>
 
-                <div id="wrapper-formulir-pengajuan"
-                    class="hidden light-glass-card p-4 rounded-2xl space-y-4 shadow-xl border border-slate-101 text-left">
-                    <div
-                        class="flex items-center justify-between border-b border-slate-101 pb-3 mb-2 gap-1 overflow-x-auto">
+                <div id="wrapper-formulir-pengajuan" class="hidden light-glass-card p-4 rounded-2xl space-y-4 shadow-xl border border-slate-101 text-left">
+                    <div class="flex items-center justify-between border-b border-slate-101 pb-3 mb-2 gap-1 overflow-x-auto">
                         <div class="flex items-center space-x-1 shrink-0">
-                            <span id="step-badge-1"
-                                class="w-4 h-4 rounded-full flex items-center justify-center step-node-active text-[8px] font-bold">1</span>
+                            <span id="step-badge-1" class="w-4 h-4 rounded-full flex items-center justify-center step-node-active text-[8px] font-bold">1</span>
                             <span class="text-slate-400 text-[8px] font-bold">Panduan</span>
                         </div>
                         <div class="flex-grow border-t border-slate-200 min-w-[10px]"></div>
                         <div class="flex items-center space-x-1 shrink-0">
-                            <span id="step-badge-2"
-                                class="w-4 h-4 rounded-full flex items-center justify-center step-node-inactive text-[8px] font-bold">2</span>
+                            <span id="step-badge-2" class="w-4 h-4 rounded-full flex items-center justify-center step-node-inactive text-[8px] font-bold">2</span>
                             <span class="text-slate-400 text-[8px] font-bold">Identitas</span>
                         </div>
                         <div class="flex-grow border-t border-slate-200 min-w-[10px]"></div>
                         <div class="flex items-center space-x-1 shrink-0">
-                            <span id="step-badge-3"
-                                class="w-4 h-4 rounded-full flex items-center justify-center step-node-inactive text-[8px] font-bold">3</span>
+                            <span id="step-badge-3" class="w-4 h-4 rounded-full flex items-center justify-center step-node-inactive text-[8px] font-bold">3</span>
                             <span class="text-slate-400 text-[8px] font-bold">Isian</span>
                         </div>
                         <div class="flex-grow border-t border-slate-200 min-w-[10px]"></div>
                         <div class="flex items-center space-x-1 shrink-0">
-                            <span id="step-badge-4"
-                                class="w-4 h-4 rounded-full flex items-center justify-center step-node-inactive text-[8px] font-bold">4</span>
+                            <span id="step-badge-4" class="w-4 h-4 rounded-full flex items-center justify-center step-node-inactive text-[8px] font-bold">4</span>
                             <span class="text-slate-400 text-[8px] font-bold">Unggah</span>
                         </div>
                         <div class="flex-grow border-t border-slate-200 min-w-[10px]"></div>
                         <div class="flex items-center space-x-1 shrink-0">
-                            <span id="step-badge-5"
-                                class="w-4 h-4 rounded-full flex items-center justify-center step-node-inactive text-[8px] font-bold">5</span>
+                            <span id="step-badge-5" class="w-4 h-4 rounded-full flex items-center justify-center step-node-inactive text-[8px] font-bold">5</span>
                             <span class="text-slate-400 text-[8px] font-bold">Tinjau</span>
                         </div>
                     </div>
@@ -443,30 +398,25 @@
                                 <i class="fa-solid fa-bullhorn"></i> 📢 Panduan Berkas Fisik:
                             </p>
                             <p class="text-[10px] text-slate-700 leading-relaxed font-semibold">
-                                Harap membawa berkas fisik asli & fotokopiannya ke Kantor Desa Narmada saat status
+                                Harap membawa berkas fisik asli &amp; fotokopiannya ke Kantor Desa Narmada saat status
                                 permohonan online Anda telah diverifikasi dan siap diserahkan.
                             </p>
 
                             <div class="border-t border-emerald-200 pt-2.5 mt-2 space-y-1.5">
-                                <div id="container-desc-syarat-vertikal"
-                                    class="space-y-1 text-[10px] text-slate-600 font-semibold pl-1"></div>
+                                <div id="container-desc-syarat-vertikal" class="space-y-1 text-[10px] text-slate-600 font-semibold pl-1"></div>
                             </div>
                         </div>
 
-                        <div
-                            class="bg-slate-50 border border-slate-200 rounded-xl p-3 flex items-start space-x-2.5 shadow-sm">
-                            <input type="checkbox" id="warga-syarat-checkbox" onchange="toggleWizardStep1State()"
-                                class="mt-0.5 w-4.5 h-4.5 text-narmadaGreen border-slate-300 rounded focus:ring-narmadaGreen cursor-pointer">
-                            <label for="warga-syarat-checkbox"
-                                class="text-[10px] font-extrabold text-slate-700 leading-relaxed cursor-pointer select-none">
+                        <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 flex items-start space-x-2.5 shadow-sm">
+                            <input type="checkbox" id="warga-syarat-checkbox" onchange="toggleWizardStep1State()" class="mt-0.5 w-4.5 h-4.5 text-narmadaGreen border-slate-300 rounded focus:ring-narmadaGreen cursor-pointer">
+                            <label for="warga-syarat-checkbox" class="text-[10px] font-extrabold text-slate-700 leading-relaxed cursor-pointer select-none">
                                 Saya menyatakan sudah menyiapkan seluruh dokumen persyaratan fisik di atas secara
-                                lengkap & benar.
+                                lengkap &amp; benar.
                             </label>
                         </div>
 
                         <div class="flex justify-end pt-2">
-                            <button type="button" id="btn-next-step-1" onclick="goToStep2()" disabled
-                                class="px-5 py-2.5 rounded-xl bg-slate-300 text-slate-500 font-bold text-xs shadow-md transition-all flex items-center gap-1.5 cursor-not-allowed tap-squish">
+                            <button type="button" id="btn-next-step-1" onclick="goToStep2()" disabled="" class="px-5 py-2.5 rounded-xl bg-slate-300 text-slate-500 font-bold text-xs shadow-md transition-all flex items-center gap-1.5 cursor-not-allowed tap-squish">
                                 Lanjut ke Identitas <i class="fa-solid fa-arrow-right text-[10px]"></i>
                             </button>
                         </div>
@@ -478,38 +428,29 @@
                             <div>
                                 <label class="block text-xs font-semibold text-slate-600 mb-1.5">NIK Pemohon (16 Digit)
                                     *</label>
-                                <input type="text" id="warga-nik" required placeholder="Masukkan 16 digit NIK Anda"
-                                    class="w-full px-3 py-2.5 rounded-xl custom-input text-sm font-medium shadow-sm">
-                                <p id="lbl-nik-warning" class="hidden text-xs text-red-500 font-medium mt-1.5"><i
-                                        class="fa-solid fa-triangle-exclamation"></i> Digit NIK harus tepat 16 digit!
+                                <input type="text" id="warga-nik" required="" placeholder="Masukkan 16 digit NIK Anda" class="w-full px-3 py-2.5 rounded-xl custom-input text-sm font-medium shadow-sm">
+                                <p id="lbl-nik-warning" class="hidden text-xs text-red-500 font-medium mt-1.5"><i class="fa-solid fa-triangle-exclamation"></i> Digit NIK harus tepat 16 digit!
                                 </p>
                             </div>
                             <div>
                                 <label class="block text-xs font-semibold text-slate-600 mb-1.5">Nama Lengkap Sesuai KTP
                                     *</label>
-                                <input type="text" id="warga-nama" required placeholder="Nama lengkap Anda"
-                                    class="w-full px-3 py-2.5 rounded-xl custom-input text-sm font-medium shadow-sm"
-                                    oninput="this.value = this.value.toUpperCase();">
+                                <input type="text" id="warga-nama" required="" placeholder="Nama lengkap Anda" class="w-full px-3 py-2.5 rounded-xl custom-input text-sm font-medium shadow-sm" oninput="this.value = this.value.toUpperCase();">
                             </div>
                             <div>
                                 <label class="block text-xs font-semibold text-slate-600 mb-1.5">Nomor WhatsApp Aktif
                                     *</label>
-                                <input type="text" id="warga-wa" required placeholder="Contoh: 081234567890"
-                                    class="w-full px-3 py-2.5 rounded-xl custom-input text-sm font-medium shadow-sm">
+                                <input type="text" id="warga-wa" required="" placeholder="Contoh: 081234567890" class="w-full px-3 py-2.5 rounded-xl custom-input text-sm font-medium shadow-sm">
                             </div>
                             <div>
                                 <label class="block text-xs font-semibold text-slate-600 mb-1.5">Alamat Pemohon Sesuai
                                     KTP *</label>
-                                <textarea id="warga-alamat" required
-                                    placeholder="Tuliskan alamat lengkap pemohon sesuai KTP" rows="2"
-                                    class="w-full px-3 py-2.5 rounded-xl custom-input text-sm font-medium shadow-sm"
-                                    oninput="this.value = this.value.toUpperCase();"></textarea>
+                                <textarea id="warga-alamat" required="" placeholder="Tuliskan alamat lengkap pemohon sesuai KTP" rows="2" class="w-full px-3 py-2.5 rounded-xl custom-input text-sm font-medium shadow-sm" oninput="this.value = this.value.toUpperCase();"></textarea>
                             </div>
                         </div>
 
                         <div class="flex justify-end pt-2">
-                            <button type="button" id="btn-next-step-2" onclick="goToStep3()" disabled
-                                class="px-5 py-2.5 bg-slate-300 text-slate-500 font-bold text-xs rounded-xl shadow-md transition-all flex items-center gap-1.5 cursor-not-allowed tap-squish">
+                            <button type="button" id="btn-next-step-2" onclick="goToStep3()" disabled="" class="px-5 py-2.5 bg-slate-300 text-slate-500 font-bold text-xs rounded-xl shadow-md transition-all flex items-center gap-1.5 cursor-not-allowed tap-squish">
                                 Lanjut ke Isian Form <i class="fa-solid fa-arrow-right text-xs"></i>
                             </button>
                         </div>
@@ -519,7 +460,7 @@
                     <div id="wizard-section-3" class="hidden space-y-4">
                         <div class="hidden p-3 bg-slate-50 border rounded-xl shadow-inner text-left">
                             <h4 class="font-extrabold text-xs text-slate-800" id="lbl-judul-section-isian">Isian
-                                Keperluan Surat & Formulir</h4>
+                                Keperluan Surat &amp; Formulir</h4>
                             <p class="text-[9px] text-slate-505 mt-1" id="lbl-desc-section-isian">Mohon lengkapi seluruh
                                 isian data pendukung berikut.</p>
                         </div>
@@ -527,8 +468,7 @@
                         <div id="container-pertanyaan-tambahan" class="space-y-3 pt-2"></div>
 
                         <div class="flex justify-end pt-2">
-                            <button type="button" id="btn-next-step-3" onclick="goToStep4()" disabled
-                                class="px-5 py-2.5 bg-slate-300 text-slate-500 font-bold text-xs rounded-xl shadow-md transition-all flex items-center gap-1.5 cursor-not-allowed tap-squish">
+                            <button type="button" id="btn-next-step-3" onclick="goToStep4()" disabled="" class="px-5 py-2.5 bg-slate-300 text-slate-500 font-bold text-xs rounded-xl shadow-md transition-all flex items-center gap-1.5 cursor-not-allowed tap-squish">
                                 Lanjut ke Unggah Berkas <i class="fa-solid fa-arrow-right text-[10px]"></i>
                             </button>
                         </div>
@@ -543,8 +483,7 @@
                         </div>
 
                         <div class="flex justify-end pt-3 border-t border-slate-101">
-                            <button type="button" id="btn-next-step-4" onclick="goToStep5()" disabled
-                                class="px-5 py-2.5 bg-slate-300 text-slate-500 text-xs font-bold rounded-xl shadow-md transition-all flex items-center gap-1.5 cursor-not-allowed tap-squish">
+                            <button type="button" id="btn-next-step-4" onclick="goToStep5()" disabled="" class="px-5 py-2.5 bg-slate-300 text-slate-500 text-xs font-bold rounded-xl shadow-md transition-all flex items-center gap-1.5 cursor-not-allowed tap-squish">
                                 <span>Lanjut ke Tinjauan</span> <i class="fa-solid fa-arrow-right text-[10px]"></i>
                             </button>
                         </div>
@@ -569,14 +508,12 @@
                                 <p class="text-xs font-bold text-slate-900 mt-0.5" id="review-display-nama">-</p>
                                 <p class="text-[10px] text-slate-505 font-semibold" id="review-display-nik">-</p>
                                 <p class="text-[10px] text-slate-505 font-semibold" id="review-display-wa">-</p>
-                                <p class="text-[10px] text-slate-505 font-semibold italic mt-1"
-                                    id="review-display-alamat">-</p>
+                                <p class="text-[10px] text-slate-505 font-semibold italic mt-1" id="review-display-alamat">-</p>
                             </div>
 
                             <div class="border-b border-slate-101 pb-2">
                                 <p class="text-[9px] font-bold text-slate-700 mt-1 mb-0.5 uppercase tracking-wide">ISIAN FORMULIR WARGA</p>
-                                <div class="space-y-1 mt-1 text-[11px] text-slate-700 font-semibold"
-                                    id="review-display-isian"></div>
+                                <div class="space-y-1 mt-1 text-[11px] text-slate-700 font-semibold" id="review-display-isian"></div>
                             </div>
 
                             <div>
@@ -597,8 +534,7 @@
                             </label>
                         </div>
                         <div class="flex justify-end pt-1">
-                            <button type="button" id="btn-submit-warga" onclick="handleWargaSubmit()" disabled
-                                class="px-5 py-2.5 bg-slate-300 text-slate-500 text-xs font-extrabold rounded-xl shadow-md transition-all flex items-center gap-1.5 cursor-not-allowed tap-squish">
+                            <button type="button" id="btn-submit-warga" onclick="handleWargaSubmit()" disabled="" class="px-5 py-2.5 bg-slate-300 text-slate-500 text-xs font-extrabold rounded-xl shadow-md transition-all flex items-center gap-1.5 cursor-not-allowed tap-squish">
                                 <span>Kirim Pengajuan</span> <i class="fa-solid fa-paper-plane text-[10px]"></i>
                             </button>
                         </div>
@@ -606,8 +542,7 @@
 
                     <!-- SUCCESS STATE SCREEN -->
                     <div id="wizard-section-success" class="hidden text-center py-6 space-y-4 animate-fade-in">
-                        <div
-                            class="mx-auto w-14 h-14 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-2xl shadow-md animate-bounce">
+                        <div class="mx-auto w-14 h-14 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-2xl shadow-md animate-bounce">
                             <i class="fa-solid fa-check-double"></i>
                         </div>
                         <h3 class="text-base font-extrabold text-slate-900">Pengajuan Sukses Terkirim!</h3>
@@ -616,27 +551,22 @@
                             atau salin nomor registrasi berikut untuk melacak berkas secara berkala.
                         </p>
 
-                        <div
-                            class="bg-slate-50 border border-slate-200 rounded-2xl p-4 max-w-xs mx-auto space-y-2.5 shadow-inner text-center">
+                        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 max-w-xs mx-auto space-y-2.5 shadow-inner text-center">
                             <span class="text-[9px] font-bold text-slate-400 uppercase block tracking-wider">No.
                                 Registrasi Pengajuan</span>
-                            <span class="text-xs font-black text-emerald-700 tracking-widest block select-all"
-                                id="success-reg-id">REQ-00000000-0000</span>
+                            <span class="text-xs font-black text-emerald-700 tracking-widest block select-all" id="success-reg-id">REQ-00000000-0000</span>
 
-                            <button onclick="copyRegIdToClipboard()"
-                                class="mx-auto flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-900 text-white rounded-lg text-[9px] font-bold transition-all shadow">
+                            <button onclick="copyRegIdToClipboard()" class="mx-auto flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-900 text-white rounded-lg text-[9px] font-bold transition-all shadow">
                                 <i class="fa-regular fa-copy"></i> Salin No. Registrasi
                             </button>
                             
-                            <button onclick="sendWaAfterSubmit()"
-                                class="mx-auto mt-2 flex items-center gap-1.5 px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg text-[9px] font-bold transition-all shadow tap-squish">
+                            <button onclick="sendWaAfterSubmit()" class="mx-auto mt-2 flex items-center gap-1.5 px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg text-[9px] font-bold transition-all shadow tap-squish">
                                 <i class="fa-brands fa-whatsapp text-sm"></i> Kabari Admin via WA
                             </button>
                         </div>
 
                         <div class="pt-4">
-                            <button onclick="switchView('beranda')"
-                                class="px-6 py-2.5 bg-emerald-50 hover:bg-emerald-100 text-narmadaGreen font-bold text-xs rounded-xl transition-all shadow-md tap-squish">
+                            <button onclick="switchView('beranda')" class="px-6 py-2.5 bg-emerald-50 hover:bg-emerald-100 text-narmadaGreen font-bold text-xs rounded-xl transition-all shadow-md tap-squish">
                                 Kembali ke Beranda
                             </button>
                         </div>
@@ -648,8 +578,7 @@
             <!-- VIEW C: CEK STATUS PENGAJUAN (WARGA) -->
             <section id="view-status" class="hidden space-y-5">
                 <div class="flex items-center space-x-2 text-left">
-                    <button onclick="switchView('beranda')"
-                        class="bg-narmadaGreen px-3 py-1.5 rounded-xl text-white hover:bg-narmadaGreen-dark border border-narmadaGreen text-[10px] font-extrabold transition-all flex items-center gap-1.5 shadow-md tap-squish">
+                    <button onclick="switchView('beranda')" class="bg-narmadaGreen px-3 py-1.5 rounded-xl text-white hover:bg-narmadaGreen-dark border border-narmadaGreen text-[10px] font-extrabold transition-all flex items-center gap-1.5 shadow-md tap-squish">
                         <i class="fa-solid fa-arrow-left"></i> Kembali
                     </button>
                     <span class="text-slate-400 text-xs">/</span>
@@ -661,16 +590,12 @@
                         <span>🔍</span> Lacak Berkas Pengajuan Warga
                     </h3>
                     <form onsubmit="event.preventDefault(); runSearchStatus();" class="flex gap-2">
-                        <input type="text" id="search-status-key" required
-                            placeholder="Masukkan NIK atau ID Pengajuan (REQ-...)"
-                            class="flex-grow px-3 py-2.5 rounded-xl custom-input text-xs shadow-inner">
-                        <button type="submit"
-                            class="px-4 py-2.5 rounded-xl bg-narmadaGreen hover:bg-narmadaGreen-dark text-white font-extrabold text-xs transition-all shadow-md">Cari</button>
+                        <input type="text" id="search-status-key" required="" placeholder="Masukkan NIK atau ID Pengajuan (REQ-...)" class="flex-grow px-3 py-2.5 rounded-xl custom-input text-xs shadow-inner">
+                        <button type="submit" class="px-4 py-2.5 rounded-xl bg-narmadaGreen hover:bg-narmadaGreen-dark text-white font-extrabold text-xs transition-all shadow-md">Cari</button>
                     </form>
 
                     <div id="wrapper-hasil-status" class="hidden space-y-3">
-                        <h4
-                            class="text-xs font-semibold text-slate-500 uppercase tracking-widest border-b border-slate-200 pb-1.5 text-left">
+                        <h4 class="text-xs font-semibold text-slate-500 uppercase tracking-widest border-b border-slate-200 pb-1.5 text-left">
                             Hasil Penelusuran</h4>
                         <div id="box-list-status" class="space-y-3 text-left"></div>
                     </div>
@@ -699,7 +624,7 @@
                 <p class="text-emerald-50 text-sm md:text-base font-medium drop-shadow-sm max-w-sm leading-relaxed">Portal khusus Administrator untuk mengelola layanan administrasi desa secara terpusat, cepat, dan transparan.</p>
             </div>
             <div class="relative z-10 mt-12 md:mt-0">
-                <p class="text-xs text-emerald-100/80 font-medium">&copy; 2026 Desa Narmada. All rights reserved.</p>
+                <p class="text-xs text-emerald-100/80 font-medium">© 2026 Desa Narmada. All rights reserved.</p>
             </div>
         </div>
         
@@ -723,8 +648,7 @@
                                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle>
                                 </svg>
                             </div>
-                                <input type="text" id="login-username" required placeholder="Ketik username admin"
-                                class="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-200 focus:border-narmadaGreen focus:ring focus:ring-emerald-200 focus:ring-opacity-50 transition-all text-sm outline-none bg-slate-50 focus:bg-white text-slate-800">
+                                <input type="text" id="login-username" required="" placeholder="Ketik username admin" class="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-200 focus:border-narmadaGreen focus:ring focus:ring-emerald-200 focus:ring-opacity-50 transition-all text-sm outline-none bg-slate-50 focus:bg-white text-slate-800">
                         </div>
                     </div>
                     <div>
@@ -735,17 +659,14 @@
                                     <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                                 </svg>
                             </div>
-                            <input type="password" id="login-password" required placeholder="Masukkan kata sandi"
-                                class="w-full pl-11 pr-11 py-3 rounded-xl border border-slate-200 focus:border-narmadaGreen focus:ring focus:ring-emerald-200 focus:ring-opacity-50 transition-all text-sm outline-none bg-slate-50 focus:bg-white text-slate-800">
-                            <button type="button" onclick="togglePasswordView('login-password', 'eye-icon-login')"
-                                class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-narmadaGreen transition-colors">
+                            <input type="password" id="login-password" required="" placeholder="Masukkan kata sandi" class="w-full pl-11 pr-11 py-3 rounded-xl border border-slate-200 focus:border-narmadaGreen focus:ring focus:ring-emerald-200 focus:ring-opacity-50 transition-all text-sm outline-none bg-slate-50 focus:bg-white text-slate-800">
+                            <button type="button" onclick="togglePasswordView('login-password', 'eye-icon-login')" class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-narmadaGreen transition-colors">
                                 <i class="fa-solid fa-eye" id="eye-icon-login"></i>
                             </button>
                         </div>
                     </div>
                     
-                    <button type="submit" id="btn-submit-login"
-                        class="w-full py-3.5 bg-gradient-to-br from-narmadaGreen to-narmadaGreen-dark hover:from-narmadaGreen-dark hover:to-slate-900 text-white font-bold text-sm rounded-xl transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5 flex justify-center items-center gap-2 mt-2 border border-emerald-400/30">
+                    <button type="submit" id="btn-submit-login" class="w-full py-3.5 bg-gradient-to-br from-narmadaGreen to-narmadaGreen-dark hover:from-narmadaGreen-dark hover:to-slate-900 text-white font-bold text-sm rounded-xl transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5 flex justify-center items-center gap-2 mt-2 border border-emerald-400/30">
                         <span>Masuk ke Dashboard</span>
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline>
@@ -793,8 +714,8 @@
                     <button id="tab-adm-kontak" onclick="switchAdminTab('kontak')" class="w-full text-left flex items-center px-3 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-semibold text-sm transition-colors">
                         <i class="fa-solid fa-address-book w-5 text-center mr-2"></i> Kontak Pelayanan
                     </button>
-                    <button class="w-full text-left flex items-center px-3 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-semibold text-sm transition-colors" disabled>
-                        <i class="fa-solid fa-folder-open w-5 text-center mr-2"></i> Dokumen & Surat
+                    <button class="w-full text-left flex items-center px-3 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-semibold text-sm transition-colors" disabled="">
+                        <i class="fa-solid fa-folder-open w-5 text-center mr-2"></i> Dokumen &amp; Surat
                     </button>
                     <button id="tab-adm-laporan" onclick="switchAdminTab('laporan')" class="w-full text-left flex items-center px-3 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-semibold text-sm transition-colors">
                         <i class="fa-solid fa-chart-simple w-5 text-center mr-2"></i> Laporan
@@ -813,7 +734,7 @@
                         <span class="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Lainnya</span>
                     </div>
                     <a href="https://docs.google.com/document/d/dummy-link-panduan-admin" target="_blank" class="flex items-center px-3 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-semibold text-sm transition-colors">
-                        <i class="fa-regular fa-circle-question w-5 text-center mr-2"></i> Bantuan & Panduan
+                        <i class="fa-regular fa-circle-question w-5 text-center mr-2"></i> Bantuan &amp; Panduan
                     </a>
                 </nav>
             </div>
@@ -876,7 +797,7 @@
                     <div class="relative hidden md:block" id="admin-profile-container">
                         <!-- Profile Trigger -->
                         <div class="flex items-center gap-3 cursor-pointer hover:bg-slate-50 p-2 rounded-lg transition-colors" id="admin-profile-trigger">
-                            <img src="https://ui-avatars.com/api/?name=Muhamad+Alzian&background=0D8ABC&color=fff" alt="Profile" class="w-9 h-9 rounded-full shadow-sm">
+                            <img src="https://ui-avatars.com/api/?name=Muhamad+Alzian&amp;background=0D8ABC&amp;color=fff" alt="Profile" class="w-9 h-9 rounded-full shadow-sm">
                             <div class="text-right">
                                 <p class="text-sm font-bold text-slate-800 leading-none">Muhamad Alzian</p>
                                 <p class="text-[10px] font-semibold text-slate-500 mt-0.5">Administrator</p>
@@ -1108,7 +1029,7 @@
                                         <tr class="bg-slate-50/50 text-[10px] uppercase tracking-wider text-slate-500 font-bold border-b border-slate-100">
                                             <th class="p-4 w-10 text-center"><input type="checkbox" class="rounded border-slate-300 text-narmadaGreen focus:ring-narmadaGreen"></th>
                                             <th class="py-4 px-2 w-12 text-center">NO</th>
-                                            <th class="py-4 px-4 w-48">WAKTU & TEMPAT</th>
+                                            <th class="py-4 px-4 w-48">WAKTU &amp; TEMPAT</th>
                                             <th class="py-4 px-4">DETAIL PEMOHON</th>
                                             <th class="py-4 px-4">LAYANAN</th>
                                             <th class="py-4 px-4 text-center">STATUS</th>
@@ -1408,13 +1329,12 @@
                         <div class="overflow-x-auto rounded-2xl shadow-sm border border-slate-100">
                             <table class="w-full text-left border-collapse text-xs">
                                 <thead>
-                                    <tr
-                                        class="bg-slate-50 text-slate-500 font-bold uppercase tracking-wider text-[9px] border-b border-slate-200 sticky top-0 z-10 shadow-sm">
+                                    <tr class="bg-slate-50 text-slate-500 font-bold uppercase tracking-wider text-[9px] border-b border-slate-200 sticky top-0 z-10 shadow-sm">
                                         <th class="p-3 text-center w-10">No</th>
                                         <th class="p-3 w-40">Nama Layanan</th>
                                         <th class="p-3 w-40">Jenis Keperluan</th>
-                                        <th class="p-3">Dokumen Wajib & Tambahan</th>
-                                        <th class="p-3">Pertanyaan Isian & Tambahan</th>
+                                        <th class="p-3">Dokumen Wajib &amp; Tambahan</th>
+                                        <th class="p-3">Pertanyaan Isian &amp; Tambahan</th>
                                         <th class="p-3 text-center w-20">Aksi</th>
                                     </tr>
                                 </thead>
@@ -1453,7 +1373,7 @@
                                 <div class="border-t border-slate-200 pt-3 space-y-2 mt-auto flex-shrink-0">
                                     <div>
                                         <label class="block text-[10px] font-bold text-slate-600 mb-1">Ubah Status</label>
-                                        <select id="edit-status-select" onchange="markVerifikasiDirty()" required class="w-full px-2 py-1.5 rounded-lg bg-slate-50 border border-slate-200 text-[11px] focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors">
+                                        <select id="edit-status-select" onchange="markVerifikasiDirty()" required="" class="w-full px-2 py-1.5 rounded-lg bg-slate-50 border border-slate-200 text-[11px] focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors">
                                             <option value="Menunggu">Menunggu</option>
                                             <option value="Verifikasi">Verifikasi</option>
                                             <option value="Selesai">Selesai</option>
@@ -1462,7 +1382,7 @@
                                     </div>
                                     <div>
                                         <label class="block text-[10px] font-bold text-slate-600 mb-1">Pesan WA Otomatis</label>
-                                        <textarea id="edit-status-catatan" oninput="markVerifikasiDirty()" required rows="3" class="w-full px-2 py-1.5 rounded-lg bg-slate-50 border border-slate-200 text-[10px] focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors" placeholder="Pesan verifikasi..."></textarea>
+                                        <textarea id="edit-status-catatan" oninput="markVerifikasiDirty()" required="" rows="3" class="w-full px-2 py-1.5 rounded-lg bg-slate-50 border border-slate-200 text-[10px] focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors" placeholder="Pesan verifikasi..."></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -1480,19 +1400,16 @@
                 <!-- SUB-TAB D: KONTAK PELAYANAN -->
                 <div id="subview-admin-kontak" class="hidden max-w-md mx-auto text-left">
                     <div class="bg-white p-5 rounded-2xl space-y-4 shadow-sm border border-slate-100">
-                        <h4
-                            class="text-sm font-bold text-slate-800 border-b border-slate-100 pb-3 flex items-center gap-2">
+                        <h4 class="text-sm font-bold text-slate-800 border-b border-slate-100 pb-3 flex items-center gap-2">
                             <i class="fa-solid fa-phone text-narmadaGreen"></i> Atur Kontak Pelayanan Desa Narmada
                         </h4>
                         <form onsubmit="event.preventDefault(); saveAdminSettings();" class="space-y-4">
                             <div>
                                 <label class="block text-xs font-bold text-slate-600 mb-1">Nomor WhatsApp Pelayanan
                                     Desa</label>
-                                <input type="text" id="setelan-wa" required placeholder="Contoh: 081234567890"
-                                    class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors">
+                                <input type="text" id="setelan-wa" required="" placeholder="Contoh: 081234567890" class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors">
                             </div>
-                            <button type="submit"
-                                class="w-full py-2 bg-narmadaGreen hover:bg-emerald-700 text-white font-bold text-xs rounded-xl transition-colors shadow-sm">
+                            <button type="submit" class="w-full py-2 bg-narmadaGreen hover:bg-emerald-700 text-white font-bold text-xs rounded-xl transition-colors shadow-sm">
                                 Simpan Nomor Kontak
                             </button>
                         </form>
@@ -1502,37 +1419,30 @@
                 <!-- SUB-TAB E: PENGATURAN BERANDA -->
                 <div id="subview-admin-beranda" class="hidden max-w-2xl mx-auto text-left space-y-4">
                     <div class="bg-white p-5 rounded-2xl space-y-4 shadow-sm border border-slate-100">
-                        <h4
-                            class="text-sm font-bold text-slate-800 border-b border-slate-100 pb-3 flex items-center gap-2">
+                        <h4 class="text-sm font-bold text-slate-800 border-b border-slate-100 pb-3 flex items-center gap-2">
                             <i class="fa-solid fa-house-laptop text-narmadaGreen"></i> Pengaturan Tampilan Beranda
                         </h4>
                         <form onsubmit="event.preventDefault(); saveAdminSettings();" class="space-y-4">
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
                                     <label class="block text-[10px] font-bold text-slate-600 mb-1">Nama Desa</label>
-                                    <input type="text" id="setelan-nama-desa" required
-                                        class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors">
+                                    <input type="text" id="setelan-nama-desa" required="" class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors">
                                 </div>
                                 <div>
                                     <label class="block text-[10px] font-bold text-slate-600 mb-1">Link Gambar/Logo Desa
                                         (URL)</label>
-                                    <input type="text" id="setelan-logo-url-desa" required
-                                        class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors"
-                                        placeholder="https://domain.com/logo.png">
+                                    <input type="text" id="setelan-logo-url-desa" required="" class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors" placeholder="https://domain.com/logo.png">
                                 </div>
                             </div>
                             <div>
                                 <label class="block text-[10px] font-bold text-slate-600 mb-1">Deskripsi Ringkas Banner
                                     Utama</label>
-                                <input type="text" id="setelan-deskripsi-banner" required
-                                    class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors">
+                                <input type="text" id="setelan-deskripsi-banner" required="" class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors">
                             </div>
                             <div>
                                 <label class="block text-[10px] font-bold text-slate-600 mb-1">Link Gambar Banner Utama
                                     (URL)</label>
-                                <input type="text" id="setelan-banner-url-desa"
-                                    class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors"
-                                    placeholder="https://domain.com/banner.png">
+                                <input type="text" id="setelan-banner-url-desa" class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors" placeholder="https://domain.com/banner.png">
                             </div>
 
                             <div class="p-4 bg-slate-50 border border-slate-100 rounded-xl space-y-3">
@@ -1541,16 +1451,14 @@
                                         Pelayanan</span>
                                     <label class="relative inline-flex items-center cursor-pointer">
                                         <input type="checkbox" id="setelan-toggle-jam" class="sr-only peer">
-                                        <div
-                                            class="w-9 h-5 bg-slate-300 rounded-full peer peer-checked:bg-narmadaGreen peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all">
+                                        <div class="w-9 h-5 bg-slate-300 rounded-full peer peer-checked:bg-narmadaGreen peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all">
                                         </div>
                                     </label>
                                 </div>
                                 <div>
                                     <label class="block text-[10px] font-bold text-slate-600 mb-1">Deskripsi Ringkas Jam
                                         Pelayanan</label>
-                                    <input type="text" id="setelan-desc-jam" required
-                                        class="w-full px-3.5 py-2 rounded-xl bg-white border border-slate-200 text-[11px] focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors">
+                                    <input type="text" id="setelan-desc-jam" required="" class="w-full px-3.5 py-2 rounded-xl bg-white border border-slate-200 text-[11px] focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors">
                                 </div>
 
                                 <div class="flex items-center justify-between border-b border-slate-200 pt-2 pb-2">
@@ -1558,16 +1466,14 @@
                                         Pengurusan</span>
                                     <label class="relative inline-flex items-center cursor-pointer">
                                         <input type="checkbox" id="setelan-toggle-alur" class="sr-only peer">
-                                        <div
-                                            class="w-9 h-5 bg-slate-300 rounded-full peer peer-checked:bg-narmadaGreen peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all">
+                                        <div class="w-9 h-5 bg-slate-300 rounded-full peer peer-checked:bg-narmadaGreen peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all">
                                         </div>
                                     </label>
                                 </div>
                                 <div>
                                     <label class="block text-[10px] font-bold text-slate-600 mb-1">Deskripsi Ringkas Alur
                                         Pengurusan</label>
-                                    <input type="text" id="setelan-desc-alur" required
-                                        class="w-full px-3.5 py-2 rounded-xl bg-white border border-slate-200 text-[11px] focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors">
+                                    <input type="text" id="setelan-desc-alur" required="" class="w-full px-3.5 py-2 rounded-xl bg-white border border-slate-200 text-[11px] focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors">
                                 </div>
 
                                 <div class="flex items-center justify-between border-b border-slate-200 pt-2 pb-2">
@@ -1575,21 +1481,18 @@
                                         Digital</span>
                                     <label class="relative inline-flex items-center cursor-pointer">
                                         <input type="checkbox" id="setelan-toggle-banner" class="sr-only peer">
-                                        <div
-                                            class="w-9 h-5 bg-slate-300 rounded-full peer peer-checked:bg-narmadaGreen peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all">
+                                        <div class="w-9 h-5 bg-slate-300 rounded-full peer peer-checked:bg-narmadaGreen peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all">
                                         </div>
                                     </label>
                                 </div>
                                 <div>
                                     <label class="block text-[10px] font-bold text-slate-600 mb-1">Deskripsi Panjang
                                         Banner Semi-Digital</label>
-                                    <textarea id="setelan-desc-banner-semi" required rows="2"
-                                        class="w-full px-3.5 py-2 rounded-xl bg-white border border-slate-200 text-[11px] focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors"></textarea>
+                                    <textarea id="setelan-desc-banner-semi" required="" rows="2" class="w-full px-3.5 py-2 rounded-xl bg-white border border-slate-200 text-[11px] focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors"></textarea>
                                 </div>
                             </div>
 
-                            <button type="submit"
-                                class="w-full py-2.5 bg-narmadaGreen hover:bg-emerald-700 text-white font-bold text-xs rounded-xl transition-colors shadow-sm">
+                            <button type="submit" class="w-full py-2.5 bg-narmadaGreen hover:bg-emerald-700 text-white font-bold text-xs rounded-xl transition-colors shadow-sm">
                                 Simpan Pengaturan Beranda
                             </button>
                         </form>
@@ -1599,24 +1502,20 @@
                 <!-- SUB-TAB F: KREDENSIAL AKUN ADMIN -->
                 <div id="subview-admin-kredensial" class="hidden max-w-md mx-auto text-left">
                     <div class="bg-white p-5 rounded-2xl space-y-4 shadow-sm border border-slate-100">
-                        <h4
-                            class="text-sm font-bold text-slate-800 border-b border-slate-100 pb-3 flex items-center gap-2">
+                        <h4 class="text-sm font-bold text-slate-800 border-b border-slate-100 pb-3 flex items-center gap-2">
                             <i class="fa-solid fa-key text-narmadaGreen"></i> Keamanan Kredensial Login
                         </h4>
                         <form onsubmit="event.preventDefault(); saveAdminSettings();" class="space-y-4">
                             <div>
                                 <label class="block text-xs font-bold text-slate-600 mb-1">Username Akun Admin</label>
-                                <input type="text" id="setelan-user" required
-                                    class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors">
+                                <input type="text" id="setelan-user" required="" class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors">
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-slate-600 mb-1">Kata Sandi (Password)
                                     Admin</label>
-                                <input type="password" id="setelan-pass" required
-                                    class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors">
+                                <input type="password" id="setelan-pass" required="" class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors">
                             </div>
-                            <button type="submit"
-                                class="w-full py-2.5 bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs rounded-xl transition-colors shadow-sm">
+                            <button type="submit" class="w-full py-2.5 bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs rounded-xl transition-colors shadow-sm">
                                 Perbarui Kredensial Admin
                             </button>
                         </form>
@@ -1629,7 +1528,7 @@
                         <div class="w-16 h-16 rounded-full bg-emerald-50 text-narmadaGreen flex items-center justify-center text-3xl mb-2">
                             <i class="fa-solid fa-chart-simple"></i>
                         </div>
-                        <h3 class="text-xl font-bold text-slate-800">Pusat Laporan & Data Desa</h3>
+                        <h3 class="text-xl font-bold text-slate-800">Pusat Laporan &amp; Data Desa</h3>
                         <p class="text-sm text-slate-500 max-w-md">Di sini Anda dapat melihat ringkasan data pengajuan layanan. Gunakan tombol export di bagian Daftar Pengajuan untuk mengunduh rekapitulasi data lengkap dalam bentuk spreadsheet.</p>
                         
                         <div class="grid grid-cols-2 gap-4 w-full max-w-lg mt-6">
@@ -1674,7 +1573,8 @@
                     </div>
                 </div>
 
-                </div> <!-- END admin-main-column -->
+                <!-- SUB-TAB J: PENGATURAN AKUN (VIEW FULL) -->
+                 <!-- END admin-main-column -->
 
                 <!-- RIGHT COLUMN (Notifications & Activities) -->
                 <div class="w-full lg:w-1/4 shrink-0 space-y-6" id="admin-right-column">
@@ -1704,8 +1604,10 @@
                             </div>
                         </div>
 
-                    <!-- SUB-TAB J: PENGATURAN AKUN (VIEW FULL) -->
-                <div id="subview-admin-pengaturan-akun" class="hidden w-full gap-6 text-left">
+                    </div>
+                </div>
+                
+            <div id="subview-admin-pengaturan-akun" class="hidden w-full gap-6 text-left">
                     
                     <!-- Menu Utama (Vertical Menu in a Frame) -->
                     <div class="w-full flex justify-center">
@@ -1786,7 +1688,7 @@
                                     <!-- Header Profil -->
                             <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 flex items-center gap-6">
                                 <div class="relative">
-                                    <img src="https://ui-avatars.com/api/?name=Muhamad+Alzian&background=0D8ABC&color=fff&size=100" alt="Avatar" class="w-20 h-20 md:w-24 md:h-24 rounded-full border-4 border-slate-50 shadow-sm object-cover">
+                                    <img src="https://ui-avatars.com/api/?name=Muhamad+Alzian&amp;background=0D8ABC&amp;color=fff&amp;size=100" alt="Avatar" class="w-20 h-20 md:w-24 md:h-24 rounded-full border-4 border-slate-50 shadow-sm object-cover">
                                     <button class="absolute bottom-0 right-0 w-8 h-8 bg-white border border-slate-200 rounded-full flex items-center justify-center text-slate-500 hover:text-narmadaGreen hover:border-narmadaGreen transition-colors shadow-sm" onclick="alert('Fitur ganti foto akan datang!')">
                                         <i class="fa-solid fa-camera text-xs"></i>
                                     </button>
@@ -1815,19 +1717,19 @@
                                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                             <div>
                                                 <label class="block text-[9px] md:text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Nama Lengkap</label>
-                                                <input type="text" value="Muhamad Alzian" readonly class="profil-input w-full bg-slate-50 border border-slate-200 text-slate-800 text-xs md:text-sm rounded-xl focus:ring-narmadaGreen focus:border-narmadaGreen block px-4 py-2.5 outline-none transition-all">
+                                                <input type="text" value="Muhamad Alzian" readonly="" class="profil-input w-full bg-slate-50 border border-slate-200 text-slate-800 text-xs md:text-sm rounded-xl focus:ring-narmadaGreen focus:border-narmadaGreen block px-4 py-2.5 outline-none transition-all">
                                             </div>
                                             <div>
                                                 <label class="block text-[9px] md:text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">NIK / No. Pegawai</label>
-                                                <input type="text" value="5201140000000000" readonly class="profil-input w-full bg-slate-50 border border-slate-200 text-slate-800 text-xs md:text-sm rounded-xl focus:ring-narmadaGreen focus:border-narmadaGreen block px-4 py-2.5 outline-none transition-all">
+                                                <input type="text" value="5201140000000000" readonly="" class="profil-input w-full bg-slate-50 border border-slate-200 text-slate-800 text-xs md:text-sm rounded-xl focus:ring-narmadaGreen focus:border-narmadaGreen block px-4 py-2.5 outline-none transition-all">
                                             </div>
                                             <div>
                                                 <label class="block text-[9px] md:text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Email Aktif</label>
-                                                <input type="email" value="alzian@desa-narmada.go.id" readonly class="profil-input w-full bg-slate-50 border border-slate-200 text-slate-800 text-xs md:text-sm rounded-xl focus:ring-narmadaGreen focus:border-narmadaGreen block px-4 py-2.5 outline-none transition-all">
+                                                <input type="email" value="alzian@desa-narmada.go.id" readonly="" class="profil-input w-full bg-slate-50 border border-slate-200 text-slate-800 text-xs md:text-sm rounded-xl focus:ring-narmadaGreen focus:border-narmadaGreen block px-4 py-2.5 outline-none transition-all">
                                             </div>
                                             <div>
                                                 <label class="block text-[9px] md:text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Nomor Telepon / WA</label>
-                                                <input type="text" value="081234567890" readonly class="profil-input w-full bg-slate-50 border border-slate-200 text-slate-800 text-xs md:text-sm rounded-xl focus:ring-narmadaGreen focus:border-narmadaGreen block px-4 py-2.5 outline-none transition-all">
+                                                <input type="text" value="081234567890" readonly="" class="profil-input w-full bg-slate-50 border border-slate-200 text-slate-800 text-xs md:text-sm rounded-xl focus:ring-narmadaGreen focus:border-narmadaGreen block px-4 py-2.5 outline-none transition-all">
                                             </div>
                                         </div>
                                         <!-- Action Buttons (Hidden by default) -->
@@ -1857,15 +1759,15 @@
                                     <form id="form-password" class="space-y-4" onsubmit="changePasswordMock(event)">
                                         <div>
                                             <label class="block text-[9px] md:text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Password Lama</label>
-                                            <input type="password" required class="w-full max-w-md bg-white border border-slate-200 text-slate-800 text-xs md:text-sm rounded-xl focus:ring-narmadaBlue focus:border-narmadaBlue block px-4 py-2.5 outline-none transition-all" placeholder="Masukkan password lama">
+                                            <input type="password" required="" class="w-full max-w-md bg-white border border-slate-200 text-slate-800 text-xs md:text-sm rounded-xl focus:ring-narmadaBlue focus:border-narmadaBlue block px-4 py-2.5 outline-none transition-all" placeholder="Masukkan password lama">
                                         </div>
                                         <div>
                                             <label class="block text-[9px] md:text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Password Baru</label>
-                                            <input type="password" id="new-password" required class="w-full max-w-md bg-white border border-slate-200 text-slate-800 text-xs md:text-sm rounded-xl focus:ring-narmadaBlue focus:border-narmadaBlue block px-4 py-2.5 outline-none transition-all" placeholder="Buat password baru">
+                                            <input type="password" id="new-password" required="" class="w-full max-w-md bg-white border border-slate-200 text-slate-800 text-xs md:text-sm rounded-xl focus:ring-narmadaBlue focus:border-narmadaBlue block px-4 py-2.5 outline-none transition-all" placeholder="Buat password baru">
                                         </div>
                                         <div>
                                             <label class="block text-[9px] md:text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Konfirmasi Password Baru</label>
-                                            <input type="password" id="confirm-password" required class="w-full max-w-md bg-white border border-slate-200 text-slate-800 text-xs md:text-sm rounded-xl focus:ring-narmadaBlue focus:border-narmadaBlue block px-4 py-2.5 outline-none transition-all" placeholder="Ulangi password baru">
+                                            <input type="password" id="confirm-password" required="" class="w-full max-w-md bg-white border border-slate-200 text-slate-800 text-xs md:text-sm rounded-xl focus:ring-narmadaBlue focus:border-narmadaBlue block px-4 py-2.5 outline-none transition-all" placeholder="Ulangi password baru">
                                             <p id="password-error" class="text-[10px] text-red-500 font-medium mt-1.5 hidden"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Password tidak cocok.</p>
                                         </div>
                                         <div class="pt-2">
@@ -1884,7 +1786,7 @@
                             <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
                                 <div class="p-4 md:p-5 border-b border-slate-100 bg-slate-50/50">
                                     <h3 class="text-xs md:text-sm font-bold text-slate-800 flex items-center gap-2">
-                                        <i class="fa-solid fa-desktop text-narmadaGreen"></i> Tampilan & Preferensi
+                                        <i class="fa-solid fa-desktop text-narmadaGreen"></i> Tampilan &amp; Preferensi
                                     </h3>
                                 </div>
                                 <div class="p-4 md:p-6 space-y-4">
@@ -1910,7 +1812,7 @@
                                         </div>
                                         <select class="bg-slate-50 border border-slate-200 text-slate-700 text-[10px] md:text-xs rounded-lg focus:ring-narmadaGreen focus:border-narmadaGreen block p-2 outline-none w-28 md:w-36" onchange="mockSaveSetting('Kepadatan Tabel')">
                                             <option value="compact">Rapat (Compact)</option>
-                                            <option value="regular" selected>Normal</option>
+                                            <option value="regular" selected="">Normal</option>
                                             <option value="comfortable">Longgar</option>
                                         </select>
                                     </div>
@@ -1923,7 +1825,7 @@
                                             <p class="text-[9px] md:text-[10px] text-slate-500 mt-0.5">Pilih bahasa utama untuk antarmuka admin.</p>
                                         </div>
                                         <select class="bg-slate-50 border border-slate-200 text-slate-700 text-[10px] md:text-xs rounded-lg focus:ring-narmadaGreen focus:border-narmadaGreen block p-2 outline-none w-28 md:w-36" onchange="mockSaveSetting('Bahasa Sistem')">
-                                            <option value="id" selected>Indonesia (ID)</option>
+                                            <option value="id" selected="">Indonesia (ID)</option>
                                             <option value="en">English (EN)</option>
                                         </select>
                                     </div>
@@ -2040,10 +1942,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                </div>
-                
-            </div>
+                </div></div>
         </main>
     </div>
 
@@ -2063,18 +1962,15 @@
     </div>
 
     <!-- CUSTOM GLASSMORPHISM CONFIRM MODAL -->
-    <div id="modal-custom-confirm"
-        class="hidden fixed inset-0 bg-slate-900/50 z-[100] flex items-center justify-center p-4 text-left">
+    <div id="modal-custom-confirm" class="hidden fixed inset-0 bg-slate-900/50 z-[100] flex items-center justify-center p-4 text-left">
         <div class="bg-white rounded-2xl w-full max-w-sm p-6 space-y-4 shadow-xl border border-slate-100">
             <h4 class="font-bold text-slate-900 text-sm flex items-center gap-1.5" id="confirm-modal-title">Konfirmasi
                 Tindakan</h4>
             <p class="text-xs text-slate-600 leading-relaxed" id="confirm-modal-message">Apakah Anda yakin ingin
                 melakukan tindakan ini?</p>
             <div class="flex justify-end gap-2 pt-2">
-                <button type="button" id="confirm-modal-btn-cancel"
-                    class="px-4 py-2 text-xs font-bold text-slate-550 hover:bg-slate-100 rounded-xl">Batal</button>
-                <button type="button" id="confirm-modal-btn-ok"
-                    class="px-5 py-2 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded-xl shadow-md">Ya,
+                <button type="button" id="confirm-modal-btn-cancel" class="px-4 py-2 text-xs font-bold text-slate-550 hover:bg-slate-100 rounded-xl">Batal</button>
+                <button type="button" id="confirm-modal-btn-ok" class="px-5 py-2 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded-xl shadow-md">Ya,
                     Lanjutkan</button>
             </div>
         </div>
@@ -2105,6 +2001,7 @@
             });
         }
     </script>
-</body>
 
-</html>
+
+
+</body></html>

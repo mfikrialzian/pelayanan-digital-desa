@@ -1,0 +1,10 @@
+const fs = require('fs');
+const cheerio = require('cheerio');
+const html = fs.readFileSync('index.html', 'utf8');
+const $ = cheerio.load(html, { decodeEntities: false });
+const block = $('#subview-admin-pengaturan-akun').clone();
+$('#subview-admin-pengaturan-akun').remove();
+const container = $('.flex-grow.overflow-y-auto.p-6.scroll-smooth.bg-slate-50');
+container.append(block);
+fs.writeFileSync('index.html', $.html());
+console.log('Cheerio success');
