@@ -1,10 +1,15 @@
-window.dummyUsersData = [
-            { u: "superadmin", p: "123", role: "Super Admin", name: "Budi (Super Admin)", status: "Aktif", unit: "Pusat", terakhirLogin: "Hari ini, 08:15 WITA" },
-            { u: "op1", p: "123", role: "Operator Pelayanan 1", name: "Siti (OP 1)", status: "Aktif", unit: "Pelayanan", terakhirLogin: "Kemarin, 14:30 WITA" },
-            { u: "op2", p: "123", role: "Operator Pelayanan 2", name: "Andi (OP 2)", status: "Nonaktif", unit: "Pelayanan", terakhirLogin: "23 Jul 2026, 09:12 WITA" },
-            { u: "sekdes", p: "123", role: "Sekretaris Desa", name: "Ahmad (Sekdes)", status: "Aktif", unit: "Sekretariat", terakhirLogin: "Hari ini, 09:00 WITA" },
-            { u: "kades", p: "123", role: "Kepala Desa", name: "Joko (Kades)", status: "Aktif", unit: "Pimpinan", terakhirLogin: "20 Jul 2026, 11:45 WITA" }
-        ];
+        var savedUsers = localStorage.getItem('narmada_users');
+        if (savedUsers) {
+            window.dummyUsersData = JSON.parse(savedUsers);
+        } else {
+            window.dummyUsersData = [
+                { u: "superadmin", p: "123", role: "Super Admin", name: "Budi (Super Admin)", status: "Aktif", unit: "Pusat", terakhirLogin: "Hari ini, 08:15 WITA" },
+                { u: "op1", p: "123", role: "Operator Pelayanan 1", name: "Siti (OP 1)", status: "Aktif", unit: "Pelayanan", terakhirLogin: "Kemarin, 14:30 WITA" },
+                { u: "op2", p: "123", role: "Operator Pelayanan 2", name: "Andi (OP 2)", status: "Nonaktif", unit: "Pelayanan", terakhirLogin: "23 Jul 2026, 09:12 WITA" },
+                { u: "sekdes", p: "123", role: "Sekretaris Desa", name: "Ahmad (Sekdes)", status: "Aktif", unit: "Sekretariat", terakhirLogin: "Hari ini, 09:00 WITA" },
+                { u: "kades", p: "123", role: "Kepala Desa", name: "Joko (Kades)", status: "Aktif", unit: "Pimpinan", terakhirLogin: "20 Jul 2026, 11:45 WITA" }
+            ];
+        }
 
         function runAdminLoginAuth() {
             var u = document.getElementById('login-username').value.trim();
@@ -2686,6 +2691,7 @@ function simpanPenggunaBaru(event) {
     // Tambahkan ke database dummy
     if(window.dummyUsersData) {
         window.dummyUsersData.push(akunBaru);
+        localStorage.setItem('narmada_users', JSON.stringify(window.dummyUsersData));
         
         // Render ulang tabel pengguna (mempertahankan filter jika ada)
         if (typeof filterUserTable === 'function') {
