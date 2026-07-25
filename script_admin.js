@@ -63,14 +63,14 @@ function runAdminLoginAuth() {
             window.isVerifikasiDirty = false;
         }
 
-        function switchAdminTab(tabId) {
+        function switchAdminTab(tabId, updateUrl = true) {
             // Berikan peringatan jika user mencoba keluar dari editor layanan
             if (activeAdminTab === 'layanan' && tabId !== 'layanan') {
                 askConfirmation(
                     "Tutup Editor?",
                     "Anda sedang berada di mode Editor Layanan. Perubahan yang belum disimpan akan hilang. Apakah Anda yakin ingin berpindah halaman?",
                     function() {
-                        executeSwitchAdminTab(tabId);
+                        executeSwitchAdminTab(tabId, updateUrl);
                     }
                 );
                 return;
@@ -81,15 +81,15 @@ function runAdminLoginAuth() {
                     "Anda telah mengubah status atau catatan. Perubahan belum disimpan. Yakin ingin membatalkan?",
                     function() {
                         resetVerifikasiDirty();
-                        executeSwitchAdminTab(tabId);
+                        executeSwitchAdminTab(tabId, updateUrl);
                     }
                 );
                 return;
             }
-            executeSwitchAdminTab(tabId);
+            executeSwitchAdminTab(tabId, updateUrl);
         }
 
-        function executeSwitchAdminTab(tabId) {
+        function executeSwitchAdminTab(tabId, updateUrl = true) {
             document.getElementById('subview-admin-dashboard').classList.add('hidden');
             document.getElementById('subview-admin-daftar-layanan').classList.add('hidden');
             document.getElementById('subview-admin-layanan').classList.add('hidden');
@@ -143,7 +143,32 @@ function runAdminLoginAuth() {
                     fetchActivities();
                 }
             }
+
+            if (updateUrl) {
+                var newUrl = '/admin/' + tabId;
+                if (tabId === 'dashboard') {
+                    newUrl = '/admin'; // Opsional: /admin/dashboard atau /admin
+                }
+                window.history.pushState({ tab: tabId }, '', newUrl);
+            }
         }
+
+        window.addEventListener('popstate', function(event) {
+            if (event.state && event.state.tab) {
+                switchAdminTab(event.state.tab, false);
+            } else {
+                // Parse URL to determine tab
+                var path = window.location.pathname;
+                if (path.startsWith('/admin/')) {
+                    var tab = path.replace('/admin/', '');
+                    if (tab) {
+                        switchAdminTab(tab, false);
+                        return;
+                    }
+                }
+                switchAdminTab('dashboard', false);
+            }
+        });
 
         function setStatusFilter(statusVal) {
             activeStatusFilter = statusVal;
@@ -2253,3 +2278,17 @@ function toggleSettingSwitch(button, settingName) {
 function mockSaveSetting(settingName) {
     pushToast(`Pengaturan ${settingName} disimpan.`, 'success');
 }
+
+// --- Initial Route Logic ---
+document.addEventListener('DOMContentLoaded', function() {
+    var path = window.location.pathname;
+    if (path.startsWith('/admin/')) {
+        var tab = path.replace('/admin/', '');
+        if (tab && tab !== 'dashboard') {
+            // We use setTimeout to ensure other initializations are done
+            setTimeout(function() {
+                switchAdminTab(tab, false);
+            }, 100);
+        }
+    }
+});
