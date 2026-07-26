@@ -758,9 +758,9 @@ function runAdminLoginAuth() {
                     }
                 });
 
-                // Badge Keperluan Surat
+                // Badge Keperluan Surat (Stacked Text)
                 if (submittedKeperluan && submittedKeperluan !== "Wajib") {
-                    jawabanFormatted += "<div class='flex items-center gap-2 mb-2'><span class='inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 text-emerald-700 rounded-lg text-[10px] font-bold border border-emerald-200'><i class='fa-solid fa-tag'></i> Keperluan: " + submittedKeperluan + "</span></div>";
+                    jawabanFormatted += "<div class='flex flex-col leading-tight mb-4 border-b border-slate-50 pb-2'><span class='font-black text-slate-900 text-[11px]'>" + submittedKeperluan + "</span><span class='text-slate-400 font-medium mt-0.5'>Keperluan</span></div>";
                 }
 
                 items.forEach(function(item) {
@@ -953,7 +953,7 @@ function runAdminLoginAuth() {
                         '<h6 class="text-sm font-black text-slate-800 flex items-center gap-2"><i class="fa-regular fa-file-image text-emerald-500"></i> ' + labelName + '</h6>' +
                         '<a href="' + fileUrl + '" target="_blank" class="text-xs font-bold text-narmadaGreen hover:text-emerald-700 flex items-center gap-1 bg-emerald-50 px-3 py-1.5 rounded-lg transition-colors"><i class="fa-solid fa-arrow-up-right-from-square"></i> Buka Tab Baru</a>' +
                         '</div>' +
-                        '<div class="relative group cursor-zoom-in mb-5 flex-1 bg-slate-100 rounded-2xl overflow-hidden border-2 border-dashed border-slate-200" onclick="openLightbox(\'' + previewUrl + '\', \'' + labelName.replace(/'/g, "\\'") + '\')">' +
+                        '<div class="relative group cursor-zoom-in mb-5 flex-1 bg-slate-50/50 rounded-2xl overflow-hidden" onclick="openLightbox(\'' + previewUrl + '\', \'' + labelName.replace(/'/g, "\\'") + '\')">' +
                         '<img src="' + previewUrl + '" class="w-full h-full object-contain transition-transform duration-300 group-hover:scale-[1.02]" alt="Berkas" onerror="this.onerror=null; this.src=\'https://placehold.co/800x600/e2e8f0/64748b?text=Berkas+Tidak+Ditemukan\';">' +
                         '<div class="absolute inset-0 bg-slate-900/0 group-hover:bg-slate-900/10 transition-all flex items-center justify-center">' +
                         '<i class="fa-solid fa-expand text-white opacity-0 group-hover:opacity-100 text-3xl drop-shadow-md transition-opacity"></i>' +
