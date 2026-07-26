@@ -815,9 +815,9 @@ function runAdminLoginAuth() {
                     qMap[k].sort(function(a, b) { return a.order - b.order; });
                     var groupName = k;
                     var groupIcon = (groupName === 'Data Pemohon') ? 'fa-solid fa-user' : 'fa-solid fa-clipboard-list';
-                    jawabanFormatted += "<div class='mb-3'>";
-                    jawabanFormatted += "<h6 class='font-bold text-slate-800 mb-1.5 text-[12px] border-b border-slate-200 pb-1 mt-3 flex items-center gap-1.5'><i class='" + groupIcon + " text-narmadaGreen text-[10px]'></i> " + groupName + "</h6>";
-                    jawabanFormatted += "<div class='grid grid-cols-[auto_1fr] gap-x-2 gap-y-1 text-[10px] text-slate-700 bg-slate-50 p-2 rounded-lg border border-slate-100 mb-1'>";
+                    jawabanFormatted += "<div class='mb-4'>";
+                    jawabanFormatted += "<h6 class='font-bold text-slate-800 mb-2 text-[12px] border-b border-slate-50 pb-2 mt-4 flex items-center gap-1.5'><i class='" + groupIcon + " text-narmadaGreen text-[10px]'></i> " + groupName + "</h6>";
+                    jawabanFormatted += "<div class='flex flex-col gap-y-3.5 text-[10px] text-slate-700 mt-2 mb-2'>";
                     
                     var isRepeatedGroup = false;
                     var maxRepeats = 1;
@@ -832,18 +832,18 @@ function runAdminLoginAuth() {
                     if (isRepeatedGroup) {
                         for (var i = 0; i < maxRepeats; i++) {
                             if (i > 0) {
-                                jawabanFormatted += "<div class='col-span-2 border-t border-dashed border-slate-300 mt-3 pt-3 mb-1'><span class='font-bold text-slate-600 text-[10px] bg-slate-200 px-2 py-1 rounded-md'>" + groupName + " Ke-" + (i + 1) + "</span></div>";
+                                jawabanFormatted += "<div class='border-t border-slate-50 mt-1 pt-3 mb-1'><span class='font-bold text-slate-500 text-[9px] uppercase tracking-wider'>" + groupName + " Ke-" + (i + 1) + "</span></div>";
                             }
                             qMap[k].forEach(function(qa) {
                                 var parts = qa.a ? qa.a.split(/\s*;\s*/) : [];
                                 var val = parts[i] || "-";
-                                jawabanFormatted += "<div class='font-bold flex items-start whitespace-nowrap mt-0.5'><span>" + qa.q + "</span></div><div class='font-extrabold text-slate-900 break-words mt-0.5 flex gap-1'><span>:</span> <div class='flex-1'>" + val + "</div></div>";
+                                jawabanFormatted += "<div class='flex flex-col leading-tight'><span class='font-black text-slate-900 text-[11px] break-words'>" + val + "</span><span class='text-slate-400 font-medium mt-0.5'>" + qa.q + "</span></div>";
                             });
                         }
                     } else {
                         qMap[k].forEach(function(qa) {
                             if (qa.a && qa.a !== "" && qa.a !== "-") {
-                                jawabanFormatted += "<div class='font-bold flex items-start whitespace-nowrap mt-0.5'><span>" + qa.q + "</span></div><div class='font-extrabold text-slate-900 break-words mt-0.5 flex gap-1'><span>:</span> <div class='flex-1'>" + qa.a + "</div></div>";
+                                jawabanFormatted += "<div class='flex flex-col leading-tight'><span class='font-black text-slate-900 text-[11px] break-words'>" + qa.a + "</span><span class='text-slate-400 font-medium mt-0.5'>" + qa.q + "</span></div>";
                             }
                         });
                     }
@@ -962,13 +962,13 @@ function runAdminLoginAuth() {
                         '<div class="grid grid-cols-2 gap-3 shrink-0">' +
                         '<label class="cursor-pointer">' +
                         '<input type="radio" name="verif_radio_' + idx + '" value="Sesuai" checked onchange="calculateAutoVerificationResult(\'' + nama + '\', \'' + id + '\', \'' + layanan + '\')" class="peer sr-only">' +
-                        '<div class="py-3 px-2 rounded-xl border-2 border-slate-200 bg-white peer-checked:bg-emerald-50 peer-checked:border-emerald-500 peer-checked:text-emerald-700 text-center text-xs font-black transition-all text-slate-500 hover:bg-slate-50 shadow-sm">' +
+                        '<div class="py-2.5 px-4 rounded-full border border-transparent bg-slate-50 peer-checked:bg-emerald-50 peer-checked:text-emerald-600 text-center text-xs font-bold transition-all text-slate-400 hover:bg-slate-100">' +
                         '<i class="fa-solid fa-check mr-1.5"></i> Sesuai' +
                         '</div>' +
                         '</label>' +
                         '<label class="cursor-pointer">' +
                         '<input type="radio" name="verif_radio_' + idx + '" value="Tidak Sesuai" onchange="calculateAutoVerificationResult(\'' + nama + '\', \'' + id + '\', \'' + layanan + '\')" class="peer sr-only">' +
-                        '<div class="py-3 px-2 rounded-xl border-2 border-slate-200 bg-white peer-checked:bg-rose-50 peer-checked:border-rose-500 peer-checked:text-rose-700 text-center text-xs font-black transition-all text-slate-500 hover:bg-slate-50 shadow-sm">' +
+                        '<div class="py-2.5 px-4 rounded-full border border-transparent bg-slate-50 peer-checked:bg-rose-50 peer-checked:text-rose-600 text-center text-xs font-bold transition-all text-slate-400 hover:bg-slate-100">' +
                         '<i class="fa-solid fa-xmark mr-1.5"></i> Tidak Sesuai' +
                         '</div>' +
                         '</label>' +
