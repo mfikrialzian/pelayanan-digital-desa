@@ -734,9 +734,9 @@ function runAdminLoginAuth() {
             
             var keperluanEl = document.getElementById('info-modal-keperluan');
             if(keperluanEl) {
-                keperluanEl.innerHTML = "<div class='text-[15px] font-extrabold text-slate-800 leading-tight'>" + row.id + "</div>" +
-                                        "<div class='text-[13px] font-bold text-slate-700 leading-tight mt-0.5'>" + row.nama + "</div>" +
-                                        "<div class='text-[12px] font-semibold text-narmadaGreen leading-tight mt-0.5'>" + row.layanan + "</div>";
+                keperluanEl.innerHTML = "<div class='text-[10px] text-slate-500 font-bold'>No Req: <span class='text-slate-700'>" + row.id + "</span></div>" +
+                                        "<div class='font-bold text-slate-900 mt-1'>" + row.nama + "</div>" +
+                                        "<div class='text-[10px] font-bold text-emerald-600 mt-1'>" + row.layanan + "</div>";
             }
             
             var jawabanFormatted = "<div class='space-y-1 pt-1'>";
