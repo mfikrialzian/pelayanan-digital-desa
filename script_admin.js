@@ -879,12 +879,48 @@ function runAdminLoginAuth() {
             }
         }
 
+        window.currentVerifSlide = 0;
+
+        function changeVerifSlide(direction) {
+            var slides = document.querySelectorAll('.verif-slide');
+            if (slides.length === 0) return;
+
+            slides[window.currentVerifSlide].classList.add('hidden');
+            window.currentVerifSlide += direction;
+
+            if (window.currentVerifSlide >= slides.length) {
+                window.currentVerifSlide = 0;
+            } else if (window.currentVerifSlide < 0) {
+                window.currentVerifSlide = slides.length - 1;
+            }
+
+            slides[window.currentVerifSlide].classList.remove('hidden');
+            
+            // Update counter
+            var counterEl = document.getElementById('slide-counter');
+            if(counterEl) {
+                counterEl.innerText = (window.currentVerifSlide + 1) + " / " + slides.length;
+            }
+        }
+
         function renderChecklistTable(rawLinks, nama, id, layanan) {
             var tbody = document.getElementById('modal-checklist-rows');
             tbody.innerHTML = "";
+            window.currentVerifSlide = 0;
 
             var linksArray = rawLinks.split(",");
             window.activeVerifFiles = [];
+
+            // Add navigation and counter controls container if there's more than 1 file
+            var navControls = "";
+            if (linksArray.length > 1) {
+                navControls = '<div class="absolute top-4 right-4 flex items-center gap-3 bg-white/90 backdrop-blur px-3 py-1.5 rounded-full shadow-sm border border-slate-200 z-20">' +
+                                '<button type="button" onclick="changeVerifSlide(-1)" class="w-6 h-6 flex items-center justify-center rounded-full hover:bg-slate-100 text-slate-600 transition-colors"><i class="fa-solid fa-chevron-left text-xs"></i></button>' +
+                                '<span id="slide-counter" class="text-xs font-bold text-slate-700">1 / ' + linksArray.length + '</span>' +
+                                '<button type="button" onclick="changeVerifSlide(1)" class="w-6 h-6 flex items-center justify-center rounded-full hover:bg-slate-100 text-slate-600 transition-colors"><i class="fa-solid fa-chevron-right text-xs"></i></button>' +
+                              '</div>';
+                tbody.innerHTML += navControls;
+            }
 
             linksArray.forEach(function (item, idx) {
                 var p = item.split(":");
@@ -910,28 +946,30 @@ function runAdminLoginAuth() {
                         }
                     }
 
-                    var card = '<div class="bg-white p-2.5 rounded-xl border border-slate-200 shadow-sm">' +
-                        '<div class="flex justify-between items-start mb-2">' +
-                        '<h6 class="text-[10px] font-bold text-slate-800 leading-tight pr-2">' + labelName + '</h6>' +
-                        '<a href="' + fileUrl + '" target="_blank" class="text-narmadaGreen hover:text-narmadaGreen-dark" title="Buka berkas di tab baru"><i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i></a>' +
+                    var slideClass = idx === 0 ? "verif-slide flex-1 flex flex-col h-full w-full p-6 absolute inset-0 bg-white" : "verif-slide flex-1 flex flex-col h-full w-full p-6 absolute inset-0 bg-white hidden";
+
+                    var card = '<div class="' + slideClass + '">' +
+                        '<div class="flex justify-between items-center mb-4 shrink-0">' +
+                        '<h6 class="text-sm font-black text-slate-800 flex items-center gap-2"><i class="fa-regular fa-file-image text-emerald-500"></i> ' + labelName + '</h6>' +
+                        '<a href="' + fileUrl + '" target="_blank" class="text-xs font-bold text-narmadaGreen hover:text-emerald-700 flex items-center gap-1 bg-emerald-50 px-3 py-1.5 rounded-lg transition-colors"><i class="fa-solid fa-arrow-up-right-from-square"></i> Buka Tab Baru</a>' +
                         '</div>' +
-                        '<div class="relative group cursor-zoom-in mb-2 bg-slate-100 rounded-lg overflow-hidden border border-slate-200" onclick="openLightbox(\'' + previewUrl + '\', \'' + labelName.replace(/'/g, "\\'") + '\')">' +
-                        '<img src="' + previewUrl + '" class="w-full h-40 object-cover transition-transform duration-300 group-hover:scale-105" alt="Berkas" onerror="this.onerror=null; this.src=\'https://placehold.co/400x300/e2e8f0/64748b?text=Berkas+Tidak+Ditemukan\';">' +
-                        '<div class="absolute inset-0 bg-slate-900/0 group-hover:bg-slate-900/20 transition-all flex items-center justify-center">' +
-                        '<i class="fa-solid fa-expand text-white opacity-0 group-hover:opacity-100 text-2xl drop-shadow-md transition-opacity"></i>' +
+                        '<div class="relative group cursor-zoom-in mb-5 flex-1 bg-slate-100 rounded-2xl overflow-hidden border-2 border-dashed border-slate-200" onclick="openLightbox(\'' + previewUrl + '\', \'' + labelName.replace(/'/g, "\\'") + '\')">' +
+                        '<img src="' + previewUrl + '" class="w-full h-full object-contain transition-transform duration-300 group-hover:scale-[1.02]" alt="Berkas" onerror="this.onerror=null; this.src=\'https://placehold.co/800x600/e2e8f0/64748b?text=Berkas+Tidak+Ditemukan\';">' +
+                        '<div class="absolute inset-0 bg-slate-900/0 group-hover:bg-slate-900/10 transition-all flex items-center justify-center">' +
+                        '<i class="fa-solid fa-expand text-white opacity-0 group-hover:opacity-100 text-3xl drop-shadow-md transition-opacity"></i>' +
                         '</div>' +
                         '</div>' +
-                        '<div class="grid grid-cols-2 gap-2">' +
+                        '<div class="grid grid-cols-2 gap-3 shrink-0">' +
                         '<label class="cursor-pointer">' +
                         '<input type="radio" name="verif_radio_' + idx + '" value="Sesuai" checked onchange="calculateAutoVerificationResult(\'' + nama + '\', \'' + id + '\', \'' + layanan + '\')" class="peer sr-only">' +
-                        '<div class="py-2 px-1 rounded-lg border border-slate-200 bg-white peer-checked:bg-emerald-50 peer-checked:border-emerald-500 peer-checked:text-emerald-700 text-center text-[10px] font-bold transition-all text-slate-500 hover:bg-slate-50">' +
-                        '<i class="fa-solid fa-check mr-1"></i> Sesuai' +
+                        '<div class="py-3 px-2 rounded-xl border-2 border-slate-200 bg-white peer-checked:bg-emerald-50 peer-checked:border-emerald-500 peer-checked:text-emerald-700 text-center text-xs font-black transition-all text-slate-500 hover:bg-slate-50 shadow-sm">' +
+                        '<i class="fa-solid fa-check mr-1.5"></i> Sesuai' +
                         '</div>' +
                         '</label>' +
                         '<label class="cursor-pointer">' +
                         '<input type="radio" name="verif_radio_' + idx + '" value="Tidak Sesuai" onchange="calculateAutoVerificationResult(\'' + nama + '\', \'' + id + '\', \'' + layanan + '\')" class="peer sr-only">' +
-                        '<div class="py-2 px-1 rounded-lg border border-slate-200 bg-white peer-checked:bg-rose-50 peer-checked:border-rose-500 peer-checked:text-rose-700 text-center text-[10px] font-bold transition-all text-slate-500 hover:bg-slate-50">' +
-                        '<i class="fa-solid fa-xmark mr-1"></i> Tidak Sesuai' +
+                        '<div class="py-3 px-2 rounded-xl border-2 border-slate-200 bg-white peer-checked:bg-rose-50 peer-checked:border-rose-500 peer-checked:text-rose-700 text-center text-xs font-black transition-all text-slate-500 hover:bg-slate-50 shadow-sm">' +
+                        '<i class="fa-solid fa-xmark mr-1.5"></i> Tidak Sesuai' +
                         '</div>' +
                         '</label>' +
                         '</div>' +
