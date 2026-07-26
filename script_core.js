@@ -127,7 +127,7 @@ var dummyLayananList = [
             
             if (urlParams.has('page')) {
                 initialPageParam = urlParams.get('page').trim().toLowerCase();
-            } else if (pathname === '/admin' || pathname === '/admin/') {
+            } else if (pathname === '/admin' || pathname.startsWith('/admin/')) {
                 initialPageParam = 'admin';
             }
 
