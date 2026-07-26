@@ -653,6 +653,7 @@ function runAdminLoginAuth() {
                 }).join("");
 
                 var trHtml = '<tr class="hover:bg-emerald-50/50 transition-all border-b border-slate-101">' +
+                    '<td class="p-4 text-center"><input type="checkbox" class="rounded border-slate-300 text-narmadaGreen focus:ring-narmadaGreen"></td>' +
                     '<td class="p-4 text-center font-bold text-slate-500 text-[10px]">' + rowNo + '</td>' +
                     '<td class="p-4">' +
                     '<p class="text-[9px] font-bold text-slate-700 mt-0.5">' + row.tanggal + '</p>' +
