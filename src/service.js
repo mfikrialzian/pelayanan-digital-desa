@@ -4,18 +4,34 @@
 var AuthService = {
   login: function(username, password) {
     try {
-      var setelan = SetelanRepository.getAll();
-      var props = PropertiesService.getScriptProperties();
-      var storedUser = setelan.username || props.getProperty('ADMIN_USERNAME') || "admin_narmada";
-      var storedPass = setelan.password || props.getProperty('ADMIN_PASSWORD') || "";
+      var user = PenggunaRepository.getByUsername(username);
       
-      if (username === storedUser && password === storedPass) {
+      if (user && user.password === password) {
+        if (user.status !== "Aktif") {
+          return { success: false, message: "Akun Anda dinonaktifkan. Silakan hubungi Super Admin." };
+        }
+        
         var token = Utilities.getUuid();
         var cache = CacheService.getScriptCache();
         cache.put("AUTH_" + token, "valid", 21600); // 6 hours
-        return { success: true, token: token };
+        
+        // Update waktu login
+        var tz = ZettConfig.TIMEZONE || "Asia/Jakarta";
+        var now = Utilities.formatDate(new Date(), tz, "dd MMM yyyy, HH:mm");
+        PenggunaRepository.update(username, { terakhirLogin: now });
+        SpreadsheetApp.flush();
+        
+        return { 
+          success: true, 
+          token: token, 
+          role: user.peran, 
+          name: user.nama,
+          email: user.email,
+          wa: user.wa,
+          avatar: user.avatar
+        };
       }
-      return { success: false, message: "Kredensial otorisasi administratif salah!" };
+      return { success: false, message: "Username atau password salah!" };
     } catch (e) {
       return { success: false, message: "Auth Error: " + e.toString() };
     }
@@ -34,6 +50,54 @@ var AuthService = {
       cache.remove("AUTH_" + token);
     }
     return { success: true };
+  }
+};
+
+/**
+ * PenggunaService - Manajemen Pengguna Sistem
+ */
+var PenggunaService = {
+  getList: function() {
+    return PenggunaRepository.getAll();
+  },
+  
+  crud: function(action, payload) {
+    var lock = LockService.getScriptLock();
+    try {
+      lock.waitLock(15000);
+      
+      if (action === "create") {
+        var existing = PenggunaRepository.getByUsername(payload.username);
+        if (existing) {
+          return { success: false, message: "Username sudah digunakan!" };
+        }
+        PenggunaRepository.insert({
+          id: Utilities.getUuid(),
+          username: payload.username,
+          password: payload.password,
+          nama: payload.nama,
+          peran: payload.peran,
+          unit: payload.unit || "Pusat",
+          status: "Aktif",
+          terakhirLogin: "-"
+        });
+      } else if (action === "update") {
+        PenggunaRepository.update(payload.username, payload.updateData);
+      } else if (action === "delete") {
+        PenggunaRepository.deleteByUsername(payload.username);
+      } else if (action === "toggleStatus") {
+        PenggunaRepository.update(payload.username, { status: payload.status });
+      } else if (action === "resetPassword") {
+        PenggunaRepository.update(payload.username, { password: payload.password });
+      }
+      
+      SpreadsheetApp.flush();
+      return { success: true };
+    } catch (e) {
+      return { success: false, message: e.toString() };
+    } finally {
+      lock.releaseLock();
+    }
   }
 };
 

@@ -23,6 +23,7 @@ var ZettConstants = {
   SHEET_FIELDS: "Layanan_Fields",
   SHEET_REQS: "Layanan_Requirements",
   SHEET_SETELAN: "Setelan",
+  SHEET_PENGGUNA: "Pengguna",
   SHEET_AKTIVITAS: "Aktivitas",
   SHEET_NOTIFIKASI: "Notifikasi",
   
@@ -161,6 +162,19 @@ function setupDatabase() {
       sNotifikasi.getRange("A1:G1").setFontWeight("bold").setBackground("#059669").setFontColor("#FFFFFF");
     }
 
+
+    // 8. Inisialisasi Sheet Pengguna
+    var sPengguna = ss.getSheetByName(ZettConstants.SHEET_PENGGUNA);
+    if (!sPengguna) {
+      sPengguna = ss.insertSheet(ZettConstants.SHEET_PENGGUNA);
+      sPengguna.appendRow(["ID", "Username", "Password", "Nama Lengkap", "Peran", "Unit", "Status", "Terakhir Login"]);
+      sPengguna.getRange("A1:H1").setFontWeight("bold").setBackground("#059669").setFontColor("#FFFFFF");
+      
+      var props = PropertiesService.getScriptProperties();
+      var defaultUsername = props.getProperty('ADMIN_USERNAME') || "superadmin";
+      var defaultPassword = props.getProperty('ADMIN_PASSWORD') || "123456"; // Default strong password or just 123
+      sPengguna.appendRow([Utilities.getUuid(), defaultUsername, defaultPassword, "Administrator (System)", "Super Admin", "Pusat", "Aktif", "-"]);
+    }
 
     SpreadsheetApp.flush();
     return "Database Narmada v3.0.0 berhasil dibangun & dimigrasikan secara mulus.";

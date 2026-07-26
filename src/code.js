@@ -64,6 +64,29 @@ function crudLayanan(token, action, dataObj) {
   return LayananService.crud(action, dataObj);
 }
 
+function getPenggunaList(token) {
+  if (!AuthService.verifyToken(token)) return { error: "Sesi tidak valid atau telah berakhir. Silakan login kembali.", authError: true };
+  return PenggunaService.getList();
+}
+
+function crudPengguna(token, action, payload) {
+  if (!AuthService.verifyToken(token)) return { success: false, message: "Sesi tidak valid atau telah berakhir. Silakan login kembali.", authError: true };
+  return PenggunaService.crud(action, payload);
+}
+
+function updateProfilPengguna(token, payload) {
+  if (!AuthService.verifyToken(token)) return { success: false, message: "Sesi tidak valid atau telah berakhir. Silakan login kembali.", authError: true };
+  return PenggunaService.crud("update", {
+    username: payload.username,
+    updateData: {
+      nama: payload.nama,
+      email: payload.email,
+      wa: payload.wa,
+      avatar: payload.avatar
+    }
+  });
+}
+
 function updateAdminSetelan(token, newSetelan) {
   if (!AuthService.verifyToken(token)) return { success: false, message: "Sesi tidak valid atau telah berakhir. Silakan login kembali.", authError: true };
   return ConfigService.update(newSetelan);

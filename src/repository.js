@@ -192,6 +192,87 @@ var LayananRepository = {
 };
 
 /**
+ * PenggunaRepository - Penanganan Penulisan / Pembacaan Berkas Pengguna
+ */
+var PenggunaRepository = {
+  getAll: function() {
+    var sheet = BaseRepository.getSheet(ZettConstants.SHEET_PENGGUNA);
+    var rawData = sheet.getDataRange().getDisplayValues();
+    var results = [];
+    
+    for (var i = 1; i < rawData.length; i++) {
+      results.push({
+        id: rawData[i][0],
+        username: rawData[i][1],
+        password: rawData[i][2],
+        nama: rawData[i][3],
+        peran: rawData[i][4],
+        unit: rawData[i][5],
+        status: rawData[i][6],
+        terakhirLogin: rawData[i][7],
+        email: rawData[i][8] || "",
+        wa: rawData[i][9] || "",
+        avatar: rawData[i][10] || ""
+      });
+    }
+    return results;
+  },
+  
+  getByUsername: function(username) {
+    var list = this.getAll();
+    return list.find(function(item) { return item.username === username; });
+  },
+  
+  insert: function(record) {
+    var sheet = BaseRepository.getSheet(ZettConstants.SHEET_PENGGUNA);
+    sheet.appendRow([
+      record.id,
+      record.username,
+      record.password,
+      record.nama,
+      record.peran,
+      record.unit,
+      record.status,
+      record.terakhirLogin || "-",
+      record.email || "",
+      record.wa || "",
+      record.avatar || ""
+    ]);
+  },
+  
+  update: function(username, record) {
+    var sheet = BaseRepository.getSheet(ZettConstants.SHEET_PENGGUNA);
+    var data = sheet.getDataRange().getValues();
+    for (var i = 1; i < data.length; i++) {
+      if (String(data[i][1]) === String(username)) {
+        var row = i + 1;
+        if (record.password !== undefined) sheet.getRange(row, 3).setValue(record.password);
+        if (record.nama !== undefined) sheet.getRange(row, 4).setValue(record.nama);
+        if (record.peran !== undefined) sheet.getRange(row, 5).setValue(record.peran);
+        if (record.unit !== undefined) sheet.getRange(row, 6).setValue(record.unit);
+        if (record.status !== undefined) sheet.getRange(row, 7).setValue(record.status);
+        if (record.terakhirLogin !== undefined) sheet.getRange(row, 8).setValue(record.terakhirLogin);
+        if (record.email !== undefined) sheet.getRange(row, 9).setValue(record.email);
+        if (record.wa !== undefined) sheet.getRange(row, 10).setValue(record.wa);
+        if (record.avatar !== undefined) sheet.getRange(row, 11).setValue(record.avatar);
+        break;
+      }
+    }
+  },
+  
+  deleteByUsername: function(username) {
+    var sheet = BaseRepository.getSheet(ZettConstants.SHEET_PENGGUNA);
+    var data = sheet.getDataRange().getValues();
+    for (var i = 1; i < data.length; i++) {
+      if (String(data[i][1]) === String(username)) {
+        sheet.deleteRow(i + 1);
+        break;
+      }
+    }
+  }
+};
+
+/**
  * PengajuanRepository - Penanganan Penulisan / Pembacaan Berkas Pengajuan
  */
 var PengajuanRepository = {
