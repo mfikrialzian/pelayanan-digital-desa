@@ -758,9 +758,11 @@ function runAdminLoginAuth() {
                     }
                 });
 
-                // Badge Keperluan Surat (Stacked Text)
+                // Insert Keperluan to Data Pemohon (without label)
+                var qMap = {};
                 if (submittedKeperluan && submittedKeperluan !== "Wajib") {
-                    jawabanFormatted += "<div class='flex flex-col leading-tight mb-4 border-b border-slate-50 pb-2'><span class='font-black text-slate-900 text-[11px]'>" + submittedKeperluan + "</span><span class='text-slate-400 font-medium mt-0.5'>Keperluan</span></div>";
+                    qMap["Data Pemohon"] = [];
+                    qMap["Data Pemohon"].push({q: "", a: submittedKeperluan, order: -1});
                 }
 
                 items.forEach(function(item) {
@@ -811,17 +813,20 @@ function runAdminLoginAuth() {
                     }
                 });
                 
-                Object.keys(qMap).forEach(function(k) {
-                    qMap[k].sort(function(a, b) { return a.order - b.order; });
-                    var groupName = k;
-                    var groupIcon = (groupName === 'Data Pemohon') ? 'fa-solid fa-user' : 'fa-solid fa-clipboard-list';
-                    jawabanFormatted += "<div class='mb-4'>";
-                    jawabanFormatted += "<h6 class='font-bold text-slate-800 mb-2 text-[12px] border-b border-slate-50 pb-2 mt-4 flex items-center gap-1.5'><i class='" + groupIcon + " text-narmadaGreen text-[10px]'></i> " + groupName + "</h6>";
-                    jawabanFormatted += "<div class='flex flex-col gap-y-3.5 text-[10px] text-slate-700 mt-2 mb-2'>";
+                for (var key in qMap) {
+                    var groupName = key;
+                    var groupIcon = "fa-solid fa-folder-open";
+                    if (groupName === "Data Pemohon") groupIcon = "fa-solid fa-user";
+                    else if (groupName === "Data Anak") groupIcon = "fa-solid fa-child";
+                    else if (groupName === "Data Orang Tua") groupIcon = "fa-solid fa-users";
+                    else if (groupName === "Data Tambahan") groupIcon = "fa-solid fa-list-ul";
+
+                    jawabanFormatted += "<h3 class='font-extrabold text-sm text-slate-800 flex items-center gap-2 mb-3 mt-4'><i class='" + groupIcon + " text-narmadaGreen'></i> " + groupName + "</h3>";
+                    jawabanFormatted += "<div class='space-y-3 bg-slate-50/50 p-4 rounded-xl border border-slate-50'>";
                     
                     var isRepeatedGroup = false;
                     var maxRepeats = 1;
-                    qMap[k].forEach(function(qa) {
+                    qMap[key].sort(function(a, b) { return a.order - b.order; }).forEach(function(qa) {
                         if (qa.a && qa.a.match(/\s*;\s*/)) {
                             isRepeatedGroup = true;
                             var parts = qa.a.split(/\s*;\s*/);
@@ -832,23 +837,31 @@ function runAdminLoginAuth() {
                     if (isRepeatedGroup) {
                         for (var i = 0; i < maxRepeats; i++) {
                             if (i > 0) {
-                                jawabanFormatted += "<div class='border-t border-slate-50 mt-1 pt-3 mb-1'><span class='font-bold text-slate-500 text-[9px] uppercase tracking-wider'>" + groupName + " Ke-" + (i + 1) + "</span></div>";
+                                jawabanFormatted += "<div class='border-t border-slate-200 mt-2 pt-2'><span class='font-bold text-slate-500 text-[9px] uppercase tracking-wider'>" + groupName + " Ke-" + (i + 1) + "</span></div>";
                             }
-                            qMap[k].forEach(function(qa) {
+                            qMap[key].forEach(function(qa) {
                                 var parts = qa.a ? qa.a.split(/\s*;\s*/) : [];
                                 var val = parts[i] || "-";
-                                jawabanFormatted += "<div class='flex flex-col leading-tight'><span class='font-black text-slate-900 text-[11px] break-words'>" + val + "</span><span class='text-slate-400 font-medium mt-0.5'>" + qa.q + "</span></div>";
+                                if (qa.q === "") {
+                                    jawabanFormatted += "<div class='flex flex-col leading-tight'><span class='font-black text-slate-900 text-[11px] break-words'>" + val + "</span></div>";
+                                } else {
+                                    jawabanFormatted += "<div class='flex items-start text-[11px] leading-relaxed gap-2'><span class='text-slate-500 font-medium w-1/3 shrink-0'>" + qa.q + "</span><span class='text-slate-400 font-medium'>:</span><span class='font-black text-slate-900 break-words flex-1'>" + val + "</span></div>";
+                                }
                             });
                         }
                     } else {
-                        qMap[k].forEach(function(qa) {
+                        qMap[key].forEach(function(qa) {
                             if (qa.a && qa.a !== "" && qa.a !== "-") {
-                                jawabanFormatted += "<div class='flex flex-col leading-tight'><span class='font-black text-slate-900 text-[11px] break-words'>" + qa.a + "</span><span class='text-slate-400 font-medium mt-0.5'>" + qa.q + "</span></div>";
+                                if (qa.q === "") {
+                                    jawabanFormatted += "<div class='flex flex-col leading-tight'><span class='font-black text-slate-900 text-[11px] break-words'>" + qa.a + "</span></div>";
+                                } else {
+                                    jawabanFormatted += "<div class='flex items-start text-[11px] leading-relaxed gap-2'><span class='text-slate-500 font-medium w-1/3 shrink-0'>" + qa.q + "</span><span class='text-slate-400 font-medium'>:</span><span class='font-black text-slate-900 break-words flex-1'>" + qa.a + "</span></div>";
+                                }
                             }
                         });
                     }
-                    jawabanFormatted += "</div></div>";
-                });
+                    jawabanFormatted += "</div>";
+                }
             } else {
                 jawabanFormatted += "<p class='text-slate-400 italic text-[10px] pt-1'>Tidak ada isian tambahan.</p>";
             }
@@ -880,6 +893,15 @@ function runAdminLoginAuth() {
         }
 
         window.currentVerifSlide = 0;
+        window.docSlideScales = {};
+
+        function zoomDocSlide(idx, delta) {
+            if (!window.docSlideScales[idx]) window.docSlideScales[idx] = 1;
+            window.docSlideScales[idx] += delta;
+            if (window.docSlideScales[idx] < 0.5) window.docSlideScales[idx] = 0.5;
+            if (window.docSlideScales[idx] > 3) window.docSlideScales[idx] = 3;
+            document.getElementById('slide-img-' + idx).style.transform = 'scale(' + window.docSlideScales[idx] + ')';
+        }
 
         function changeVerifSlide(direction) {
             var slides = document.querySelectorAll('.verif-slide');
@@ -896,7 +918,6 @@ function runAdminLoginAuth() {
 
             slides[window.currentVerifSlide].classList.remove('hidden');
             
-            // Update counter
             var counterEl = document.getElementById('slide-counter');
             if(counterEl) {
                 counterEl.innerText = (window.currentVerifSlide + 1) + " / " + slides.length;
@@ -907,11 +928,11 @@ function runAdminLoginAuth() {
             var tbody = document.getElementById('modal-checklist-rows');
             tbody.innerHTML = "";
             window.currentVerifSlide = 0;
+            window.docSlideScales = {};
 
             var linksArray = rawLinks.split(",");
             window.activeVerifFiles = [];
 
-            // Add navigation and counter controls container if there's more than 1 file
             var navControls = "";
             if (linksArray.length > 1) {
                 navControls = '<div class="absolute top-4 right-4 flex items-center gap-3 bg-white/90 backdrop-blur px-3 py-1.5 rounded-full shadow-sm border border-slate-200 z-20">' +
@@ -946,20 +967,23 @@ function runAdminLoginAuth() {
                         }
                     }
 
-                    var slideClass = idx === 0 ? "verif-slide flex-1 flex flex-col h-full w-full p-6 absolute inset-0 bg-white" : "verif-slide flex-1 flex flex-col h-full w-full p-6 absolute inset-0 bg-white hidden";
+                    var slideClass = idx === 0 ? "verif-slide flex-1 flex flex-col h-full w-full absolute inset-0 bg-white" : "verif-slide flex-1 flex flex-col h-full w-full absolute inset-0 bg-white hidden";
 
                     var card = '<div class="' + slideClass + '">' +
-                        '<div class="flex justify-between items-center mb-4 shrink-0">' +
-                        '<h6 class="text-sm font-black text-slate-800 flex items-center gap-2"><i class="fa-regular fa-file-image text-emerald-500"></i> ' + labelName + '</h6>' +
-                        '<a href="' + fileUrl + '" target="_blank" class="text-xs font-bold text-narmadaGreen hover:text-emerald-700 flex items-center gap-1 bg-emerald-50 px-3 py-1.5 rounded-lg transition-colors"><i class="fa-solid fa-arrow-up-right-from-square"></i> Buka Tab Baru</a>' +
+                        '<div class="flex justify-between items-center bg-white p-4 shrink-0 border-b border-slate-50">' +
+                        '<div class="flex items-center gap-3">' +
+                        '<a href="' + fileUrl + '" target="_blank" class="w-8 h-8 flex items-center justify-center text-narmadaGreen hover:text-emerald-700 bg-emerald-50 hover:bg-emerald-100 rounded-lg transition-colors" title="Buka Tab Baru"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>' +
+                        '<h3 class="font-extrabold text-sm text-slate-800 flex items-center gap-2"><i class="fa-regular fa-file-image text-narmadaGreen"></i> ' + labelName + '</h3>' +
                         '</div>' +
-                        '<div class="relative group cursor-zoom-in mb-5 flex-1 bg-slate-50/50 rounded-2xl overflow-hidden" onclick="openLightbox(\'' + previewUrl + '\', \'' + labelName.replace(/'/g, "\\'") + '\')">' +
-                        '<img src="' + previewUrl + '" class="w-full h-full object-contain transition-transform duration-300 group-hover:scale-[1.02]" alt="Berkas" onerror="this.onerror=null; this.src=\'https://placehold.co/800x600/e2e8f0/64748b?text=Berkas+Tidak+Ditemukan\';">' +
-                        '<div class="absolute inset-0 bg-slate-900/0 group-hover:bg-slate-900/10 transition-all flex items-center justify-center">' +
-                        '<i class="fa-solid fa-expand text-white opacity-0 group-hover:opacity-100 text-3xl drop-shadow-md transition-opacity"></i>' +
+                        '<div class="flex items-center gap-2">' +
+                        '<button type="button" onclick="zoomDocSlide(' + idx + ', -0.1)" class="w-8 h-8 flex items-center justify-center text-slate-500 hover:text-slate-700 bg-slate-50 hover:bg-slate-100 rounded-lg border border-slate-100 transition-colors"><i class="fa-solid fa-minus"></i></button>' +
+                        '<button type="button" onclick="zoomDocSlide(' + idx + ', 0.1)" class="w-8 h-8 flex items-center justify-center text-slate-500 hover:text-slate-700 bg-slate-50 hover:bg-slate-100 rounded-lg border border-slate-100 transition-colors"><i class="fa-solid fa-plus"></i></button>' +
                         '</div>' +
                         '</div>' +
-                        '<div class="grid grid-cols-2 gap-3 shrink-0">' +
+                        '<div class="flex-1 overflow-auto relative p-5 bg-slate-50/50" id="slide-img-container-' + idx + '">' +
+                        '<img id="slide-img-' + idx + '" src="' + previewUrl + '" class="w-full h-auto origin-top-left transition-transform duration-300" style="transform: scale(1);" alt="Berkas" onerror="this.onerror=null; this.src=\'https://placehold.co/800x600/e2e8f0/64748b?text=Berkas+Tidak+Ditemukan\';">' +
+                        '</div>' +
+                        '<div class="grid grid-cols-2 gap-3 shrink-0 p-6 border-t border-slate-100">' +
                         '<label class="cursor-pointer">' +
                         '<input type="radio" name="verif_radio_' + idx + '" value="Sesuai" checked onchange="calculateAutoVerificationResult(\'' + nama + '\', \'' + id + '\', \'' + layanan + '\')" class="peer sr-only">' +
                         '<div class="py-2.5 px-4 rounded-full border border-transparent bg-slate-50 peer-checked:bg-emerald-50 peer-checked:text-emerald-600 text-center text-xs font-bold transition-all text-slate-400 hover:bg-slate-100">' +
