@@ -83,7 +83,7 @@ function runAdminLoginAuth() {
         const SIDEBAR_ITEMS = [
             { id: 'dashboard', icon: 'fa-house', label: 'Dashboard', action: "switchAdminTab('dashboard')" },
             { id: 'daftar-layanan', icon: 'fa-layer-group', label: 'Layanan', action: "switchAdminTab('daftar-layanan')" },
-            { id: 'pengajuan', icon: 'fa-file-lines', label: 'Pengajuan', action: "switchAdminTab('dashboard')" },
+            { id: 'pengajuan', icon: 'fa-file-lines', label: 'Pengajuan', action: "switchAdminTab('pengajuan')" },
             { id: 'kontak', icon: 'fa-address-book', label: 'Kontak Pelayanan', action: "switchAdminTab('kontak')" },
             { id: 'verifikasi', icon: 'fa-check-to-slot', label: 'Verifikasi Berkas', action: "switchAdminTab('dashboard')" },
             { id: 'tte', icon: 'fa-signature', label: 'Persetujuan & TTE', action: "pushToast('Fitur Persetujuan & TTE segera hadir', 'info')" },
@@ -404,6 +404,7 @@ function runAdminLoginAuth() {
 
         function executeSwitchAdminTab(tabId, updateUrl = true) {
             document.getElementById('subview-admin-dashboard').classList.add('hidden');
+            document.getElementById('subview-admin-pengajuan').classList.add('hidden');
             document.getElementById('subview-admin-daftar-layanan').classList.add('hidden');
             document.getElementById('subview-admin-layanan').classList.add('hidden');
             document.getElementById('subview-admin-verifikasi').classList.add('hidden');
