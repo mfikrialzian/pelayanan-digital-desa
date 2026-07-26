@@ -164,7 +164,7 @@ function runAdminLoginAuth() {
                     var item = SIDEBAR_ITEMS.find(function(i) { return i.id === itemId; });
                     if (item) {
                         var disabledAttr = item.disabled ? 'disabled=""' : '';
-                        var btnHtml = '<button id="tab-adm-' + item.id + '" onclick="' + item.action + '" ' + disabledAttr + ' class="w-full text-left flex items-center px-3 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-full font-semibold text-sm transition-colors">' +
+                        var btnHtml = '<button id="tab-adm-' + item.id + '" onclick="' + item.action + '" ' + disabledAttr + ' class="w-full text-left flex items-center px-3 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-semibold text-sm transition-colors">' +
                                       '<i class="fa-solid ' + item.icon + ' w-5 text-center mr-2"></i> ' + item.label +
                                       '</button>';
                         sidebarNav.innerHTML += btnHtml;
@@ -417,8 +417,8 @@ function runAdminLoginAuth() {
 
             const allTabs = ['tab-adm-dashboard', 'tab-adm-pengajuan', 'tab-adm-daftar-layanan', 'tab-adm-kontak', 'tab-adm-beranda', 'tab-adm-kredensial', 'tab-adm-laporan', 'tab-adm-aktivitas'];
 
-            var inactiveClass = "w-full text-left flex items-center px-3 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-full font-semibold text-sm transition-colors";
-            var activeClass = "w-full text-left flex items-center px-3 py-2.5 bg-emerald-50 text-narmadaGreen rounded-full font-bold text-sm transition-colors";
+            var inactiveClass = "w-full text-left flex items-center px-3 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-semibold text-sm transition-colors";
+            var activeClass = "w-full text-left flex items-center px-3 py-2.5 bg-emerald-50 text-narmadaGreen rounded-xl font-bold text-sm transition-colors";
 
             allTabs.forEach(function(id) {
                 var el = document.getElementById(id);
@@ -631,11 +631,11 @@ function runAdminLoginAuth() {
 
             response.data.forEach(function (row, idx) {
                 var rowNo = startIndex + idx + 1;
-                var badgeColor = "bg-slate-50 text-slate-500 font-bold border-transparent";
-                if (row.status === "Menunggu") badgeColor = "bg-blue-50 text-blue-500 font-bold border-transparent";
-                else if (row.status === "Verifikasi") badgeColor = "bg-amber-50 text-amber-500 font-bold border-transparent";
-                else if (row.status === "Selesai" || row.status === "Pelayanan Selesai") badgeColor = "bg-emerald-50 text-emerald-600 font-bold border-transparent";
-                else if (row.status === "Perbaikan" || row.status === "Upload Ulang") badgeColor = "bg-red-50 text-red-500 font-bold border-transparent";
+                var badgeColor = "bg-slate-100 text-slate-600 font-bold border-slate-200";
+                if (row.status === "Menunggu") badgeColor = "bg-blue-100 text-blue-700 font-bold border-blue-200";
+                else if (row.status === "Verifikasi") badgeColor = "bg-amber-100 text-amber-700 font-bold border-amber-200";
+                else if (row.status === "Selesai" || row.status === "Pelayanan Selesai") badgeColor = "bg-emerald-100 text-emerald-700 font-bold border-emerald-200";
+                else if (row.status === "Perbaikan" || row.status === "Upload Ulang") badgeColor = "bg-red-100 text-red-700 font-bold border-red-200";
 
                 var cleanWaNum = row.wa.replace('+', '');
                 var encodedNote = encodeURIComponent(row.catatan || "");
@@ -666,14 +666,14 @@ function runAdminLoginAuth() {
                     '<p class="text-[10px] text-green-600 font-bold mt-0.5"><i class="fa-brands fa-whatsapp"></i> ' + row.wa + '</p>' +
                     '</td>' +
                     '<td class="p-4"><span class="font-bold text-narmadaGreen text-[11px]">' + row.layanan + '</span></td>' +
-                    '<td class="p-4 text-center"><span class="px-3 py-1.5 rounded-full text-[10px] font-bold border ' + badgeColor + '">' + row.status + '</span></td>' +
+                    '<td class="p-4 text-center"><span class="px-2.5 py-1 rounded-full text-[10px] font-bold border ' + badgeColor + '">' + row.status + '</span></td>' +
                     '<td class="p-4 text-center">' +
                     '<div class="flex flex-col gap-1.5 items-center justify-center">' +
-                    '<button onclick="openManageStatusModalById(\'' + row.id + '\')" class="px-3 py-1.5 rounded-full bg-slate-50 hover:bg-amber-50 text-slate-500 hover:text-amber-600 font-bold text-[10px] transition-all flex items-center justify-center gap-1.5 shadow-sm w-[90px]">' +
+                    '<button onclick="openManageStatusModalById(\'' + row.id + '\')" class="px-3 py-1.5 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-700 font-bold text-[10px] transition-all flex items-center justify-center gap-1.5 shadow-sm w-[90px] border border-amber-200">' +
                     '<i class="fa-solid fa-pencil"></i> Edit' +
                     '</button>' +
                     ((row.status === 'Verifikasi' || row.status === 'Pelayanan Selesai' || row.status === 'Selesai') ? 
-                        '<button onclick="triggerGeneratePDF(\'' + row.id + '\')" class="px-3 py-1.5 rounded-full bg-slate-50 hover:bg-blue-50 text-slate-500 hover:text-blue-600 font-bold text-[10px] transition-all flex items-center justify-center gap-1.5 shadow-sm w-[90px]">' +
+                        '<button onclick="triggerGeneratePDF(\'' + row.id + '\')" class="px-3 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold text-[10px] transition-all flex items-center justify-center gap-1.5 shadow-sm w-[90px] border border-blue-200">' +
                         '<i class="fa-solid fa-file-pdf"></i> PDF' +
                         '</button>' 
                     : '') +
@@ -837,13 +837,13 @@ function runAdminLoginAuth() {
                             qMap[k].forEach(function(qa) {
                                 var parts = qa.a ? qa.a.split(/\s*;\s*/) : [];
                                 var val = parts[i] || "-";
-                                jawabanFormatted += "<div class='flex flex-col leading-tight'><span class='font-black text-slate-900 text-[12px] break-words'>" + val + "</span><span class='text-slate-400 font-semibold text-[10px] mt-0.5'>" + qa.q + "</span></div>";
+                                jawabanFormatted += "<div class='flex flex-col leading-tight'><span class='font-black text-slate-900 text-[11px] break-words'>" + val + "</span><span class='text-slate-400 font-medium mt-0.5'>" + qa.q + "</span></div>";
                             });
                         }
                     } else {
                         qMap[k].forEach(function(qa) {
                             if (qa.a && qa.a !== "" && qa.a !== "-") {
-                                jawabanFormatted += "<div class='flex flex-col leading-tight'><span class='font-black text-slate-900 text-[12px] break-words'>" + qa.a + "</span><span class='text-slate-400 font-semibold text-[10px] mt-0.5'>" + qa.q + "</span></div>";
+                                jawabanFormatted += "<div class='flex flex-col leading-tight'><span class='font-black text-slate-900 text-[11px] break-words'>" + qa.a + "</span><span class='text-slate-400 font-medium mt-0.5'>" + qa.q + "</span></div>";
                             }
                         });
                     }
