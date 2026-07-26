@@ -970,18 +970,20 @@ function runAdminLoginAuth() {
                     var slideClass = idx === 0 ? "verif-slide flex-1 flex flex-col h-full w-full absolute inset-0 bg-white" : "verif-slide flex-1 flex flex-col h-full w-full absolute inset-0 bg-white hidden";
 
                     var card = '<div class="' + slideClass + '">' +
-                        '<div class="flex justify-between items-center bg-white p-4 shrink-0 border-b border-slate-50">' +
+                        '<div class="flex items-center bg-white p-4 shrink-0 border-b border-slate-50">' +
                         '<div class="flex items-center gap-3">' +
                         '<a href="' + fileUrl + '" target="_blank" class="w-8 h-8 flex items-center justify-center text-narmadaGreen hover:text-emerald-700 bg-emerald-50 hover:bg-emerald-100 rounded-lg transition-colors" title="Buka Tab Baru"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>' +
                         '<h3 class="font-extrabold text-sm text-slate-800 flex items-center gap-2"><i class="fa-regular fa-file-image text-narmadaGreen"></i> ' + labelName + '</h3>' +
                         '</div>' +
-                        '<div class="flex items-center gap-2">' +
-                        '<button type="button" onclick="zoomDocSlide(' + idx + ', -0.1)" class="w-8 h-8 flex items-center justify-center text-slate-500 hover:text-slate-700 bg-slate-50 hover:bg-slate-100 rounded-lg border border-slate-100 transition-colors"><i class="fa-solid fa-minus"></i></button>' +
-                        '<button type="button" onclick="zoomDocSlide(' + idx + ', 0.1)" class="w-8 h-8 flex items-center justify-center text-slate-500 hover:text-slate-700 bg-slate-50 hover:bg-slate-100 rounded-lg border border-slate-100 transition-colors"><i class="fa-solid fa-plus"></i></button>' +
                         '</div>' +
+                        '<div class="flex-1 relative flex flex-col min-h-0">' +
+                        '<div class="absolute top-4 left-4 z-20 flex flex-col gap-2">' +
+                        '<button type="button" onclick="zoomDocSlide(' + idx + ', 0.1)" class="w-8 h-8 flex items-center justify-center text-slate-600 hover:text-slate-900 bg-white/90 backdrop-blur shadow-sm rounded-lg border border-slate-200 transition-colors" title="Perbesar (Zoom In)"><i class="fa-solid fa-plus"></i></button>' +
+                        '<button type="button" onclick="zoomDocSlide(' + idx + ', -0.1)" class="w-8 h-8 flex items-center justify-center text-slate-600 hover:text-slate-900 bg-white/90 backdrop-blur shadow-sm rounded-lg border border-slate-200 transition-colors" title="Perkecil (Zoom Out)"><i class="fa-solid fa-minus"></i></button>' +
                         '</div>' +
-                        '<div class="flex-1 overflow-auto relative p-5 bg-slate-50/50" id="slide-img-container-' + idx + '">' +
+                        '<div class="flex-1 overflow-auto p-5 bg-slate-50/50 custom-scrollbar" id="slide-img-container-' + idx + '">' +
                         '<img id="slide-img-' + idx + '" src="' + previewUrl + '" class="w-full h-auto origin-top-left transition-transform duration-300" style="transform: scale(1);" alt="Berkas" onerror="this.onerror=null; this.src=\'https://placehold.co/800x600/e2e8f0/64748b?text=Berkas+Tidak+Ditemukan\';">' +
+                        '</div>' +
                         '</div>' +
                         '<div class="grid grid-cols-2 gap-3 shrink-0 p-6 border-t border-slate-100">' +
                         '<label class="cursor-pointer">' +
