@@ -830,8 +830,11 @@ function runAdminLoginAuth() {
             }
             document.getElementById('info-modal-jawaban').innerHTML = jawabanFormatted;
 
-            document.getElementById('edit-status-select').value = row.status;
-            document.getElementById('edit-status-catatan').value = row.catatan === "-" ? "" : row.catatan;
+            var selStatus = document.getElementById('edit-status-select');
+            if(selStatus) selStatus.value = row.status;
+            
+            var selCatatan = document.getElementById('edit-status-catatan');
+            if(selCatatan) selCatatan.value = row.catatan === "-" ? "" : row.catatan;
 
             renderChecklistTable(row.linkDokumen, row.nama, row.id, row.layanan);
 
