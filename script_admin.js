@@ -2598,35 +2598,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // --- DATA & LOGIKA BACKEND NOTIFIKASI LONCENG ---
-var dummyNotifikasiList = [
-    {
-        id: "NOTIF-001",
-        title: "Pengajuan Baru Masuk",
-        desc: "Ada pengajuan dari SITI HAJAR (Aktivasi Ulang BPJS PBI).",
-        time: new Date(Date.now() - 10 * 60000).toISOString(), // 10 menit lalu
-        type: "info",
-        icon: "fa-file-invoice",
-        isRead: false
-    },
-    {
-        id: "NOTIF-002",
-        title: "Pengajuan Perbaikan",
-        desc: "IAN telah memperbaiki dokumen (Permohonan KK).",
-        time: new Date(Date.now() - 60 * 60000).toISOString(), // 1 jam lalu
-        type: "warning",
-        icon: "fa-triangle-exclamation",
-        isRead: true
-    },
-    {
-        id: "NOTIF-003",
-        title: "Laporan Selesai",
-        desc: "Rekapitulasi pengajuan bulanan telah berhasil diekspor.",
-        time: new Date(Date.now() - 24 * 60 * 60000).toISOString(), // Kemarin
-        type: "success",
-        icon: "fa-circle-check",
-        isRead: true
-    }
-];
+var dummyNotifikasiList = [];
 
 function getNotifications() {
     // Di backend sungguhan, fungsi ini memanggil API GET /notifications
