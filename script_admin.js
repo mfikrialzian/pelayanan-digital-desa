@@ -575,7 +575,7 @@ function runAdminLoginAuth() {
         function fetchAdminDashboardData() {
             var tbody = document.getElementById('table-admin-rows');
             if (!tbody) return;
-            tbody.innerHTML = getTableSkeleton(8, 5);
+            tbody.innerHTML = getTableSkeleton(7, 5);
 
             if (isGoogleEnv) {
                 try {
@@ -667,7 +667,6 @@ function runAdminLoginAuth() {
                     '</td>' +
                     '<td class="p-4"><span class="font-bold text-narmadaGreen text-[11px]">' + row.layanan + '</span></td>' +
                     '<td class="p-4 text-center"><span class="px-2.5 py-1 rounded-full text-[10px] font-bold border ' + badgeColor + '">' + row.status + '</span></td>' +
-                    '<td class="p-4 text-center text-slate-500 font-semibold">' + (row.operator || '-') + '</td>' +
                     '<td class="p-4 text-center">' +
                     '<div class="flex flex-col gap-1.5 items-center justify-center">' +
                     '<button onclick="openManageStatusModalById(\'' + row.id + '\')" class="px-3 py-1.5 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-700 font-bold text-[10px] transition-all flex items-center justify-center gap-1.5 shadow-sm w-[90px] border border-amber-200">' +
@@ -679,6 +678,11 @@ function runAdminLoginAuth() {
                         '</button>' 
                     : '') +
                     '</div>' +
+                    '</td>' +
+                    '<td class="p-4 text-center">' +
+                    '<a href="' + waLink + '" target="_blank" class="px-3 py-1.5 rounded-lg bg-green-50 hover:bg-green-100 text-green-600 font-bold text-[10px] transition-all flex items-center justify-center gap-1.5 shadow-sm mx-auto max-w-[100px] border border-green-200">' +
+                    '<i class="fa-brands fa-whatsapp text-xs"></i> Kirim WA' +
+                    '</a>' +
                     '</td>' +
                     '</tr>';
 
