@@ -732,10 +732,10 @@ function runAdminLoginAuth() {
 
             document.getElementById('edit-status-id').value = row.id;
             
-            var pemohonEl = document.getElementById('info-header-pemohon');
-            if(pemohonEl) {
-                pemohonEl.innerHTML = "<div class='text-[10px] text-slate-500 font-bold'>No Req: <span class='text-slate-700'>" + row.id + "</span></div>" +
-                                        "<div class='font-bold text-slate-900 mt-1 text-sm'>" + row.nama + "</div>" +
+            var keperluanEl = document.getElementById('info-modal-keperluan');
+            if(keperluanEl) {
+                keperluanEl.innerHTML = "<div class='text-[10px] text-slate-500 font-bold'>No Req: <span class='text-slate-700'>" + row.id + "</span></div>" +
+                                        "<div class='font-bold text-slate-900 mt-1'>" + row.nama + "</div>" +
                                         "<div class='text-[10px] font-bold text-emerald-600 mt-1'>" + row.layanan + "</div>";
             }
             
@@ -758,12 +758,9 @@ function runAdminLoginAuth() {
                     }
                 });
 
-                // Badge Keperluan Surat di Header
-                var keperluanHeaderEl = document.getElementById('info-header-keperluan');
+                // Badge Keperluan Surat (Stacked Text)
                 if (submittedKeperluan && submittedKeperluan !== "Wajib") {
-                    if (keperluanHeaderEl) keperluanHeaderEl.innerHTML = "<span class='text-slate-400 font-medium text-[10px] uppercase tracking-wider'>Keperluan</span><span class='font-black text-slate-900 text-sm mt-0.5'>" + submittedKeperluan + "</span>";
-                } else {
-                    if (keperluanHeaderEl) keperluanHeaderEl.innerHTML = "";
+                    jawabanFormatted += "<div class='flex flex-col leading-tight mb-4 border-b border-slate-50 pb-2'><span class='font-black text-slate-900 text-[11px]'>" + submittedKeperluan + "</span><span class='text-slate-400 font-medium mt-0.5'>Keperluan</span></div>";
                 }
 
                 items.forEach(function(item) {
