@@ -818,9 +818,9 @@ function runAdminLoginAuth() {
                     qMap[k].sort(function(a, b) { return a.order - b.order; });
                     var groupName = k;
                     var groupIcon = (groupName === 'Data Pemohon') ? 'fa-solid fa-user' : 'fa-solid fa-clipboard-list';
-                    jawabanFormatted += "<div class='mb-1.5'>";
-                    jawabanFormatted += "<h6 class='font-bold text-slate-800 mb-0.5 text-[11px] border-b border-slate-50 pb-1 mt-2 flex items-center gap-1.5'><i class='" + groupIcon + " text-narmadaGreen text-[9px]'></i> " + groupName + "</h6>";
-                    jawabanFormatted += "<div class='flex flex-col gap-y-0 mt-0.5 mb-1'>";
+                    jawabanFormatted += "<div class='mb-2'>";
+                    jawabanFormatted += "<h6 class='font-bold text-slate-800 mb-1 text-[12px] border-b border-slate-50 pb-1 mt-3 flex items-center gap-1.5'><i class='" + groupIcon + " text-narmadaGreen text-[10px]'></i> " + groupName + "</h6>";
+                    jawabanFormatted += "<div class='flex flex-col gap-y-1 mt-1 mb-1'>";
                     
                     var isRepeatedGroup = false;
                     var maxRepeats = 1;
@@ -835,18 +835,18 @@ function runAdminLoginAuth() {
                     if (isRepeatedGroup) {
                         for (var i = 0; i < maxRepeats; i++) {
                             if (i > 0) {
-                                jawabanFormatted += "<div class='border-t border-slate-50 mt-1 pt-0.5 mb-0.5'><span class='font-bold text-slate-500 text-[8px] uppercase tracking-wider'>" + groupName + " Ke-" + (i + 1) + "</span></div>";
+                                jawabanFormatted += "<div class='border-t border-slate-50 mt-1 pt-1 mb-1'><span class='font-bold text-slate-500 text-[9px] uppercase tracking-wider'>" + groupName + " Ke-" + (i + 1) + "</span></div>";
                             }
                             qMap[k].forEach(function(qa) {
                                 var parts = qa.a ? qa.a.split(/\s*;\s*/) : [];
                                 var val = parts[i] || "-";
-                                jawabanFormatted += "<div class='flex items-start leading-tight text-[10px] py-[1px]'><span class='text-slate-500 font-medium w-[45%] shrink-0'>" + qa.q + "</span><span class='text-slate-800 font-bold ml-1 flex-1 break-words'>: " + val + "</span></div>";
+                                jawabanFormatted += "<div class='flex items-start leading-tight text-[11px] py-0.5'><span class='text-slate-500 font-medium w-[45%] shrink-0'>" + qa.q + "</span><span class='text-slate-800 font-bold ml-1 flex-1 break-words'>: " + val + "</span></div>";
                             });
                         }
                     } else {
                         qMap[k].forEach(function(qa) {
                             if (qa.a && qa.a !== "" && qa.a !== "-") {
-                                jawabanFormatted += "<div class='flex items-start leading-tight text-[10px] py-[1px]'><span class='text-slate-500 font-medium w-[45%] shrink-0'>" + qa.q + "</span><span class='text-slate-800 font-bold ml-1 flex-1 break-words'>: " + qa.a + "</span></div>";
+                                jawabanFormatted += "<div class='flex items-start leading-tight text-[11px] py-0.5'><span class='text-slate-500 font-medium w-[45%] shrink-0'>" + qa.q + "</span><span class='text-slate-800 font-bold ml-1 flex-1 break-words'>: " + qa.a + "</span></div>";
                             }
                         });
                     }
