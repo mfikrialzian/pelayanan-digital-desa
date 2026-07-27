@@ -1413,8 +1413,13 @@ function runAdminLoginAuth() {
             var totalBadge = document.getElementById('txt-total-layanan-aktif');
             if (!listContainer) return;
             
-            // 1) Fallback if list is undefined/null
-            if (!list) list = window.loadedLayananList || (typeof dummyLayananList !== 'undefined' ? dummyLayananList : []);
+            // 1) Fallback if list is undefined/null/empty array
+            if (!list || !Array.isArray(list) || list.length === 0) {
+                list = window.loadedLayananList;
+                if (!list || !Array.isArray(list) || list.length === 0) {
+                    list = typeof dummyLayananList !== 'undefined' ? dummyLayananList : [];
+                }
+            }
             
             listContainer.innerHTML = "";
 
