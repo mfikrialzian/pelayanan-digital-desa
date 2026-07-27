@@ -1719,40 +1719,45 @@
                 </div><div id="subview-admin-verifikasi" class="hidden space-y-6 text-left w-full h-full">
                     <!-- FASE: VERIFIKASI BERKAS -->
                     <div class="bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col overflow-hidden h-full w-full">
-                        <form id="form-manage-status" class="flex-1 flex flex-col lg:flex-row min-h-0 bg-white relative">
-                            <input type="hidden" id="edit-status-id">
-                            
-                            <!-- Kolom Kiri: Detail Pemohon, Isian Formulir & Status (28% Width) -->
-                            <div class="w-full lg:w-[28%] p-6 flex flex-col h-full overflow-hidden bg-white border-r border-slate-100 relative">
-                                <!-- Detail Pemohon & Keperluan -->
-                                <div class="mb-4 border-b border-slate-100 pb-4 flex-shrink-0 flex flex-col gap-3">
-                                    <div id="info-header-pemohon" class="flex flex-col"></div>
-                                    <div id="info-header-keperluan" class="flex flex-col"></div>
-                                </div>
-                                
-                                <div id="info-modal-jawaban" class="text-xs flex-1 mb-4 overflow-y-auto custom-scrollbar pr-2 space-y-3"></div>
-                                
-                                <!-- Status & Template WA (Sembunyikan) -->
-                                <div class="hidden bg-slate-50 p-4 rounded-2xl border border-slate-100 space-y-3 mt-auto flex-shrink-0">
-                                    <div>
-                                        <label class="block text-[10px] font-extrabold text-slate-700 uppercase tracking-wide mb-1.5">Ubah Status</label>
-                                        <select id="edit-status-select" onchange="markVerifikasiDirty()" required="" class="w-full px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-xs font-medium focus:ring-2 focus:ring-narmadaGreen/20 focus:border-narmadaGreen outline-none transition-all shadow-sm">
-                                            <option value="Menunggu">Menunggu</option>
-                                            <option value="Verifikasi">Verifikasi</option>
-                                            <option value="Selesai">Selesai</option>
-                                            <option value="Perbaikan">Perbaikan</option>
-                                        </select>
-                                    </div>
-                                    <div>
-                                        <label class="block text-[10px] font-extrabold text-slate-700 uppercase tracking-wide mb-1.5">Pesan WA Otomatis</label>
-                                        <textarea id="edit-status-catatan" oninput="markVerifikasiDirty()" required="" rows="4" class="w-full px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-[11px] leading-relaxed focus:ring-2 focus:ring-narmadaGreen/20 focus:border-narmadaGreen outline-none transition-all shadow-sm resize-none custom-scrollbar" placeholder="Ketik pesan konfirmasi atau revisi untuk pemohon di sini..."></textarea>
-                                    </div>
-                                </div>
+                        <!-- Header -->
+                        <div class="p-5 border-b border-slate-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shrink-0 bg-white" id="header-verifikasi-detail">
+                            <!-- Detail Pemohon -->
+                            <div id="info-header-pemohon" class="flex flex-col">
                             </div>
+                            <!-- Keperluan Surat -->
+                            <div id="info-header-keperluan" class="flex flex-col md:items-end text-left md:text-right mt-3 md:mt-0">
+                            </div>
+                        </div>
+                        
+                        <form id="form-manage-status" class="flex-1 flex flex-col min-h-0 bg-white relative">
+                            <input type="hidden" id="edit-status-id">
+                            <div class="flex flex-col lg:flex-row flex-1 min-h-0">
+                                <!-- Kolom Kiri: Isian Formulir & Status (1/3 Width) -->
+                                <div class="w-full lg:w-1/3 p-6 flex flex-col h-full overflow-hidden bg-white border-r border-slate-100 relative">
+                                    
+                                    <div id="info-modal-jawaban" class="text-xs flex-1 mb-4 overflow-y-auto custom-scrollbar pr-2 space-y-3"></div>
+                                    
+                                    <!-- Status & Template WA (Sembunyikan) -->
+                                    <div class="hidden bg-slate-50 p-4 rounded-2xl border border-slate-100 space-y-3 mt-auto flex-shrink-0">
+                                        <div>
+                                            <label class="block text-[10px] font-extrabold text-slate-700 uppercase tracking-wide mb-1.5">Ubah Status</label>
+                                            <select id="edit-status-select" onchange="markVerifikasiDirty()" required="" class="w-full px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-xs font-medium focus:ring-2 focus:ring-narmadaGreen/20 focus:border-narmadaGreen outline-none transition-all shadow-sm">
+                                                <option value="Menunggu">Menunggu</option>
+                                                <option value="Verifikasi">Verifikasi</option>
+                                                <option value="Selesai">Selesai</option>
+                                                <option value="Perbaikan">Perbaikan</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block text-[10px] font-extrabold text-slate-700 uppercase tracking-wide mb-1.5">Pesan WA Otomatis</label>
+                                            <textarea id="edit-status-catatan" oninput="markVerifikasiDirty()" required="" rows="4" class="w-full px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-[11px] leading-relaxed focus:ring-2 focus:ring-narmadaGreen/20 focus:border-narmadaGreen outline-none transition-all shadow-sm resize-none custom-scrollbar" placeholder="Ketik pesan konfirmasi atau revisi untuk pemohon di sini..."></textarea>
+                                        </div>
+                                    </div>
+                                </div>
 
-                            <!-- Kolom Kanan: Galeri Berkas (72% Width) -->
-                            <div class="w-full lg:w-[72%] flex flex-col h-full overflow-hidden bg-slate-50/50">
-                                <!-- Kontainer Slider -->
+                                <!-- Kolom Kanan: Galeri Berkas (2/3 Width) -->
+                                <div class="w-full lg:w-2/3 flex flex-col h-full overflow-hidden bg-slate-50/50">
+                                    <!-- Kontainer Slider -->
                                     <div id="modal-checklist-rows" class="flex-1 overflow-hidden relative w-full h-full flex items-center justify-center">
                                         <!-- Slide Berkas di-render via JS -->
                                     </div>
