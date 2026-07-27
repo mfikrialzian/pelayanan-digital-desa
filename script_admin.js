@@ -902,8 +902,19 @@ function runAdminLoginAuth() {
 
         function renderChecklistTable(rawLinks, nama, id, layanan) {
             var tbody = document.getElementById('modal-checklist-rows');
-            tbody.innerHTML = "";
+            if (tbody) tbody.innerHTML = "";
             window.currentVerifSlide = 0;
+            window.activeVerifFiles = [];
+
+            if (!rawLinks || rawLinks === "-" || rawLinks === "") {
+                if (tbody) {
+                    tbody.innerHTML = '<div class="absolute inset-0 flex flex-col items-center justify-center p-6 text-slate-400 text-sm italic w-full h-full gap-3">' +
+                                      '<i class="fa-regular fa-folder-open text-4xl text-slate-300"></i>' +
+                                      '<span>Tidak ada dokumen lampiran.</span>' +
+                                      '</div>';
+                }
+                return;
+            }
 
             var linksArray = rawLinks.split(",");
             window.activeVerifFiles = [];

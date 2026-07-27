@@ -1730,39 +1730,71 @@
                             </h3>
                         </div>
                         
-                        <form id="form-manage-status" class="flex-1 flex flex-col min-h-0 bg-white relative">
+                        <form id="form-manage-status" class="flex-1 flex flex-col md:flex-row min-h-0 bg-white relative">
                             <input type="hidden" id="edit-status-id">
-                            <!-- Tabs Nav -->
-                            <div class="px-5 border-b border-slate-100 flex gap-4 bg-slate-50/50 shrink-0">
-                                <button type="button" onclick="switchVerifTab('draf')" id="btn-tab-draf" class="py-3 px-2 text-xs font-bold text-narmadaGreen border-b-2 border-narmadaGreen transition-colors flex items-center gap-2">
-                                    <i class="fa-solid fa-file-lines"></i> Draf Surat
-                                </button>
-                                <button type="button" onclick="switchVerifTab('lampiran')" id="btn-tab-lampiran" class="py-3 px-2 text-xs font-bold text-slate-400 border-b-2 border-transparent hover:text-slate-600 transition-colors flex items-center gap-2">
-                                    <i class="fa-solid fa-images"></i> Dokumen Lampiran
-                                </button>
-                            </div>
-
-                            <div class="flex flex-col flex-1 min-h-0 relative bg-slate-100/50">
-                                <!-- Tab 1: Draf Surat -->
-                                <div id="verif-tab-draf" class="absolute inset-0 overflow-y-auto p-4 md:p-8 flex justify-center custom-scrollbar">
-                                    <!-- Kertas UI -->
-                                    <div class="bg-white w-full max-w-2xl shadow-sm border border-slate-200 p-8 md:p-12 text-slate-800 text-[13px] leading-relaxed relative min-h-[800px]" style="box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);">
-                                        <div id="info-modal-keperluan" class="text-sm font-black text-slate-800 mb-6 border-b border-slate-100 pb-4">Keperluan: -</div>
-                                        <div id="info-modal-jawaban" class="space-y-4"></div>
-                                    </div>
+                            
+                            <!-- Kiri: Konten Surat & Lampiran -->
+                            <div class="flex-1 flex flex-col min-h-0 border-r border-slate-100">
+                                <!-- Tabs Nav -->
+                                <div class="px-5 border-b border-slate-100 flex gap-4 bg-slate-50/50 shrink-0">
+                                    <button type="button" onclick="switchVerifTab('draf')" id="btn-tab-draf" class="py-3 px-2 text-xs font-bold text-narmadaGreen border-b-2 border-narmadaGreen transition-colors flex items-center gap-2">
+                                        <i class="fa-solid fa-file-lines"></i> Draf Surat
+                                    </button>
+                                    <button type="button" onclick="switchVerifTab('lampiran')" id="btn-tab-lampiran" class="py-3 px-2 text-xs font-bold text-slate-400 border-b-2 border-transparent hover:text-slate-600 transition-colors flex items-center gap-2">
+                                        <i class="fa-solid fa-images"></i> Dokumen Lampiran
+                                    </button>
                                 </div>
 
-                                <!-- Tab 2: Lampiran Dokumen -->
-                                <div id="verif-tab-lampiran" class="hidden absolute inset-0 flex flex-col bg-slate-50/50">
-                                    <div id="modal-checklist-rows" class="flex-1 overflow-hidden relative w-full h-full flex items-center justify-center">
-                                        <!-- Slide Berkas di-render via JS -->
+                                <div class="flex flex-col flex-1 min-h-0 relative bg-slate-100/50">
+                                    <!-- Tab 1: Draf Surat -->
+                                    <div id="verif-tab-draf" class="absolute inset-0 overflow-y-auto p-4 md:p-8 flex justify-center custom-scrollbar">
+                                        <!-- Kertas UI -->
+                                        <div class="bg-white w-full max-w-2xl shadow-sm border border-slate-200 p-8 md:p-12 text-slate-800 text-[13px] leading-relaxed relative min-h-[800px]" style="box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);">
+                                            <div id="info-modal-keperluan" class="text-sm font-black text-slate-800 mb-6 border-b border-slate-100 pb-4">Keperluan: -</div>
+                                            <div id="info-modal-jawaban" class="space-y-4"></div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Tab 2: Lampiran Dokumen -->
+                                    <div id="verif-tab-lampiran" class="hidden absolute inset-0 flex flex-col bg-slate-50/50">
+                                        <div id="modal-checklist-rows" class="flex-1 overflow-hidden relative w-full h-full flex items-center justify-center">
+                                            <!-- Slide Berkas di-render via JS -->
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                             
-                            <!-- Area Bawah: Tombol Tutup -->
-                            <div class="p-4 bg-white border-t border-slate-100 shrink-0 flex justify-end z-10">
-                                <button type="button" onclick="closeManageStatusModal()" class="px-6 py-2.5 text-xs font-bold text-slate-600 bg-white hover:bg-slate-50 border border-slate-200 rounded-xl transition-all tap-squish">Tutup Peninjauan</button>
+                            <!-- Kanan: Panel Verifikasi -->
+                            <div class="w-full md:w-[320px] flex flex-col bg-slate-50 shrink-0">
+                                <div class="p-5 border-b border-slate-100 flex-1 overflow-y-auto">
+                                    <h4 class="text-xs font-black text-slate-800 mb-4 flex items-center gap-2 uppercase tracking-wider"><i class="fa-solid fa-list-check text-narmadaGreen"></i> Keputusan</h4>
+                                    
+                                    <div class="space-y-4">
+                                        <div>
+                                            <label class="block text-[10px] font-extrabold text-slate-700 uppercase tracking-wide mb-1.5">Ubah Status</label>
+                                            <select id="edit-status-select" onchange="markVerifikasiDirty()" required class="w-full px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-xs font-medium focus:ring-2 focus:ring-narmadaGreen/20 focus:border-narmadaGreen outline-none transition-all shadow-sm">
+                                                <option value="Menunggu">Menunggu</option>
+                                                <option value="Verifikasi">Verifikasi</option>
+                                                <option value="Selesai">Selesai</option>
+                                                <option value="Perbaikan">Perbaikan</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block text-[10px] font-extrabold text-slate-700 uppercase tracking-wide mb-1.5">Pesan WA Otomatis</label>
+                                            <textarea id="edit-status-catatan" oninput="markVerifikasiDirty()" required rows="6" class="w-full px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-[11px] leading-relaxed focus:ring-2 focus:ring-narmadaGreen/20 focus:border-narmadaGreen outline-none transition-all shadow-sm resize-none custom-scrollbar" placeholder="Ketik pesan konfirmasi atau revisi untuk pemohon di sini..."></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Area Bawah Kanan: Tombol Simpan -->
+                                <div class="p-4 bg-white border-t border-slate-100 shrink-0 flex flex-col gap-2 z-10">
+                                    <button type="button" onclick="confirmSaveVerification()" class="w-full px-4 py-2.5 bg-gradient-to-r from-narmadaGreen to-emerald-700 hover:from-emerald-600 hover:to-emerald-800 text-white text-xs font-bold rounded-xl shadow-sm transition-all flex justify-center items-center gap-2 tap-squish">
+                                        <i class="fa-solid fa-check"></i> Simpan Verifikasi
+                                    </button>
+                                    <button type="button" onclick="closeManageStatusModal()" class="w-full px-4 py-2.5 text-xs font-bold text-slate-600 bg-white hover:bg-slate-50 border border-slate-200 rounded-xl transition-all tap-squish">
+                                        Tutup Peninjauan
+                                    </button>
+                                </div>
                             </div>
                         </form>
                     </div>
