@@ -2597,33 +2597,160 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+// --- DATA & LOGIKA BACKEND NOTIFIKASI LONCENG ---
+var dummyNotifikasiList = [
+    {
+        id: "NOTIF-001",
+        title: "Pengajuan Baru Masuk",
+        desc: "Ada pengajuan dari SITI HAJAR (Aktivasi Ulang BPJS PBI).",
+        time: new Date(Date.now() - 10 * 60000).toISOString(), // 10 menit lalu
+        type: "info",
+        icon: "fa-file-invoice",
+        isRead: false
+    },
+    {
+        id: "NOTIF-002",
+        title: "Pengajuan Perbaikan",
+        desc: "IAN telah memperbaiki dokumen (Permohonan KK).",
+        time: new Date(Date.now() - 60 * 60000).toISOString(), // 1 jam lalu
+        type: "warning",
+        icon: "fa-triangle-exclamation",
+        isRead: true
+    },
+    {
+        id: "NOTIF-003",
+        title: "Laporan Selesai",
+        desc: "Rekapitulasi pengajuan bulanan telah berhasil diekspor.",
+        time: new Date(Date.now() - 24 * 60 * 60000).toISOString(), // Kemarin
+        type: "success",
+        icon: "fa-circle-check",
+        isRead: true
+    }
+];
+
+function getNotifications() {
+    // Di backend sungguhan, fungsi ini memanggil API GET /notifications
+    // Untuk simulasi, kita urutkan berdasarkan waktu terbaru
+    return dummyNotifikasiList.sort((a, b) => new Date(b.time) - new Date(a.time));
+}
+
+function getUnreadNotificationCount() {
+    return dummyNotifikasiList.filter(n => !n.isRead).length;
+}
+
+function addNotification(title, desc, type, icon) {
+    const newNotif = {
+        id: "NOTIF-" + Date.now(),
+        title: title,
+        desc: desc,
+        time: new Date().toISOString(),
+        type: type,
+        icon: icon,
+        isRead: false
+    };
+    dummyNotifikasiList.unshift(newNotif);
+    updateNotificationBadge();
+    const container = document.getElementById("notification-dropdown-list");
+    if (container) {
+        renderNotificationDropdown(container);
+    }
+}
+
+function markAllNotificationsAsRead() {
+    dummyNotifikasiList.forEach(n => n.isRead = true);
+    updateNotificationBadge();
+    const container = document.getElementById("notification-dropdown-list");
+    if (container) {
+        renderNotificationDropdown(container);
+    }
+}
+
+function deleteNotification(id) {
+    dummyNotifikasiList = dummyNotifikasiList.filter(n => n.id !== id);
+    updateNotificationBadge();
+    const container = document.getElementById("notification-dropdown-list");
+    if (container) {
+        renderNotificationDropdown(container);
+    }
+}
+
+function deleteAllNotifications() {
+    dummyNotifikasiList = [];
+    updateNotificationBadge();
+    const container = document.getElementById("notification-dropdown-list");
+    if (container) {
+        renderNotificationDropdown(container);
+    }
+}
+
+function updateNotificationBadge() {
+    const redDot = document.getElementById('header-bell-dot');
+    if (!redDot) return;
+    
+    const count = getUnreadNotificationCount();
+    if (count > 0) {
+        redDot.classList.remove('hidden');
+        // Opsional: Jika ingin menampilkan angka
+        // redDot.innerText = count > 9 ? '9+' : count;
+    } else {
+        redDot.classList.add('hidden');
+    }
+}
+
+function formatTimeAgo(dateString) {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffMs = now - date;
+    const diffMins = Math.round(diffMs / 60000);
+    const diffHours = Math.round(diffMs / 3600000);
+    const diffDays = Math.round(diffMs / 86400000);
+
+    if (diffMins < 1) return "Baru saja";
+    if (diffMins < 60) return diffMins + " menit yang lalu";
+    if (diffHours < 24) return diffHours + " jam yang lalu";
+    if (diffDays === 1) return "Kemarin";
+    return diffDays + " hari yang lalu";
+}
+
+window.deleteNotification = deleteNotification; // Expose ke global
+
 function renderNotificationDropdown(container) {
-    // Dummy Data Notifikasi
-    const dummies = [
-        { title: 'Pengajuan Baru Masuk', desc: 'Ada pengajuan dari SITI HAJAR (Aktivasi Ulang BPJS PBI).', time: '10 menit yang lalu', type: 'info', icon: 'fa-file-invoice' },
-        { title: 'Pengajuan Perbaikan', desc: 'IAN telah memperbaiki dokumen (Permohonan KK).', time: '1 jam yang lalu', type: 'warning', icon: 'fa-triangle-exclamation' },
-        { title: 'Laporan Selesai', desc: 'Rekapitulasi pengajuan bulanan telah berhasil diekspor.', time: 'Kemarin', type: 'success', icon: 'fa-circle-check' }
-    ];
+    const notifications = getNotifications();
+
+    if (notifications.length === 0) {
+        container.innerHTML = `<div class="text-center text-slate-400 py-6 text-xs">Belum ada notifikasi.</div>`;
+        return;
+    }
 
     container.innerHTML = '';
-    dummies.forEach(item => {
+    notifications.forEach(item => {
         let iconColor = 'text-blue-500';
         let bgIcon = 'bg-blue-50';
-        if (item.type === 'success') { iconColor = 'text-green-500'; bgIcon = 'bg-green-50'; }
+        if (item.type === 'success') { iconColor = 'text-emerald-500'; bgIcon = 'bg-emerald-50'; }
         else if (item.type === 'warning') { iconColor = 'text-amber-500'; bgIcon = 'bg-amber-50'; }
+        else if (item.type === 'error') { iconColor = 'text-red-500'; bgIcon = 'bg-red-50'; }
         else if (item.type === 'info') { iconColor = 'text-narmadaGreen'; bgIcon = 'bg-emerald-50'; }
 
+        // Styling berbeda untuk dibaca vs belum dibaca
+        const readClass = item.isRead ? 'opacity-60 bg-white' : 'bg-slate-50';
+        const titleClass = item.isRead ? 'text-slate-600 font-semibold' : 'text-slate-800 font-bold';
+        const unreadDot = item.isRead ? '' : `<div class="w-2 h-2 rounded-full bg-narmadaGreen mt-1 shrink-0"></div>`;
+
         container.innerHTML += `
-            <a href="javascript:void(0)" class="flex gap-3 p-3 hover:bg-slate-50 rounded-lg transition-colors border-b border-slate-50 last:border-0 items-start">
+            <div class="flex gap-3 p-3 rounded-lg transition-colors border-b border-slate-50 last:border-0 items-start group relative ${readClass} hover:bg-slate-100">
                 <div class="w-8 h-8 rounded-full ${bgIcon} ${iconColor} flex items-center justify-center shrink-0 mt-0.5">
                     <i class="fa-solid ${item.icon} text-xs"></i>
                 </div>
-                <div>
-                    <p class="text-xs font-bold text-slate-800">${item.title}</p>
+                <div class="flex-grow pr-6">
+                    <p class="text-xs ${titleClass}">${item.title}</p>
                     <p class="text-[10px] text-slate-500 mt-0.5 leading-relaxed">${item.desc}</p>
-                    <p class="text-[9px] font-semibold text-slate-400 mt-1">${item.time}</p>
+                    <p class="text-[9px] font-semibold text-slate-400 mt-1">${formatTimeAgo(item.time)}</p>
                 </div>
-            </a>
+                ${unreadDot}
+                <button onclick="deleteNotification('${item.id}')" class="absolute right-2 top-2 w-6 h-6 flex items-center justify-center rounded-full text-slate-400 hover:text-red-500 hover:bg-red-50 opacity-0 group-hover:opacity-100 transition-opacity" title="Hapus Notifikasi">
+                    <i class="fa-solid fa-xmark text-xs"></i>
+                </button>
+            </div>
         `;
     });
 }
@@ -3299,47 +3426,19 @@ window.triggerNewNotification = function(tipe, detailPemohon) {
         }, 3000); // Animasi 3 detik
     }
     
-    // 3. Show Red Dot (Tanda Merah)
-    const redDot = document.getElementById('header-bell-dot');
-    if (redDot) {
-        redDot.classList.remove('hidden');
+    // 3. Tentukan Ikon & Tipe
+    let icon = "fa-info-circle";
+    let type = "info";
+    
+    let tipeLower = tipe.toLowerCase();
+    if (tipeLower.includes("baru")) { 
+        icon = "fa-file-arrow-up"; type = "success"; 
+    } else if (tipeLower.includes("gagal")) { 
+        icon = "fa-triangle-exclamation"; type = "error"; 
+    } else if (tipeLower.includes("belum lengkap") || tipeLower.includes("revisi")) { 
+        icon = "fa-file-pen"; type = "warning"; 
     }
 
-    // 4. Update the Notification Container
-    const container = document.getElementById("notification-container");
-    if (container) {
-        let icon = "fa-info-circle";
-        let colorClass = "bg-blue-50 text-blue-500";
-        let dotClass = "bg-blue-500";
-        let judul = tipe;
-        
-        let tipeLower = tipe.toLowerCase();
-        if (tipeLower.includes("baru")) { 
-            icon = "fa-file-arrow-up"; colorClass = "bg-emerald-50 text-emerald-500"; dotClass = "bg-emerald-500"; 
-        } else if (tipeLower.includes("gagal")) { 
-            icon = "fa-triangle-exclamation"; colorClass = "bg-red-50 text-red-500"; dotClass = "bg-red-500"; 
-        } else if (tipeLower.includes("belum lengkap") || tipeLower.includes("revisi")) { 
-            icon = "fa-file-pen"; colorClass = "bg-amber-50 text-amber-500"; dotClass = "bg-amber-500"; 
-        }
-
-        let html = `
-        <div class="flex gap-3 slide-in-forward bg-slate-50 p-2 -mx-2 rounded-lg mb-2">
-            <div class="w-8 h-8 rounded-full ${colorClass} flex items-center justify-center shrink-0">
-                <i class="fa-solid ${icon} text-xs"></i>
-            </div>
-            <div>
-                <p class="text-xs font-bold text-slate-800">${judul}</p>
-                <p class="text-[10px] text-slate-500 mt-0.5">Pemohon: ${detailPemohon}</p>
-                <p class="text-[9px] font-bold text-slate-400 mt-1">Baru saja</p>
-            </div>
-            <div class="w-2 h-2 rounded-full ${dotClass} mt-1 ml-auto shrink-0"></div>
-        </div>`;
-        
-        // Remove empty state if exists
-        if (container.innerHTML.includes("Belum ada notifikasi") || container.innerHTML.includes("Memuat")) {
-            container.innerHTML = "";
-        }
-        
-        container.insertAdjacentHTML('afterbegin', html);
-    }
+    // 4. Tambahkan Notifikasi (akan otomatis memperbarui badge dan render ulang)
+    addNotification(tipe, "Pemohon: " + detailPemohon, type, icon);
 };

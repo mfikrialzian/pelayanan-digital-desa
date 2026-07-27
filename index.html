@@ -758,7 +758,11 @@
                         <div class="absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-lg border border-slate-200 py-2 hidden z-50 origin-top-right transition-all duration-200 opacity-0 scale-95" id="admin-notification-menu">
                             <div class="px-4 py-3 border-b border-slate-100 mb-2 flex justify-between items-center">
                                 <p class="text-xs font-bold text-slate-700 uppercase tracking-wider">Notifikasi</p>
-                                <a href="javascript:switchAdminTab('aktivitas'); document.getElementById('admin-notification-trigger').click();" class="text-[10px] font-bold text-narmadaGreen hover:underline">Lihat Semua</a>
+                                <div class="flex gap-3 items-center">
+                                    <button onclick="markAllNotificationsAsRead()" class="text-slate-400 hover:text-narmadaGreen transition-colors" title="Tandai Semua Dibaca"><i class="fa-solid fa-check-double text-xs"></i></button>
+                                    <button onclick="deleteAllNotifications()" class="text-slate-400 hover:text-red-500 transition-colors" title="Hapus Semua"><i class="fa-solid fa-trash-can text-xs"></i></button>
+                                    <a href="javascript:switchAdminTab('aktivitas'); document.getElementById('admin-notification-trigger').click();" class="text-[10px] font-bold text-narmadaGreen hover:underline">Lihat Semua</a>
+                                </div>
                             </div>
                             <!-- Notification List -->
                             <div class="max-h-64 overflow-y-auto px-2 space-y-1" id="notification-dropdown-list">
