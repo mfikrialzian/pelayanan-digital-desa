@@ -748,7 +748,7 @@
                     </div>
 
                     <!-- Notifications -->
-                    <button onclick="document.getElementById('admin-right-column').scrollIntoView({behavior: 'smooth'});" class="relative p-2 text-slate-500 hover:bg-slate-50 rounded-full transition-colors">
+                    <button onclick="switchAdminTab('aktivitas')" class="relative p-2 text-slate-500 hover:bg-slate-50 rounded-full transition-colors">
                         <i id="header-bell-icon" class="fa-regular fa-bell text-lg"></i>
                         <span id="header-bell-dot" class="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 border-2 border-white rounded-full hidden"></span>
                     </button>
@@ -885,35 +885,10 @@
                             </div>
                         </div>
 
-                        <!-- Quick Actions -->
-                        <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
-                            <h3 class="text-[11px] font-bold text-slate-800 uppercase tracking-wider mb-4">Aksi Cepat</h3>
-                            <div class="flex flex-wrap gap-3">
-                                <button class="px-4 py-2 bg-emerald-50 text-narmadaGreen border border-emerald-100 rounded-xl text-xs font-bold hover:bg-narmadaGreen hover:text-white transition-colors flex items-center gap-2">
-                                    <i class="fa-solid fa-plus"></i> Pengajuan Baru
-                                </button>
-                                <button class="px-4 py-2 bg-slate-50 text-slate-600 border border-slate-200 rounded-xl text-xs font-bold hover:bg-slate-100 transition-colors flex items-center gap-2">
-                                    <i class="fa-solid fa-layer-group"></i> Tambah Layanan
-                                </button>
-                                <button onclick="exportDataExcel()" class="px-4 py-2 bg-slate-50 text-slate-600 border border-slate-200 rounded-xl text-xs font-bold hover:bg-slate-100 transition-colors flex items-center gap-2">
-                                    <i class="fa-solid fa-file-excel text-green-600"></i> Export Excel
-                                </button>
-                                <button class="px-4 py-2 bg-slate-50 text-slate-600 border border-slate-200 rounded-xl text-xs font-bold hover:bg-slate-100 transition-colors flex items-center gap-2">
-                                    <i class="fa-brands fa-whatsapp text-emerald-500"></i> Broadcast WA
-                                </button>
-                                <button class="px-4 py-2 bg-slate-50 text-slate-600 border border-slate-200 rounded-xl text-xs font-bold hover:bg-slate-100 transition-colors flex items-center gap-2">
-                                    <i class="fa-solid fa-qrcode"></i> Scan QR
-                                </button>
-                                <button onclick="cetakMassal()" class="px-4 py-2 bg-slate-50 text-slate-600 border border-slate-200 rounded-xl text-xs font-bold hover:bg-slate-100 transition-colors flex items-center gap-2">
-                                    <i class="fa-solid fa-print text-slate-700"></i> Cetak Massal
-                                </button>
-                            </div>
-                        </div>
-                        
                         <!-- FASE 3: INTEGRASI GRAFIK -->
-                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                             <!-- Pengajuan Mingguan -->
-                            <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 col-span-1 lg:col-span-2 flex flex-col">
+                            <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 flex flex-col">
                                 <div class="flex justify-between items-center mb-4">
                                     <h3 class="text-sm font-bold text-slate-800">Pengajuan Mingguan</h3>
                                     <select class="text-xs text-slate-500 border-none bg-slate-50 rounded-lg px-2 py-1 outline-none font-semibold cursor-pointer">
@@ -1074,35 +1049,7 @@
                 <!-- SUB-TAB J: PENGATURAN AKUN (VIEW FULL) -->
                  </div> <!-- END admin-main-column -->
 
-                <!-- RIGHT COLUMN (Notifications & Activities) -->
-                <div class="w-full lg:w-1/4 shrink-0 space-y-6" id="admin-right-column">
-                        
-                        <!-- FASE 5: PANEL KANAN -->
-                        <!-- Notifikasi -->
-                        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col">
-                            <div class="p-5 border-b border-slate-100 flex justify-between items-center">
-                                <h3 class="text-sm font-bold text-slate-800">Notifikasi</h3>
-                                <a href="javascript:switchAdminTab('aktivitas');" class="text-[10px] font-bold text-narmadaGreen hover:underline">Lihat Semua</a>
-                            </div>
-                            <div class="p-5 space-y-4" id="notification-container">
-                                <div class="text-center text-slate-400 py-4 text-xs">Memuat notifikasi...</div>
-                            </div>
-                        </div>
 
-                        <!-- Aktivitas Terbaru -->
-                        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col">
-                            <div class="p-5 border-b border-slate-100 flex justify-between items-center">
-                                <h3 class="text-sm font-bold text-slate-800">Aktivitas Terbaru</h3>
-                                <a href="javascript:switchAdminTab('aktivitas');" class="text-[10px] font-bold text-narmadaGreen hover:underline">Lihat Semua</a>
-                            </div>
-                            <div class="p-5">
-                                <div class="relative border-l-2 border-slate-100 ml-3 space-y-6" id="activity-container">
-                                    <div class="text-center text-slate-400 py-4 text-xs ml-4">Memuat log aktivitas...</div>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
                 </div>
                 
             <div id="subview-admin-pengaturan-akun" class="hidden w-full gap-6 text-left">
