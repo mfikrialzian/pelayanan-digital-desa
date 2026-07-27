@@ -3283,15 +3283,15 @@ function initAdminHeader() {
     const greetingEl = document.getElementById('admin-header-greeting');
     const nameEl = document.getElementById('admin-header-name');
     const roleEl = document.getElementById('admin-header-role');
-    const timeEl = document.getElementById('admin-current-time');
+    const dateEl = document.getElementById('admin-current-date');
 
-    if (!timeEl) return; // Exit if not on admin page
+    if (!dateEl) return; // Exit if not on admin page
 
     // Update Name and Role
     const userName = localStorage.getItem('userName') || 'Administrator';
     const userRole = localStorage.getItem('userRole') || 'Super Admin';
     if (nameEl) nameEl.textContent = userName;
-    if (roleEl) roleEl.textContent = userRole;
+    if (roleEl) roleEl.textContent = userRole + ' Desa Narmada';
 
     function updateDateTime() {
         const now = new Date();
@@ -3306,7 +3306,7 @@ function initAdminHeader() {
         } else if (hour >= 18 || hour < 4) {
             greeting = 'Selamat Malam';
         }
-        if (greetingEl) greetingEl.innerHTML = `${greeting}, 👋`;
+        if (greetingEl) greetingEl.innerHTML = `${greeting},`;
 
         // Time logic
         const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
@@ -3317,26 +3317,59 @@ function initAdminHeader() {
         const monthName = months[now.getMonth()];
         const year = now.getFullYear();
         
-        const hoursStr = String(now.getHours()).padStart(2, '0');
-        const minutesStr = String(now.getMinutes()).padStart(2, '0');
-        
-        // Try to get timezone abbreviation (e.g., WITA)
-        let timeZoneName = '';
-        try {
-            const parts = new Intl.DateTimeFormat('id-ID', { timeZoneName: 'short' }).formatToParts(now);
-            const tzPart = parts.find(p => p.type === 'timeZoneName');
-            if (tzPart) timeZoneName = tzPart.value;
-        } catch(e) {
-            timeZoneName = 'WITA'; // fallback
-        }
-        
-        if (timeEl) {
-            timeEl.textContent = `${dayName}, ${day} ${monthName} ${year} • ${hoursStr}:${minutesStr} ${timeZoneName}`;
+        if (dateEl) {
+            dateEl.textContent = `${dayName}, ${day} ${monthName} ${year}`;
         }
     }
 
     updateDateTime();
     setInterval(updateDateTime, 1000);
+    fetchWeather();
+}
+
+async function fetchWeather() {
+    const weatherIconEl = document.getElementById('admin-weather-icon');
+    const weatherTempEl = document.getElementById('admin-weather-temp');
+    const weatherDescEl = document.getElementById('admin-weather-desc');
+    
+    if (!weatherIconEl || !weatherTempEl || !weatherDescEl) return;
+    
+    try {
+        // Narmada coordinates (approx: -8.58, 116.12)
+        const lat = -8.5833;
+        const lon = 116.1167;
+        const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
+        if (!res.ok) throw new Error('Weather fetch failed');
+        const data = await res.json();
+        
+        const current = data.current_weather;
+        const temp = Math.round(current.temperature);
+        const code = current.weathercode;
+        
+        // WMO Weather interpretation codes
+        let icon = '☁️';
+        let desc = 'Berawan';
+        
+        if (code === 0) { icon = '☀️'; desc = 'Cerah'; }
+        else if (code === 1 || code === 2) { icon = '⛅'; desc = 'Cerah Berawan'; }
+        else if (code === 3) { icon = '☁️'; desc = 'Berawan'; }
+        else if (code === 45 || code === 48) { icon = '🌫️'; desc = 'Berkabut'; }
+        else if (code >= 51 && code <= 55) { icon = '🌦️'; desc = 'Gerimis'; }
+        else if (code >= 61 && code <= 65) { icon = '🌧️'; desc = 'Hujan'; }
+        else if (code >= 71 && code <= 77) { icon = '❄️'; desc = 'Salju'; }
+        else if (code >= 80 && code <= 82) { icon = '🌧️'; desc = 'Hujan Deras'; }
+        else if (code >= 95 && code <= 99) { icon = '⛈️'; desc = 'Badai Petir'; }
+        
+        weatherTempEl.textContent = `${temp}°C`;
+        weatherDescEl.textContent = desc;
+        weatherIconEl.textContent = icon;
+    } catch(err) {
+        console.error('Failed to fetch weather', err);
+        // Fallback
+        weatherTempEl.textContent = '28°C';
+        weatherDescEl.textContent = 'Cerah Berawan';
+        weatherIconEl.textContent = '⛅';
+    }
 }
 
 // --- Initial Route Logic ---

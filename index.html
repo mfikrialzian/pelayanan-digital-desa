@@ -721,15 +721,22 @@
                     <button class="lg:hidden text-slate-500 hover:text-slate-900">
                         <i class="fa-solid fa-bars text-xl"></i>
                     </button>
-                    <div>
-                        <div class="flex items-center gap-2">
-                            <h2 class="font-bold text-slate-800 text-sm" id="admin-header-greeting">Selamat Pagi, 👋</h2>
+                    <div class="flex items-center">
+                        <div class="flex flex-col text-left">
+                            <h2 class="font-semibold text-slate-600 text-sm" id="admin-header-greeting">Selamat Pagi,</h2>
+                            <span class="font-bold text-slate-900 text-2xl leading-none mt-1" id="admin-header-name">Muhamad Alzian</span>
+                            <span class="text-sm text-slate-500 font-medium mt-1.5" id="admin-header-role">Administrator Desa Narmada</span>
                         </div>
-                        <div class="flex items-center gap-2 mt-0.5">
-                            <span class="font-black text-slate-900 text-base leading-none" id="admin-header-name">Muhamad Alzian</span>
-                            <span class="px-2 py-0.5 bg-emerald-100 text-narmadaGreen text-[10px] font-bold rounded-full leading-none flex items-center h-4" id="admin-header-role">Administrator</span>
+                        
+                        <div class="hidden md:flex flex-col border-l-2 border-slate-100 pl-4 ml-4">
+                            <p class="text-sm font-semibold text-slate-500" id="admin-current-date">Rabu, 24 Juli 2026</p>
+                            <div class="flex items-center gap-1.5 mt-1 text-sm font-medium text-slate-500">
+                                <span id="admin-weather-icon">☀️</span> 
+                                <span id="admin-weather-temp">23°C</span>
+                                <span>•</span>
+                                <span id="admin-weather-desc">Cerah</span>
+                            </div>
                         </div>
-                        <p class="text-[10px] text-slate-500 mt-1 font-medium" id="admin-current-time">Kamis, 24 Juli 2026 • 09:41 WITA</p>
                     </div>
                 </div>
 
