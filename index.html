@@ -1512,6 +1512,10 @@
                                     <label class="block text-[10px] font-bold text-slate-600 mb-1">ID Template Google Docs (PDF) *</label>
                                     <input type="text" id="builder-template-doc-id" placeholder="Kosongkan jika tidak butuh PDF" class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors">
                                 </div>
+                                <div id="wrapper-builder-template-pratinjau" class="mt-4">
+                                    <label class="block text-[10px] font-bold text-slate-600 mb-1">Template Pratinjau Surat (Untuk Verifikasi)</label>
+                                    <textarea id="builder-template-pratinjau" rows="4" placeholder="Ketik format surat di sini, gunakan kurung kurawal untuk variabel, misal: {Nama Lengkap}..." class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors resize-y custom-scrollbar"></textarea>
+                                </div>
                             </div>
 
                             <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 space-y-4">
@@ -1728,46 +1732,37 @@
                         
                         <form id="form-manage-status" class="flex-1 flex flex-col min-h-0 bg-white relative">
                             <input type="hidden" id="edit-status-id">
-                            <div class="flex flex-col lg:flex-row flex-1 min-h-0">
-                                <!-- Kolom Kiri: Isian Formulir & Status (1/3 Width) -->
-                                <div class="w-full lg:w-1/3 p-6 flex flex-col h-full overflow-hidden bg-white border-r border-slate-100 relative">
-                                    <h5 id="info-modal-keperluan" class="text-sm font-black text-slate-800 mb-5 border-b border-slate-50 pb-4 flex-shrink-0">Keperluan: -</h5>
-                                    
-                                    <div id="info-modal-jawaban" class="text-xs flex-1 mb-4 overflow-y-auto custom-scrollbar pr-2 space-y-3"></div>
-                                    
-                                    <!-- Status & Template WA (Sembunyikan) -->
-                                    <div class="hidden bg-slate-50 p-4 rounded-2xl border border-slate-100 space-y-3 mt-auto flex-shrink-0">
-                                        <div>
-                                            <label class="block text-[10px] font-extrabold text-slate-700 uppercase tracking-wide mb-1.5">Ubah Status</label>
-                                            <select id="edit-status-select" onchange="markVerifikasiDirty()" required="" class="w-full px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-xs font-medium focus:ring-2 focus:ring-narmadaGreen/20 focus:border-narmadaGreen outline-none transition-all shadow-sm">
-                                                <option value="Menunggu">Menunggu</option>
-                                                <option value="Verifikasi">Verifikasi</option>
-                                                <option value="Selesai">Selesai</option>
-                                                <option value="Perbaikan">Perbaikan</option>
-                                            </select>
-                                        </div>
-                                        <div>
-                                            <label class="block text-[10px] font-extrabold text-slate-700 uppercase tracking-wide mb-1.5">Pesan WA Otomatis</label>
-                                            <textarea id="edit-status-catatan" oninput="markVerifikasiDirty()" required="" rows="4" class="w-full px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-[11px] leading-relaxed focus:ring-2 focus:ring-narmadaGreen/20 focus:border-narmadaGreen outline-none transition-all shadow-sm resize-none custom-scrollbar" placeholder="Ketik pesan konfirmasi atau revisi untuk pemohon di sini..."></textarea>
-                                        </div>
+                            <!-- Tabs Nav -->
+                            <div class="px-5 border-b border-slate-100 flex gap-4 bg-slate-50/50 shrink-0">
+                                <button type="button" onclick="switchVerifTab('draf')" id="btn-tab-draf" class="py-3 px-2 text-xs font-bold text-narmadaGreen border-b-2 border-narmadaGreen transition-colors flex items-center gap-2">
+                                    <i class="fa-solid fa-file-lines"></i> Draf Surat
+                                </button>
+                                <button type="button" onclick="switchVerifTab('lampiran')" id="btn-tab-lampiran" class="py-3 px-2 text-xs font-bold text-slate-400 border-b-2 border-transparent hover:text-slate-600 transition-colors flex items-center gap-2">
+                                    <i class="fa-solid fa-images"></i> Dokumen Lampiran
+                                </button>
+                            </div>
+
+                            <div class="flex flex-col flex-1 min-h-0 relative bg-slate-100/50">
+                                <!-- Tab 1: Draf Surat -->
+                                <div id="verif-tab-draf" class="absolute inset-0 overflow-y-auto p-4 md:p-8 flex justify-center custom-scrollbar">
+                                    <!-- Kertas UI -->
+                                    <div class="bg-white w-full max-w-2xl shadow-sm border border-slate-200 p-8 md:p-12 text-slate-800 text-[13px] leading-relaxed relative min-h-[800px]" style="box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);">
+                                        <div id="info-modal-keperluan" class="text-sm font-black text-slate-800 mb-6 border-b border-slate-100 pb-4">Keperluan: -</div>
+                                        <div id="info-modal-jawaban" class="space-y-4"></div>
                                     </div>
                                 </div>
 
-                                <!-- Kolom Kanan: Galeri Berkas (2/3 Width) -->
-                                <div class="w-full lg:w-2/3 flex flex-col h-full overflow-hidden bg-slate-50/50">
-                                    <!-- Kontainer Slider -->
+                                <!-- Tab 2: Lampiran Dokumen -->
+                                <div id="verif-tab-lampiran" class="hidden absolute inset-0 flex flex-col bg-slate-50/50">
                                     <div id="modal-checklist-rows" class="flex-1 overflow-hidden relative w-full h-full flex items-center justify-center">
                                         <!-- Slide Berkas di-render via JS -->
                                     </div>
-                                    
-                                    <!-- Tombol Aksi di Bawah Kanan -->
-                                    <div class="p-5 bg-white border-t border-slate-100 shrink-0 flex justify-end gap-3 z-10">
-                                        <button type="button" onclick="closeManageStatusModal()" class="px-6 py-2.5 text-xs font-bold text-slate-500 bg-white hover:bg-slate-50 border border-slate-200 rounded-full transition-all tap-squish">Batal</button>
-                                        <button type="button" onclick="confirmSaveVerification()" class="px-7 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold rounded-full shadow-sm transition-all flex items-center gap-2 tap-squish">
-                                            <i class="fa-solid fa-check"></i> Simpan Verifikasi
-                                        </button>
-                                    </div>
                                 </div>
+                            </div>
+                            
+                            <!-- Area Bawah: Tombol Tutup -->
+                            <div class="p-4 bg-white border-t border-slate-100 shrink-0 flex justify-end z-10">
+                                <button type="button" onclick="closeManageStatusModal()" class="px-6 py-2.5 text-xs font-bold text-slate-600 bg-white hover:bg-slate-50 border border-slate-200 rounded-xl transition-all tap-squish">Tutup Peninjauan</button>
                             </div>
                         </form>
                     </div>

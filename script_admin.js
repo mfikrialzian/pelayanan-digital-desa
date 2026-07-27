@@ -758,101 +758,76 @@ function runAdminLoginAuth() {
                     }
                 });
 
-                // Badge Keperluan Surat (Stacked Text)
-                if (submittedKeperluan && submittedKeperluan !== "Wajib") {
-                    jawabanFormatted += "<div class='flex flex-col leading-tight mb-4 border-b border-slate-50 pb-2'><span class='font-black text-slate-900 text-[11px]'>" + submittedKeperluan + "</span><span class='text-slate-400 font-medium mt-0.5'>Keperluan</span></div>";
-                }
-
-                items.forEach(function(item) {
-                    var colon = item.indexOf(":");
-                    if (colon > -1) {
-                        var q = item.substring(0, colon).trim();
-                        var a = item.substring(colon + 1).trim();
-                        
-                        // Skip Keperluan Surat (sudah ditampilkan sebagai badge)
-                        if (q === "Keperluan Surat") return;
-                        
-                        var keperluan = "Wajib";
-                        var categoryKey = "Data Pemohon";
-                        var order = 999;
-                        if (matchedLayanan && matchedLayanan.fields) {
-                            var fieldMatches = matchedLayanan.fields.filter(function(f) {
-                                return f.label === q || parseQuestionMetadata(f.name).cleanName === q;
-                            });
-                            
-                            if (fieldMatches.length > 0) {
-                                var bestMatch = fieldMatches.find(function(f) {
-                                    return parseQuestionMetadata(f.name).keperluan === submittedKeperluan;
-                                }) || fieldMatches.find(function(f) {
-                                    return parseQuestionMetadata(f.name).keperluan === "Wajib";
-                                }) || fieldMatches[0];
-                                
-                                order = matchedLayanan.fields.indexOf(bestMatch);
-                                var parsed = parseQuestionMetadata(bestMatch.name);
-                                if (parsed.keperluan && parsed.keperluan !== "Wajib") {
-                                    keperluan = parsed.keperluan;
-                                    categoryKey = parsed.judul || parsed.keperluan.replace(/^TAMBAHAN:\s*/i, '');
-                                } else if (parsed.judul) {
-                                    categoryKey = parsed.judul;
-                                }
-                            }
-                        }
-                        
-                        // Jika isian ini berulang (memiliki titik koma), gabungkan paksa ke satu grup
-                        if (a && a.match(/\s*;\s*/)) {
-                            categoryKey = submittedKeperluan || "Data Tambahan";
-                        }
-                        
-                        if (!qMap[categoryKey]) qMap[categoryKey] = [];
-                        qMap[categoryKey].push({q: q, a: a, order: order});
-                    } else {
-                        if (!qMap["Data Pemohon"]) qMap["Data Pemohon"] = [];
-                        qMap["Data Pemohon"].push({q: item, a: "", order: 999});
-                    }
-                });
+                var templatePratinjau = matchedLayanan && matchedLayanan.templatePratinjau ? matchedLayanan.templatePratinjau.trim() : null;
                 
-                Object.keys(qMap).forEach(function(k) {
-                    qMap[k].sort(function(a, b) { return a.order - b.order; });
-                    var groupName = k;
-                    var groupIcon = (groupName === 'Data Pemohon') ? 'fa-solid fa-user' : 'fa-solid fa-clipboard-list';
-                    jawabanFormatted += "<div class='mb-4'>";
-                    jawabanFormatted += "<h6 class='font-bold text-slate-800 mb-2 text-[12px] border-b border-slate-50 pb-2 mt-4 flex items-center gap-1.5'><i class='" + groupIcon + " text-narmadaGreen text-[10px]'></i> " + groupName + "</h6>";
-                    jawabanFormatted += "<div class='flex flex-col gap-y-3.5 text-[10px] text-slate-700 mt-2 mb-2'>";
-                    
-                    var isRepeatedGroup = false;
-                    var maxRepeats = 1;
-                    qMap[k].forEach(function(qa) {
-                        if (qa.a && qa.a.match(/\s*;\s*/)) {
-                            isRepeatedGroup = true;
-                            var parts = qa.a.split(/\s*;\s*/);
-                            if (parts.length > maxRepeats) maxRepeats = parts.length;
+                if (templatePratinjau) {
+                    var flatQa = {};
+                    flatQa["Keperluan"] = submittedKeperluan;
+                    items.forEach(function(item) {
+                        var colon = item.indexOf(":");
+                        if (colon > -1) {
+                            var q = item.substring(0, colon).trim();
+                            var a = item.substring(colon + 1).trim();
+                            flatQa[q] = a;
                         }
                     });
-
-                    if (isRepeatedGroup) {
-                        for (var i = 0; i < maxRepeats; i++) {
-                            if (i > 0) {
-                                jawabanFormatted += "<div class='border-t border-slate-50 mt-1 pt-3 mb-1'><span class='font-bold text-slate-500 text-[9px] uppercase tracking-wider'>" + groupName + " Ke-" + (i + 1) + "</span></div>";
-                            }
-                            qMap[k].forEach(function(qa) {
-                                var parts = qa.a ? qa.a.split(/\s*;\s*/) : [];
-                                var val = parts[i] || "-";
-                                jawabanFormatted += "<div class='flex flex-col leading-tight'><span class='font-black text-slate-900 text-[11px] break-words'>" + val + "</span><span class='text-slate-400 font-medium mt-0.5'>" + qa.q + "</span></div>";
-                            });
-                        }
-                    } else {
+                    
+                    var replacedTemplate = templatePratinjau.replace(/\{([^}]+)\}/g, function(match, key) {
+                        var k = key.trim();
+                        return flatQa[k] !== undefined ? "<strong class='font-bold bg-yellow-100 px-1 py-0.5 rounded text-black'>" + flatQa[k] + "</strong>" : match;
+                    });
+                    
+                    jawabanFormatted = "<div class='whitespace-pre-wrap text-[14px] leading-loose'>" + replacedTemplate + "</div>";
+                } else {
+                    jawabanFormatted += "<div class='space-y-1 pt-1'>";
+                    // Badge Keperluan Surat (Stacked Text)
+                    if (submittedKeperluan && submittedKeperluan !== "Wajib") {
+                        jawabanFormatted += "<div class='flex flex-col leading-tight mb-4 border-b border-slate-50 pb-2'><span class='font-black text-slate-900 text-[11px]'>" + submittedKeperluan + "</span><span class='text-slate-400 font-medium mt-0.5'>Keperluan</span></div>";
+                    }
+                    
+                    Object.keys(qMap).forEach(function(k) {
+                        qMap[k].sort(function(a, b) { return a.order - b.order; });
+                        var groupName = k;
+                        var groupIcon = (groupName === 'Data Pemohon') ? 'fa-solid fa-user' : 'fa-solid fa-clipboard-list';
+                        jawabanFormatted += "<div class='mb-4'>";
+                        jawabanFormatted += "<h6 class='font-bold text-slate-800 mb-2 text-[12px] border-b border-slate-50 pb-2 mt-4 flex items-center gap-1.5'><i class='" + groupIcon + " text-narmadaGreen text-[10px]'></i> " + groupName + "</h6>";
+                        jawabanFormatted += "<div class='flex flex-col gap-y-3.5 text-[10px] text-slate-700 mt-2 mb-2'>";
+                        
+                        var isRepeatedGroup = false;
+                        var maxRepeats = 1;
                         qMap[k].forEach(function(qa) {
-                            if (qa.a && qa.a !== "" && qa.a !== "-") {
-                                jawabanFormatted += "<div class='flex flex-col leading-tight'><span class='font-black text-slate-900 text-[11px] break-words'>" + qa.a + "</span><span class='text-slate-400 font-medium mt-0.5'>" + qa.q + "</span></div>";
+                            if (qa.a && qa.a.match(/\s*;\s*/)) {
+                                isRepeatedGroup = true;
+                                var parts = qa.a.split(/\s*;\s*/);
+                                if (parts.length > maxRepeats) maxRepeats = parts.length;
                             }
                         });
-                    }
-                    jawabanFormatted += "</div></div>";
-                });
+
+                        if (isRepeatedGroup) {
+                            for (var i = 0; i < maxRepeats; i++) {
+                                if (i > 0) {
+                                    jawabanFormatted += "<div class='border-t border-slate-50 mt-1 pt-3 mb-1'><span class='font-bold text-slate-500 text-[9px] uppercase tracking-wider'>" + groupName + " Ke-" + (i + 1) + "</span></div>";
+                                }
+                                qMap[k].forEach(function(qa) {
+                                    var parts = qa.a ? qa.a.split(/\s*;\s*/) : [];
+                                    var val = parts[i] || "-";
+                                    jawabanFormatted += "<div class='flex flex-col leading-tight'><span class='font-black text-slate-900 text-[11px] break-words'>" + val + "</span><span class='text-slate-400 font-medium mt-0.5'>" + qa.q + "</span></div>";
+                                });
+                            }
+                        } else {
+                            qMap[k].forEach(function(qa) {
+                                if (qa.a && qa.a !== "" && qa.a !== "-") {
+                                    jawabanFormatted += "<div class='flex flex-col leading-tight'><span class='font-black text-slate-900 text-[11px] break-words'>" + qa.a + "</span><span class='text-slate-400 font-medium mt-0.5'>" + qa.q + "</span></div>";
+                                }
+                            });
+                        }
+                        jawabanFormatted += "</div></div>";
+                    });
+                    jawabanFormatted += "</div>";
+                }
             } else {
                 jawabanFormatted += "<p class='text-slate-400 italic text-[10px] pt-1'>Tidak ada isian tambahan.</p>";
             }
-            jawabanFormatted += "</div>";
             document.getElementById('info-modal-jawaban').innerHTML = jawabanFormatted;
 
             document.getElementById('edit-status-select').value = row.status;
@@ -863,6 +838,25 @@ function runAdminLoginAuth() {
             resetVerifikasiDirty();
             switchAdminTab('verifikasi');
         }
+
+        window.switchVerifTab = function(tabName) {
+            var tabDraf = document.getElementById('verif-tab-draf');
+            var tabLampiran = document.getElementById('verif-tab-lampiran');
+            var btnDraf = document.getElementById('btn-tab-draf');
+            var btnLampiran = document.getElementById('btn-tab-lampiran');
+            
+            if (tabName === 'draf') {
+                tabDraf.classList.remove('hidden');
+                tabLampiran.classList.add('hidden');
+                btnDraf.className = 'py-3 px-2 text-xs font-bold text-narmadaGreen border-b-2 border-narmadaGreen transition-colors flex items-center gap-2';
+                btnLampiran.className = 'py-3 px-2 text-xs font-bold text-slate-400 border-b-2 border-transparent hover:text-slate-600 transition-colors flex items-center gap-2';
+            } else {
+                tabDraf.classList.add('hidden');
+                tabLampiran.classList.remove('hidden');
+                btnLampiran.className = 'py-3 px-2 text-xs font-bold text-narmadaGreen border-b-2 border-narmadaGreen transition-colors flex items-center gap-2';
+                btnDraf.className = 'py-3 px-2 text-xs font-bold text-slate-400 border-b-2 border-transparent hover:text-slate-600 transition-colors flex items-center gap-2';
+            }
+        };
 
         function closeManageStatusModal() {
             if (window.isVerifikasiDirty) {
@@ -1464,6 +1458,7 @@ function runAdminLoginAuth() {
             document.getElementById('wrapper-builder-nama').classList.add('hidden');
             document.getElementById('builder-layanan-nama').value = found.nama;
             document.getElementById('builder-template-doc-id').value = found.templateDocId || "";
+            document.getElementById('builder-template-pratinjau').value = found.templatePratinjau || "";
 
             var selectKeperluan = document.getElementById('builder-keperluan-select');
             selectKeperluan.innerHTML = '<option value="">-- Pilih atau Tambah Keperluan --</option>' +
@@ -1932,6 +1927,7 @@ function runAdminLoginAuth() {
             var isNew = selectVal === "[+] TAMBAH LAYANAN BARU";
             var name = document.getElementById('builder-layanan-nama').value.trim();
             var templateDocId = document.getElementById('builder-template-doc-id').value.trim();
+            var templatePratinjau = document.getElementById('builder-template-pratinjau').value.trim();
 
             var selectKeperluan = document.getElementById('builder-keperluan-select');
             var keperluanOpts = [];
@@ -1983,7 +1979,8 @@ function runAdminLoginAuth() {
                 judulSectionIsian: jSec,
                 deskripsiSectionIsian: dSec,
                 logikaKondisional: "[]",
-                templateDocId: templateDocId
+                templateDocId: templateDocId,
+                templatePratinjau: templatePratinjau
             };
 
             var action = payload.id ? "update" : "create";
@@ -2038,6 +2035,7 @@ function runAdminLoginAuth() {
             document.getElementById('builder-select-layanan').value = "[+] TAMBAH LAYANAN BARU";
             document.getElementById('builder-layanan-nama').value = "";
             document.getElementById('builder-template-doc-id').value = "";
+            document.getElementById('builder-template-pratinjau').value = "";
             document.getElementById('wrapper-builder-nama').classList.remove('hidden');
 
             var selectKeperluan = document.getElementById('builder-keperluan-select');
