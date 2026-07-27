@@ -1413,75 +1413,93 @@ function runAdminLoginAuth() {
             var totalBadge = document.getElementById('txt-total-layanan-aktif');
             if (!listContainer) return;
             
+            // 1) Fallback if list is undefined/null
+            if (!list) list = window.loadedLayananList || (typeof dummyLayananList !== 'undefined' ? dummyLayananList : []);
+            
             listContainer.innerHTML = "";
 
-            if (totalBadge) totalBadge.innerText = list.length + " Layanan";
+            if (totalBadge) totalBadge.innerText = (list ? list.length : 0) + " Layanan";
 
             if (!list || list.length === 0) {
-                listContainer.innerHTML = '<tr><td colspan="6" class="p-6 text-center text-slate-400 italic">Belum ada pelayanan aktif terdaftar.</td></tr>';
+                listContainer.innerHTML = '<tr><td colspan="6" class="p-8 text-center text-slate-500 bg-slate-50/50 italic border-b border-slate-100"><div class="flex flex-col items-center justify-center gap-2"><div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center"><i class="fa-solid fa-folder-open text-slate-400 text-lg"></i></div><span>Belum ada pelayanan aktif terdaftar.</span></div></td></tr>';
                 return;
             }
 
             var htmlBuffer = "";
             list.forEach(function (row, index) {
-                var keperluanList = row.judulSectionIsian ? row.judulSectionIsian.split(',').map(s => s.trim()).filter(s => s) : [];
-                var kepHtml = keperluanList.length > 0
-                    ? '<ul class="list-disc pl-3 text-[9px] space-y-0.5 text-slate-600"><li>' + keperluanList.join('</li><li>') + '</li></ul>'
-                    : '<span class="text-slate-400 italic text-[9px]">Wajib (Tanpa Pilihan)</span>';
+                try {
+                    var keperluanList = row.judulSectionIsian ? row.judulSectionIsian.split(',').map(s => s.trim()).filter(s => s) : [];
+                    var kepHtml = keperluanList.length > 0
+                        ? '<div class="flex flex-wrap gap-1">' + keperluanList.map(k => '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-bold bg-blue-50 text-blue-600 border border-blue-100">' + k + '</span>').join('') + '</div>'
+                        : '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-bold bg-slate-100 text-slate-500 border border-slate-200">Wajib (Tanpa Pilihan)</span>';
 
-                var reqMap = {};
-                (row.requirements || []).forEach(function (r) {
-                    var cleanName = r.name;
-                    var kep = "Wajib";
-                    var match = cleanName.match(/^\[(.*?)\]\s*(.*)$/);
-                    if (match) { kep = match[1]; cleanName = match[2]; }
-                    if (!reqMap[kep]) reqMap[kep] = [];
-                    reqMap[kep].push(cleanName);
-                });
-                var docHtml = "";
-                Object.keys(reqMap).forEach(k => {
-                    docHtml += '<p class="text-[9px] font-bold text-slate-700 mt-1 mb-0.5">' + (k === "Wajib" ? "DOKUMEN WAJIB" : "TAMBAHAN: " + k) + '</p>';
-                    docHtml += '<ul class="list-disc pl-3 text-[9px] space-y-0.5 text-slate-600"><li>' + reqMap[k].join('</li><li>') + '</li></ul>';
-                });
-                if (docHtml === "") docHtml = '<span class="text-slate-400 italic text-[9px]">Tanpa lampiran</span>';
+                    var reqMap = {};
+                    (row.requirements || []).forEach(function (r) {
+                        var cleanName = r.name || "";
+                        var kep = "Wajib";
+                        var match = cleanName.match(/^\[(.*?)\]\s*(.*)$/);
+                        if (match) { kep = match[1]; cleanName = match[2]; }
+                        if (!reqMap[kep]) reqMap[kep] = [];
+                        reqMap[kep].push(cleanName);
+                    });
+                    var docHtml = "";
+                    Object.keys(reqMap).forEach(k => {
+                        docHtml += '<div class="mb-2 last:mb-0">';
+                        docHtml += '<p class="text-[9px] font-bold text-slate-700 uppercase mb-1 flex items-center gap-1"><i class="fa-solid fa-file-contract text-slate-400"></i> ' + (k === "Wajib" ? "DOKUMEN WAJIB" : k) + '</p>';
+                        docHtml += '<ul class="list-none space-y-1">';
+                        reqMap[k].forEach(item => {
+                            docHtml += '<li class="text-[10px] text-slate-600 flex items-start gap-1.5"><i class="fa-solid fa-check text-emerald-500 mt-[2px] text-[8px]"></i> <span>' + item + '</span></li>';
+                        });
+                        docHtml += '</ul></div>';
+                    });
+                    if (docHtml === "") docHtml = '<span class="text-slate-400 italic text-[10px]">Tanpa lampiran</span>';
 
-                var qMap = {};
-                (row.fields || []).forEach(function (f) {
-                    var meta = parseQuestionMetadata(f.name);
-                    if (!qMap[meta.keperluan]) qMap[meta.keperluan] = [];
-                    var typeStr = f.type === 'dropdown' ? ' (Dropdown)' :
-                        f.type === 'number' ? ' (Angka)' :
-                            f.type === 'date' ? ' (Tanggal)' : ' (Teks)';
-                    qMap[meta.keperluan].push(meta.cleanName + typeStr);
-                });
-                var qHtml = "";
-                Object.keys(qMap).forEach(k => {
-                    qHtml += '<p class="text-[9px] font-bold text-slate-700 mt-1 mb-0.5">' + (k === "Wajib" ? "ISIAN UMUM" : "TAMBAHAN: " + k) + '</p>';
-                    qHtml += '<ul class="list-disc pl-3 text-[9px] space-y-0.5 text-slate-600"><li>' + qMap[k].join('</li><li>') + '</li></ul>';
-                });
-                if (qHtml === "") qHtml = '<span class="text-slate-400 italic text-[9px]">Tanpa pertanyaan</span>';
+                    var qMap = {};
+                    (row.fields || []).forEach(function (f) {
+                        if(!f || !f.name) return;
+                        var meta = parseQuestionMetadata(f.name);
+                        if (!qMap[meta.keperluan]) qMap[meta.keperluan] = [];
+                        var typeStr = f.type === 'dropdown' ? ' <span class="text-slate-400">(Dropdown)</span>' :
+                            f.type === 'number' ? ' <span class="text-slate-400">(Angka)</span>' :
+                                f.type === 'date' ? ' <span class="text-slate-400">(Tanggal)</span>' : ' <span class="text-slate-400">(Teks)</span>';
+                        qMap[meta.keperluan].push(meta.cleanName + typeStr);
+                    });
+                    var qHtml = "";
+                    Object.keys(qMap).forEach(k => {
+                        qHtml += '<div class="mb-2 last:mb-0">';
+                        qHtml += '<p class="text-[9px] font-bold text-slate-700 uppercase mb-1 flex items-center gap-1"><i class="fa-solid fa-clipboard-list text-slate-400"></i> ' + (k === "Wajib" ? "ISIAN UMUM" : k) + '</p>';
+                        qHtml += '<ul class="list-none space-y-1">';
+                        qMap[k].forEach(item => {
+                            qHtml += '<li class="text-[10px] text-slate-600 flex items-start gap-1.5"><i class="fa-solid fa-minus text-slate-300 mt-[2px] text-[8px]"></i> <span>' + item + '</span></li>';
+                        });
+                        qHtml += '</ul></div>';
+                    });
+                    if (qHtml === "") qHtml = '<span class="text-slate-400 italic text-[10px]">Tanpa pertanyaan</span>';
 
-                var tr = '<tr class="border-b border-slate-50 hover:bg-slate-50/50 transition-colors group">' +
-                    '<td class="py-4 px-2 text-center font-semibold text-slate-500">' + (index + 1) + '</td>' +
-                    '<td class="py-4 px-4">' +
-                    '<div class="font-bold text-slate-900">' + row.nama + '</div>' +
-                    '<div class="text-[10px] text-slate-500 mt-1">' + (row.deskripsi || "") + '</div>' +
-                    '</td>' +
-                    '<td class="py-4 px-4 align-top">' + kepHtml + '</td>' +
-                    '<td class="py-4 px-4 align-top">' + docHtml + '</td>' +
-                    '<td class="py-4 px-4 align-top">' + qHtml + '</td>' +
-                    '<td class="py-4 px-4 text-center align-middle">' +
-                    '<div class="flex flex-col gap-1.5 items-center justify-center">' +
-                    '<button onclick="switchAdminTab(\'layanan\'); populateBuilderLayananToEdit(\'' + row.id + '\')" class="px-3 py-1.5 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-700 font-bold text-[10px] transition-all flex items-center justify-center gap-1.5 shadow-sm w-[90px] border border-amber-200">' +
-                    '<i class="fa-solid fa-pencil"></i> Edit' +
-                    '</button>' +
-                    '<button onclick="deleteBuilderMasterLayanan(\'' + row.nama + '\')" class="px-3 py-1.5 rounded-lg bg-red-50 hover:bg-red-100 text-red-700 font-bold text-[10px] transition-all flex items-center justify-center gap-1.5 shadow-sm w-[90px] border border-red-200">' +
-                    '<i class="fa-solid fa-trash"></i> Hapus' +
-                    '</button>' +
-                    '</div>' +
-                    '</td>' +
-                    '</tr>';
-                htmlBuffer += tr;
+                    var tr = '<tr class="border-b border-slate-50 hover:bg-slate-50/50 transition-colors group">' +
+                        '<td class="py-4 px-2 text-center font-bold text-slate-400 text-xs">' + (index + 1) + '</td>' +
+                        '<td class="py-4 px-4">' +
+                        '<div class="font-bold text-slate-800 text-sm mb-0.5">' + (row.nama || "-") + '</div>' +
+                        '<div class="text-[10px] text-slate-500 max-w-xs leading-relaxed">' + (row.deskripsi || "-") + '</div>' +
+                        '</td>' +
+                        '<td class="py-4 px-4 align-top">' + kepHtml + '</td>' +
+                        '<td class="py-4 px-4 align-top">' + docHtml + '</td>' +
+                        '<td class="py-4 px-4 align-top">' + qHtml + '</td>' +
+                        '<td class="py-4 px-4 text-center align-middle">' +
+                        '<div class="flex flex-col gap-2 items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">' +
+                        '<button onclick="switchAdminTab(\'layanan\'); populateBuilderLayananToEdit(\'' + row.id + '\')" class="w-20 py-1.5 rounded-lg bg-amber-50 hover:bg-amber-100 hover:-translate-y-0.5 text-amber-700 font-bold text-[10px] transition-all flex items-center justify-center gap-1.5 shadow-sm border border-amber-200/50">' +
+                        '<i class="fa-solid fa-pencil"></i> Edit' +
+                        '</button>' +
+                        '<button onclick="deleteBuilderMasterLayanan(\'' + row.nama + '\')" class="w-20 py-1.5 rounded-lg bg-red-50 hover:bg-red-100 hover:-translate-y-0.5 text-red-700 font-bold text-[10px] transition-all flex items-center justify-center gap-1.5 shadow-sm border border-red-200/50">' +
+                        '<i class="fa-solid fa-trash"></i> Hapus' +
+                        '</button>' +
+                        '</div>' +
+                        '</td>' +
+                        '</tr>';
+                    htmlBuffer += tr;
+                } catch (e) {
+                    console.error("Error rendering row:", row, e);
+                }
             });
             listContainer.innerHTML = htmlBuffer;
         }
