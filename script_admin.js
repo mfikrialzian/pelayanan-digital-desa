@@ -1503,7 +1503,11 @@ function runAdminLoginAuth() {
             };
 
             if (isGoogleEnv) {
-                google.script.run.withSuccessHandler(successHandler).getLayananList();
+                try {
+                    google.script.run.withSuccessHandler(successHandler).getLayananList();
+                } catch (e) {
+                    setTimeout(function () { successHandler(dummyLayananList); }, 200);
+                }
             } else {
                 setTimeout(function () { successHandler(dummyLayananList); }, 200);
             }
