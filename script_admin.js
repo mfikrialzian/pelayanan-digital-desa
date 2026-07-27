@@ -2509,6 +2509,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const profileMenu = document.getElementById('admin-profile-menu');
     const profileChevron = document.getElementById('admin-profile-chevron');
 
+    const notificationTrigger = document.getElementById('admin-notification-trigger');
+    const notificationMenu = document.getElementById('admin-notification-menu');
+
     if (profileTrigger && profileMenu) {
         // Toggle dropdown on click
         profileTrigger.addEventListener('click', (e) => {
@@ -2550,8 +2553,80 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    // --- Notification Dropdown Logic ---
+    if (notificationTrigger && notificationMenu) {
+        notificationTrigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isHidden = notificationMenu.classList.contains('hidden');
+            
+            if (isHidden) {
+                // Show menu
+                notificationMenu.classList.remove('hidden');
+                setTimeout(() => {
+                    notificationMenu.classList.remove('opacity-0', 'scale-95');
+                    notificationMenu.classList.add('opacity-100', 'scale-100');
+                }, 10);
+                
+                // Populate dummy data if not already populated
+                const list = document.getElementById('notification-dropdown-list');
+                if (list && list.innerHTML.includes('Memuat')) {
+                    renderNotificationDropdown(list);
+                }
+            } else {
+                // Hide menu
+                notificationMenu.classList.remove('opacity-100', 'scale-100');
+                notificationMenu.classList.add('opacity-0', 'scale-95');
+                setTimeout(() => {
+                    notificationMenu.classList.add('hidden');
+                }, 200);
+            }
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!notificationMenu.contains(e.target) && !notificationTrigger.contains(e.target)) {
+                if (!notificationMenu.classList.contains('hidden')) {
+                    notificationMenu.classList.remove('opacity-100', 'scale-100');
+                    notificationMenu.classList.add('opacity-0', 'scale-95');
+                    setTimeout(() => {
+                        notificationMenu.classList.add('hidden');
+                    }, 200);
+                }
+            }
+        });
+    }
 });
 
+function renderNotificationDropdown(container) {
+    // Dummy Data Notifikasi
+    const dummies = [
+        { title: 'Pengajuan Baru Masuk', desc: 'Ada pengajuan dari SITI HAJAR (Aktivasi Ulang BPJS PBI).', time: '10 menit yang lalu', type: 'info', icon: 'fa-file-invoice' },
+        { title: 'Pengajuan Perbaikan', desc: 'IAN telah memperbaiki dokumen (Permohonan KK).', time: '1 jam yang lalu', type: 'warning', icon: 'fa-triangle-exclamation' },
+        { title: 'Laporan Selesai', desc: 'Rekapitulasi pengajuan bulanan telah berhasil diekspor.', time: 'Kemarin', type: 'success', icon: 'fa-circle-check' }
+    ];
+
+    container.innerHTML = '';
+    dummies.forEach(item => {
+        let iconColor = 'text-blue-500';
+        let bgIcon = 'bg-blue-50';
+        if (item.type === 'success') { iconColor = 'text-green-500'; bgIcon = 'bg-green-50'; }
+        else if (item.type === 'warning') { iconColor = 'text-amber-500'; bgIcon = 'bg-amber-50'; }
+        else if (item.type === 'info') { iconColor = 'text-narmadaGreen'; bgIcon = 'bg-emerald-50'; }
+
+        container.innerHTML += `
+            <a href="javascript:void(0)" class="flex gap-3 p-3 hover:bg-slate-50 rounded-lg transition-colors border-b border-slate-50 last:border-0 items-start">
+                <div class="w-8 h-8 rounded-full ${bgIcon} ${iconColor} flex items-center justify-center shrink-0 mt-0.5">
+                    <i class="fa-solid ${item.icon} text-xs"></i>
+                </div>
+                <div>
+                    <p class="text-xs font-bold text-slate-800">${item.title}</p>
+                    <p class="text-[10px] text-slate-500 mt-0.5 leading-relaxed">${item.desc}</p>
+                    <p class="text-[9px] font-semibold text-slate-400 mt-1">${item.time}</p>
+                </div>
+            </a>
+        `;
+    });
+}
 // Dark Mode Toggle Logic (Mock for UI)
 function toggleDarkModeUI(element) {
     const isDarkMode = document.documentElement.classList.contains('dark');

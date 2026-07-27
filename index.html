@@ -748,10 +748,24 @@
                     </div>
 
                     <!-- Notifications -->
-                    <button onclick="switchAdminTab('aktivitas')" class="relative p-2 text-slate-500 hover:bg-slate-50 rounded-full transition-colors">
-                        <i id="header-bell-icon" class="fa-regular fa-bell text-lg"></i>
-                        <span id="header-bell-dot" class="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 border-2 border-white rounded-full hidden"></span>
-                    </button>
+                    <div class="relative hidden md:block" id="admin-notification-container">
+                        <button id="admin-notification-trigger" class="relative p-2 text-slate-500 hover:bg-slate-50 rounded-full transition-colors">
+                            <i id="header-bell-icon" class="fa-regular fa-bell text-lg"></i>
+                            <span id="header-bell-dot" class="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 border-2 border-white rounded-full hidden"></span>
+                        </button>
+
+                        <!-- Notification Dropdown Menu -->
+                        <div class="absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-lg border border-slate-200 py-2 hidden z-50 origin-top-right transition-all duration-200 opacity-0 scale-95" id="admin-notification-menu">
+                            <div class="px-4 py-3 border-b border-slate-100 mb-2 flex justify-between items-center">
+                                <p class="text-xs font-bold text-slate-700 uppercase tracking-wider">Notifikasi</p>
+                                <a href="javascript:switchAdminTab('aktivitas'); document.getElementById('admin-notification-trigger').click();" class="text-[10px] font-bold text-narmadaGreen hover:underline">Lihat Semua</a>
+                            </div>
+                            <!-- Notification List -->
+                            <div class="max-h-64 overflow-y-auto px-2 space-y-1" id="notification-dropdown-list">
+                                <div class="text-center text-slate-400 py-6 text-xs">Memuat notifikasi...</div>
+                            </div>
+                        </div>
+                    </div>
 
                     <!-- Divider -->
                     <div class="w-px h-8 bg-slate-200 hidden md:block"></div>
