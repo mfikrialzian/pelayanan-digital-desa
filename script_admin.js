@@ -1461,13 +1461,16 @@ function runAdminLoginAuth() {
                 });
                 if (qHtml === "") qHtml = '<span class="text-slate-400 italic text-[9px]">Tanpa pertanyaan</span>';
 
-                var tr = '<tr class="hover:bg-slate-50 transition-all group">' +
-                    '<td class="p-3 text-center text-xs font-bold text-slate-500">' + (index + 1) + '</td>' +
-                    '<td class="p-3 font-extrabold text-xs text-slate-800">' + row.nama + '</td>' +
-                    '<td class="p-3 align-top">' + kepHtml + '</td>' +
-                    '<td class="p-3 align-top">' + docHtml + '</td>' +
-                    '<td class="p-3 align-top">' + qHtml + '</td>' +
-                    '<td class="p-3 text-center align-middle">' +
+                var tr = '<tr class="border-b border-slate-50 hover:bg-slate-50/50 transition-colors group">' +
+                    '<td class="py-4 px-2 text-center font-semibold text-slate-500">' + (index + 1) + '</td>' +
+                    '<td class="py-4 px-4">' +
+                    '<div class="font-bold text-slate-900">' + row.nama + '</div>' +
+                    '<div class="text-[10px] text-slate-500 mt-1">' + (row.deskripsi || "") + '</div>' +
+                    '</td>' +
+                    '<td class="py-4 px-4 align-top">' + kepHtml + '</td>' +
+                    '<td class="py-4 px-4 align-top">' + docHtml + '</td>' +
+                    '<td class="py-4 px-4 align-top">' + qHtml + '</td>' +
+                    '<td class="py-4 px-4 text-center align-middle">' +
                     '<div class="flex flex-col gap-1.5 items-center justify-center">' +
                     '<button onclick="switchAdminTab(\'layanan\'); populateBuilderLayananToEdit(\'' + row.id + '\')" class="px-3 py-1.5 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-700 font-bold text-[10px] transition-all flex items-center justify-center gap-1.5 shadow-sm w-[90px] border border-amber-200">' +
                     '<i class="fa-solid fa-pencil"></i> Edit' +

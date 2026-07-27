@@ -94,7 +94,7 @@ var dummyLayananList = [
         var uploadDataStore = {};
         var currentWizardStep = 1;
         var globalSettings = Object.assign({}, dummySetelan);
-        var isGoogleEnv = typeof google !== 'undefined';
+        var isGoogleEnv = typeof google !== 'undefined' && typeof google.script !== 'undefined';
         window.isServiceOpen = false;
         window.editingQuestionIndex = -1; // Variabel Global State Edit Pertanyaan
 
