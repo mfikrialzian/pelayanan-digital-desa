@@ -758,6 +758,49 @@ function runAdminLoginAuth() {
                     }
                 });
 
+                items.forEach(function(item) {
+                    var colon = item.indexOf(":");
+                    if (colon > -1) {
+                        var q = item.substring(0, colon).trim();
+                        var a = item.substring(colon + 1).trim();
+                        if (q !== "Keperluan Surat") {
+                            var groupName = "Isian Tambahan";
+                            var order = 999;
+                            
+                            if (matchedLayanan && matchedLayanan.fields) {
+                                var bestMatch = matchedLayanan.fields.find(function(f) {
+                                    return f.label === q || parseQuestionMetadata(f.name).cleanName === q;
+                                });
+                                
+                                if (bestMatch) {
+                                    var possibleMatches = matchedLayanan.fields.filter(function(f) {
+                                        return f.label === q || parseQuestionMetadata(f.name).cleanName === q;
+                                    });
+                                    if (possibleMatches.length > 1 && submittedKeperluan) {
+                                        var exactMatch = possibleMatches.find(function(f) {
+                                            return parseQuestionMetadata(f.name).keperluan === submittedKeperluan;
+                                        });
+                                        if (exactMatch) bestMatch = exactMatch;
+                                        else {
+                                            var defaultMatch = possibleMatches.find(function(f) {
+                                                return parseQuestionMetadata(f.name).keperluan === "Wajib";
+                                            });
+                                            if (defaultMatch) bestMatch = defaultMatch;
+                                        }
+                                    }
+                                    
+                                    var parsed = parseQuestionMetadata(bestMatch.name);
+                                    groupName = (parsed.keperluan === "Wajib") ? "Data Pemohon" : "Isian Tambahan";
+                                    order = matchedLayanan.fields.indexOf(bestMatch);
+                                }
+                            }
+                            
+                            if (!qMap[groupName]) qMap[groupName] = [];
+                            qMap[groupName].push({ q: q, a: a, order: order });
+                        }
+                    }
+                });
+
                 var templatePratinjau = matchedLayanan && matchedLayanan.templatePratinjau ? matchedLayanan.templatePratinjau.trim() : null;
                 
                 if (templatePratinjau) {
