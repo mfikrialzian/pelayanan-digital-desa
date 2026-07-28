@@ -6,17 +6,17 @@ var AuthService = {
     try {
       var user = PenggunaRepository.getByUsername(username);
       
-      if (user && user.password === password) {
+      if (user && user.password === Sanitizer.hashPassword(password)) {
         if (user.status !== "Aktif") {
           return { success: false, message: "Akun Anda dinonaktifkan. Silakan hubungi Super Admin." };
         }
         
-        var token = Utilities.getUuid();
+        var token = Utilities.getUuid() + "-" + new Date().getTime();
         var cache = CacheService.getScriptCache();
         cache.put("AUTH_" + token, "valid", 21600); // 6 hours
         
         // Update waktu login
-        var tz = ZettConfig.TIMEZONE || "Asia/Jakarta";
+        var tz = ZettConfig.TIMEZONE || "Asia/Makassar";
         var now = Utilities.formatDate(new Date(), tz, "dd MMM yyyy, HH:mm");
         PenggunaRepository.update(username, { terakhirLogin: now });
         SpreadsheetApp.flush();
@@ -58,7 +58,11 @@ var AuthService = {
  */
 var PenggunaService = {
   getList: function() {
-    return PenggunaRepository.getAll();
+    var users = PenggunaRepository.getAll();
+    return users.map(function(u) {
+      delete u.password;
+      return u;
+    });
   },
   
   crud: function(action, payload) {
@@ -74,7 +78,7 @@ var PenggunaService = {
         PenggunaRepository.insert({
           id: Utilities.getUuid(),
           username: payload.username,
-          password: payload.password,
+          password: Sanitizer.hashPassword(payload.password),
           nama: payload.nama,
           peran: payload.peran,
           unit: payload.unit || "Pusat",
@@ -88,7 +92,7 @@ var PenggunaService = {
       } else if (action === "toggleStatus") {
         PenggunaRepository.update(payload.username, { status: payload.status });
       } else if (action === "resetPassword") {
-        PenggunaRepository.update(payload.username, { password: payload.password });
+        PenggunaRepository.update(payload.username, { password: Sanitizer.hashPassword(payload.password) });
       }
       
       SpreadsheetApp.flush();
@@ -106,7 +110,11 @@ var PenggunaService = {
  */
 var ConfigService = {
   getSetelan: function() {
-    return SetelanRepository.getAll();
+    var setelan = SetelanRepository.getAll();
+    delete setelan.ADMIN_USERNAME;
+    delete setelan.ADMIN_PASSWORD;
+    delete setelan.FONNTE_TOKEN;
+    return setelan;
   },
   update: function(newSetelan) {
     try {
@@ -123,12 +131,20 @@ var ConfigService = {
  */
 var LayananService = {
   getList: function() {
+    var cache = CacheService.getScriptCache();
+    var cached = cache.get("LAYANAN_LIST_CACHE");
+    if (cached) {
+      try {
+        return JSON.parse(cached);
+      } catch (e) {}
+    }
+    
     try {
       var master = LayananRepository.getAllMaster();
       var fields = LayananRepository.getAllFields();
       var reqs = LayananRepository.getAllReqs();
       
-      return master.map(function(lay) {
+      var list = master.map(function(lay) {
         var idLay = lay.id;
         return {
           id: idLay,
@@ -141,6 +157,9 @@ var LayananService = {
           requirements: reqs.filter(function(r) { return r.idLayanan === idLay; })
         };
       });
+      
+      cache.put("LAYANAN_LIST_CACHE", JSON.stringify(list), 7200); // Cache 2 hours
+      return list;
     } catch (e) {
       Logger.log("LayananService.getList Error: " + e.toString());
       return [];
@@ -256,6 +275,9 @@ var LayananService = {
         }
       }
       
+      var cache = CacheService.getScriptCache();
+      cache.remove("LAYANAN_LIST_CACHE");
+      
       SpreadsheetApp.flush();
       return { success: true };
     } catch (e) {
@@ -273,10 +295,10 @@ var LayananService = {
 var PengajuanService = {
   getStats: function() {
     try {
-      var rawData = PengajuanRepository.getAll();
+      var rawStatuses = PengajuanRepository.getStatsRaw();
       
       var stats = {
-        total: rawData.length,
+        total: rawStatuses.length,
         pending: 0,
         verifikasi: 0,
         selesai: 0,
@@ -284,18 +306,14 @@ var PengajuanService = {
         recent: []
       };
       
-      rawData.forEach(function(row) {
-        var stat = row.status;
+      rawStatuses.forEach(function(stat) {
         if (stat === ZettConstants.STATUS_PENDING) stats.pending++;
         else if (stat === ZettConstants.STATUS_VERIFIKASI) stats.verifikasi++;
         else if (stat === ZettConstants.STATUS_SELESAI || stat === "Selesai") stats.selesai++;
         else if (stat === ZettConstants.STATUS_REUPLOAD) stats.uploadUlang++;
       });
       
-      var limit = Math.min(5, rawData.length);
-      for (var i = 0; i < limit; i++) {
-        stats.recent.push(rawData[rawData.length - 1 - i]);
-      }
+      stats.recent = PengajuanRepository.getRecent(5);
       
       return stats;
     } catch (e) {
@@ -307,6 +325,14 @@ var PengajuanService = {
     var lock = LockService.getScriptLock();
     try {
       lock.waitLock(15000);
+      
+      var cache = CacheService.getScriptCache();
+      var cacheKey = "RATE_LIMIT_" + (wargaData.nik || "UNKNOWN");
+      var currentUsage = parseInt(cache.get(cacheKey)) || 0;
+      if (currentUsage > 3) {
+        throw new Error("Terlalu banyak permintaan (Rate Limit Exceeded). Silakan coba lagi nanti.");
+      }
+      cache.put(cacheKey, (currentUsage + 1).toString(), 300); // Batasi maks 3 pengajuan per 5 menit
       
       if (String(wargaData.nik).length !== 16) {
         throw new Error("Peringatan Keamanan: NIK wajib berukuran tepat 16 digit!");
@@ -392,13 +418,15 @@ var PengajuanService = {
     }
   },
   
-  reupload: function(idPengajuan, namaSyarat, base64Data) {
+  reupload: function(idPengajuan, namaSyarat, base64Data, nik) {
     var lock = LockService.getScriptLock();
     try {
       lock.waitLock(15000);
       
       var record = PengajuanRepository.getById(idPengajuan);
       if (!record) throw new Error("ID Registrasi pengajuan tidak ditemukan.");
+      
+      if (nik && record.nik !== nik) throw new Error("Akses ditolak: NIK tidak sesuai dengan data pengajuan.");
       
       var folderWarga = DriveHelper.getOrCreateTargetFolder(idPengajuan, record.nama);
       
@@ -440,6 +468,14 @@ var PengajuanService = {
   
   getStatus: function(searchKey) {
     try {
+      var cache = CacheService.getScriptCache();
+      var cacheKey = "RATE_LIMIT_SEARCH_" + searchKey;
+      var currentUsage = parseInt(cache.get(cacheKey)) || 0;
+      if (currentUsage > 15) {
+        return [{ id: "-", nik: "-", nama: "RATE LIMIT EXCEEDED", layanan: "Terlalu banyak request. Tunggu 1 jam.", status: "Ditolak", catatan: "-", tanggal: "-" }];
+      }
+      cache.put(cacheKey, (currentUsage + 1).toString(), 3600); // 1 jam batas
+
       return PengajuanRepository.search(searchKey);
     } catch (e) {
       return [];
@@ -555,8 +591,8 @@ var ActivityService = {
   logActivity: function(tipe, pesan, pelaku) {
     try {
       var record = {
-        id: "ACT-" + Utilities.formatDate(new Date(), "Asia/Jakarta", "yyyyMMddHHmmss") + "-" + Math.floor(Math.random() * 1000),
-        waktu: Utilities.formatDate(new Date(), "Asia/Jakarta", "dd/MM/yyyy HH:mm:ss"),
+        id: "ACT-" + Utilities.formatDate(new Date(), ZettConfig.TIMEZONE, "yyyyMMddHHmmss") + "-" + Math.floor(Math.random() * 1000),
+        waktu: Utilities.formatDate(new Date(), ZettConfig.TIMEZONE, "dd/MM/yyyy HH:mm:ss"),
         tipe: tipe || "INFO",
         pesan: pesan || "Sistem diperbarui.",
         pelaku: pelaku || "System"
@@ -586,8 +622,8 @@ var NotificationService = {
   addNotification: function(tipe, judul, pesan, idReferensi) {
     try {
       var record = {
-        id: "NOTIF-" + Utilities.formatDate(new Date(), "Asia/Jakarta", "yyyyMMddHHmmss") + "-" + Math.floor(Math.random() * 1000),
-        waktu: Utilities.formatDate(new Date(), "Asia/Jakarta", "dd/MM/yyyy HH:mm:ss"),
+        id: "NOTIF-" + Utilities.formatDate(new Date(), ZettConfig.TIMEZONE, "yyyyMMddHHmmss") + "-" + Math.floor(Math.random() * 1000),
+        waktu: Utilities.formatDate(new Date(), ZettConfig.TIMEZONE, "dd/MM/yyyy HH:mm:ss"),
         tipe: tipe || "INFO",
         judul: judul || "Pemberitahuan",
         pesan: pesan || "",

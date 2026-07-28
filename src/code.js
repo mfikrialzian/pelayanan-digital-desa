@@ -33,8 +33,8 @@ function submitPengajuanDesa(wargaData) {
   return PengajuanService.create(wargaData);
 }
 
-function processReuploadBerkas(idPengajuan, namaSyarat, base64Data) {
-  return PengajuanService.reupload(idPengajuan, namaSyarat, base64Data);
+function processReuploadBerkas(idPengajuan, namaSyarat, base64Data, nik) {
+  return PengajuanService.reupload(idPengajuan, namaSyarat, base64Data, nik);
 }
 
 function getPengajuanStatus(searchKey) {
@@ -107,18 +107,46 @@ function doPost(e) {
     var action = postData.action;
     var params = postData.params || [];
     
-    if (action.indexOf('_') === 0 || typeof this[action] !== 'function') {
-      throw new Error("Akses ditolak atau fungsi tidak ditemukan: " + action);
+    // WHITELIST: Hanya fungsi ini yang boleh dipanggil dari luar (Frontend Vercel)
+    var ALLOWED_ACTIONS = {
+      'getAdminSetelan': getAdminSetelan,
+      'getLayananList': getLayananList,
+      'getDashboardStats': getDashboardStats,
+      'submitPengajuanDesa': submitPengajuanDesa,
+      'processReuploadBerkas': processReuploadBerkas,
+      'getPengajuanStatus': getPengajuanStatus,
+      'checkAdminLogin': checkAdminLogin,
+      'logoutAdmin': logoutAdmin,
+      'getAdminDashboardData': getAdminDashboardData,
+      'updatePengajuanStatus': updatePengajuanStatus,
+      'crudLayanan': crudLayanan,
+      'getPenggunaList': getPenggunaList,
+      'crudPengguna': crudPengguna,
+      'updateProfilPengguna': updateProfilPengguna,
+      'updateAdminSetelan': updateAdminSetelan,
+      'generateSuratPDF': generateSuratPDF,
+      'getActivities': getActivities,
+      'getNotifications': getNotifications
+    };
+    
+    if (!ALLOWED_ACTIONS[action]) {
+      throw new Error("Akses ditolak: fungsi '" + action + "' tidak diizinkan.");
     }
     
-    var result = this[action].apply(this, params);
+    var result = ALLOWED_ACTIONS[action].apply(null, params);
     
     var response = { success: true, data: result };
     return ContentService.createTextOutput(JSON.stringify(response))
       .setMimeType(ContentService.MimeType.JSON);
       
   } catch (err) {
-    var errResponse = { success: false, error: err.toString() };
+    AppLogger.error("doPost", err.toString(), payload);
+    var errResponse = { 
+      success: false, 
+      message: "Terjadi kesalahan internal server.",
+      error: err.toString(),
+      code: 500
+    };
     return ContentService.createTextOutput(JSON.stringify(errResponse))
       .setMimeType(ContentService.MimeType.JSON);
   }

@@ -5,7 +5,7 @@
 var ZettConfig = {
   APP_NAME: "Pelayanan Digital Desa Narmada",
   VERSION: "3.0.0",
-  TIMEZONE: "Asia/Jakarta",
+  TIMEZONE: "Asia/Makassar",
   DRIVE_ROOT_FOLDER: "Pelayanan Desa Narmada",
   PAGINATION_LIMIT: 10,
   MAX_FILE_SIZE_MB: 2,
@@ -172,7 +172,7 @@ function setupDatabase() {
       
       var props = PropertiesService.getScriptProperties();
       var defaultUsername = props.getProperty('ADMIN_USERNAME') || "superadmin";
-      var defaultPassword = props.getProperty('ADMIN_PASSWORD') || "123456"; // Default strong password or just 123
+      var defaultPassword = props.getProperty('ADMIN_PASSWORD') || Utilities.getUuid().substring(0,8); 
       sPengguna.appendRow([Utilities.getUuid(), defaultUsername, defaultPassword, "Administrator (System)", "Super Admin", "Pusat", "Aktif", "-"]);
     }
 

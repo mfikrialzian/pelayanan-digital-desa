@@ -13,3 +13,6 @@ desktop.ini
 # Temporary
 *.tmp
 *.log
+
+.clasp.json
+

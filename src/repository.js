@@ -154,10 +154,16 @@ var LayananRepository = {
   deleteFieldsByLayananId: function(idLayanan) {
     var sheet = BaseRepository.getSheet(ZettConstants.SHEET_FIELDS);
     var data = sheet.getDataRange().getValues();
-    for (var i = data.length - 1; i >= 1; i--) {
-      if (data[i][1] === idLayanan) {
-        sheet.deleteRow(i + 1);
-      }
+    if (data.length <= 1) return;
+    
+    var header = data[0];
+    var filtered = data.slice(1).filter(function(row) {
+      return row[1] !== idLayanan;
+    });
+    
+    sheet.getRange(2, 1, sheet.getLastRow(), sheet.getLastColumn()).clearContent();
+    if (filtered.length > 0) {
+      sheet.getRange(2, 1, filtered.length, filtered[0].length).setValues(filtered);
     }
   },
   
@@ -183,10 +189,16 @@ var LayananRepository = {
   deleteReqsByLayananId: function(idLayanan) {
     var sheet = BaseRepository.getSheet(ZettConstants.SHEET_REQS);
     var data = sheet.getDataRange().getValues();
-    for (var i = data.length - 1; i >= 1; i--) {
-      if (data[i][1] === idLayanan) {
-        sheet.deleteRow(i + 1);
-      }
+    if (data.length <= 1) return;
+    
+    var header = data[0];
+    var filtered = data.slice(1).filter(function(row) {
+      return row[1] !== idLayanan;
+    });
+    
+    sheet.getRange(2, 1, sheet.getLastRow(), sheet.getLastColumn()).clearContent();
+    if (filtered.length > 0) {
+      sheet.getRange(2, 1, filtered.length, filtered[0].length).setValues(filtered);
     }
   }
 };
@@ -246,15 +258,19 @@ var PenggunaRepository = {
     for (var i = 1; i < data.length; i++) {
       if (String(data[i][1]) === String(username)) {
         var row = i + 1;
-        if (record.password !== undefined) sheet.getRange(row, 3).setValue(record.password);
-        if (record.nama !== undefined) sheet.getRange(row, 4).setValue(record.nama);
-        if (record.peran !== undefined) sheet.getRange(row, 5).setValue(record.peran);
-        if (record.unit !== undefined) sheet.getRange(row, 6).setValue(record.unit);
-        if (record.status !== undefined) sheet.getRange(row, 7).setValue(record.status);
-        if (record.terakhirLogin !== undefined) sheet.getRange(row, 8).setValue(record.terakhirLogin);
-        if (record.email !== undefined) sheet.getRange(row, 9).setValue(record.email);
-        if (record.wa !== undefined) sheet.getRange(row, 10).setValue(record.wa);
-        if (record.avatar !== undefined) sheet.getRange(row, 11).setValue(record.avatar);
+        var rowData = sheet.getRange(row, 3, 1, 9).getValues()[0]; // Ambil kolom C (3) s.d K (11)
+        
+        if (record.password !== undefined) rowData[0] = record.password;
+        if (record.nama !== undefined) rowData[1] = record.nama;
+        if (record.peran !== undefined) rowData[2] = record.peran;
+        if (record.unit !== undefined) rowData[3] = record.unit;
+        if (record.status !== undefined) rowData[4] = record.status;
+        if (record.terakhirLogin !== undefined) rowData[5] = record.terakhirLogin;
+        if (record.email !== undefined) rowData[6] = record.email;
+        if (record.wa !== undefined) rowData[7] = record.wa;
+        if (record.avatar !== undefined) rowData[8] = record.avatar;
+        
+        sheet.getRange(row, 3, 1, 9).setValues([rowData]); // Batch Write!
         break;
       }
     }
@@ -282,6 +298,41 @@ var PengajuanRepository = {
     var results = [];
     
     for (var i = 1; i < rawData.length; i++) {
+      results.push({
+        id: rawData[i][0],
+        tanggal: rawData[i][1],
+        nik: rawData[i][2],
+        nama: rawData[i][3],
+        layanan: rawData[i][4],
+        wa: rawData[i][5],
+        alamat: rawData[i][6],
+        linkDokumen: rawData[i][7],
+        status: rawData[i][8],
+        catatan: rawData[i][9],
+        detailLayanan: rawData[i][10] || "-"
+      });
+    }
+    return results;
+  },
+  getStatsRaw: function() {
+    var sheet = BaseRepository.getSheet(ZettConstants.SHEET_PENGAJUAN);
+    var lastRow = sheet.getLastRow();
+    if (lastRow < 2) return [];
+    return sheet.getRange(2, 9, lastRow - 1, 1).getValues().map(function(row) { return row[0]; });
+  },
+  
+  getRecent: function(limit) {
+    var sheet = BaseRepository.getSheet(ZettConstants.SHEET_PENGAJUAN);
+    var lastRow = sheet.getLastRow();
+    if (lastRow < 2) return [];
+    
+    var numRows = Math.min(lastRow - 1, limit);
+    var startRow = lastRow - numRows + 1;
+    
+    var rawData = sheet.getRange(startRow, 1, numRows, 11).getDisplayValues();
+    var results = [];
+    
+    for (var i = rawData.length - 1; i >= 0; i--) {
       results.push({
         id: rawData[i][0],
         tanggal: rawData[i][1],
@@ -327,9 +378,13 @@ var PengajuanRepository = {
     for (var i = 1; i < data.length; i++) {
       if (String(data[i][0]) === String(id)) {
         var row = i + 1;
-        if (record.linkDokumen !== undefined) sheet.getRange(row, 8).setValue(record.linkDokumen);
-        if (record.status !== undefined) sheet.getRange(row, 9).setValue(record.status);
-        if (record.catatan !== undefined) sheet.getRange(row, 10).setValue(record.catatan);
+        var rowData = sheet.getRange(row, 8, 1, 3).getValues()[0];
+        
+        if (record.linkDokumen !== undefined) rowData[0] = record.linkDokumen;
+        if (record.status !== undefined) rowData[1] = record.status;
+        if (record.catatan !== undefined) rowData[2] = record.catatan;
+        
+        sheet.getRange(row, 8, 1, 3).setValues([rowData]);
         break;
       }
     }
@@ -344,47 +399,65 @@ var PengajuanRepository = {
   },
   
   getPaginated: function(filterKeyword, page, statusFilter) {
-    var all = this.getAll();
-    var filtered = [];
+    var sheet = BaseRepository.getSheet(ZettConstants.SHEET_PENGAJUAN);
+    var rawData = sheet.getDataRange().getDisplayValues();
+    var filteredRows = [];
     var keyword = String(filterKeyword || "").toLowerCase().trim();
     var stat = String(statusFilter || "").trim();
     
-    // Looping terbalik (terbaru tampil di halaman pertama)
-    for (var i = all.length - 1; i >= 0; i--) {
-      var item = all[i];
+    // Looping terbalik (terbaru tampil di halaman pertama), lewati header (index 0)
+    for (var i = rawData.length - 1; i >= 1; i--) {
+      var row = rawData[i];
       var matchesK = !keyword || 
-                     item.id.toLowerCase().indexOf(keyword) !== -1 || 
-                     item.nik.indexOf(keyword) !== -1 || 
-                     item.nama.toLowerCase().indexOf(keyword) !== -1;
+                     row[0].toLowerCase().indexOf(keyword) !== -1 || 
+                     row[2].indexOf(keyword) !== -1 || 
+                     row[3].toLowerCase().indexOf(keyword) !== -1;
                      
       var matchesS = true;
       if (stat) {
+        var rowStatus = row[8];
         if (stat === "Selesai") {
-          matchesS = (item.status === ZettConstants.STATUS_SELESAI || item.status === "Selesai");
+          matchesS = (rowStatus === ZettConstants.STATUS_SELESAI || rowStatus === "Selesai");
         } else {
-          matchesS = (item.status === stat);
+          matchesS = (rowStatus === stat);
         }
       }
       
       if (matchesK && matchesS) {
-        filtered.push(item);
+        filteredRows.push(row);
       }
     }
     
     var limit = ZettConfig.PAGINATION_LIMIT;
-    var totalItems = filtered.length;
+    var totalItems = filteredRows.length;
     var totalPages = Math.max(1, Math.ceil(totalItems / limit));
     var currentPage = Math.max(1, Math.min(page || 1, totalPages));
     var startIndex = (currentPage - 1) * limit;
-    var paginated = filtered.slice(startIndex, startIndex + limit);
+    
+    var paginatedRows = filteredRows.slice(startIndex, startIndex + limit);
+    var paginatedData = paginatedRows.map(function(row) {
+      return {
+        id: row[0],
+        tanggal: row[1],
+        nik: row[2],
+        nama: row[3],
+        layanan: row[4],
+        wa: row[5],
+        alamat: row[6],
+        linkDokumen: row[7],
+        status: row[8],
+        catatan: row[9],
+        detailLayanan: row[10] || "-"
+      };
+    });
     
     return {
-      data: paginated,
+      data: paginatedData,
       totalPages: totalPages,
       currentPage: currentPage,
       totalItems: totalItems
     };
-  }
+  },
 };
 
 /**

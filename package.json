@@ -1,9 +1,4 @@
 {
-  "dependencies": {
-    "cheerio": "^1.2.0",
-    "jsdom": "^29.1.1",
-    "puppeteer": "^25.3.0"
-  },
   "name": "pelayanandigitaldesa",
   "version": "1.0.0",
   "description": "Sistem pelayanan administrasi desa berbasis **Google Apps Script** yang memungkinkan warga mengajukan surat dan dokumen secara digital.",

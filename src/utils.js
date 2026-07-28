@@ -4,7 +4,15 @@
 var Sanitizer = {
   clean: function(str) {
     if (typeof str !== 'string') return str;
-    return str.replace(/<\/?[^>]+(>|$)/g, "").trim();
+    str = str.replace(/<\/?[^>]+(>|$)/g, "").trim();
+    if (str.charAt(0) === '=' || str.charAt(0) === '+' || str.charAt(0) === '-' || str.charAt(0) === '@') {
+        str = "'" + str;
+    }
+    return str;
+  },
+  hashPassword: function(password) {
+    var rawHash = Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, password + "ZETT_SALT_2026");
+    return rawHash.map(function(b) { return ('0' + (b & 0xFF).toString(16)).slice(-2); }).join('');
   },
   escapeHtml: function(text) {
     if (typeof text !== 'string') return text;
@@ -142,6 +150,30 @@ function testKoneksiFonnte() {
     Logger.log("Gagal. Pastikan Token benar dan perangkat sudah terkoneksi di Fonnte.");
   }
 }
+
+/**
+ * AppLogger - Pencatatan Terstruktur (Structured Logging)
+ */
+var AppLogger = {
+  info: function(context, message, data) {
+    this._log("INFO", context, message, data);
+  },
+  error: function(context, message, data) {
+    this._log("ERROR", context, message, data);
+  },
+  _log: function(level, context, message, data) {
+    var tz = ZettConfig.TIMEZONE || "Asia/Makassar";
+    var timestamp = Utilities.formatDate(new Date(), tz, "yyyy-MM-dd HH:mm:ss");
+    var logObj = {
+      timestamp: timestamp,
+      level: level,
+      context: context,
+      message: message,
+      data: data || {}
+    };
+    Logger.log(JSON.stringify(logObj));
+  }
+};
 
 /**
  * FUNGSI PANCINGAN
