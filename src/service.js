@@ -295,22 +295,66 @@ var LayananService = {
 var PengajuanService = {
   getStats: function() {
     try {
-      var rawStatuses = PengajuanRepository.getStatsRaw();
+      var rawData = PengajuanRepository.getStatsRaw();
       
       var stats = {
-        total: rawStatuses.length,
+        total: rawData.length,
         pending: 0,
         verifikasi: 0,
         selesai: 0,
         uploadUlang: 0,
-        recent: []
+        recent: [],
+        chartMingguan: [0, 0, 0, 0, 0, 0, 0],
+        chartStatus: [0, 0, 0, 0],
+        chartLayanan: { labels: [], data: [] }
       };
+
+      var layananCounts = {};
+      var now = new Date();
       
-      rawStatuses.forEach(function(stat) {
-        if (stat === ZettConstants.STATUS_PENDING) stats.pending++;
-        else if (stat === ZettConstants.STATUS_VERIFIKASI) stats.verifikasi++;
-        else if (stat === ZettConstants.STATUS_SELESAI || stat === "Selesai") stats.selesai++;
-        else if (stat === ZettConstants.STATUS_REUPLOAD) stats.uploadUlang++;
+      rawData.forEach(function(item) {
+        var stat = item.status;
+        var tanggal = item.tanggal;
+        var layanan = item.layanan;
+
+        if (stat === ZettConstants.STATUS_PENDING) { stats.pending++; stats.chartStatus[2]++; }
+        else if (stat === ZettConstants.STATUS_VERIFIKASI) { stats.verifikasi++; stats.chartStatus[1]++; }
+        else if (stat === ZettConstants.STATUS_SELESAI || stat === "Selesai" || stat === "Pelayanan Selesai") { stats.selesai++; stats.chartStatus[0]++; }
+        else if (stat === ZettConstants.STATUS_REUPLOAD || stat === ZettConstants.STATUS_DITOLAK) { stats.uploadUlang++; stats.chartStatus[3]++; }
+        else { stats.chartStatus[3]++; }
+
+        if (layanan) {
+            layananCounts[layanan] = (layananCounts[layanan] || 0) + 1;
+        }
+
+        if (tanggal) {
+            // Handle DD/MM/YYYY format if it's a string, or process if it's already a Date
+            var tDate = typeof tanggal === 'string' && tanggal.indexOf('/') !== -1 ? 
+                new Date(tanggal.split('/')[2], parseInt(tanggal.split('/')[1]) - 1, tanggal.split('/')[0]) : 
+                new Date(tanggal);
+            
+            if (!isNaN(tDate.getTime())) {
+                var diffTime = now.getTime() - tDate.getTime();
+                var diffDays = diffTime / (1000 * 60 * 60 * 24); 
+                if (diffDays >= 0 && diffDays <= 7) {
+                    var day = tDate.getDay(); 
+                    var mappedDay = day === 0 ? 6 : day - 1;
+                    stats.chartMingguan[mappedDay]++;
+                }
+            }
+        }
+      });
+      
+      var sortableLayanan = [];
+      for (var l in layananCounts) {
+          sortableLayanan.push([l, layananCounts[l]]);
+      }
+      sortableLayanan.sort(function(a, b) { return b[1] - a[1]; });
+      
+      var topLayanan = sortableLayanan.slice(0, 5);
+      topLayanan.forEach(function(item) {
+          stats.chartLayanan.labels.push(item[0]);
+          stats.chartLayanan.data.push(item[1]);
       });
       
       stats.recent = PengajuanRepository.getRecent(5);

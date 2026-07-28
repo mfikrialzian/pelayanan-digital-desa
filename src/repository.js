@@ -318,7 +318,13 @@ var PengajuanRepository = {
     var sheet = BaseRepository.getSheet(ZettConstants.SHEET_PENGAJUAN);
     var lastRow = sheet.getLastRow();
     if (lastRow < 2) return [];
-    return sheet.getRange(2, 9, lastRow - 1, 1).getValues().map(function(row) { return row[0]; });
+    return sheet.getRange(2, 1, lastRow - 1, 9).getValues().map(function(row) { 
+      return {
+        tanggal: row[1],
+        layanan: row[4],
+        status: row[8]
+      }; 
+    });
   },
   
   getRecent: function(limit) {
