@@ -12,9 +12,6 @@ export function loadAdminSettingsForm() {
                     document.getElementById('setelan-desc-alur').value = res.deskripsi_alur || "";
                     document.getElementById('setelan-desc-banner-semi').value = res.deskripsi_banner_semi || "";
 
-                    document.getElementById('setelan-user').value = res.username || "";
-                    document.getElementById('setelan-pass').value = res.password || "";
-
                     document.getElementById('setelan-toggle-jam').checked = (res.status_jam_pelayanan === "on");
                     document.getElementById('setelan-toggle-alur').checked = (res.status_alur === "on");
                     document.getElementById('setelan-toggle-banner').checked = (res.status_banner_semi === "on");
@@ -29,9 +26,6 @@ export function loadAdminSettingsForm() {
                 document.getElementById('setelan-desc-jam').value = dummySetelan.deskripsi_jam_pelayanan;
                 document.getElementById('setelan-desc-alur').value = dummySetelan.deskripsi_alur;
                 document.getElementById('setelan-desc-banner-semi').value = dummySetelan.deskripsi_banner_semi;
-
-                document.getElementById('setelan-user').value = dummySetelan.username;
-                document.getElementById('setelan-pass').value = dummySetelan.password;
 
                 document.getElementById('setelan-toggle-jam').checked = (dummySetelan.status_jam_pelayanan === "on");
                 document.getElementById('setelan-toggle-alur').checked = (dummySetelan.status_alur === "on");
@@ -53,9 +47,6 @@ export function saveAdminSettings() {
                 deskripsi_jam_pelayanan: document.getElementById('setelan-desc-jam').value.trim(),
                 deskripsi_alur: document.getElementById('setelan-desc-alur').value.trim(),
                 deskripsi_banner_semi: document.getElementById('setelan-desc-banner-semi').value.trim(),
-
-                username: document.getElementById('setelan-user').value.trim(),
-                password: document.getElementById('setelan-pass').value.trim(),
 
                 status_jam_pelayanan: document.getElementById('setelan-toggle-jam').checked ? "on" : "off",
                 status_alur: document.getElementById('setelan-toggle-alur').checked ? "on" : "off",

@@ -89,7 +89,8 @@ export function executeSwitchAdminTab(tabId, updateUrl = true) {
 
             // Jika di mobile, sembunyikan sidebar setelah klik menu
             if (window.innerWidth < 768) {
-                document.getElementById('admin-sidebar').classList.add('hidden');
+                let sidebar = document.getElementById('admin-sidebar');
+                if (sidebar) sidebar.classList.add('hidden');
             }
 
             activeAdminTab = tabId;
