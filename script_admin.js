@@ -1532,7 +1532,12 @@ function runAdminLoginAuth() {
                     setTimeout(function () { successHandler(dummyLayananList); }, 200);
                 }
             } else {
-                setTimeout(function () { successHandler(dummyLayananList); }, 200);
+                callGASApi('getLayananList')
+                    .then(successHandler)
+                    .catch(function(e) {
+                        console.error("Gagal memuat dari API, fallback ke dummy:", e);
+                        setTimeout(function () { successHandler(dummyLayananList); }, 200);
+                    });
             }
         }
 

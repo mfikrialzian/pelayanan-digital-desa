@@ -1,3 +1,35 @@
+// KONFIGURASI URL API (Ganti dengan URL Web App Google Script Anda)
+var GAS_API_URL = "https://script.google.com/macros/s/GANTI_DENGAN_URL_WEB_APP_ANDA/exec";
+
+// FUNGSI WRAPPER UNTUK MEMANGGIL GOOGLE APPS SCRIPT API
+async function callGASApi(action, params = null) {
+    var url = GAS_API_URL + "?action=" + encodeURIComponent(action);
+    
+    var fetchOptions = {
+        method: params ? 'POST' : 'GET',
+        // Mode no-cors terkadang mencegah pembacaan response JSON di frontend.
+        // Sebaiknya Apps Script di-set allow CORS.
+        headers: {
+            'Content-Type': 'text/plain;charset=utf-8',
+        }
+    };
+
+    if (params) {
+        fetchOptions.body = JSON.stringify(params);
+    }
+
+    try {
+        var response = await fetch(url, fetchOptions);
+        if (!response.ok) throw new Error('Network response was not ok');
+        var data = await response.json();
+        if (data.status === 'error') throw new Error(data.message || 'API Error');
+        return data.data; // Asumsikan response format: { status: 'success', data: ... }
+    } catch (error) {
+        console.error("API Call Error:", error);
+        throw error;
+    }
+}
+
 function getTableSkeleton(cols, rows) {
             var html = '';
             for (var i = 0; i < rows; i++) {
