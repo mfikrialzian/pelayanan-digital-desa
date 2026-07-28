@@ -59,17 +59,17 @@ export function switchAdminTab(tabId, updateUrl = true) {
         }
 
 export function executeSwitchAdminTab(tabId, updateUrl = true) {
-            document.getElementById('subview-admin-dashboard').classList.add('hidden');
-            document.getElementById('subview-admin-pengajuan').classList.add('hidden');
-            document.getElementById('subview-admin-daftar-layanan').classList.add('hidden');
-            document.getElementById('subview-admin-layanan').classList.add('hidden');
-            document.getElementById('subview-admin-verifikasi').classList.add('hidden');
-            document.getElementById('subview-admin-kontak').classList.add('hidden');
-            document.getElementById('subview-admin-beranda').classList.add('hidden');
-            document.getElementById('subview-admin-kredensial').classList.add('hidden');
-            document.getElementById('subview-admin-laporan').classList.add('hidden');
-            document.getElementById('subview-admin-aktivitas').classList.add('hidden');
-            document.getElementById('subview-admin-pengaturan-akun').classList.add('hidden');
+            const subviews = [
+                'subview-admin-dashboard', 'subview-admin-pengajuan', 'subview-admin-daftar-layanan',
+                'subview-admin-layanan', 'subview-admin-verifikasi', 'subview-admin-kontak',
+                'subview-admin-beranda', 'subview-admin-kredensial', 'subview-admin-laporan',
+                'subview-admin-aktivitas', 'subview-admin-pengaturan-akun'
+            ];
+            subviews.forEach(id => {
+                let el = document.getElementById(id);
+                if (el) el.classList.add('hidden');
+            });
+
 
             const allTabs = ['tab-adm-dashboard', 'tab-adm-pengajuan', 'tab-adm-daftar-layanan', 'tab-adm-kontak', 'tab-adm-beranda', 'tab-adm-kredensial', 'tab-adm-laporan', 'tab-adm-aktivitas'];
 
@@ -81,7 +81,8 @@ export function executeSwitchAdminTab(tabId, updateUrl = true) {
                 if (el) el.className = inactiveClass;
             });
 
-            document.getElementById('subview-admin-' + tabId).classList.remove('hidden');
+            let targetSubview = document.getElementById('subview-admin-' + tabId);
+            if (targetSubview) targetSubview.classList.remove('hidden');
             let activeTabEl = document.getElementById('tab-adm-' + tabId);
             if (activeTabEl) {
                 activeTabEl.className = activeClass;
@@ -95,17 +96,24 @@ export function executeSwitchAdminTab(tabId, updateUrl = true) {
 
             activeAdminTab = tabId;
 
+            let rightColumn = document.getElementById('admin-right-column');
+            let mainColumn = document.getElementById('admin-main-column');
+
             if (tabId === 'dashboard') {
-                document.getElementById('admin-right-column').classList.remove('hidden');
-                document.getElementById('admin-main-column').classList.remove('w-full');
-                if (!document.getElementById('admin-main-column').className.includes('lg:w-3/4')) {
-                    document.getElementById('admin-main-column').className += ' lg:w-3/4';
+                if (rightColumn) rightColumn.classList.remove('hidden');
+                if (mainColumn) {
+                    mainColumn.classList.remove('w-full');
+                    if (!mainColumn.className.includes('lg:w-3/4')) {
+                        mainColumn.className += ' lg:w-3/4';
+                    }
                 }
                 fetchAdminStats();
             } else {
-                document.getElementById('admin-right-column').classList.add('hidden');
-                document.getElementById('admin-main-column').classList.add('w-full');
-                document.getElementById('admin-main-column').className = document.getElementById('admin-main-column').className.replace('lg:w-3/4', '').trim();
+                if (rightColumn) rightColumn.classList.add('hidden');
+                if (mainColumn) {
+                    mainColumn.classList.add('w-full');
+                    mainColumn.className = mainColumn.className.replace('lg:w-3/4', '').trim();
+                }
                 
                 if (tabId === 'daftar-layanan') {
                     loadBuilderDaftarLayananTab();
