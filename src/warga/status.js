@@ -115,7 +115,7 @@ export function renderStatusCards(results) {
                     let reqList = matchedLayanan ? (matchedLayanan.requirements || []) : [];
 
                     if (reqList.length > 0) {
-                        cardHtml += '<div class="mt-2 border-t border-red-200 pt-2.5 space-y-2 bg-red-50/50 p-3 rounded-xl border border-red-100 shadow-inner">' +
+                        cardHtml += '<div class="mt-2 border-t border-t-red-200 pt-2.5 space-y-2 bg-red-50/50 p-3 rounded-xl border border-red-100 shadow-inner">' +
                             '<p class="text-[10px] font-extrabold text-red-700"><i class="fa-solid fa-circle-exclamation"></i> Unggah Ulang Berkas Yang Diperlukan:</p>' +
                             '<div class="grid grid-cols-1 gap-1.5">';
 
