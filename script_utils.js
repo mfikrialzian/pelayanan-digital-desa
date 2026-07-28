@@ -1,33 +1,9 @@
-// KONFIGURASI URL API (Ganti dengan URL Web App Google Script Anda)
-var GAS_API_URL = "https://script.google.com/macros/s/GANTI_DENGAN_URL_WEB_APP_ANDA/exec";
-
-// FUNGSI WRAPPER UNTUK MEMANGGIL GOOGLE APPS SCRIPT API
-async function callGASApi(action, params = null) {
-    var url = GAS_API_URL + "?action=" + encodeURIComponent(action);
-    
-    var fetchOptions = {
-        method: params ? 'POST' : 'GET',
-        // Mode no-cors terkadang mencegah pembacaan response JSON di frontend.
-        // Sebaiknya Apps Script di-set allow CORS.
-        headers: {
-            'Content-Type': 'text/plain;charset=utf-8',
-        }
-    };
-
-    if (params) {
-        fetchOptions.body = JSON.stringify(params);
-    }
-
-    try {
-        var response = await fetch(url, fetchOptions);
-        if (!response.ok) throw new Error('Network response was not ok');
-        var data = await response.json();
-        if (data.status === 'error') throw new Error(data.message || 'API Error');
-        return data.data; // Asumsikan response format: { status: 'success', data: ... }
-    } catch (error) {
-        console.error("API Call Error:", error);
-        throw error;
-    }
+// FUNGSI UTILITAS UNTUK MENCEGAH XSS
+function escapeHtml(str) {
+    if (str === null || str === undefined) return '';
+    var div = document.createElement('div');
+    div.appendChild(document.createTextNode(String(str)));
+    return div.innerHTML;
 }
 
 function getTableSkeleton(cols, rows) {
@@ -42,7 +18,6 @@ function getTableSkeleton(cols, rows) {
             return html;
         }
 
-        // FUNGSI KONVERSI URL GOOGLE DRIVE KE DIRECT LINK
         function getDirectDriveImageUrl(originalUrl) {
             if (!originalUrl) return "";
             try {
@@ -55,6 +30,25 @@ function getTableSkeleton(cols, rows) {
             }
             return originalUrl;
         }
+
+        // Ekstraksi Fungsi Utilitas (Phase 3)
+        function parseLinkDokumen(fileUrl) {
+            if (!fileUrl) return "";
+            var previewUrl = fileUrl;
+            if (fileUrl.includes('drive.google.com/open?id=')) {
+                var idMatch = fileUrl.match(/id=([a-zA-Z0-9_-]+)/);
+                if (idMatch) {
+                    previewUrl = 'https://drive.google.com/uc?export=view&id=' + idMatch[1];
+                }
+            } else if (fileUrl.includes('drive.google.com/file/d/')) {
+                var idMatch2 = fileUrl.match(/\/d\/([a-zA-Z0-9_-]+)/);
+                if (idMatch2) {
+                    previewUrl = 'https://drive.google.com/uc?export=view&id=' + idMatch2[1];
+                }
+            }
+            return previewUrl;
+        }
+
 
         function parseQuestionMetadata(rawName) {
             var match = rawName.match(/^{(.*?);;(.*?)}\s*(.*)$/);

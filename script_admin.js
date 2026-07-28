@@ -285,8 +285,8 @@ function runAdminLoginAuth() {
                 var dropdownId = 'dropdown-aksi-' + u.username;
                 
                 var tr = '<tr class="border-b border-slate-50 hover:bg-slate-50 transition-colors">' +
-                            '<td class="py-3 px-4 font-bold text-slate-800">' + (u.nama || '-') + '</td>' +
-                            '<td class="py-3 px-4 text-xs text-slate-500">@' + (u.username || '-') + '</td>' +
+                            '<td class="py-3 px-4 font-bold text-slate-800">' + escapeHtml(u.nama || '-') + '</td>' +
+                            '<td class="py-3 px-4 text-xs text-slate-500">@' + escapeHtml(u.username || '-') + '</td>' +
                             '<td class="py-3 px-4">' + roleBadge + '</td>' +
                             '<td class="py-3 px-4">' + statusBadge + '</td>' +
                             '<td class="py-3 px-4 text-xs text-slate-500">' + (u.terakhirLogin || '-') + '</td>' +
@@ -983,19 +983,7 @@ function runAdminLoginAuth() {
                     window.activeVerifFiles.push({ name: labelName });
 
                     var fileUrl = p.slice(1).join(":").trim();
-                    var previewUrl = fileUrl;
-                    
-                    if (fileUrl.includes('drive.google.com/open?id=')) {
-                        var idMatch = fileUrl.match(/id=([a-zA-Z0-9_-]+)/);
-                        if (idMatch) {
-                            previewUrl = 'https://drive.google.com/uc?export=view&id=' + idMatch[1];
-                        }
-                    } else if (fileUrl.includes('drive.google.com/file/d/')) {
-                        var idMatch2 = fileUrl.match(/\/d\/([a-zA-Z0-9_-]+)/);
-                        if (idMatch2) {
-                            previewUrl = 'https://drive.google.com/uc?export=view&id=' + idMatch2[1];
-                        }
-                    }
+                    var previewUrl = parseLinkDokumen(fileUrl);
 
                     var slideClass = idx === 0 ? "verif-slide flex-1 flex flex-col h-full w-full p-6 absolute inset-0 bg-white" : "verif-slide flex-1 flex flex-col h-full w-full p-6 absolute inset-0 bg-white hidden";
 
@@ -1531,13 +1519,6 @@ function runAdminLoginAuth() {
                 } catch (e) {
                     setTimeout(function () { successHandler(dummyLayananList); }, 200);
                 }
-            } else {
-                callGASApi('getLayananList')
-                    .then(successHandler)
-                    .catch(function(e) {
-                        console.error("Gagal memuat dari API, fallback ke dummy:", e);
-                        setTimeout(function () { successHandler(dummyLayananList); }, 200);
-                    });
             }
         }
 
@@ -2258,101 +2239,114 @@ let adminCharts = {
     layanan: null
 };
 
-function initAdminCharts() {
-    const narmadaGreen = '#059669';
-    const narmadaBlue = '#0ea5e9';
-    
-    // 1. Chart Pengajuan Mingguan (Line)
-    const ctxMingguan = document.getElementById('chartPengajuanMingguan');
-    if (ctxMingguan && !adminCharts.mingguan) {
-        adminCharts.mingguan = new Chart(ctxMingguan, {
-            type: 'line',
-            data: {
-                labels: ['18 Jul', '19 Jul', '20 Jul', '21 Jul', '22 Jul', '23 Jul', '24 Jul'],
-                datasets: [{
-                    label: 'Jumlah Pengajuan',
-                    data: [45, 62, 38, 60, 39, 85, 75],
-                    borderColor: narmadaGreen,
-                    backgroundColor: 'rgba(5, 150, 105, 0.1)',
-                    borderWidth: 2,
-                    pointBackgroundColor: narmadaGreen,
-                    pointBorderColor: '#fff',
-                    pointBorderWidth: 2,
-                    pointRadius: 4,
-                    fill: true,
-                    tension: 0.4
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: {
-                    y: { beginAtZero: true, grid: { borderDash: [5, 5] }, max: 100 },
-                    x: { grid: { display: false } }
-                }
-            }
-        });
+let isChartJsLoaded = false;
+function loadChartJs(callback) {
+    if (isChartJsLoaded || typeof Chart !== 'undefined') {
+        if (callback) callback();
+        return;
     }
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/chart.js';
+    script.onload = () => {
+        isChartJsLoaded = true;
+        if (callback) callback();
+    };
+    document.head.appendChild(script);
+}
 
-    // 2. Chart Status Pengajuan (Donut)
-    const ctxStatus = document.getElementById('chartStatusPengajuan');
-    if (ctxStatus && !adminCharts.status) {
-        adminCharts.status = new Chart(ctxStatus, {
-            type: 'doughnut',
-            data: {
-                labels: ['Menunggu', 'Verifikasi', 'Selesai', 'Perbaikan'],
-                datasets: [{
-                    data: [47, 36, 112, 18],
-                    backgroundColor: [narmadaBlue, '#f59e0b', narmadaGreen, '#ef4444'],
-                    borderWidth: 0,
-                    hoverOffset: 4
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                cutout: '70%',
-                plugins: {
-                    legend: {
-                        position: 'right',
-                        labels: {
-                            usePointStyle: true,
-                            padding: 20,
-                            font: { size: 11, family: "'Plus Jakarta Sans', sans-serif" }
-                        }
+function initAdminCharts() {
+    loadChartJs(function() {
+        const narmadaGreen = '#059669';
+        const narmadaBlue = '#0ea5e9';
+        
+        // 1. Chart Pengajuan Mingguan (Line)
+        const ctxMingguan = document.getElementById('chartPengajuanMingguan');
+        if (ctxMingguan && !adminCharts.mingguan) {
+            adminCharts.mingguan = new Chart(ctxMingguan, {
+                type: 'line',
+                data: {
+                    labels: ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'],
+                    datasets: [{
+                        label: 'Pengajuan Baru',
+                        data: [12, 19, 15, 25, 22, 10, 5],
+                        borderColor: narmadaGreen,
+                        backgroundColor: 'rgba(5, 150, 105, 0.1)',
+                        borderWidth: 3,
+                        tension: 0.4,
+                        fill: true,
+                        pointBackgroundColor: '#fff',
+                        pointBorderColor: narmadaGreen,
+                        pointBorderWidth: 2,
+                        pointRadius: 4,
+                        pointHoverRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false }, tooltip: { mode: 'index', intersect: false, backgroundColor: 'rgba(15, 23, 42, 0.9)' } },
+                    scales: {
+                        y: { beginAtZero: true, grid: { borderDash: [5, 5], color: '#e2e8f0' } },
+                        x: { grid: { display: false } }
+                    },
+                    interaction: { mode: 'nearest', axis: 'x', intersect: false }
+                }
+            });
+        }
+
+        // 2. Chart Status Pengajuan (Donut)
+        const ctxStatus = document.getElementById('chartStatusPengajuan');
+        if (ctxStatus && !adminCharts.status) {
+            adminCharts.status = new Chart(ctxStatus, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Selesai', 'Diproses', 'Menunggu', 'Ditolak'],
+                    datasets: [{
+                        data: [45, 25, 20, 10],
+                        backgroundColor: [narmadaGreen, narmadaBlue, '#f59e0b', '#ef4444'],
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '70%',
+                    plugins: {
+                        legend: { position: 'bottom', labels: { usePointStyle: true, padding: 20, font: { size: 11 } } }
+                    },
+                    layout: { padding: 10 }
+                }
+            });
+        }
+
+        // 3. Chart Jenis Layanan (Bar)
+        const ctxLayanan = document.getElementById('chartJenisLayanan');
+        if (ctxLayanan && !adminCharts.layanan) {
+            adminCharts.layanan = new Chart(ctxLayanan, {
+                type: 'bar',
+                data: {
+                    labels: ['Ket. Usaha', 'Ket. Domisili', 'Pengantar SKCK', 'Ket. Tidak Mampu', 'Lainnya'],
+                    datasets: [{
+                        label: 'Total Pengajuan',
+                        data: [65, 45, 30, 25, 15],
+                        backgroundColor: narmadaBlue,
+                        borderRadius: 6,
+                        barThickness: 24
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, grid: { borderDash: [5, 5] }, max: 80 },
+                        x: { grid: { display: false } }
                     }
                 }
-            }
-        });
-    }
-
-    // 3. Chart Jenis Layanan (Bar)
-    const ctxLayanan = document.getElementById('chartJenisLayanan');
-    if (ctxLayanan && !adminCharts.layanan) {
-        adminCharts.layanan = new Chart(ctxLayanan, {
-            type: 'bar',
-            data: {
-                labels: ['KK', 'KTP', 'BPJS', 'SKTM', 'Domisili', 'Lainnya'],
-                datasets: [{
-                    label: 'Pengajuan',
-                    data: [65, 45, 32, 26, 15, 12],
-                    backgroundColor: narmadaGreen,
-                    borderRadius: 4,
-                    barPercentage: 0.6
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: {
-                    y: { beginAtZero: true, grid: { borderDash: [5, 5] }, max: 80 },
-                    x: { grid: { display: false } }
-                }
-            }
-        });
-    }
+            });
+        }
+    });
 }
 
 

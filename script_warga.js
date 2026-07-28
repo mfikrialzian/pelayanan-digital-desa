@@ -120,8 +120,8 @@ function saveWargaDraft() {
                     '<i class="fa-solid fa-file-signature text-lg md:text-xl drop-shadow-sm group-hover:scale-110 transition-transform"></i>' +
                     '</div>' +
                     '<div class="text-left w-full overflow-hidden">' +
-                    '<p class="font-extrabold text-xs md:text-sm text-slate-800 group-hover:text-narmadaGreen transition-colors truncate">' + row.nama + '</p>' +
-                    '<p class="text-[10px] md:text-xs text-slate-500 font-medium leading-snug mt-0.5 line-clamp-2" title="' + keperluanText + '">' + keperluanText + '</p>' +
+                    '<p class="font-extrabold text-xs md:text-sm text-slate-800 group-hover:text-narmadaGreen transition-colors truncate">' + escapeHtml(row.nama) + '</p>' +
+                    '<p class="text-[10px] md:text-xs text-slate-500 font-medium leading-snug mt-0.5 line-clamp-2" title="' + escapeHtml(keperluanText) + '">' + escapeHtml(keperluanText) + '</p>' +
                     '</div>' +
                     '</div>' +
                     '<div class="bg-slate-50 group-hover:bg-emerald-50 w-7 h-7 rounded-full flex items-center justify-center shrink-0 transition-colors border border-slate-100 group-hover:border-emerald-100">' +
@@ -176,7 +176,7 @@ function saveWargaDraft() {
                     htmlBuffer += '<div class="mb-2">';
                     htmlBuffer += '<p class="font-bold text-slate-800 text-[10px] mb-1">Dokumen Wajib:</p>';
                     groupedReqs["Wajib"].forEach(function (item, index) {
-                        htmlBuffer += '<div class="flex items-center space-x-1.5 py-1 pl-1"><span class="text-emerald-600 font-bold text-[9px] bg-emerald-50 w-3.5 h-3.5 rounded-full flex items-center justify-center shrink-0 border border-emerald-100">' + (index + 1) + '</span> <span class="text-[10px] text-slate-600 font-semibold leading-snug flex-1">' + item + '</span></div>';
+                        htmlBuffer += '<div class="flex items-center space-x-1.5 py-1 pl-1"><span class="text-emerald-600 font-bold text-[9px] bg-emerald-50 w-3.5 h-3.5 rounded-full flex items-center justify-center shrink-0 border border-emerald-100">' + (index + 1) + '</span> <span class="text-[10px] text-slate-600 font-semibold leading-snug flex-1">' + escapeHtml(item) + '</span></div>';
                     });
                     htmlBuffer += '</div>';
                 }
@@ -189,9 +189,9 @@ function saveWargaDraft() {
                 Object.keys(groupedReqs).forEach(function (kep) {
                     if (kep !== "Wajib") {
                         htmlBuffer += '<div class="mb-2 border-l-2 border-emerald-300 pl-2 ml-1">';
-                        htmlBuffer += '<p class="font-extrabold text-emerald-700 text-[10px] bg-emerald-50 px-2 py-0.5 rounded inline-block mb-1 border border-emerald-100">Jika Keperluan: ' + kep + '</p>';
+                        htmlBuffer += '<p class="font-extrabold text-emerald-700 text-[10px] bg-emerald-50 px-2 py-0.5 rounded inline-block mb-1 border border-emerald-100">Jika Keperluan: ' + escapeHtml(kep) + '</p>';
                         groupedReqs[kep].forEach(function (item, index) {
-                            htmlBuffer += '<div class="flex items-center space-x-1.5 py-1 pl-1"><span class="text-emerald-600 font-bold text-[9px] bg-emerald-50 w-3.5 h-3.5 rounded-full flex items-center justify-center shrink-0 border border-emerald-100">' + (index + 1) + '</span> <span class="text-[10px] text-slate-600 font-semibold leading-snug flex-1">' + item + '</span></div>';
+                            htmlBuffer += '<div class="flex items-center space-x-1.5 py-1 pl-1"><span class="text-emerald-600 font-bold text-[9px] bg-emerald-50 w-3.5 h-3.5 rounded-full flex items-center justify-center shrink-0 border border-emerald-100">' + (index + 1) + '</span> <span class="text-[10px] text-slate-600 font-semibold leading-snug flex-1">' + escapeHtml(item) + '</span></div>';
                         });
                         htmlBuffer += '</div>';
                     }
@@ -276,7 +276,7 @@ function saveWargaDraft() {
                         groupHtml += '<h4 class="text-sm font-semibold text-narmadaGreen border-b border-emerald-100 pb-1.5 mt-3 mb-2"><i class="fa-solid fa-list-check"></i> ' + meta.judul + '</h4>';
                     }
 
-                    groupHtml += '<label class="block text-xs font-semibold text-slate-600">' + meta.cleanName + isRequiredStr + '</label>';
+                    groupHtml += '<label class="block text-xs font-semibold text-slate-600">' + escapeHtml(meta.cleanName) + isRequiredStr + '</label>';
                     groupHtml += generateFieldInputHtml(displayType, actualName, requiredAttr, f.options);
                     groupHtml += '</div>';
                     qContainer.innerHTML += groupHtml;
@@ -319,7 +319,7 @@ function saveWargaDraft() {
                 var reqAttr = f.required === "ya" ? "required" : "";
                 
                 blockHtml += '<div class="dynamic-question-wrapper space-y-1">';
-                blockHtml += '<label class="block text-xs font-semibold text-slate-600">' + m.cleanName + reqStr + '</label>';
+                blockHtml += '<label class="block text-xs font-semibold text-slate-600">' + escapeHtml(m.cleanName) + reqStr + '</label>';
                 blockHtml += generateFieldInputHtml(dType, aName, reqAttr, f.options);
                 blockHtml += '</div>';
             });
@@ -357,7 +357,7 @@ function saveWargaDraft() {
                     var slotId = "slot_" + req.id;
                     var slotHtml = '<div id="wrapper-slot-card-' + slotId + '" data-bind-keperluan="' + boundKeperluan + '" class="bg-white p-3.5 rounded-xl border border-slate-200 shadow-xl space-y-2.5 flex flex-col justify-between min-h-[140px] wrapper-slot-card">' +
                         '<div>' +
-                        '<p class="text-[11px] font-bold text-slate-900 mb-0.5"><i class="fa-solid fa-circle-check text-emerald-600"></i> ' + cleanName + ' *</p>' +
+                        '<p class="text-[11px] font-bold text-slate-900 mb-0.5"><i class="fa-solid fa-circle-check text-emerald-600"></i> ' + escapeHtml(cleanName) + ' *</p>' +
                         '<p class="text-[9px] text-slate-400 font-semibold">Maksimal 2MB. Hanya berkas foto/gambar.</p>' +
                         '</div>' +
                         '<div id="preview_box_' + slotId + '" class="preview-box rounded-lg p-2 text-center text-slate-400 flex flex-col items-center justify-center min-h-[60px] text-[9px] font-semibold">' +

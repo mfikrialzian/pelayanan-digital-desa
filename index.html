@@ -3,41 +3,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pelayanan Digital Desa Narmada v3.6.1</title>
     <base href="/">
-    <link rel="icon" href="favicon.png" type="image/png">
+    <link rel="icon" href="icons/icon-192.png" type="image/png">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#059669">
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="input.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
-                    colors: {
-                        narmadaGreen: {
-                            DEFAULT: '#059669',
-                            light: '#34D399',
-                            dark: '#047857'
-                        },
-                        narmadaBlue: {
-                            DEFAULT: '#0EA5E9',
-                            light: '#38BDF8',
-                            dark: '#0284C7'
-                        }
-                    }
-                }
-            }
-        }
-    </script>
 
     <link rel="stylesheet" href="style.css">
 
     <!-- VERCEL-GAS HYBRID POLYFILL -->
     <script>
-        const GAS_API_URL = "https://script.google.com/macros/s/AKfycbyYyDijq_kjRzqa9CeqGm706-FDssRGaNYN9kLTe9awI3h-fsoK5ZCd3OPZKBv56fnM/exec"; // Ganti dengan URL Deploy Anda
-
         window.google = window.google || {};
         window.google.script = window.google.script || {};
 
@@ -62,7 +39,7 @@
                         }
                         
                         return function(...args) {
-                            fetch(GAS_API_URL, {
+                            fetch("/api/proxy", {
                                 method: "POST",
                                 body: JSON.stringify({ action: prop, params: args }),
                                 headers: { "Content-Type": "text/plain;charset=utf-8" },
@@ -135,7 +112,7 @@
                 <div class="absolute inset-0 bg-gradient-to-br from-blue-50/80 via-emerald-50/50 to-white z-0"></div>
                 <div class="absolute -top-10 -right-10 w-32 h-32 bg-blue-300/40 rounded-full blur-3xl z-0 animate-mesh-1"></div>
                 
-                <div class="flex items-center space-x-2.5 cursor-pointer relative z-10" onclick="switchView('beranda')">
+                <div id="ev-bind-1" class="flex items-center space-x-2.5 cursor-pointer relative z-10">
                     <!-- LOGO ADJUSTMENT: Mengubah object-cover menjadi object-contain untuk support PNG transparent -->
                     <div class="w-11 h-11 flex items-center justify-center shrink-0 overflow-hidden">
                         <img id="warga-logo-img" src="" class="w-full h-full object-contain drop-shadow-sm" alt="Logo Desa">
@@ -173,7 +150,7 @@
                 </div>
 
                 <div class="grid grid-cols-3 gap-3 md:gap-4 pt-4 w-full">
-                    <div onclick="handleMulaiPengajuan()" class="relative bg-white/90 border border-slate-200/50 rounded-2xl md:rounded-3xl shadow-xl hover:shadow-2xl overflow-hidden p-2 md:p-4 text-center cursor-pointer group flex flex-col items-center justify-start pt-4 md:pt-6 h-full aspect-square lg:aspect-auto lg:h-36 tap-squish">
+                    <div id="ev-bind-2" class="relative bg-white/90 border border-slate-200/50 rounded-2xl md:rounded-3xl shadow-xl hover:shadow-2xl overflow-hidden p-2 md:p-4 text-center cursor-pointer group flex flex-col items-center justify-start pt-4 md:pt-6 h-full aspect-square lg:aspect-auto lg:h-36 tap-squish">
                         <div class="absolute inset-0 bg-gradient-to-br from-blue-50/80 via-emerald-50/50 to-white z-0 opacity-60"></div>
                         <div class="absolute -top-6 -right-6 w-20 h-20 bg-emerald-300/30 rounded-full blur-2xl z-0 group-hover:scale-150 transition-transform duration-700"></div>
                         
@@ -188,7 +165,7 @@
                         <h3 class="relative z-10 font-bold text-sm text-slate-800 leading-tight flex-1 flex items-center justify-center">Mulai Pengajuan</h3>
                     </div>
 
-                    <div onclick="switchView('status')" class="relative bg-white/90 border border-slate-200/50 rounded-2xl md:rounded-3xl shadow-xl hover:shadow-2xl overflow-hidden p-2 md:p-4 text-center cursor-pointer group flex flex-col items-center justify-start pt-4 md:pt-6 h-full aspect-square lg:aspect-auto lg:h-36 tap-squish">
+                    <div id="ev-bind-3" class="relative bg-white/90 border border-slate-200/50 rounded-2xl md:rounded-3xl shadow-xl hover:shadow-2xl overflow-hidden p-2 md:p-4 text-center cursor-pointer group flex flex-col items-center justify-start pt-4 md:pt-6 h-full aspect-square lg:aspect-auto lg:h-36 tap-squish">
                         <div class="absolute inset-0 bg-gradient-to-br from-blue-50/80 via-emerald-50/50 to-white z-0 opacity-60"></div>
                         <div class="absolute -top-6 -right-6 w-20 h-20 bg-blue-300/30 rounded-full blur-2xl z-0 group-hover:scale-150 transition-transform duration-700"></div>
 
@@ -224,7 +201,7 @@
 
                 <div class="space-y-2.5 w-full pt-2 mt-4">
                     <div class="grid grid-cols-1 gap-4">
-                        <div id="warga-info-jam" onclick="toggleInfoDetail('jam-detail')" class="relative bg-white/90 border border-slate-200/50 rounded-3xl shadow-2xl overflow-hidden p-4 cursor-pointer hover:border-emerald-500/50 transition-all flex flex-col justify-start group">
+                        <div id="warga-info-jam" class="relative bg-white/90 border border-slate-200/50 rounded-3xl shadow-2xl overflow-hidden p-4 cursor-pointer hover:border-emerald-500/50 transition-all flex flex-col justify-start group">
                             <div class="absolute inset-0 bg-gradient-to-br from-blue-50/80 via-emerald-50/50 to-white z-0 opacity-60"></div>
                             <div class="absolute -top-10 -right-10 w-32 h-32 bg-emerald-300/20 rounded-full blur-3xl z-0 group-hover:scale-125 transition-transform duration-700"></div>
 
@@ -265,7 +242,7 @@
                             </div>
                         </div>
 
-                        <div id="warga-info-alur" onclick="toggleInfoDetail('alur-detail')" class="relative bg-white/90 border border-slate-200/50 rounded-3xl shadow-2xl overflow-hidden p-4 cursor-pointer hover:border-blue-500/50 transition-all flex flex-col justify-start group">
+                        <div id="warga-info-alur" class="relative bg-white/90 border border-slate-200/50 rounded-3xl shadow-2xl overflow-hidden p-4 cursor-pointer hover:border-blue-500/50 transition-all flex flex-col justify-start group">
                             <div class="absolute inset-0 bg-gradient-to-br from-blue-50/80 via-emerald-50/50 to-white z-0 opacity-60"></div>
                             <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-blue-300/20 rounded-full blur-3xl z-0 group-hover:scale-125 transition-transform duration-700"></div>
 
@@ -347,7 +324,7 @@
             <!-- VIEW B: PILIH SURAT & FORM PENGAJUAN (5-STEP WIZARD) -->
             <section id="view-layanan" class="hidden space-y-4">
                 <div class="flex items-center space-x-2 text-left">
-                    <button id="btn-back-warga-nav" onclick="backToPrevStepOrMenu()" class="bg-narmadaGreen px-3 py-1.5 rounded-xl text-white hover:bg-narmadaGreen-dark border border-narmadaGreen text-[10px] font-extrabold transition-all flex items-center gap-1.5 shadow-md tap-squish">
+                    <button id="btn-back-warga-nav" class="bg-narmadaGreen px-3 py-1.5 rounded-xl text-white hover:bg-narmadaGreen-dark border border-narmadaGreen text-[10px] font-extrabold transition-all flex items-center gap-1.5 shadow-md tap-squish">
                         <i class="fa-solid fa-arrow-left"></i> Kembali
                     </button>
                     <span class="text-slate-400 text-xs">/</span>
@@ -409,7 +386,7 @@
                         </div>
 
                         <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 flex items-start space-x-2.5 shadow-sm">
-                            <input type="checkbox" id="warga-syarat-checkbox" onchange="toggleWizardStep1State()" class="mt-0.5 w-4.5 h-4.5 text-narmadaGreen border-slate-300 rounded focus:ring-narmadaGreen cursor-pointer">
+                            <input type="checkbox" id="warga-syarat-checkbox" class="mt-0.5 w-4.5 h-4.5 text-narmadaGreen border-slate-300 rounded focus:ring-narmadaGreen cursor-pointer">
                             <label for="warga-syarat-checkbox" class="text-[10px] font-extrabold text-slate-700 leading-relaxed cursor-pointer select-none">
                                 Saya menyatakan sudah menyiapkan seluruh dokumen persyaratan fisik di atas secara
                                 lengkap &amp; benar.
@@ -417,7 +394,7 @@
                         </div>
 
                         <div class="flex justify-end pt-2">
-                            <button type="button" id="btn-next-step-1" onclick="goToStep2()" disabled="" class="px-5 py-2.5 rounded-xl bg-slate-300 text-slate-500 font-bold text-xs shadow-md transition-all flex items-center gap-1.5 cursor-not-allowed tap-squish">
+                            <button type="button" id="btn-next-step-1" disabled="" class="px-5 py-2.5 rounded-xl bg-slate-300 text-slate-500 font-bold text-xs shadow-md transition-all flex items-center gap-1.5 cursor-not-allowed tap-squish">
                                 Lanjut ke Identitas <i class="fa-solid fa-arrow-right text-[10px]"></i>
                             </button>
                         </div>
@@ -451,7 +428,7 @@
                         </div>
 
                         <div class="flex justify-end pt-2">
-                            <button type="button" id="btn-next-step-2" onclick="goToStep3()" disabled="" class="px-5 py-2.5 bg-slate-300 text-slate-500 font-bold text-xs rounded-xl shadow-md transition-all flex items-center gap-1.5 cursor-not-allowed tap-squish">
+                            <button type="button" id="btn-next-step-2" disabled="" class="px-5 py-2.5 bg-slate-300 text-slate-500 font-bold text-xs rounded-xl shadow-md transition-all flex items-center gap-1.5 cursor-not-allowed tap-squish">
                                 Lanjut ke Isian Form <i class="fa-solid fa-arrow-right text-xs"></i>
                             </button>
                         </div>
@@ -469,7 +446,7 @@
                         <div id="container-pertanyaan-tambahan" class="space-y-3 pt-2"></div>
 
                         <div class="flex justify-end pt-2">
-                            <button type="button" id="btn-next-step-3" onclick="goToStep4()" disabled="" class="px-5 py-2.5 bg-slate-300 text-slate-500 font-bold text-xs rounded-xl shadow-md transition-all flex items-center gap-1.5 cursor-not-allowed tap-squish">
+                            <button type="button" id="btn-next-step-3" disabled="" class="px-5 py-2.5 bg-slate-300 text-slate-500 font-bold text-xs rounded-xl shadow-md transition-all flex items-center gap-1.5 cursor-not-allowed tap-squish">
                                 Lanjut ke Unggah Berkas <i class="fa-solid fa-arrow-right text-[10px]"></i>
                             </button>
                         </div>
@@ -484,7 +461,7 @@
                         </div>
 
                         <div class="flex justify-end pt-3 border-t border-slate-101">
-                            <button type="button" id="btn-next-step-4" onclick="goToStep5()" disabled="" class="px-5 py-2.5 bg-slate-300 text-slate-500 text-xs font-bold rounded-xl shadow-md transition-all flex items-center gap-1.5 cursor-not-allowed tap-squish">
+                            <button type="button" id="btn-next-step-4" disabled="" class="px-5 py-2.5 bg-slate-300 text-slate-500 text-xs font-bold rounded-xl shadow-md transition-all flex items-center gap-1.5 cursor-not-allowed tap-squish">
                                 <span>Lanjut ke Tinjauan</span> <i class="fa-solid fa-arrow-right text-[10px]"></i>
                             </button>
                         </div>
@@ -526,16 +503,16 @@
 
                         <div class="space-y-2.5 py-3 border-t border-slate-101">
                             <label class="flex items-start gap-2.5 cursor-pointer">
-                                <input type="checkbox" id="warga-check-kebenaran" onchange="toggleSubmitButtonState()" class="mt-0.5 w-4 h-4 text-narmadaGreen border-slate-300 rounded focus:ring-narmadaGreen cursor-pointer shrink-0">
+                                <input type="checkbox" id="warga-check-kebenaran" class="mt-0.5 w-4 h-4 text-narmadaGreen border-slate-300 rounded focus:ring-narmadaGreen cursor-pointer shrink-0">
                                 <span class="text-[10px] text-slate-700 leading-tight select-none">Saya menyatakan bahwa seluruh data dan foto dokumen yang dilampirkan adalah benar dan sesuai dengan aslinya.</span>
                             </label>
                             <label class="flex items-start gap-2.5 cursor-pointer">
-                                <input type="checkbox" id="warga-check-tanggungjawab" onchange="toggleSubmitButtonState()" class="mt-0.5 w-4 h-4 text-narmadaGreen border-slate-300 rounded focus:ring-narmadaGreen cursor-pointer shrink-0">
+                                <input type="checkbox" id="warga-check-tanggungjawab" class="mt-0.5 w-4 h-4 text-narmadaGreen border-slate-300 rounded focus:ring-narmadaGreen cursor-pointer shrink-0">
                                 <span class="text-[10px] text-slate-700 leading-tight select-none">Saya bertanggung jawab penuh atas keabsahan pengajuan ini dan bersedia menerima sanksi apabila di kemudian hari terbukti memalsukan dokumen.</span>
                             </label>
                         </div>
                         <div class="flex justify-end pt-1">
-                            <button type="button" id="btn-submit-warga" onclick="handleWargaSubmit()" disabled="" class="px-5 py-2.5 bg-slate-300 text-slate-500 text-xs font-extrabold rounded-xl shadow-md transition-all flex items-center gap-1.5 cursor-not-allowed tap-squish">
+                            <button type="button" id="btn-submit-warga" disabled="" class="px-5 py-2.5 bg-slate-300 text-slate-500 text-xs font-extrabold rounded-xl shadow-md transition-all flex items-center gap-1.5 cursor-not-allowed tap-squish">
                                 <span>Kirim Pengajuan</span> <i class="fa-solid fa-paper-plane text-[10px]"></i>
                             </button>
                         </div>
@@ -557,17 +534,17 @@
                                 Registrasi Pengajuan</span>
                             <span class="text-xs font-black text-emerald-700 tracking-widest block select-all" id="success-reg-id">REQ-00000000-0000</span>
 
-                            <button onclick="copyRegIdToClipboard()" class="mx-auto flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-900 text-white rounded-lg text-[9px] font-bold transition-all shadow">
+                            <button id="ev-bind-4" class="mx-auto flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-900 text-white rounded-lg text-[9px] font-bold transition-all shadow">
                                 <i class="fa-regular fa-copy"></i> Salin No. Registrasi
                             </button>
                             
-                            <button onclick="sendWaAfterSubmit()" class="mx-auto mt-2 flex items-center gap-1.5 px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg text-[9px] font-bold transition-all shadow tap-squish">
+                            <button id="ev-bind-5" class="mx-auto mt-2 flex items-center gap-1.5 px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg text-[9px] font-bold transition-all shadow tap-squish">
                                 <i class="fa-brands fa-whatsapp text-sm"></i> Kabari Admin via WA
                             </button>
                         </div>
 
                         <div class="pt-4">
-                            <button onclick="switchView('beranda')" class="px-6 py-2.5 bg-emerald-50 hover:bg-emerald-100 text-narmadaGreen font-bold text-xs rounded-xl transition-all shadow-md tap-squish">
+                            <button id="ev-bind-6" class="px-6 py-2.5 bg-emerald-50 hover:bg-emerald-100 text-narmadaGreen font-bold text-xs rounded-xl transition-all shadow-md tap-squish">
                                 Kembali ke Beranda
                             </button>
                         </div>
@@ -579,7 +556,7 @@
             <!-- VIEW C: CEK STATUS PENGAJUAN (WARGA) -->
             <section id="view-status" class="hidden space-y-5">
                 <div class="flex items-center space-x-2 text-left">
-                    <button onclick="switchView('beranda')" class="bg-narmadaGreen px-3 py-1.5 rounded-xl text-white hover:bg-narmadaGreen-dark border border-narmadaGreen text-[10px] font-extrabold transition-all flex items-center gap-1.5 shadow-md tap-squish">
+                    <button id="ev-bind-7" class="bg-narmadaGreen px-3 py-1.5 rounded-xl text-white hover:bg-narmadaGreen-dark border border-narmadaGreen text-[10px] font-extrabold transition-all flex items-center gap-1.5 shadow-md tap-squish">
                         <i class="fa-solid fa-arrow-left"></i> Kembali
                     </button>
                     <span class="text-slate-400 text-xs">/</span>
@@ -590,7 +567,7 @@
                     <h3 class="text-xs font-bold text-slate-900 flex items-center gap-1.5 text-left">
                         <span>🔍</span> Lacak Berkas Pengajuan Warga
                     </h3>
-                    <form onsubmit="event.preventDefault(); runSearchStatus();" class="flex gap-2">
+                    <form id="ev-bind-8" class="flex gap-2">
                         <input type="text" id="search-status-key" required="" placeholder="Masukkan NIK atau ID Pengajuan (REQ-...)" class="flex-grow px-3 py-2.5 rounded-xl custom-input text-xs shadow-inner">
                         <button type="submit" class="px-4 py-2.5 rounded-xl bg-narmadaGreen hover:bg-narmadaGreen-dark text-white font-extrabold text-xs transition-all shadow-md">Cari</button>
                     </form>
@@ -640,7 +617,7 @@
                     <p class="text-sm text-slate-500">Silakan login ke akun admin Anda.</p>
                 </div>
                 
-                <form onsubmit="event.preventDefault(); runAdminLoginAuth();" class="space-y-5">
+                <form id="ev-bind-9" class="space-y-5">
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-2 uppercase tracking-wide">Username</label>
                         <div class="relative">
@@ -661,7 +638,7 @@
                                 </svg>
                             </div>
                             <input type="password" id="login-password" required="" placeholder="Masukkan kata sandi" class="w-full pl-11 pr-11 py-3 rounded-xl border border-slate-200 focus:border-narmadaGreen focus:ring focus:ring-emerald-200 focus:ring-opacity-50 transition-all text-sm outline-none bg-slate-50 focus:bg-white text-slate-800">
-                            <button type="button" onclick="togglePasswordView('login-password', 'eye-icon-login')" class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-narmadaGreen transition-colors">
+                            <button id="ev-bind-10" type="button" class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-narmadaGreen transition-colors">
                                 <i class="fa-solid fa-eye" id="eye-icon-login"></i>
                             </button>
                         </div>
@@ -675,7 +652,7 @@
                     </button>
                     
                     <div class="mt-6 text-center">
-                        <button type="button" onclick="switchView('beranda')" class="text-xs font-semibold text-slate-500 hover:text-narmadaGreen transition-colors inline-flex items-center gap-1.5">
+                        <button id="ev-bind-11" type="button" class="text-xs font-semibold text-slate-500 hover:text-narmadaGreen transition-colors inline-flex items-center gap-1.5">
                             <i class="fa-solid fa-arrow-left"></i> Kembali ke Portal Warga
                         </button>
                     </div>
@@ -766,8 +743,8 @@
                             <div class="px-4 py-3 border-b border-slate-100 mb-2 flex justify-between items-center">
                                 <p class="text-xs font-bold text-slate-700 uppercase tracking-wider">Notifikasi</p>
                                 <div class="flex gap-3 items-center">
-                                    <button onclick="markAllNotificationsAsRead()" class="text-slate-400 hover:text-narmadaGreen transition-colors" title="Tandai Semua Dibaca"><i class="fa-solid fa-check-double text-xs"></i></button>
-                                    <button onclick="deleteAllNotifications()" class="text-slate-400 hover:text-red-500 transition-colors" title="Hapus Semua"><i class="fa-solid fa-trash-can text-xs"></i></button>
+                                    <button id="ev-bind-12" class="text-slate-400 hover:text-narmadaGreen transition-colors" title="Tandai Semua Dibaca"><i class="fa-solid fa-check-double text-xs"></i></button>
+                                    <button id="ev-bind-13" class="text-slate-400 hover:text-red-500 transition-colors" title="Hapus Semua"><i class="fa-solid fa-trash-can text-xs"></i></button>
                                     <a href="javascript:switchAdminTab('aktivitas'); document.getElementById('admin-notification-trigger').click();" class="text-[10px] font-bold text-narmadaGreen hover:underline">Lihat Semua</a>
                                 </div>
                             </div>
@@ -820,7 +797,7 @@
                         <!-- KPI Cards -->
                         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
                             <!-- Total Pengajuan -->
-                            <div id="card-stat-total" onclick="setStatusFilter('')" class="cursor-pointer bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex flex-col justify-between hover:shadow-md transition-shadow relative overflow-hidden group">
+                            <div id="card-stat-total" class="cursor-pointer bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex flex-col justify-between hover:shadow-md transition-shadow relative overflow-hidden group">
                                 <div class="absolute -right-4 -top-4 w-16 h-16 bg-emerald-50 rounded-full group-hover:scale-150 transition-transform duration-500 z-0"></div>
                                 <div class="relative z-10">
                                     <div class="flex justify-between items-start mb-2">
@@ -838,7 +815,7 @@
                             </div>
                             
                             <!-- Menunggu -->
-                            <div id="card-stat-menunggu" onclick="setStatusFilter('Menunggu')" class="cursor-pointer bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex flex-col justify-between hover:shadow-md transition-shadow relative overflow-hidden group">
+                            <div id="card-stat-menunggu" class="cursor-pointer bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex flex-col justify-between hover:shadow-md transition-shadow relative overflow-hidden group">
                                 <div class="absolute -right-4 -top-4 w-16 h-16 bg-blue-50 rounded-full group-hover:scale-150 transition-transform duration-500 z-0"></div>
                                 <div class="relative z-10">
                                     <div class="flex justify-between items-start mb-2">
@@ -856,7 +833,7 @@
                             </div>
 
                             <!-- Verifikasi -->
-                            <div id="card-stat-verifikasi" onclick="setStatusFilter('Verifikasi')" class="cursor-pointer bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex flex-col justify-between hover:shadow-md transition-shadow relative overflow-hidden group">
+                            <div id="card-stat-verifikasi" class="cursor-pointer bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex flex-col justify-between hover:shadow-md transition-shadow relative overflow-hidden group">
                                 <div class="absolute -right-4 -top-4 w-16 h-16 bg-amber-50 rounded-full group-hover:scale-150 transition-transform duration-500 z-0"></div>
                                 <div class="relative z-10">
                                     <div class="flex justify-between items-start mb-2">
@@ -874,7 +851,7 @@
                             </div>
 
                             <!-- Selesai -->
-                            <div id="card-stat-selesai" onclick="setStatusFilter('Selesai')" class="cursor-pointer bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex flex-col justify-between hover:shadow-md transition-shadow relative overflow-hidden group">
+                            <div id="card-stat-selesai" class="cursor-pointer bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex flex-col justify-between hover:shadow-md transition-shadow relative overflow-hidden group">
                                 <div class="absolute -right-4 -top-4 w-16 h-16 bg-green-50 rounded-full group-hover:scale-150 transition-transform duration-500 z-0"></div>
                                 <div class="relative z-10">
                                     <div class="flex justify-between items-start mb-2">
@@ -892,7 +869,7 @@
                             </div>
 
                             <!-- Perbaikan -->
-                            <div id="card-stat-perbaikan" onclick="setStatusFilter('Perbaikan')" class="cursor-pointer bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex flex-col justify-between hover:shadow-md transition-shadow relative overflow-hidden group">
+                            <div id="card-stat-perbaikan" class="cursor-pointer bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex flex-col justify-between hover:shadow-md transition-shadow relative overflow-hidden group">
                                 <div class="absolute -right-4 -top-4 w-16 h-16 bg-red-50 rounded-full group-hover:scale-150 transition-transform duration-500 z-0"></div>
                                 <div class="relative z-10">
                                     <div class="flex justify-between items-start mb-2">
@@ -1042,8 +1019,8 @@
                             <div class="p-4 border-t border-slate-100 flex justify-between items-center bg-slate-50/30">
                                 <span id="txt-pagination-info" class="text-[11px] font-semibold text-slate-500">Menampilkan 1 - 10 dari 213 data</span>
                                 <div class="flex items-center gap-1">
-                                    <button id="btn-adm-prev" onclick="moveAdminPage(-1)" class="w-7 h-7 rounded-lg bg-white border border-slate-200 text-slate-400 hover:bg-slate-50 flex items-center justify-center transition-colors disabled:opacity-50"><i class="fa-solid fa-chevron-left text-[10px]"></i></button>
-                                    <button id="btn-adm-next" onclick="moveAdminPage(1)" class="w-7 h-7 rounded-lg bg-white border border-slate-200 text-slate-400 hover:bg-slate-50 flex items-center justify-center transition-colors disabled:opacity-50"><i class="fa-solid fa-chevron-right text-[10px]"></i></button>
+                                    <button id="btn-adm-prev" class="w-7 h-7 rounded-lg bg-white border border-slate-200 text-slate-400 hover:bg-slate-50 flex items-center justify-center transition-colors disabled:opacity-50"><i class="fa-solid fa-chevron-left text-[10px]"></i></button>
+                                    <button id="btn-adm-next" class="w-7 h-7 rounded-lg bg-white border border-slate-200 text-slate-400 hover:bg-slate-50 flex items-center justify-center transition-colors disabled:opacity-50"><i class="fa-solid fa-chevron-right text-[10px]"></i></button>
                                 </div>
                             </div>
                         </div>
@@ -1087,7 +1064,7 @@
                             <p class="text-xs text-slate-500 mt-1">Kelola informasi profil, preferensi, dan keamanan akun Anda.</p>
                         </div>
                         <div class="divide-y divide-slate-100">
-                            <div onclick="switchPengaturanAkunTab('profil')" class="flex items-center gap-4 p-5 hover:bg-slate-50 cursor-pointer transition-colors group">
+                            <div id="ev-bind-14" class="flex items-center gap-4 p-5 hover:bg-slate-50 cursor-pointer transition-colors group">
                                 <div class="w-10 h-10 rounded-full bg-emerald-50 text-narmadaGreen flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
                                     <i class="fa-regular fa-user"></i>
                                 </div>
@@ -1098,7 +1075,7 @@
                                 <i class="fa-solid fa-chevron-right text-slate-300 group-hover:text-narmadaGreen transition-colors"></i>
                             </div>
                             
-                            <div onclick="switchPengaturanAkunTab('keamanan')" class="flex items-center gap-4 p-5 hover:bg-slate-50 cursor-pointer transition-colors group">
+                            <div id="ev-bind-15" class="flex items-center gap-4 p-5 hover:bg-slate-50 cursor-pointer transition-colors group">
                                 <div class="w-10 h-10 rounded-full bg-emerald-50 text-narmadaGreen flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
                                     <i class="fa-solid fa-shield-halved"></i>
                                 </div>
@@ -1109,7 +1086,7 @@
                                 <i class="fa-solid fa-chevron-right text-slate-300 group-hover:text-narmadaGreen transition-colors"></i>
                             </div>
                             
-                            <div onclick="switchPengaturanAkunTab('tampilan')" class="flex items-center gap-4 p-5 hover:bg-slate-50 cursor-pointer transition-colors group">
+                            <div id="ev-bind-16" class="flex items-center gap-4 p-5 hover:bg-slate-50 cursor-pointer transition-colors group">
                                 <div class="w-10 h-10 rounded-full bg-emerald-50 text-narmadaGreen flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
                                     <i class="fa-solid fa-desktop"></i>
                                 </div>
@@ -1120,7 +1097,7 @@
                                 <i class="fa-solid fa-chevron-right text-slate-300 group-hover:text-narmadaGreen transition-colors"></i>
                             </div>
 
-                            <div onclick="switchPengaturanAkunTab('notifikasi')" class="flex items-center gap-4 p-5 hover:bg-slate-50 cursor-pointer transition-colors group">
+                            <div id="ev-bind-17" class="flex items-center gap-4 p-5 hover:bg-slate-50 cursor-pointer transition-colors group">
                                 <div class="w-10 h-10 rounded-full bg-emerald-50 text-narmadaGreen flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
                                     <i class="fa-regular fa-bell"></i>
                                 </div>
@@ -1131,7 +1108,7 @@
                                 <i class="fa-solid fa-chevron-right text-slate-300 group-hover:text-narmadaGreen transition-colors"></i>
                             </div>
 
-                            <div onclick="switchPengaturanAkunTab('aktivitas')" class="flex items-center gap-4 p-5 hover:bg-slate-50 cursor-pointer transition-colors group">
+                            <div id="ev-bind-18" class="flex items-center gap-4 p-5 hover:bg-slate-50 cursor-pointer transition-colors group">
                                 <div class="w-10 h-10 rounded-full bg-emerald-50 text-narmadaGreen flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
                                     <i class="fa-solid fa-list-ul"></i>
                                 </div>
@@ -1149,7 +1126,7 @@
                     <div id="pa-content-container" class="w-full hidden">
                         <div class="w-full flex justify-center">
                             <div class="w-full max-w-3xl">
-                                <button onclick="showPengaturanAkunMenu()" class="mb-4 flex items-center gap-2 text-xs md:text-sm font-bold text-slate-500 hover:text-narmadaGreen transition-colors">
+                                <button id="ev-bind-19" class="mb-4 flex items-center gap-2 text-xs md:text-sm font-bold text-slate-500 hover:text-narmadaGreen transition-colors">
                                     <i class="fa-solid fa-arrow-left"></i> Kembali ke Menu Pengaturan
                                 </button>
                                 
@@ -1159,10 +1136,10 @@
                             <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 flex items-center gap-6">
                                 <div class="relative">
                                     <img id="profil-avatar-img" src="https://ui-avatars.com/api/?name=Muhamad+Alzian&amp;background=0D8ABC&amp;color=fff&amp;size=100" alt="Avatar" class="w-20 h-20 md:w-24 md:h-24 rounded-full border-4 border-slate-50 shadow-sm object-cover">
-                                    <button class="absolute bottom-0 right-0 w-8 h-8 bg-white border border-slate-200 rounded-full flex items-center justify-center text-slate-500 hover:text-narmadaGreen hover:border-narmadaGreen transition-colors shadow-sm" onclick="document.getElementById('input-profil-foto').click()">
+                                    <button id="ev-bind-20" class="absolute bottom-0 right-0 w-8 h-8 bg-white border border-slate-200 rounded-full flex items-center justify-center text-slate-500 hover:text-narmadaGreen hover:border-narmadaGreen transition-colors shadow-sm">
                                         <i class="fa-solid fa-camera text-xs"></i>
                                     </button>
-                                    <input type="file" id="input-profil-foto" accept="image/*" class="hidden" onchange="handleProfilePhotoChange(event)">
+                                    <input type="file" id="input-profil-foto" accept="image/*" class="hidden">
                                 </div>
                                 <div>
                                     <h2 id="profil-header-nama" class="text-xl md:text-2xl font-black text-slate-800">Muhamad Alzian</h2>
@@ -1179,7 +1156,7 @@
                                     <h3 class="text-xs md:text-sm font-bold text-slate-800 flex items-center gap-2">
                                         <i class="fa-solid fa-user-pen text-narmadaGreen"></i> Informasi Pribadi
                                     </h3>
-                                    <button type="button" id="btn-edit-profil" onclick="toggleEditProfile()" class="text-[10px] md:text-xs font-bold text-narmadaGreen hover:text-emerald-700 bg-emerald-50 hover:bg-emerald-100 px-3 py-1.5 rounded-lg transition-colors">
+                                    <button type="button" id="btn-edit-profil" class="text-[10px] md:text-xs font-bold text-narmadaGreen hover:text-emerald-700 bg-emerald-50 hover:bg-emerald-100 px-3 py-1.5 rounded-lg transition-colors">
                                         Edit Profil
                                     </button>
                                 </div>
@@ -1201,7 +1178,7 @@
                                         </div>
                                         <!-- Action Buttons (Hidden by default) -->
                                         <div id="profil-action-buttons" class="hidden flex justify-end gap-2 pt-4 border-t border-slate-100 mt-4">
-                                            <button type="button" onclick="toggleEditProfile(true)" class="px-5 py-2 text-[10px] md:text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors">
+                                            <button id="ev-bind-21" type="button" class="px-5 py-2 text-[10px] md:text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors">
                                                 Batal
                                             </button>
                                             <button type="submit" class="px-5 py-2 text-[10px] md:text-xs font-bold text-white bg-narmadaGreen hover:bg-emerald-700 rounded-xl transition-colors shadow-sm">
@@ -1265,7 +1242,7 @@
                                     </h3>
                                 </div>
                                 <div class="p-4 md:p-6">
-                                    <form id="form-password" class="space-y-4" onsubmit="changePasswordMock(event)">
+                                    <form id="form-password" class="space-y-4">
                                         <div>
                                             <label class="block text-[9px] md:text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Password Lama</label>
                                             <input type="password" required="" class="w-full max-w-md bg-white border border-slate-200 text-slate-800 text-xs md:text-sm rounded-xl focus:ring-narmadaBlue focus:border-narmadaBlue block px-4 py-2.5 outline-none transition-all" placeholder="Masukkan password lama">
@@ -1305,7 +1282,7 @@
                                             <h4 class="text-[10px] md:text-xs font-bold text-slate-700">Mode Gelap (Dark Mode)</h4>
                                             <p class="text-[9px] md:text-[10px] text-slate-500 mt-0.5">Ubah antarmuka menjadi tema gelap untuk kenyamanan mata.</p>
                                         </div>
-                                        <button type="button" onclick="toggleDarkModeUI(this)" class="relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-narmadaGreen focus:ring-offset-2" role="switch" aria-checked="false">
+                                        <button id="ev-bind-22" type="button" class="relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-narmadaGreen focus:ring-offset-2" role="switch" aria-checked="false">
                                             <span class="sr-only">Toggle dark mode</span>
                                             <span aria-hidden="true" class="pointer-events-none absolute mx-auto h-3 w-7 rounded-full bg-slate-200 transition-colors duration-200 ease-in-out" id="settings-dark-mode-track"></span>
                                             <span aria-hidden="true" class="pointer-events-none absolute left-0 inline-block h-4 w-4 transform rounded-full border border-slate-200 bg-white shadow ring-0 transition-transform duration-200 ease-in-out translate-x-0" id="settings-dark-mode-thumb"></span>
@@ -1319,7 +1296,7 @@
                                             <h4 class="text-[10px] md:text-xs font-bold text-slate-700">Kepadatan Tabel</h4>
                                             <p class="text-[9px] md:text-[10px] text-slate-500 mt-0.5">Atur jarak spasi antar baris pada tabel data.</p>
                                         </div>
-                                        <select class="bg-slate-50 border border-slate-200 text-slate-700 text-[10px] md:text-xs rounded-lg focus:ring-narmadaGreen focus:border-narmadaGreen block p-2 outline-none w-28 md:w-36" onchange="mockSaveSetting('Kepadatan Tabel')">
+                                        <select id="ev-bind-23" class="bg-slate-50 border border-slate-200 text-slate-700 text-[10px] md:text-xs rounded-lg focus:ring-narmadaGreen focus:border-narmadaGreen block p-2 outline-none w-28 md:w-36">
                                             <option value="compact">Rapat (Compact)</option>
                                             <option value="regular" selected="">Normal</option>
                                             <option value="comfortable">Longgar</option>
@@ -1333,13 +1310,13 @@
                                             <h4 class="text-[10px] md:text-xs font-bold text-slate-700">Bahasa Sistem</h4>
                                             <p class="text-[9px] md:text-[10px] text-slate-500 mt-0.5">Pilih bahasa utama untuk antarmuka admin.</p>
                                         </div>
-                                        <select class="bg-slate-50 border border-slate-200 text-slate-700 text-[10px] md:text-xs rounded-lg focus:ring-narmadaGreen focus:border-narmadaGreen block p-2 outline-none w-28 md:w-36" onchange="mockSaveSetting('Bahasa Sistem')">
+                                        <select id="ev-bind-24" class="bg-slate-50 border border-slate-200 text-slate-700 text-[10px] md:text-xs rounded-lg focus:ring-narmadaGreen focus:border-narmadaGreen block p-2 outline-none w-28 md:w-36">
                                             <option value="id" selected="">Indonesia (ID)</option>
                                             <option value="en">English (EN)</option>
                                         </select>
                                     </div>
                                     <div class="pt-4 mt-4 flex justify-end">
-                                        <button type="button" onclick="pushToast('Pengaturan tampilan berhasil disimpan.', 'success')" class="px-5 py-2 text-[10px] md:text-xs font-bold text-white bg-narmadaGreen hover:bg-emerald-700 rounded-xl transition-colors shadow-sm">
+                                        <button id="ev-bind-25" type="button" class="px-5 py-2 text-[10px] md:text-xs font-bold text-white bg-narmadaGreen hover:bg-emerald-700 rounded-xl transition-colors shadow-sm">
                                             <i class="fa-solid fa-floppy-disk mr-1"></i> Simpan
                                         </button>
                                     </div>
@@ -1363,7 +1340,7 @@
                                             <h4 class="text-[10px] md:text-xs font-bold text-slate-700">Notifikasi Email</h4>
                                             <p class="text-[9px] md:text-[10px] text-slate-500 mt-0.5">Kirim notifikasi ke email saat ada pengajuan baru.</p>
                                         </div>
-                                        <button type="button" onclick="toggleSettingSwitch(this, 'Notifikasi Email')" class="relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-narmadaGreen focus:ring-offset-2" role="switch" aria-checked="true">
+                                        <button id="ev-bind-26" type="button" class="relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-narmadaGreen focus:ring-offset-2" role="switch" aria-checked="true">
                                             <span class="sr-only">Toggle email</span>
                                             <span aria-hidden="true" class="pointer-events-none absolute mx-auto h-3 w-7 rounded-full bg-emerald-500 transition-colors duration-200 ease-in-out toggle-track"></span>
                                             <span aria-hidden="true" class="pointer-events-none absolute left-0 inline-block h-4 w-4 transform rounded-full border border-slate-200 bg-white shadow ring-0 transition-transform duration-200 ease-in-out translate-x-4 toggle-thumb"></span>
@@ -1377,7 +1354,7 @@
                                             <h4 class="text-[10px] md:text-xs font-bold text-slate-700">Notifikasi WhatsApp</h4>
                                             <p class="text-[9px] md:text-[10px] text-slate-500 mt-0.5">Kirim pesan WhatsApp untuk pengajuan prioritas.</p>
                                         </div>
-                                        <button type="button" onclick="toggleSettingSwitch(this, 'Notifikasi WhatsApp')" class="relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-narmadaGreen focus:ring-offset-2" role="switch" aria-checked="false">
+                                        <button id="ev-bind-27" type="button" class="relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-narmadaGreen focus:ring-offset-2" role="switch" aria-checked="false">
                                             <span class="sr-only">Toggle WA</span>
                                             <span aria-hidden="true" class="pointer-events-none absolute mx-auto h-3 w-7 rounded-full bg-slate-200 transition-colors duration-200 ease-in-out toggle-track"></span>
                                             <span aria-hidden="true" class="pointer-events-none absolute left-0 inline-block h-4 w-4 transform rounded-full border border-slate-200 bg-white shadow ring-0 transition-transform duration-200 ease-in-out translate-x-0 toggle-thumb"></span>
@@ -1391,14 +1368,14 @@
                                             <h4 class="text-[10px] md:text-xs font-bold text-slate-700">Push Notification Browser</h4>
                                             <p class="text-[9px] md:text-[10px] text-slate-500 mt-0.5">Munculkan notifikasi di pojok layar browser Anda.</p>
                                         </div>
-                                        <button type="button" onclick="toggleSettingSwitch(this, 'Push Notification')" class="relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-narmadaGreen focus:ring-offset-2" role="switch" aria-checked="true">
+                                        <button id="ev-bind-28" type="button" class="relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-narmadaGreen focus:ring-offset-2" role="switch" aria-checked="true">
                                             <span class="sr-only">Toggle Push</span>
                                             <span aria-hidden="true" class="pointer-events-none absolute mx-auto h-3 w-7 rounded-full bg-emerald-500 transition-colors duration-200 ease-in-out toggle-track"></span>
                                             <span aria-hidden="true" class="pointer-events-none absolute left-0 inline-block h-4 w-4 transform rounded-full border border-slate-200 bg-white shadow ring-0 transition-transform duration-200 ease-in-out translate-x-4 toggle-thumb"></span>
                                         </button>
                                     </div>
                                     <div class="pt-4 mt-4 flex justify-end">
-                                        <button type="button" onclick="pushToast('Pengaturan notifikasi berhasil disimpan.', 'success')" class="px-5 py-2 text-[10px] md:text-xs font-bold text-white bg-narmadaGreen hover:bg-emerald-700 rounded-xl transition-colors shadow-sm">
+                                        <button id="ev-bind-29" type="button" class="px-5 py-2 text-[10px] md:text-xs font-bold text-white bg-narmadaGreen hover:bg-emerald-700 rounded-xl transition-colors shadow-sm">
                                             <i class="fa-solid fa-floppy-disk mr-1"></i> Simpan
                                         </button>
                                     </div>
@@ -1459,8 +1436,8 @@
                             <p class="text-[10px] text-slate-500">Konfigurasi detail, berkas persyaratan, dan kolom pertanyaan.</p>
                         </div>
                         <div class="flex gap-2">
-                            <button onclick="closeLayananEditor()" class="px-4 py-2 text-xs font-bold text-slate-600 bg-slate-50 border border-slate-200 hover:bg-slate-100 rounded-xl transition-colors">Batal</button>
-                            <button onclick="submitBuilderDataToServer()" class="px-5 py-2 bg-narmadaGreen hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-sm flex items-center gap-2 transition-colors">
+                            <button id="ev-bind-30" class="px-4 py-2 text-xs font-bold text-slate-600 bg-slate-50 border border-slate-200 hover:bg-slate-100 rounded-xl transition-colors">Batal</button>
+                            <button id="ev-bind-31" class="px-5 py-2 bg-narmadaGreen hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-sm flex items-center gap-2 transition-colors">
                                 <i class="fa-solid fa-save"></i> Simpan Perubahan
                             </button>
                         </div>
@@ -1496,11 +1473,11 @@
                                 
                                 <div>
                                     <div class="flex gap-2">
-                                        <select id="builder-keperluan-select" onchange="handleKeperluanSelectChange()" class="flex-grow px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors">
+                                        <select id="builder-keperluan-select" class="flex-grow px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors">
                                             <option value="">-- Pilih / Edit Keperluan --</option>
                                             <option value="__ADD_NEW__" class="font-extrabold text-emerald-600">[+] TAMBAH KEPERLUAN BARU...</option>
                                         </select>
-                                        <button type="button" onclick="deleteSelectedKeperluanOption()" class="px-3 py-2 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-xl text-xs font-bold transition-colors shadow-sm" title="Hapus opsi terpilih">
+                                        <button id="ev-bind-32" type="button" class="px-3 py-2 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-xl text-xs font-bold transition-colors shadow-sm" title="Hapus opsi terpilih">
                                             <i class="fa-solid fa-trash"></i>
                                         </button>
                                     </div>
@@ -1509,8 +1486,8 @@
                                         <label class="block text-[10px] font-bold text-slate-600">Ketik Keperluan Baru</label>
                                         <div class="flex gap-2">
                                             <input type="text" id="builder-keperluan-new-input" placeholder="Contoh: Melamar Pekerjaan" class="flex-grow px-3 py-2 rounded-lg bg-white border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors">
-                                            <button type="button" onclick="saveNewKeperluanOption()" class="px-4 py-2 bg-narmadaGreen hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition-colors shadow-sm">Simpan</button>
-                                            <button type="button" onclick="cancelNewKeperluanOption()" class="px-3 py-2 bg-white hover:bg-slate-50 border border-slate-200 text-slate-600 rounded-lg text-xs font-bold transition-colors">Batal</button>
+                                            <button id="ev-bind-33" type="button" class="px-4 py-2 bg-narmadaGreen hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition-colors shadow-sm">Simpan</button>
+                                            <button id="ev-bind-34" type="button" class="px-3 py-2 bg-white hover:bg-slate-50 border border-slate-200 text-slate-600 rounded-lg text-xs font-bold transition-colors">Batal</button>
                                         </div>
                                     </div>
                                 </div>
@@ -1534,7 +1511,7 @@
                                         <div class="flex gap-2">
                                             <input type="text" id="builder-req-input" list="saran-persyaratan-list" placeholder="Ketik atau pilih saran..." class="flex-grow px-3 py-2 rounded-xl bg-white border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors">
                                             <datalist id="saran-persyaratan-list"></datalist>
-                                            <button type="button" onclick="addRequirementToKeperluan()" class="px-4 py-2 bg-slate-800 text-white rounded-xl text-xs font-bold hover:bg-slate-900 shadow-sm transition-colors"><i class="fa-solid fa-plus"></i> Tambah</button>
+                                            <button id="ev-bind-35" type="button" class="px-4 py-2 bg-slate-800 text-white rounded-xl text-xs font-bold hover:bg-slate-900 shadow-sm transition-colors"><i class="fa-solid fa-plus"></i> Tambah</button>
                                         </div>
                                         <div id="builder-req-suggestions" class="flex flex-wrap gap-1.5 mt-2"></div>
                                     </div>
@@ -1577,7 +1554,7 @@
                                     </div>
                                     <div class="mt-1">
                                         <label class="block text-[10px] font-bold text-slate-600 mb-0.5">Tipe Input</label>
-                                        <select id="builder-q-type" onchange="toggleBuilderOptionInput()" class="w-full px-2.5 py-1.5 rounded-lg bg-white border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors">
+                                        <select id="builder-q-type" class="w-full px-2.5 py-1.5 rounded-lg bg-white border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors">
                                             <option value="text">Input Teks</option>
                                             <option value="dropdown">Dropdown (Pilihan)</option>
                                             <option value="number">Angka (Number)</option>
@@ -1594,8 +1571,8 @@
                                         <input type="number" id="builder-q-limit" placeholder="Contoh: 16 untuk NIK" class="w-full px-2.5 py-1.5 rounded-lg bg-white border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors">
                                     </div>
                                     <div class="sm:col-span-3 flex justify-end gap-2">
-                                        <button id="btn-cancel-update-question" onclick="cancelEditBuilderQuestion()" class="hidden px-4 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 rounded-lg text-xs font-bold transition-colors">Batal</button>
-                                        <button id="btn-add-update-question" onclick="addBuilderQuestionToList()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold transition-colors flex items-center gap-1.5 shadow-sm">
+                                        <button id="btn-cancel-update-question" class="hidden px-4 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 rounded-lg text-xs font-bold transition-colors">Batal</button>
+                                        <button id="btn-add-update-question" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold transition-colors flex items-center gap-1.5 shadow-sm">
                                             <i class="fa-solid fa-plus"></i> <span>Tambahkan Pertanyaan</span>
                                         </button>
                                     </div>
@@ -1609,7 +1586,7 @@
                                     <div class="grid grid-cols-1 gap-3 mb-3">
                                         <div>
                                             <label class="block text-[10px] font-bold text-slate-600 mb-0.5">Keperluan Surat</label>
-                                            <select id="builder-repeater-keperluan" class="w-full px-2.5 py-1.5 rounded-lg bg-white border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors" onchange="populateBuilderRepeaterSelect()">
+                                            <select id="builder-repeater-keperluan" class="w-full px-2.5 py-1.5 rounded-lg bg-white border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors">
                                                 <option value="Wajib">Wajib (Berlaku Semua Keperluan)</option>
                                             </select>
                                         </div>
@@ -1620,7 +1597,7 @@
                                             <select id="builder-repeater-select" class="flex-grow px-2.5 py-1.5 rounded-lg bg-white border border-indigo-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors">
                                                 <option value="">-- Pilih Pertanyaan Tunggal --</option>
                                             </select>
-                                            <button type="button" onclick="addQuestionToRepeaterTempList()" class="px-3 py-1.5 bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg text-xs font-bold transition-colors whitespace-nowrap shadow-sm"><i class="fa-solid fa-plus"></i> Sisipkan</button>
+                                            <button id="ev-bind-36" type="button" class="px-3 py-1.5 bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg text-xs font-bold transition-colors whitespace-nowrap shadow-sm"><i class="fa-solid fa-plus"></i> Sisipkan</button>
                                         </div>
                                     </div>
                                     <div class="mb-3">
@@ -1630,8 +1607,8 @@
                                         </div>
                                     </div>
                                     <div class="flex justify-end gap-2">
-                                        <button id="btn-cancel-update-repeater" onclick="cancelEditRepeaterGroup()" class="hidden px-4 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 rounded-lg text-xs font-bold transition-colors">Batal</button>
-                                        <button id="btn-add-update-repeater" onclick="saveRepeaterGroup()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold transition-colors flex items-center gap-1.5 shadow-sm">
+                                        <button id="btn-cancel-update-repeater" class="hidden px-4 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 rounded-lg text-xs font-bold transition-colors">Batal</button>
+                                        <button id="btn-add-update-repeater" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold transition-colors flex items-center gap-1.5 shadow-sm">
                                             <i class="fa-solid fa-save"></i> <span>Tambahkan Grup</span>
                                         </button>
                                     </div>
@@ -1663,13 +1640,13 @@
                                 <!-- Form Pencarian Kapsul -->
                                 <div class="flex items-center gap-1 bg-slate-50 border border-slate-200 p-1 rounded-xl shadow-inner flex-grow">
                                     <input type="text" id="admin-layanan-keyword-filter" oninput="runLayananFilter()" placeholder="Cari layanan..." class="bg-transparent border-none focus:ring-0 text-xs px-2 w-32 sm:w-48 outline-none">
-                                    <button onclick="runLayananFilter()" class="w-7 h-7 bg-white hover:bg-slate-100 text-slate-500 rounded-lg text-xs transition-all shadow-sm flex items-center justify-center border border-slate-200 shrink-0">
+                                    <button id="ev-bind-37" class="w-7 h-7 bg-white hover:bg-slate-100 text-slate-500 rounded-lg text-xs transition-all shadow-sm flex items-center justify-center border border-slate-200 shrink-0">
                                         <i class="fa-solid fa-magnifying-glass"></i>
                                     </button>
                                 </div>
 
                                 <!-- Tombol Tambah -->
-                                <button onclick="openLayananEditor('__NEW__')" class="px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-xs font-bold shadow transition-all flex items-center gap-1.5 shrink-0">
+                                <button id="ev-bind-38" class="px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-xs font-bold shadow transition-all flex items-center gap-1.5 shrink-0">
                                     <i class="fa-solid fa-plus"></i> Tambah Baru
                                 </button>
                             </div>
@@ -1709,10 +1686,10 @@
                             <div class="flex-1 flex flex-col min-h-0 border-r border-slate-100">
                                 <!-- Tabs Nav -->
                                 <div class="px-5 border-b border-slate-100 flex gap-4 bg-slate-50/50 shrink-0">
-                                    <button type="button" onclick="switchVerifTab('draf')" id="btn-tab-draf" class="py-3 px-2 text-xs font-bold text-narmadaGreen border-b-2 border-narmadaGreen transition-colors flex items-center gap-2">
+                                    <button type="button" id="btn-tab-draf" class="py-3 px-2 text-xs font-bold text-narmadaGreen border-b-2 border-narmadaGreen transition-colors flex items-center gap-2">
                                         <i class="fa-solid fa-file-lines"></i> Draf Surat
                                     </button>
-                                    <button type="button" onclick="switchVerifTab('lampiran')" id="btn-tab-lampiran" class="py-3 px-2 text-xs font-bold text-slate-400 border-b-2 border-transparent hover:text-slate-600 transition-colors flex items-center gap-2">
+                                    <button type="button" id="btn-tab-lampiran" class="py-3 px-2 text-xs font-bold text-slate-400 border-b-2 border-transparent hover:text-slate-600 transition-colors flex items-center gap-2">
                                         <i class="fa-solid fa-images"></i> Dokumen Lampiran
                                     </button>
                                 </div>
@@ -1744,7 +1721,7 @@
                                     <div class="space-y-4">
                                         <div>
                                             <label class="block text-[10px] font-extrabold text-slate-700 uppercase tracking-wide mb-1.5">Ubah Status</label>
-                                            <select id="edit-status-select" onchange="markVerifikasiDirty()" required class="w-full px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-xs font-medium focus:ring-2 focus:ring-narmadaGreen/20 focus:border-narmadaGreen outline-none transition-all shadow-sm">
+                                            <select id="edit-status-select" required class="w-full px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-xs font-medium focus:ring-2 focus:ring-narmadaGreen/20 focus:border-narmadaGreen outline-none transition-all shadow-sm">
                                                 <option value="Menunggu">Menunggu</option>
                                                 <option value="Verifikasi">Verifikasi</option>
                                                 <option value="Selesai">Selesai</option>
@@ -1760,10 +1737,10 @@
 
                                 <!-- Area Bawah Kanan: Tombol Simpan -->
                                 <div class="p-4 bg-white border-t border-slate-100 shrink-0 flex flex-col gap-2 z-10">
-                                    <button type="button" onclick="confirmSaveVerification()" class="w-full px-4 py-2.5 bg-gradient-to-r from-narmadaGreen to-emerald-700 hover:from-emerald-600 hover:to-emerald-800 text-white text-xs font-bold rounded-xl shadow-sm transition-all flex justify-center items-center gap-2 tap-squish">
+                                    <button id="ev-bind-39" type="button" class="w-full px-4 py-2.5 bg-gradient-to-r from-narmadaGreen to-emerald-700 hover:from-emerald-600 hover:to-emerald-800 text-white text-xs font-bold rounded-xl shadow-sm transition-all flex justify-center items-center gap-2 tap-squish">
                                         <i class="fa-solid fa-check"></i> Simpan Verifikasi
                                     </button>
-                                    <button type="button" onclick="closeManageStatusModal()" class="w-full px-4 py-2.5 text-xs font-bold text-slate-600 bg-white hover:bg-slate-50 border border-slate-200 rounded-xl transition-all tap-squish">
+                                    <button id="ev-bind-40" type="button" class="w-full px-4 py-2.5 text-xs font-bold text-slate-600 bg-white hover:bg-slate-50 border border-slate-200 rounded-xl transition-all tap-squish">
                                         Tutup Peninjauan
                                     </button>
                                 </div>
@@ -1775,7 +1752,7 @@
                         <h4 class="text-sm font-bold text-slate-800 border-b border-slate-100 pb-3 flex items-center gap-2">
                             <i class="fa-solid fa-phone text-narmadaGreen"></i> Atur Kontak Pelayanan Desa Narmada
                         </h4>
-                        <form onsubmit="event.preventDefault(); saveAdminSettings();" class="space-y-4">
+                        <form id="ev-bind-41" class="space-y-4">
                             <div>
                                 <label class="block text-xs font-bold text-slate-600 mb-1">Nomor WhatsApp Pelayanan
                                     Desa</label>
@@ -1791,7 +1768,7 @@
                         <h4 class="text-sm font-bold text-slate-800 border-b border-slate-100 pb-3 flex items-center gap-2">
                             <i class="fa-solid fa-house-laptop text-narmadaGreen"></i> Pengaturan Tampilan Beranda
                         </h4>
-                        <form onsubmit="event.preventDefault(); saveAdminSettings();" class="space-y-4">
+                        <form id="ev-bind-42" class="space-y-4">
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
                                     <label class="block text-[10px] font-bold text-slate-600 mb-1">Nama Desa</label>
@@ -1929,7 +1906,7 @@
                                 <p class="text-xs text-slate-500 mt-1">Kelola data pengguna, hak akses peran, serta pantau aktivitas di dalam sistem.</p>
                             </div>
                             <div class="divide-y divide-slate-100">
-                                <div onclick="switchManajemenPenggunaTab('daftar')" id="mp-btn-daftar" class="flex items-center gap-4 p-5 hover:bg-slate-50 cursor-pointer transition-colors group">
+                                <div id="mp-btn-daftar" class="flex items-center gap-4 p-5 hover:bg-slate-50 cursor-pointer transition-colors group">
                                     <div class="w-10 h-10 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:bg-emerald-50 group-hover:text-narmadaGreen transition-all">
                                         <i class="fa-solid fa-users-viewfinder"></i>
                                     </div>
@@ -1940,7 +1917,7 @@
                                     <i class="fa-solid fa-chevron-right text-slate-300 group-hover:text-narmadaGreen transition-colors" id="mp-icon-daftar"></i>
                                 </div>
                                 
-                                <div onclick="switchManajemenPenggunaTab('akses')" id="mp-btn-akses" class="flex items-center gap-4 p-5 hover:bg-slate-50 cursor-pointer transition-colors group">
+                                <div id="mp-btn-akses" class="flex items-center gap-4 p-5 hover:bg-slate-50 cursor-pointer transition-colors group">
                                     <div class="w-10 h-10 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:bg-emerald-50 group-hover:text-narmadaGreen transition-all">
                                         <i class="fa-solid fa-shield-halved"></i>
                                     </div>
@@ -1951,7 +1928,7 @@
                                     <i class="fa-solid fa-chevron-right text-slate-300 group-hover:text-narmadaGreen transition-colors" id="mp-icon-akses"></i>
                                 </div>
                                 
-                                <div onclick="switchManajemenPenggunaTab('aktifitas')" id="mp-btn-aktifitas" class="flex items-center gap-4 p-5 hover:bg-slate-50 cursor-pointer transition-colors group">
+                                <div id="mp-btn-aktifitas" class="flex items-center gap-4 p-5 hover:bg-slate-50 cursor-pointer transition-colors group">
                                     <div class="w-10 h-10 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:bg-emerald-50 group-hover:text-narmadaGreen transition-all">
                                         <i class="fa-solid fa-clock-rotate-left"></i>
                                     </div>
@@ -1968,7 +1945,7 @@
                     <!-- Content Containers -->
                     <!-- Daftar Pengguna -->
                     <div id="mp-content-daftar" class="hidden w-full max-w-5xl mx-auto mt-4">
-                        <button onclick="backToManajemenPengguna()" class="text-sm font-semibold text-slate-500 hover:text-narmadaGreen transition-colors flex items-center gap-2 mb-4">
+                        <button id="ev-bind-43" class="text-sm font-semibold text-slate-500 hover:text-narmadaGreen transition-colors flex items-center gap-2 mb-4">
                             <i class="fa-solid fa-arrow-left"></i> Kembali ke Menu Manajemen
                         </button>
                         <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5">
@@ -1987,7 +1964,7 @@
                                         <option value="Admin">Admin</option>
                                         <option value="Pimpinan">Pimpinan</option>
                                     </select>
-                                    <button onclick="openModalTambahPengguna()" class="px-4 py-1.5 bg-narmadaGreen hover:bg-emerald-600 text-white text-sm font-bold rounded-lg transition-colors shadow-sm flex items-center gap-2 shrink-0">
+                                    <button id="ev-bind-44" class="px-4 py-1.5 bg-narmadaGreen hover:bg-emerald-600 text-white text-sm font-bold rounded-lg transition-colors shadow-sm flex items-center gap-2 shrink-0">
                                         <i class="fa-solid fa-plus"></i> Tambah Pengguna
                                     </button>
                                 </div>
@@ -2014,7 +1991,7 @@
 
                     <!-- Peran & Hak Akses -->
                     <div id="mp-content-akses" class="hidden w-full max-w-4xl mx-auto mt-4">
-                        <button onclick="backToManajemenPengguna()" class="text-sm font-semibold text-slate-500 hover:text-narmadaGreen transition-colors flex items-center gap-2 mb-4">
+                        <button id="ev-bind-45" class="text-sm font-semibold text-slate-500 hover:text-narmadaGreen transition-colors flex items-center gap-2 mb-4">
                             <i class="fa-solid fa-arrow-left"></i> Kembali ke Menu Manajemen
                         </button>
                         <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5">
@@ -2212,7 +2189,7 @@
                                 </table>
                             </div>
                             <div class="mt-6 flex justify-end">
-                                <button onclick="saveRoleAccess()" class="px-5 py-2.5 bg-narmadaGreen hover:bg-emerald-600 text-white text-sm font-bold rounded-xl transition-colors shadow-sm flex items-center gap-2">
+                                <button id="ev-bind-46" class="px-5 py-2.5 bg-narmadaGreen hover:bg-emerald-600 text-white text-sm font-bold rounded-xl transition-colors shadow-sm flex items-center gap-2">
                                     <i class="fa-solid fa-floppy-disk"></i> Simpan Perubahan
                                 </button>
                             </div>
@@ -2221,7 +2198,7 @@
 
                     <!-- Aktifitas -->
                     <div id="mp-content-aktifitas" class="hidden w-full max-w-4xl mx-auto mt-4">
-                        <button onclick="backToManajemenPengguna()" class="text-sm font-semibold text-slate-500 hover:text-narmadaGreen transition-colors flex items-center gap-2 mb-4">
+                        <button id="ev-bind-47" class="text-sm font-semibold text-slate-500 hover:text-narmadaGreen transition-colors flex items-center gap-2 mb-4">
                             <i class="fa-solid fa-arrow-left"></i> Kembali ke Menu Manajemen
                         </button>
                         <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5">
@@ -2256,7 +2233,7 @@
                             <h4 class="text-sm font-bold text-slate-800 flex items-center gap-2">
                                 <i class="fa-solid fa-clock-rotate-left text-narmadaGreen"></i> Riwayat Log Aktivitas Sistem
                             </h4>
-                            <button onclick="fetchActivities()" class="text-xs font-bold text-narmadaGreen hover:bg-emerald-50 px-3 py-1.5 rounded-lg transition-colors">
+                            <button id="ev-bind-48" class="text-xs font-bold text-narmadaGreen hover:bg-emerald-50 px-3 py-1.5 rounded-lg transition-colors">
                                 <i class="fa-solid fa-rotate-right mr-1"></i> Segarkan
                             </button>
                         </div>
@@ -2288,8 +2265,8 @@
                                 <p class="text-[10px] text-slate-500 mt-0.5">Ubah informasi dan peran untuk pengguna ini.</p>
                             </div>
                             <div class="flex gap-2">
-                                <button onclick="closeModalEditPengguna()" class="px-4 py-2 text-xs font-bold text-slate-600 bg-slate-50 border border-slate-200 hover:bg-slate-100 rounded-xl transition-colors">Batal</button>
-                                <button type="button" id="btn-submit-edit-pengguna" onclick="document.getElementById('btn-submit-te-hidden').click()" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl shadow-sm transition-colors flex items-center gap-1.5">
+                                <button id="ev-bind-49" class="px-4 py-2 text-xs font-bold text-slate-600 bg-slate-50 border border-slate-200 hover:bg-slate-100 rounded-xl transition-colors">Batal</button>
+                                <button type="button" id="btn-submit-edit-pengguna" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl shadow-sm transition-colors flex items-center gap-1.5">
                                     <i class="fa-solid fa-save"></i> Simpan Perubahan
                                 </button>
                             </div>
@@ -2297,7 +2274,7 @@
                         
                         <!-- Body -->
                         <div class="p-5">
-                            <form id="form-edit-pengguna" onsubmit="simpanEditPengguna(event)">
+                            <form id="form-edit-pengguna">
                                 <input type="hidden" id="te-username-hidden">
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <!-- Left Column: Data Profil -->
@@ -2353,8 +2330,8 @@
                                 <p class="text-[10px] text-slate-500 mt-0.5">Lengkapi informasi di bawah ini untuk membuat akun pengguna.</p>
                             </div>
                             <div class="flex gap-2">
-                                <button onclick="closeModalTambahPengguna()" class="px-4 py-2 text-xs font-bold text-slate-600 bg-slate-50 border border-slate-200 hover:bg-slate-100 rounded-xl transition-colors">Batal</button>
-                                <button type="button" id="btn-submit-tambah-pengguna" onclick="document.getElementById('btn-submit-tp-hidden').click()" class="px-5 py-2 bg-narmadaGreen hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-sm transition-colors flex items-center gap-1.5">
+                                <button id="ev-bind-50" class="px-4 py-2 text-xs font-bold text-slate-600 bg-slate-50 border border-slate-200 hover:bg-slate-100 rounded-xl transition-colors">Batal</button>
+                                <button type="button" id="btn-submit-tambah-pengguna" class="px-5 py-2 bg-narmadaGreen hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-sm transition-colors flex items-center gap-1.5">
                                     <i class="fa-solid fa-save"></i> Simpan Pengguna
                                 </button>
                             </div>
@@ -2362,7 +2339,7 @@
                         
                         <!-- Body -->
                         <div class="p-5">
-                            <form id="form-tambah-pengguna" onsubmit="simpanPenggunaBaru(event)">
+                            <form id="form-tambah-pengguna">
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     
                                     <!-- Left Column: Data Profil & Akses -->
@@ -2407,7 +2384,7 @@
                                                 <label class="block text-[10px] font-bold text-slate-600 mb-1">Kata Sandi *</label>
                                                 <div class="relative">
                                                     <input type="password" id="tp-password" required class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors pr-10" placeholder="Masukkan kata sandi">
-                                                    <button type="button" onclick="const p = document.getElementById('tp-password'); const i = this.querySelector('i'); if(p.type === 'password'){p.type = 'text'; i.classList.replace('fa-eye', 'fa-eye-slash');}else{p.type = 'password'; i.classList.replace('fa-eye-slash', 'fa-eye');}" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                                                    <button id="ev-bind-51" type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
                                                         <i class="fa-solid fa-eye"></i>
                                                     </button>
                                                 </div>
@@ -2466,7 +2443,7 @@
 
 
     <!-- LIGHTBOX MODAL -->
-    <div id="lightbox-modal" onclick="closeLightbox()" class="hidden fixed inset-0 bg-slate-950/90 backdrop-blur-md z-[60] flex flex-col items-center justify-center p-4 cursor-zoom-out transition-all opacity-0">
+    <div id="lightbox-modal" class="hidden fixed inset-0 bg-slate-950/90 backdrop-blur-md z-[60] flex flex-col items-center justify-center p-4 cursor-zoom-out transition-all opacity-0">
         <div class="absolute top-4 right-4 flex gap-2">
             <a id="lightbox-download" href="#" target="_blank" class="w-10 h-10 flex items-center justify-center bg-white/10 hover:bg-white/20 rounded-full text-white transition-all backdrop-blur-sm">
                 <i class="fa-solid fa-download"></i>
@@ -2496,11 +2473,12 @@
     <div id="toast-wrapper" class="fixed bottom-5 right-5 z-50 space-y-2 pointer-events-none"></div>
 
     <!-- JAVASCRIPT UTAMA -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <script src="script_utils.js?v=2.1"></script>
     <script src="script_core.js?v=2.1"></script>
     <script src="script_warga.js?v=2.1"></script>
     <script src="script_admin.js?v=2.1"></script>
+    <script src="src/events_binding.js"></script>
 
     <!-- SERVICE WORKER REGISTRATION -->
     <script>

@@ -69,8 +69,8 @@ var dummyLayananList = [
 
 
         var dummySetelan = {
-            username: "admin_narmada",
-            password: "Narmada2026",
+            username: "", // Dihapus untuk keamanan
+            password: "", // Dihapus untuk keamanan
             kontak_wa: "+6281234567890",
             nama_desa: "Narmada",
             logo_url_desa: "https://upload.wikimedia.org/wikipedia/commons/e/e4/Coat_of_arms_of_Indonesia_Garuda_Pancasila.svg",
@@ -84,19 +84,35 @@ var dummyLayananList = [
             deskripsi_banner_semi: "Anda dapat mengajukan permohonan secara online dari rumah. Setelah permohonan diverifikasi, silakan datang ke kantor desa untuk menyerahkan dokumen fisik sesuai dengan persyaratan."
         };
 
-        var activeView = 'beranda';
-        var activeAdminTab = 'dashboard';
-        var currentAdminPage = 1;
-        var adminKeyword = '';
-        var activeStatusFilter = '';
+        window.AppState = {
+            activeView: 'beranda',
+            activeAdminTab: 'dashboard',
+            currentAdminPage: 1,
+            adminKeyword: '',
+            activeStatusFilter: '',
+            selectedLayananGlobal: null,
+            uploadDataStore: {},
+            currentWizardStep: 1,
+            globalSettings: Object.assign({}, dummySetelan),
+            isGoogleEnv: typeof google !== 'undefined' && typeof google.script !== 'undefined',
+            isServiceOpen: false,
+            editingQuestionIndex: -1
+        };
 
-        var selectedLayananGlobal = null;
-        var uploadDataStore = {};
-        var currentWizardStep = 1;
-        var globalSettings = Object.assign({}, dummySetelan);
-        var isGoogleEnv = typeof google !== 'undefined' && typeof google.script !== 'undefined';
-        window.isServiceOpen = false;
-        window.editingQuestionIndex = -1; // Variabel Global State Edit Pertanyaan
+        // Backward compatibility pointers (to be fully migrated in Phase 4)
+        var activeView = window.AppState.activeView;
+        var activeAdminTab = window.AppState.activeAdminTab;
+        var currentAdminPage = window.AppState.currentAdminPage;
+        var adminKeyword = window.AppState.adminKeyword;
+        var activeStatusFilter = window.AppState.activeStatusFilter;
+
+        var selectedLayananGlobal = window.AppState.selectedLayananGlobal;
+        var uploadDataStore = window.AppState.uploadDataStore;
+        var currentWizardStep = window.AppState.currentWizardStep;
+        var globalSettings = window.AppState.globalSettings;
+        var isGoogleEnv = window.AppState.isGoogleEnv;
+        window.isServiceOpen = window.AppState.isServiceOpen;
+        window.editingQuestionIndex = window.AppState.editingQuestionIndex;
 
         var builderActiveStep = 1;
         var builderQuestions = [];
