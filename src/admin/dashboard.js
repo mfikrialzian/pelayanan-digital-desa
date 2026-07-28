@@ -15,7 +15,10 @@ export function fetchAdminStats() {
                     pending: dummyPengajuanList.filter(r => r.status === "Menunggu").length,
                     verifikasi: dummyPengajuanList.filter(r => r.status === "Verifikasi").length,
                     selesai: dummyPengajuanList.filter(r => r.status === "Selesai" || r.status === "Pelayanan Selesai").length,
-                    uploadUlang: dummyPengajuanList.filter(r => r.status === "Perbaikan" || r.status === "Upload Ulang").length
+                    uploadUlang: dummyPengajuanList.filter(r => r.status === "Perbaikan" || r.status === "Upload Ulang").length,
+                    chartMingguan: [10, 15, 8, 20, 25, 12, 6],
+                    chartStatus: [40, 20, 15, 5],
+                    chartLayanan: { labels: ['Ket. Usaha', 'Ket. Domisili', 'SKCK', 'Ket. Tidak Mampu', 'Lainnya'], data: [35, 25, 20, 15, 5] }
                 };
                 window.lastDashboardStats = mockStats;
                 renderStatsDashboard(mockStats);
@@ -30,6 +33,10 @@ export function renderStatsDashboard(stats) {
             document.getElementById('stat-verifikasi').innerText = stats.verifikasi;
             document.getElementById('stat-selesai').innerText = stats.selesai;
             document.getElementById('stat-perbaikan').innerText = stats.uploadUlang;
+            
+            if (stats.chartMingguan || stats.chartStatus) {
+                updateAdminChartsData(stats);
+            }
         }
 
 export function fetchUserDashboardData(nik, noReq) {
@@ -205,7 +212,34 @@ export function initAdminCharts() {
                 }
             });
         }
+        
+        if (window.lastDashboardStats) {
+            updateAdminChartsData(window.lastDashboardStats);
+        }
     });
+}
+
+export function updateAdminChartsData(stats) {
+    if (!adminCharts.mingguan || !adminCharts.status || !adminCharts.layanan) return;
+    
+    if (stats.chartMingguan) {
+        adminCharts.mingguan.data.datasets[0].data = stats.chartMingguan;
+        adminCharts.mingguan.update();
+    }
+    
+    if (stats.chartStatus) {
+        adminCharts.status.data.datasets[0].data = stats.chartStatus;
+        adminCharts.status.update();
+    }
+    
+    if (stats.chartLayanan && stats.chartLayanan.labels.length > 0) {
+        adminCharts.layanan.data.labels = stats.chartLayanan.labels;
+        adminCharts.layanan.data.datasets[0].data = stats.chartLayanan.data;
+        // Dynamically adjust Y axis max
+        let maxVal = Math.max(...stats.chartLayanan.data) || 10;
+        adminCharts.layanan.options.scales.y.max = maxVal + Math.ceil(maxVal * 0.2);
+        adminCharts.layanan.update();
+    }
 }
 
 export async function fetchWeather() {
