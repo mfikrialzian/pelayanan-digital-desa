@@ -21,6 +21,10 @@ body {
             min-height: 90vh;
         }
 
+        .responsive-frame.hidden {
+            display: none !important;
+        }
+
         @media (max-width: 768px) {
             .responsive-frame {
                 margin: 0;
