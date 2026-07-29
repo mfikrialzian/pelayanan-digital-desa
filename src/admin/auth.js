@@ -6,6 +6,24 @@ export function runAdminLoginAuth() {
             btn.disabled = true;
             btn.innerHTML = '<i class="fa-solid fa-spinner animate-spin"></i> Login...';
 
+            function getDeviceInfo() {
+                let ua = navigator.userAgent;
+                let browser = "Web Browser";
+                let os = "Device";
+                if (ua.indexOf("Chrome") > -1) browser = "Chrome";
+                else if (ua.indexOf("Safari") > -1) browser = "Safari";
+                else if (ua.indexOf("Firefox") > -1) browser = "Firefox";
+                else if (ua.indexOf("Edge") > -1) browser = "Edge";
+                
+                if (ua.indexOf("Win") > -1) os = "Windows";
+                else if (ua.indexOf("Mac") > -1) os = "MacOS";
+                else if (ua.indexOf("Linux") > -1) os = "Linux";
+                else if (ua.indexOf("Android") > -1) os = "Android";
+                else if (ua.indexOf("like Mac") > -1) os = "iOS";
+                return browser + " on " + os;
+            }
+            let deviceInfo = getDeviceInfo();
+
             if (isGoogleEnv) {
                 google.script.run
                     .withSuccessHandler(function (res) {
@@ -31,7 +49,7 @@ export function runAdminLoginAuth() {
                         btn.innerHTML = '<span>Login</span>';
                         pushToast("Error: " + err, "error");
                     })
-                    .checkAdminLogin(u, p);
+                    .checkAdminLogin(u, p, deviceInfo);
             } else {
                 setTimeout(function () {
                     btn.disabled = false;

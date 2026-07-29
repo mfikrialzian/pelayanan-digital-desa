@@ -713,7 +713,125 @@ export function switchPengaturanAkunTab(tabId) {
         activeContent.classList.remove('hidden');
         activeContent.classList.add('block');
     }
+    
+    if (tabId === 'aktivitas') {
+        loadActiveSessions();
+    }
 }
+
+function loadActiveSessions() {
+    const tbody = document.getElementById('table-active-sessions-body');
+    if (!tbody) return;
+    
+    tbody.innerHTML = '<tr><td colspan="4" class="p-6 text-center text-slate-400 text-xs"><i class="fa-solid fa-spinner animate-spin"></i> Memuat data perangkat...</td></tr>';
+    
+    let token = localStorage.getItem('adminToken_Narmada');
+    if (!token) return;
+    
+    if (window.isGoogleEnv) {
+        google.script.run
+            .withSuccessHandler(function(res) {
+                if (res.success) {
+                    renderSessionsTable(res.data);
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="4" class="p-6 text-center text-red-500 text-xs">' + res.message + '</td></tr>';
+                }
+            })
+            .withFailureHandler(function(err) {
+                tbody.innerHTML = '<tr><td colspan="4" class="p-6 text-center text-red-500 text-xs">Error: ' + err + '</td></tr>';
+            })
+            .getActiveSessions(token);
+    } else {
+        // Mock data
+        setTimeout(function() {
+            renderSessionsTable([
+                { id: "123", loginTime: "Hari ini, 08:15", deviceInfo: "Chrome on Windows", isCurrent: true },
+                { id: "456", loginTime: "Kemarin, 14:30", deviceInfo: "Safari on MacOS", isCurrent: false }
+            ]);
+        }, 800);
+    }
+}
+
+function renderSessionsTable(sessions) {
+    const tbody = document.getElementById('table-active-sessions-body');
+    if (!tbody) return;
+    
+    if (!sessions || sessions.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" class="p-6 text-center text-slate-400 text-xs">Tidak ada perangkat aktif.</td></tr>';
+        return;
+    }
+    
+    let html = '';
+    sessions.forEach(function(s) {
+        let isCurrent = s.isCurrent ? '<span class="px-2 py-0.5 bg-blue-100 text-blue-600 text-[10px] font-bold rounded">Sesi Ini</span>' : '';
+        let btnAksi = s.isCurrent ? '-' : `<button onclick="window.revokeAdminSession('${s.id}')" class="text-xs font-bold text-red-500 hover:text-red-700 hover:underline">Cabut</button>`;
+        
+        let icon = '<i class="fa-solid fa-desktop text-slate-400 mr-2"></i>';
+        if (s.deviceInfo.toLowerCase().includes('windows')) icon = '<i class="fa-brands fa-windows text-slate-400 mr-2"></i>';
+        else if (s.deviceInfo.toLowerCase().includes('mac') || s.deviceInfo.toLowerCase().includes('ios')) icon = '<i class="fa-brands fa-apple text-slate-400 mr-2"></i>';
+        else if (s.deviceInfo.toLowerCase().includes('android')) icon = '<i class="fa-brands fa-android text-slate-400 mr-2"></i>';
+        
+        html += `
+            <tr class="hover:bg-slate-50 transition-colors">
+                <td class="p-4 whitespace-nowrap"><span class="font-semibold text-slate-800">${s.loginTime}</span></td>
+                <td class="p-4">${icon} ${s.deviceInfo}</td>
+                <td class="p-4"><span class="px-2 py-0.5 bg-emerald-100 text-narmadaGreen text-[10px] font-bold rounded">Aktif</span> ${isCurrent}</td>
+                <td class="p-4 text-center">${btnAksi}</td>
+            </tr>
+        `;
+    });
+    
+    // Add "Cabut Semua Perangkat Lain" if there's more than 1 session
+    if (sessions.length > 1) {
+        html += `
+            <tr class="bg-red-50/50">
+                <td colspan="4" class="p-4 text-center">
+                    <button onclick="window.revokeAdminSession('all_others')" class="px-4 py-2 text-xs font-bold text-white bg-red-600 hover:bg-red-700 rounded-lg shadow-sm transition-colors">
+                        <i class="fa-solid fa-power-off mr-1"></i> Cabut Akses Semua Perangkat Lain
+                    </button>
+                </td>
+            </tr>
+        `;
+    }
+    
+    tbody.innerHTML = html;
+}
+
+window.revokeAdminSession = function(sessionId) {
+    Swal.fire({
+        title: 'Cabut Sesi?',
+        text: sessionId === 'all_others' ? 'Semua perangkat lain akan dikeluarkan dari akun Anda.' : 'Perangkat ini akan dikeluarkan secara paksa.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#94a3b8',
+        confirmButtonText: 'Ya, Cabut Sesi',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            let token = localStorage.getItem('adminToken_Narmada');
+            if (window.isGoogleEnv) {
+                window.pushToast("Memproses...", "info");
+                google.script.run
+                    .withSuccessHandler(function(res) {
+                        if (res.success) {
+                            window.pushToast("Sesi berhasil dicabut.", "success");
+                            loadActiveSessions();
+                        } else {
+                            window.pushToast(res.message, "error");
+                        }
+                    })
+                    .withFailureHandler(function(err) {
+                        window.pushToast("Error: " + err, "error");
+                    })
+                    .revokeSession(token, sessionId);
+            } else {
+                window.pushToast("Sesi berhasil dicabut (Mock).", "success");
+                loadActiveSessions();
+            }
+        }
+    });
+};
 
 export function promptKeamananAccess() {
     Swal.fire({
