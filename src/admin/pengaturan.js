@@ -141,6 +141,32 @@ export function saveProfileData(e) {
         cancelButtonText: 'Batal'
     }).then((result) => {
         if (result.isConfirmed) {
+            const elNama = document.getElementById('input-profil-nama');
+            const elEmail = document.getElementById('input-profil-email');
+            const elWa = document.getElementById('input-profil-wa');
+            
+            const nama = elNama ? elNama.value.trim() : '';
+            const email = elEmail ? elEmail.value.trim() : '';
+            let wa = elWa ? elWa.value.trim() : '';
+
+            // Validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (email && !emailRegex.test(email)) {
+                Swal.fire('Format Email Salah', 'Silakan masukkan alamat email yang valid (contoh: nama@domain.com)', 'warning');
+                return;
+            }
+
+            const waRegex = /^(08|\+628)\d{8,14}$/;
+            if (wa && !waRegex.test(wa)) {
+                Swal.fire('Format WA Salah', 'Nomor WA harus valid, diawali dengan 08 atau +628 (contoh: 08123456789)', 'warning');
+                return;
+            }
+            
+            if (wa && wa.startsWith('08')) {
+                wa = '+628' + wa.substring(2);
+                if (elWa) elWa.value = wa;
+            }
+
             Swal.fire({
                 title: 'Menyimpan...',
                 text: 'Mohon tunggu sebentar',
@@ -151,18 +177,6 @@ export function saveProfileData(e) {
             });
 
             // Update local storage first
-            const elNama = document.getElementById('input-profil-nama');
-            const elEmail = document.getElementById('input-profil-email');
-            const elWa = document.getElementById('input-profil-wa');
-            
-            const nama = elNama ? elNama.value : '';
-            const email = elEmail ? elEmail.value : '';
-            let wa = elWa ? elWa.value : '';
-            
-            if (wa && wa.startsWith('08')) {
-                wa = '+628' + wa.substring(2);
-                if (elWa) elWa.value = wa;
-            }
             
             if (nama) {
                 localStorage.setItem('userName', nama);
@@ -243,18 +257,43 @@ export function handleProfilePhotoChange(e) {
     if (file) {
         const reader = new FileReader();
         reader.onload = function(event) {
-            const avatarImg = document.getElementById('profil-avatar-img');
-            if (avatarImg) {
-                avatarImg.src = event.target.result;
-            }
-            localStorage.setItem('userAvatar', event.target.result);
-            
-            Swal.fire({
-                icon: 'success',
-                title: 'Berhasil',
-                text: 'Foto profil berhasil diperbarui!',
-                confirmButtonColor: '#059669'
-            });
+            const img = new Image();
+            img.onload = function() {
+                // Compress and resize image using canvas
+                const canvas = document.createElement('canvas');
+                const MAX_WIDTH = 150;
+                const MAX_HEIGHT = 150;
+                let width = img.width;
+                let height = img.height;
+
+                if (width > height) {
+                    if (width > MAX_WIDTH) {
+                        height *= MAX_WIDTH / width;
+                        width = MAX_WIDTH;
+                    }
+                } else {
+                    if (height > MAX_HEIGHT) {
+                        width *= MAX_HEIGHT / height;
+                        height = MAX_HEIGHT;
+                    }
+                }
+
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
+
+                const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+                
+                const avatarImg = document.getElementById('profil-avatar-img');
+                if (avatarImg) {
+                    avatarImg.src = dataUrl;
+                }
+                localStorage.setItem('userAvatar', dataUrl);
+                
+                pushToast('Foto profil siap disimpan. Klik "Simpan Perubahan" untuk menerapkan.', 'info');
+            };
+            img.src = event.target.result;
         };
         reader.readAsDataURL(file);
     }
@@ -425,4 +464,53 @@ export function switchPengaturanAkunTab(tabId) {
         activeContent.classList.remove('hidden');
         activeContent.classList.add('block');
     }
+}
+
+export function promptKeamananAccess() {
+    Swal.fire({
+        title: 'Verifikasi Keamanan',
+        text: 'Masukkan kata sandi Anda saat ini untuk mengakses menu Keamanan:',
+        input: 'password',
+        inputAttributes: {
+            autocapitalize: 'off',
+            autocorrect: 'off'
+        },
+        showCancelButton: true,
+        confirmButtonText: 'Verifikasi',
+        cancelButtonText: 'Batal',
+        confirmButtonColor: '#059669',
+        showLoaderOnConfirm: true,
+        preConfirm: (password) => {
+            if (!password) {
+                Swal.showValidationMessage('Kata sandi tidak boleh kosong');
+                return false;
+            }
+            const token = localStorage.getItem('adminToken_Narmada');
+            if (!token || !isGoogleEnv) {
+                return new Promise((resolve) => setTimeout(() => resolve({ success: true }), 1000));
+            }
+            
+            return new Promise((resolve, reject) => {
+                google.script.run
+                    .withSuccessHandler(res => resolve(res))
+                    .withFailureHandler(err => reject(err))
+                    .verifyCurrentPassword(token, password);
+            }).catch(error => {
+                Swal.showValidationMessage(`Gagal terhubung: ${error}`);
+            });
+        },
+        allowOutsideClick: () => !Swal.isLoading()
+    }).then((result) => {
+        if (result.isConfirmed) {
+            if (result.value && result.value.success) {
+                switchPengaturanAkunTab('keamanan');
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Akses Ditolak',
+                    text: result.value ? result.value.message : 'Kata sandi salah.'
+                });
+            }
+        }
+    });
 }

@@ -355,7 +355,7 @@ if (el_ev_bind_14) {
 const el_ev_bind_15 = document.getElementById('ev-bind-15');
 if (el_ev_bind_15) {
     el_ev_bind_15.addEventListener('click', function(event) {
-        switchPengaturanAkunTab('keamanan')
+        promptKeamananAccess()
     });
 } else {
     console.warn("Element #ev-bind-15 not found for event binding.");
