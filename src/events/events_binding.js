@@ -454,7 +454,9 @@ if (el_ev_bind_21) {
 const el_form_password = document.getElementById('form-password');
 if (el_form_password) {
     el_form_password.addEventListener('submit', function(event) {
-        changePasswordMock(event)
+        if (typeof savePassword === 'function') {
+            savePassword(event);
+        }
     });
 } else {
     console.warn("Element #form-password not found for event binding.");

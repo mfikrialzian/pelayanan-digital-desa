@@ -260,7 +260,7 @@ export function handleProfilePhotoChange(e) {
     }
 }
 
-export function changePasswordMock(e) {
+export function savePassword(e) {
     e.preventDefault();
     const newPass = document.getElementById('new-password').value;
     const confirmPass = document.getElementById('confirm-password').value;
@@ -273,26 +273,50 @@ export function changePasswordMock(e) {
         errorText.classList.add('hidden');
     }
     
-    // Simulate API call
+    const token = localStorage.getItem('adminToken_Narmada');
+    const username = localStorage.getItem('userId');
+    
+    if (!token || !isGoogleEnv) {
+        pushToast("Error: Tidak dapat menghubungi server.", "error");
+        return;
+    }
+
     Swal.fire({
-        title: 'Memperbarui Password...',
+        title: 'Memperbarui Kata Sandi...',
         allowOutsideClick: false,
         didOpen: () => {
             Swal.showLoading();
         }
     });
 
-    setTimeout(() => {
-        Swal.fire({
-            icon: 'success',
-            title: 'Berhasil',
-            text: 'Password Anda telah berhasil diubah.',
-            confirmButtonText: 'OK',
-            confirmButtonColor: '#059669'
-        }).then(() => {
-            document.getElementById('form-password').reset();
-        });
-    }, 1500);
+    google.script.run
+        .withSuccessHandler(function (res) {
+            if (res && res.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil',
+                    text: 'Kata sandi Anda telah berhasil diubah.',
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: '#059669'
+                }).then(() => {
+                    document.getElementById('form-password').reset();
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal',
+                    text: res ? res.message : 'Terjadi kesalahan saat mengubah kata sandi.',
+                });
+            }
+        })
+        .withFailureHandler(function (err) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error Jaringan',
+                text: 'Gagal terhubung ke server backend.',
+            });
+        })
+        .updatePasswordPengguna(token, { username: username, password: newPass });
 }
 
 export function toggleSettingSwitch(button, settingName) {
