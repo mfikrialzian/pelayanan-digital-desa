@@ -115,6 +115,13 @@ function updatePasswordPengguna(token, payload) {
   });
 }
 
+function verifyCurrentPassword(token, password) {
+  var userSession = AuthService.getUserDataFromToken(token);
+  if (!userSession) return { success: false, message: "Sesi tidak valid.", authError: true };
+  
+  return AuthService.verifyPassword(userSession.username, password);
+}
+
 function updateAdminSetelan(token, newSetelan) {
   if (!AuthService.verifyToken(token)) return { success: false, message: "Sesi tidak valid atau telah berakhir. Silakan login kembali.", authError: true };
   return ConfigService.update(newSetelan);

@@ -62,6 +62,15 @@ var AuthService = {
     return data ? data.role : null;
   },
 
+  verifyPassword: function(username, password) {
+    var user = PenggunaRepository.getByUsername(username);
+    if (!user) return { success: false, message: "Pengguna tidak ditemukan." };
+    if (user.password === Sanitizer.hashPassword(password) || user.password === password) {
+      return { success: true };
+    }
+    return { success: false, message: "Kata sandi salah!" };
+  },
+
   logout: function(token) {
     if (token) {
       var cache = CacheService.getScriptCache();
