@@ -34,9 +34,9 @@ export function runAdminLoginAuth() {
                             localStorage.setItem('userRole', res.role || 'Super Admin');
                             localStorage.setItem('userName', res.name || 'Admin');
                             localStorage.setItem('userId', u);
-                            if (res.email) localStorage.setItem('userEmail', res.email);
-                            if (res.wa) localStorage.setItem('userPhone', res.wa);
-                            if (res.avatar) localStorage.setItem('userAvatar', res.avatar);
+                            if (res.email) localStorage.setItem('userEmail', res.email); else localStorage.removeItem('userEmail');
+                            if (res.wa) localStorage.setItem('userPhone', res.wa); else localStorage.removeItem('userPhone');
+                            if (res.avatar) localStorage.setItem('userAvatar', res.avatar); else localStorage.removeItem('userAvatar');
                             initRBAC();
                             switchView('admin');
                             pushToast("Otentikasi Sukses. Selamat Bekerja Admin.", "success");
@@ -63,9 +63,10 @@ export function runAdminLoginAuth() {
                         localStorage.setItem('adminToken_Narmada', 'dummy-token');
                         localStorage.setItem('userRole', userMatch.role || 'Super Admin');
                         localStorage.setItem('userName', userMatch.name || 'Admin');
-                        localStorage.setItem('userEmail', userMatch.email || 'alzian@desa-narmada.go.id');
-                        localStorage.setItem('userNIK', userMatch.nik || '5201140000000000');
-                        localStorage.setItem('userPhone', userMatch.phone || '081234567890');
+                        if (userMatch.email) localStorage.setItem('userEmail', userMatch.email); else localStorage.removeItem('userEmail');
+                        if (userMatch.nik) localStorage.setItem('userNIK', userMatch.nik); else localStorage.removeItem('userNIK');
+                        if (userMatch.phone) localStorage.setItem('userPhone', userMatch.phone); else localStorage.removeItem('userPhone');
+                        if (userMatch.avatar) localStorage.setItem('userAvatar', userMatch.avatar); else localStorage.removeItem('userAvatar');
                         localStorage.setItem('userId', userMatch.username || 'admin');
                         initRBAC();
                         switchView('admin');
@@ -93,6 +94,7 @@ export function handleAdminLogout() {
             localStorage.removeItem('userEmail');
             localStorage.removeItem('userNIK');
             localStorage.removeItem('userPhone');
+            localStorage.removeItem('userAvatar');
             localStorage.removeItem('userId');
             pushToast("Berhasil keluar dari Dashboard Admin.", "info");
             switchView('admin-login');
