@@ -713,10 +713,80 @@ export function switchPengaturanAkunTab(tabId) {
         activeContent.classList.remove('hidden');
         activeContent.classList.add('block');
     }
-    
     if (tabId === 'aktivitas') {
         loadActiveSessions();
+    } else if (tabId === 'keamanan') {
+        if (typeof window.loadLogKeamanan === 'function') {
+            window.loadLogKeamanan();
+        }
     }
+}
+
+window.loadLogKeamanan = function() {
+    const tbody = document.getElementById('table-log-keamanan-body');
+    if (!tbody) return;
+    
+    tbody.innerHTML = '<tr><td colspan="4" class="p-6 text-center text-slate-400 text-xs"><i class="fa-solid fa-spinner animate-spin"></i> Memuat log keamanan...</td></tr>';
+    
+    let token = localStorage.getItem('adminToken_Narmada');
+    if (!token) return;
+    
+    if (window.isGoogleEnv) {
+        google.script.run
+            .withSuccessHandler(function(res) {
+                if (res.success) {
+                    renderLogKeamananTable(res.data);
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="4" class="p-6 text-center text-red-500 text-xs">' + res.message + '</td></tr>';
+                }
+            })
+            .withFailureHandler(function(err) {
+                tbody.innerHTML = '<tr><td colspan="4" class="p-6 text-center text-red-500 text-xs">Error: ' + err + '</td></tr>';
+            })
+            .getLogKeamanan(token);
+    } else {
+        // Mock data
+        setTimeout(function() {
+            renderLogKeamananTable([
+                { waktu: "Hari ini, 09:00", tindakan: "Login", deskripsi: "Berhasil masuk ke sistem.", pengguna: "alzian_admin", userAgent: "Chrome Windows", status: "Sukses" },
+                { waktu: "Kemarin, 15:30", tindakan: "Cabut Sesi", deskripsi: "Mencabut akses dari semua perangkat.", pengguna: "alzian_admin", userAgent: "Safari Mac", status: "Sukses" },
+                { waktu: "28 Jul 2026, 10:00", tindakan: "Login Gagal", deskripsi: "Kata sandi salah.", pengguna: "unknown", userAgent: "Firefox Linux", status: "Gagal" }
+            ]);
+        }, 800);
+    }
+};
+
+function renderLogKeamananTable(logs) {
+    const tbody = document.getElementById('table-log-keamanan-body');
+    if (!tbody) return;
+    
+    if (!logs || logs.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" class="p-6 text-center text-slate-400 text-xs">Belum ada aktivitas keamanan.</td></tr>';
+        return;
+    }
+    
+    let html = '';
+    logs.forEach(function(l) {
+        let statusColor = l.status === 'Sukses' ? 'text-emerald-600 bg-emerald-50' : 'text-red-600 bg-red-50';
+        let actionColor = 'text-narmadaBlue';
+        if (l.tindakan.toLowerCase().includes('gagal') || l.tindakan.toLowerCase().includes('hapus') || l.tindakan.toLowerCase().includes('cabut')) {
+            actionColor = 'text-red-500';
+        }
+        
+        html += `
+            <tr class="hover:bg-slate-50 transition-colors">
+                <td class="p-4 whitespace-nowrap"><span class="font-semibold text-slate-800">${l.waktu}</span></td>
+                <td class="p-4"><span class="font-bold ${actionColor}">${l.tindakan}</span><br><span class="text-[9px] text-slate-400 border border-slate-200 rounded px-1 mt-1 inline-block ${statusColor}">${l.status}</span></td>
+                <td class="p-4"><p class="text-xs text-slate-600">${l.deskripsi}</p></td>
+                <td class="p-4 text-[10px] text-slate-500">
+                    <span class="font-bold text-slate-700">${l.pengguna}</span><br>
+                    <i class="fa-solid fa-desktop mt-1 mr-1"></i>${l.userAgent}
+                </td>
+            </tr>
+        `;
+    });
+    
+    tbody.innerHTML = html;
 }
 
 function loadActiveSessions() {

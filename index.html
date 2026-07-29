@@ -1371,6 +1371,36 @@
                                     </form>
                                 </div>
                             </div>
+                            </div>
+
+                            <!-- Riwayat Log Keamanan -->
+                            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden mt-6">
+                                <div class="p-4 md:p-5 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
+                                    <h3 class="text-xs md:text-sm font-bold text-slate-800 flex items-center gap-2">
+                                        <i class="fa-solid fa-clock-rotate-left text-narmadaBlue"></i> Log Keamanan (Audit Trail)
+                                    </h3>
+                                    <button onclick="window.loadLogKeamanan()" class="text-[10px] md:text-xs text-slate-500 hover:text-narmadaBlue flex items-center gap-1 transition-colors">
+                                        <i class="fa-solid fa-arrows-rotate"></i> Segarkan
+                                    </button>
+                                </div>
+                                <div class="overflow-x-auto">
+                                    <table class="w-full text-left border-collapse">
+                                        <thead>
+                                            <tr class="bg-slate-50/50 text-[10px] md:text-xs text-slate-500 uppercase tracking-wider">
+                                                <th class="p-4 font-bold border-b border-slate-100">Waktu</th>
+                                                <th class="p-4 font-bold border-b border-slate-100">Tindakan</th>
+                                                <th class="p-4 font-bold border-b border-slate-100">Deskripsi</th>
+                                                <th class="p-4 font-bold border-b border-slate-100">Pengguna / Perangkat</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="table-log-keamanan-body" class="text-xs md:text-sm text-slate-700 divide-y divide-slate-100">
+                                            <tr>
+                                                <td colspan="4" class="p-6 text-center text-slate-400 text-xs">Memuat log keamanan...</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
 
                         <!-- TAB TAMPILAN -->
