@@ -1016,3 +1016,23 @@ if (el_lightbox_modal) {
 } else {
     console.warn("Element #lightbox-modal not found for event binding.");
 }
+
+// Bind OTP Form
+const btnVerifyOtp = document.getElementById('btn-verify-otp');
+if (btnVerifyOtp) {
+    btnVerifyOtp.addEventListener('click', function(event) {
+        if(typeof window.verifyOTPAndSave === 'function') window.verifyOTPAndSave();
+    });
+}
+
+const btnCancelOtp = document.getElementById('btn-cancel-otp');
+if (btnCancelOtp) {
+    btnCancelOtp.addEventListener('click', function(event) {
+        if(typeof window.closeOtpForm === 'function') window.closeOtpForm();
+    });
+}
+
+// Initialize OTP inputs (auto-focus, paste, etc)
+if (typeof window.bindOtpInputs === 'function') {
+    window.bindOtpInputs();
+}

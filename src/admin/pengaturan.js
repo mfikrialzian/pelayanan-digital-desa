@@ -159,141 +159,308 @@ export function toggleEditProfile(isCancel = false) {
     }
 }
 
-export function saveProfileData(e) {
-    e.preventDefault();
+let otpInterval = null;
+let pendingProfileUpdate = null;
+
+function executeProfileSave(payload) {
+    const token = localStorage.getItem('adminToken_Narmada');
     
-    // Add confirmation before saving
     Swal.fire({
-        title: 'Konfirmasi Simpan',
-        text: 'Apakah Anda yakin ingin menyimpan perubahan profil ini?',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#059669',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Ya, Simpan!',
-        cancelButtonText: 'Batal'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            const elNama = document.getElementById('input-profil-nama');
-            const elEmail = document.getElementById('input-profil-email');
-            const elWa = document.getElementById('input-profil-wa');
-            
-            const nama = elNama ? elNama.value.trim() : '';
-            const email = elEmail ? elEmail.value.trim() : '';
-            let wa = elWa ? elWa.value.trim() : '';
+        title: 'Menyimpan...',
+        text: 'Mohon tunggu sebentar',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
 
-            // Validation
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (email && !emailRegex.test(email)) {
-                Swal.fire('Format Email Salah', 'Silakan masukkan alamat email yang valid (contoh: nama@domain.com)', 'warning');
-                return;
-            }
+    if (payload.nama) {
+        localStorage.setItem('userName', payload.nama);
+        const headerNama = document.getElementById('profil-header-nama');
+        if (headerNama) headerNama.innerText = payload.nama;
+        const topbarName = document.querySelector('.admin-topbar-name');
+        if (topbarName) topbarName.innerText = payload.nama;
+    }
+    if (payload.email) {
+        localStorage.setItem('userEmail', payload.email);
+        const headerEmail = document.getElementById('profil-header-email');
+        if (headerEmail) headerEmail.innerText = payload.email;
+    }
+    if (payload.wa) localStorage.setItem('userPhone', payload.wa);
 
-            const waRegex = /^(08|\+628)\d{8,14}$/;
-            if (wa && !waRegex.test(wa)) {
-                Swal.fire('Format WA Salah', 'Nomor WA harus valid, diawali dengan 08 atau +628 (contoh: 08123456789)', 'warning');
-                return;
-            }
-            
-            if (wa && wa.startsWith('08')) {
-                wa = '+628' + wa.substring(2);
-                if (elWa) elWa.value = wa;
-            }
+    const avatarImg = document.getElementById('profil-avatar-img');
+    if (avatarImg) {
+        if (avatarImg.dataset.pendingDelete) {
+            localStorage.removeItem('userAvatar');
+            delete avatarImg.dataset.pendingDelete;
+        } else if (avatarImg.dataset.pendingAvatar) {
+            localStorage.setItem('userAvatar', avatarImg.dataset.pendingAvatar);
+            delete avatarImg.dataset.pendingAvatar;
+        }
+    }
 
-            Swal.fire({
-                title: 'Menyimpan...',
-                text: 'Mohon tunggu sebentar',
-                allowOutsideClick: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                }
-            });
-
-            // Update local storage first
-            
-            if (nama) {
-                localStorage.setItem('userName', nama);
-                const headerNama = document.getElementById('profil-header-nama');
-                if (headerNama) headerNama.innerText = nama;
-                
-                const topbarName = document.querySelector('.admin-topbar-name');
-                if (topbarName) topbarName.innerText = nama;
-            }
-            if (email) {
-                localStorage.setItem('userEmail', email);
-                const headerEmail = document.getElementById('profil-header-email');
-                if (headerEmail) headerEmail.innerText = email;
-            }
-            if (wa) localStorage.setItem('userPhone', wa);
-
-            const avatarImg = document.getElementById('profil-avatar-img');
-            if (avatarImg) {
-                if (avatarImg.dataset.pendingDelete) {
-                    localStorage.removeItem('userAvatar');
-                    delete avatarImg.dataset.pendingDelete;
-                } else if (avatarImg.dataset.pendingAvatar) {
-                    localStorage.setItem('userAvatar', avatarImg.dataset.pendingAvatar);
-                    delete avatarImg.dataset.pendingAvatar;
-                }
-            }
-
-            const payload = {
-                username: localStorage.getItem('userId'),
-                nama: nama,
-                email: email,
-                wa: wa,
-                avatar: localStorage.getItem('userAvatar') || ''
-            };
-            const token = localStorage.getItem('adminToken_Narmada');
-
-
-            if (typeof google !== 'undefined' && google.script && google.script.run) {
-                // Real backend call
-                google.script.run
-                    .withSuccessHandler(function (res) {
-                        if (res && res.success) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Berhasil',
-                                text: 'Data profil berhasil diperbarui di database.',
-                                confirmButtonText: 'OK',
-                                confirmButtonColor: '#059669'
-                            }).then(() => {
-                                toggleEditProfile(false);
-                                initRBAC();
-                            });
-                        } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Gagal',
-                                text: res ? res.message : 'Terjadi kesalahan saat menyimpan.',
-                            });
-                        }
-                    })
-                    .withFailureHandler(function (err) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error Jaringan',
-                            text: 'Gagal terhubung ke server backend.',
-                        });
-                    })
-                    .updateProfilPengguna(token, payload);
-            } else {
-                // Fallback / Simulation for local dev
-                setTimeout(() => {
+    if (typeof google !== 'undefined' && google.script && google.script.run) {
+        google.script.run
+            .withSuccessHandler(function (res) {
+                if (res && res.success) {
                     Swal.fire({
                         icon: 'success',
-                        title: 'Berhasil (Simulasi)',
-                        text: 'Data profil berhasil diperbarui secara lokal (Development Mode).',
+                        title: 'Berhasil',
+                        text: 'Data profil berhasil diperbarui.',
                         confirmButtonText: 'OK',
                         confirmButtonColor: '#059669'
                     }).then(() => {
                         toggleEditProfile(false);
+                        closeOtpForm();
+                        // if initRBAC is needed, you can call it here. Assuming it is imported or available.
                     });
-                }, 1500);
-            }
+                } else {
+                    Swal.fire('Gagal', res ? res.message : 'Terjadi kesalahan.', 'error');
+                }
+            })
+            .withFailureHandler(function (err) {
+                Swal.fire('Error Jaringan', 'Gagal terhubung ke server.', 'error');
+            })
+            .updateProfilPengguna(token, payload);
+    } else {
+        setTimeout(() => {
+            Swal.fire('Berhasil (Simulasi)', 'Profil diperbarui.', 'success').then(() => {
+                toggleEditProfile(false);
+                closeOtpForm();
+            });
+        }, 1500);
+    }
+}
+
+function startOtpTimer(durationSeconds) {
+    clearInterval(otpInterval);
+    const timerDisplay = document.getElementById('otp-timer');
+    let timer = durationSeconds;
+    
+    otpInterval = setInterval(() => {
+        let minutes = parseInt(timer / 60, 10);
+        let seconds = parseInt(timer % 60, 10);
+        minutes = minutes < 10 ? "0" + minutes : minutes;
+        seconds = seconds < 10 ? "0" + seconds : seconds;
+        timerDisplay.textContent = minutes + ":" + seconds;
+        
+        if (--timer < 0) {
+            clearInterval(otpInterval);
+            timerDisplay.textContent = "00:00 (Kedaluwarsa)";
+            timerDisplay.classList.replace('text-emerald-600', 'text-red-500');
         }
+    }, 1000);
+}
+
+export function verifyOTPAndSave() {
+    const inputs = document.querySelectorAll('.otp-input');
+    let otpCode = '';
+    inputs.forEach(input => otpCode += input.value);
+    
+    if (otpCode.length < 6) {
+        Swal.fire('OTP Tidak Lengkap', 'Masukkan 6 digit kode OTP', 'warning');
+        return;
+    }
+    
+    if (!pendingProfileUpdate) {
+        closeOtpForm();
+        return;
+    }
+    
+    const token = localStorage.getItem('adminToken_Narmada');
+    
+    Swal.fire({
+        title: 'Memverifikasi OTP...',
+        allowOutsideClick: false,
+        didOpen: () => Swal.showLoading()
     });
+    
+    if (typeof google !== 'undefined' && google.script && google.script.run) {
+        google.script.run
+            .withSuccessHandler(function (res) {
+                if (res && res.success) {
+                    executeProfileSave(pendingProfileUpdate.payload);
+                } else {
+                    Swal.fire('Gagal Verifikasi', res ? res.message : 'OTP Salah', 'error');
+                }
+            })
+            .withFailureHandler(function (err) {
+                Swal.fire('Error', 'Gagal menghubungi server.', 'error');
+            })
+            .verifyContactOTP(token, otpCode, pendingProfileUpdate.type);
+    } else {
+        // Local simulation
+        setTimeout(() => {
+            if (otpCode === '123456') {
+                executeProfileSave(pendingProfileUpdate.payload);
+            } else {
+                Swal.fire('Gagal Verifikasi', 'OTP Salah (Gunakan 123456 untuk simulasi)', 'error');
+            }
+        }, 1000);
+    }
+}
+
+export function bindOtpInputs() {
+    const inputs = document.querySelectorAll('.otp-input');
+    inputs.forEach((input, index) => {
+        input.addEventListener('input', function(e) {
+            // allow only numbers
+            this.value = this.value.replace(/[^0-9]/g, '');
+            if (this.value !== '') {
+                if (index < inputs.length - 1) {
+                    inputs[index + 1].focus();
+                } else {
+                    this.blur();
+                    // auto verify
+                    verifyOTPAndSave();
+                }
+            }
+        });
+        
+        input.addEventListener('keydown', function(e) {
+            if (e.key === 'Backspace' && this.value === '') {
+                if (index > 0) {
+                    inputs[index - 1].focus();
+                    inputs[index - 1].value = '';
+                }
+            }
+        });
+        
+        // paste handle
+        input.addEventListener('paste', function(e) {
+            e.preventDefault();
+            const pastedData = e.clipboardData.getData('text').replace(/[^0-9]/g, '').slice(0, 6);
+            if (pastedData) {
+                for (let i = 0; i < pastedData.length; i++) {
+                    if (inputs[index + i]) {
+                        inputs[index + i].value = pastedData[i];
+                    }
+                }
+                if (index + pastedData.length < inputs.length) {
+                    inputs[index + pastedData.length].focus();
+                } else {
+                    inputs[inputs.length - 1].focus();
+                    verifyOTPAndSave();
+                }
+            }
+        });
+    });
+}
+
+export function closeOtpForm() {
+    clearInterval(otpInterval);
+    document.getElementById('otp-verification-container').classList.add('hidden');
+    document.getElementById('profil-action-buttons').classList.remove('hidden');
+    
+    // Unlock form
+    document.querySelectorAll('.profil-input').forEach(input => {
+        input.removeAttribute('readonly');
+        input.classList.remove('bg-slate-100', 'cursor-not-allowed', 'opacity-75');
+    });
+    
+    // Clear inputs
+    document.querySelectorAll('.otp-input').forEach(input => input.value = '');
+    pendingProfileUpdate = null;
+}
+
+export function saveProfileData(e) {
+    e.preventDefault();
+    
+    const elNama = document.getElementById('input-profil-nama');
+    const elEmail = document.getElementById('input-profil-email');
+    const elWa = document.getElementById('input-profil-wa');
+    
+    const nama = elNama ? elNama.value.trim() : '';
+    const email = elEmail ? elEmail.value.trim() : '';
+    let wa = elWa ? elWa.value.trim() : '';
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (email && !emailRegex.test(email)) {
+        Swal.fire('Format Email Salah', 'Masukkan email yang valid', 'warning');
+        return;
+    }
+
+    const waRegex = /^(08|\+628)\d{8,14}$/;
+    if (wa && !waRegex.test(wa)) {
+        Swal.fire('Format WA Salah', 'Gunakan format 08/628', 'warning');
+        return;
+    }
+    
+    if (wa && wa.startsWith('08')) {
+        wa = '+628' + wa.substring(2);
+        if (elWa) elWa.value = wa;
+    }
+
+    const oldEmail = localStorage.getItem('userEmail') || '';
+    const oldWa = localStorage.getItem('userPhone') || '';
+    
+    const payload = {
+        username: localStorage.getItem('userId'),
+        nama: nama,
+        email: email,
+        wa: wa,
+        avatar: localStorage.getItem('userAvatar') || ''
+    };
+
+    const isEmailChanged = email !== oldEmail;
+    const isWaChanged = wa !== oldWa;
+
+    if (isEmailChanged || isWaChanged) {
+        // Prepare OTP
+        pendingProfileUpdate = { payload, type: isEmailChanged ? 'email' : 'wa', target: isEmailChanged ? email : wa };
+        
+        Swal.fire({
+            title: 'Mengirim OTP...',
+            allowOutsideClick: false,
+            didOpen: () => Swal.showLoading()
+        });
+        
+        const token = localStorage.getItem('adminToken_Narmada');
+        
+        if (typeof google !== 'undefined' && google.script && google.script.run) {
+            google.script.run
+                .withSuccessHandler(function (res) {
+                    Swal.close();
+                    if (res && res.success) {
+                        // Lock form
+                        document.querySelectorAll('.profil-input').forEach(input => {
+                            input.setAttribute('readonly', 'true');
+                            input.classList.add('bg-slate-100', 'cursor-not-allowed', 'opacity-75');
+                        });
+                        
+                        document.getElementById('profil-action-buttons').classList.add('hidden');
+                        document.getElementById('otp-verification-container').classList.remove('hidden');
+                        
+                        document.getElementById('otp-instruction-text').innerHTML = `Kode OTP telah dikirim ke <b>${pendingProfileUpdate.target}</b>. Masukkan kode 6 digit di bawah ini.`;
+                        
+                        const timerDisplay = document.getElementById('otp-timer');
+                        timerDisplay.classList.replace('text-red-500', 'text-emerald-600');
+                        startOtpTimer(180);
+                        
+                        // Focus first input
+                        setTimeout(() => document.querySelectorAll('.otp-input')[0].focus(), 100);
+                    } else {
+                        Swal.fire('Gagal Mengirim OTP', res ? res.message : 'Kesalahan server', 'error');
+                    }
+                })
+                .withFailureHandler(function (err) {
+                    Swal.fire('Error', 'Gagal menghubungi server.', 'error');
+                })
+                .requestContactOTP(token, pendingProfileUpdate.target, pendingProfileUpdate.type);
+        } else {
+            // Simulasi lokal
+            setTimeout(() => {
+                Swal.close();
+                document.getElementById('profil-action-buttons').classList.add('hidden');
+                document.getElementById('otp-verification-container').classList.remove('hidden');
+                startOtpTimer(180);
+                setTimeout(() => document.querySelectorAll('.otp-input')[0].focus(), 100);
+            }, 1000);
+        }
+    } else {
+        // Normal save
+        executeProfileSave(payload);
+    }
 }
 
 export function handleProfilePhotoChange(e) {
