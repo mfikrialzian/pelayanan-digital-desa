@@ -1,3 +1,19 @@
+const {
+    switchView, handleMulaiPengajuan, toggleInfoDetail, backToPrevStepOrMenu, toggleWizardStep1State, 
+    goToStep2, goToStep3, goToStep4, goToStep5, toggleSubmitButtonState, handleWargaSubmit, copyRegIdToClipboard, 
+    sendWaAfterSubmit, runSearchStatus, runAdminLoginAuth, togglePasswordView, markAllNotificationsAsRead, 
+    deleteAllNotifications, setStatusFilter, moveAdminPage, switchPengaturanAkunTab, promptKeamananAccess, 
+    showPengaturanAkunMenu, handleProfilePhotoChange, toggleEditProfile, savePassword, toggleDarkModeUI, 
+    mockSaveSetting, pushToast, toggleSettingSwitch, closeLayananEditor, submitBuilderDataToServer, 
+    handleKeperluanSelectChange, deleteSelectedKeperluanOption, saveNewKeperluanOption, cancelNewKeperluanOption, 
+    addRequirementToKeperluan, toggleBuilderOptionInput, cancelEditBuilderQuestion, addBuilderQuestionToList, 
+    populateBuilderRepeaterSelect, addQuestionToRepeaterTempList, cancelEditRepeaterGroup, saveRepeaterGroup, 
+    runLayananFilter, openLayananEditor, switchVerifTab, markVerifikasiDirty, confirmSaveVerification, 
+    closeManageStatusModal, saveAdminSettings, switchManajemenPenggunaTab, backToManajemenPengguna, 
+    openModalTambahPengguna, saveRoleAccess, fetchActivities, closeModalEditPengguna, simpanEditPengguna, 
+    closeModalTambahPengguna, simpanPenggunaBaru, closeLightbox, toggleUserDropdown, saveProfileData,
+    handlePengajuanSubmission, deleteProfilePhoto
+} = window;
 
 // Extracted from div #ev-bind-1
 const el_ev_bind_1 = document.getElementById('ev-bind-1');
@@ -425,6 +441,17 @@ if (el_input_profil_foto) {
     });
 } else {
     console.warn("Element #input-profil-foto not found for event binding.");
+}
+
+
+// Extracted from button #btn-delete-avatar
+const el_btn_delete_avatar = document.getElementById('btn-delete-avatar');
+if (el_btn_delete_avatar) {
+    el_btn_delete_avatar.addEventListener('click', function(event) {
+        deleteProfilePhoto()
+    });
+} else {
+    console.warn("Element #btn-delete-avatar not found for event binding.");
 }
 
 

@@ -257,46 +257,89 @@ export function handleProfilePhotoChange(e) {
     if (file) {
         const reader = new FileReader();
         reader.onload = function(event) {
-            const img = new Image();
-            img.onload = function() {
-                // Compress and resize image using canvas
-                const canvas = document.createElement('canvas');
-                const MAX_WIDTH = 150;
-                const MAX_HEIGHT = 150;
-                let width = img.width;
-                let height = img.height;
-
-                if (width > height) {
-                    if (width > MAX_WIDTH) {
-                        height *= MAX_WIDTH / width;
-                        width = MAX_WIDTH;
+            Swal.fire({
+                title: 'Sesuaikan Foto Profil',
+                html: `
+                    <div style="max-height: 400px; overflow: hidden; width: 100%;">
+                        <img id="cropper-image" src="${event.target.result}" style="max-width: 100%; display: block;">
+                    </div>
+                `,
+                showCancelButton: true,
+                confirmButtonText: 'Simpan',
+                cancelButtonText: 'Batal',
+                confirmButtonColor: '#059669',
+                didOpen: () => {
+                    const image = document.getElementById('cropper-image');
+                    window.cropper = new Cropper(image, {
+                        aspectRatio: 1,
+                        viewMode: 1,
+                        autoCropArea: 1,
+                    });
+                },
+                preConfirm: () => {
+                    if (window.cropper) {
+                        return window.cropper.getCroppedCanvas({
+                            width: 150,
+                            height: 150
+                        }).toDataURL('image/jpeg', 0.8);
                     }
-                } else {
-                    if (height > MAX_HEIGHT) {
-                        width *= MAX_HEIGHT / height;
-                        height = MAX_HEIGHT;
+                    return null;
+                }
+            }).then((result) => {
+                if (result.isConfirmed && result.value) {
+                    const dataUrl = result.value;
+                    const avatarImg = document.getElementById('profil-avatar-img');
+                    if (avatarImg) {
+                        avatarImg.src = dataUrl;
                     }
+                    localStorage.setItem('userAvatar', dataUrl);
+                    
+                    const btnDelete = document.getElementById('btn-delete-avatar');
+                    if (btnDelete) btnDelete.classList.remove('hidden');
+                    
+                    pushToast('Foto profil disesuaikan. Klik "Simpan Perubahan" untuk menyimpan permanen.', 'success');
                 }
-
-                canvas.width = width;
-                canvas.height = height;
-                const ctx = canvas.getContext('2d');
-                ctx.drawImage(img, 0, 0, width, height);
-
-                const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
                 
-                const avatarImg = document.getElementById('profil-avatar-img');
-                if (avatarImg) {
-                    avatarImg.src = dataUrl;
+                // Bersihkan memori
+                e.target.value = '';
+                if (window.cropper) {
+                    window.cropper.destroy();
+                    window.cropper = null;
                 }
-                localStorage.setItem('userAvatar', dataUrl);
-                
-                pushToast('Foto profil siap disimpan. Klik "Simpan Perubahan" untuk menerapkan.', 'info');
-            };
-            img.src = event.target.result;
+            });
         };
         reader.readAsDataURL(file);
     }
+}
+
+export function deleteProfilePhoto() {
+    Swal.fire({
+        title: 'Hapus Foto Profil?',
+        text: "Anda yakin ingin menghapus foto profil ini?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#64748b',
+        confirmButtonText: 'Ya, Hapus!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            localStorage.removeItem('userAvatar');
+            const userNameEl = document.getElementById('profil-header-nama');
+            const userName = userNameEl ? userNameEl.innerText : 'Admin';
+            const defaultAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=0D8ABC&color=fff&size=100`;
+            
+            const avatarImg = document.getElementById('profil-avatar-img');
+            if (avatarImg) {
+                avatarImg.src = defaultAvatar;
+            }
+            
+            const btnDelete = document.getElementById('btn-delete-avatar');
+            if (btnDelete) btnDelete.classList.add('hidden');
+            
+            pushToast('Foto profil dihapus sementara. Klik "Simpan Perubahan" untuk menyimpan permanen.', 'info');
+        }
+    });
 }
 
 export function savePassword(e) {
@@ -414,8 +457,18 @@ export function showPengaturanAkunMenu() {
     if (elWa) elWa.value = phone;
 
     const avatarImg = document.getElementById('profil-avatar-img');
-    if (avatarImg && avatar) {
-        avatarImg.src = avatar;
+    const btnDeleteAvatar = document.getElementById('btn-delete-avatar');
+    
+    if (avatarImg) {
+        if (avatar && avatar.trim() !== '') {
+            avatarImg.src = avatar;
+            if (btnDeleteAvatar) btnDeleteAvatar.classList.remove('hidden');
+        } else {
+            // Restore default avatar if not present
+            const defaultAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(nama)}&background=0D8ABC&color=fff&size=100`;
+            avatarImg.src = defaultAvatar;
+            if (btnDeleteAvatar) btnDeleteAvatar.classList.add('hidden');
+        }
     }
 
     const headNama = document.getElementById('profil-header-nama');

@@ -303,7 +303,7 @@ document.addEventListener('DOMContentLoaded', () => {
 document.addEventListener('DOMContentLoaded', () => {
     const formProfil = document.getElementById('form-profil');
     if (formProfil) {
-        formProfil.addEventListener('submit', saveProfileData);
+        formProfil.addEventListener('submit', window.saveProfileData);
     }
 });
 

@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="input.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
 
     <link rel="stylesheet" href="style.css">
 
@@ -1136,8 +1136,11 @@
                             <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 flex items-center gap-6">
                                 <div class="relative">
                                     <img id="profil-avatar-img" src="https://ui-avatars.com/api/?name=Muhamad+Alzian&amp;background=0D8ABC&amp;color=fff&amp;size=100" alt="Avatar" class="w-20 h-20 md:w-24 md:h-24 rounded-full border-4 border-slate-50 shadow-sm object-cover">
-                                    <button id="ev-bind-20" class="absolute bottom-0 right-0 w-8 h-8 bg-white border border-slate-200 rounded-full flex items-center justify-center text-slate-500 hover:text-narmadaGreen hover:border-narmadaGreen transition-colors shadow-sm">
+                                    <button id="ev-bind-20" title="Ubah Foto Profil" class="absolute bottom-0 right-0 w-8 h-8 bg-white border border-slate-200 rounded-full flex items-center justify-center text-slate-500 hover:text-narmadaGreen hover:border-narmadaGreen transition-colors shadow-sm">
                                         <i class="fa-solid fa-camera text-xs"></i>
+                                    </button>
+                                    <button id="btn-delete-avatar" title="Hapus Foto Profil" class="absolute bottom-0 left-0 w-8 h-8 bg-white border border-slate-200 rounded-full flex items-center justify-center text-slate-500 hover:text-red-500 hover:border-red-500 transition-colors shadow-sm hidden">
+                                        <i class="fa-solid fa-trash text-xs"></i>
                                     </button>
                                     <input type="file" id="input-profil-foto" accept="image/*" class="hidden">
                                 </div>
@@ -2474,6 +2477,8 @@
 
     <!-- JAVASCRIPT UTAMA -->
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
     <script type="module" src="/src/main.js"></script>
     <!-- SERVICE WORKER REGISTRATION -->
     <script>
