@@ -13,7 +13,8 @@ var AuthService = {
         
         var token = Utilities.getUuid() + "-" + new Date().getTime();
         var cache = CacheService.getScriptCache();
-        cache.put("AUTH_" + token, user.peran || "valid", 21600); // 6 hours
+        var sessionData = JSON.stringify({ role: user.peran || "valid", username: username });
+        cache.put("AUTH_" + token, sessionData, 21600); // 6 hours
         
         // Update waktu login
         var tz = ZettConfig.TIMEZONE || "Asia/Makassar";
@@ -40,14 +41,25 @@ var AuthService = {
   verifyToken: function(token) {
     if (!token) return false;
     var cache = CacheService.getScriptCache();
-    var role = cache.get("AUTH_" + token);
-    return role != null;
+    var sessionData = cache.get("AUTH_" + token);
+    return sessionData != null;
+  },
+
+  getUserDataFromToken: function(token) {
+    if (!token) return null;
+    var cache = CacheService.getScriptCache();
+    var data = cache.get("AUTH_" + token);
+    try {
+      return data ? JSON.parse(data) : null;
+    } catch (e) {
+      // Legacy support if it was just a string
+      return { role: data, username: null };
+    }
   },
 
   getRoleFromToken: function(token) {
-    if (!token) return null;
-    var cache = CacheService.getScriptCache();
-    return cache.get("AUTH_" + token);
+    var data = this.getUserDataFromToken(token);
+    return data ? data.role : null;
   },
 
   logout: function(token) {

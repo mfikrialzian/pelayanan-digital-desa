@@ -83,7 +83,13 @@ function crudPengguna(token, action, payload) {
 }
 
 function updateProfilPengguna(token, payload) {
-  if (!AuthService.verifyToken(token)) return { success: false, message: "Sesi tidak valid atau telah berakhir. Silakan login kembali.", authError: true };
+  var userSession = AuthService.getUserDataFromToken(token);
+  if (!userSession) return { success: false, message: "Sesi tidak valid atau telah berakhir. Silakan login kembali.", authError: true };
+  
+  if (userSession.role !== "Super Admin" && userSession.username !== payload.username) {
+    return { success: false, message: "Akses ditolak! Anda hanya dapat mengubah profil Anda sendiri." };
+  }
+
   return PenggunaService.crud("update", {
     username: payload.username,
     updateData: {
@@ -92,6 +98,20 @@ function updateProfilPengguna(token, payload) {
       wa: payload.wa,
       avatar: payload.avatar
     }
+  });
+}
+
+function updatePasswordPengguna(token, payload) {
+  var userSession = AuthService.getUserDataFromToken(token);
+  if (!userSession) return { success: false, message: "Sesi tidak valid atau telah berakhir. Silakan login kembali.", authError: true };
+  
+  if (userSession.role !== "Super Admin" && userSession.username !== payload.username) {
+    return { success: false, message: "Akses ditolak! Anda hanya dapat mengubah kata sandi Anda sendiri." };
+  }
+
+  return PenggunaService.crud("resetPassword", {
+    username: payload.username,
+    password: payload.password
   });
 }
 
