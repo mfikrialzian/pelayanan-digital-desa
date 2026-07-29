@@ -11,8 +11,8 @@ export function resetVerifikasiDirty() {
 export function switchAdminTab(tabId, updateUrl = true) {
             // RBAC Protection
             if (typeof ROLE_MAPPINGS !== 'undefined') {
-                let role = localStorage.getItem('userRole') || 'Super Admin';
-                let mapping = ROLE_MAPPINGS[role] || ROLE_MAPPINGS['Super Admin'];
+                let role = localStorage.getItem('userRole') || 'Admin';
+                let mapping = ROLE_MAPPINGS[role] || ROLE_MAPPINGS['Admin'];
                 
                 // Normalisasi ID untuk pengecekan (misal 'pengaturan-akun' diijinkan jika ada di avatar)
                 let allowed = false;
@@ -404,6 +404,10 @@ export const AVATAR_ITEMS = [
 export const ROLE_MAPPINGS = {
             "Super Admin": {
                 sidebar: ['dashboard', 'daftar-layanan', 'pengajuan', 'kontak', 'verifikasi', 'tte', 'data-penduduk', 'dokumen', 'laporan', 'beranda', 'kredensial', 'aktivitas'],
+                avatar: ['pengaturan-akun', 'panduan', 'log-saya', 'divider', 'logout']
+            },
+            "Admin": {
+                sidebar: ['dashboard', 'daftar-layanan', 'pengajuan', 'kontak', 'verifikasi', 'laporan', 'aktivitas'],
                 avatar: ['pengaturan-akun', 'panduan', 'log-saya', 'divider', 'logout']
             },
             "Operator Pelayanan 1": {

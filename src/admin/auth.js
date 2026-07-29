@@ -80,10 +80,10 @@ export function handleAdminLogout() {
             switchView('admin-login');
         }
 
-export function initRBAC() {
-            let role = localStorage.getItem('userRole') || 'Super Admin';
+        export function initRBAC() {
+            let role = localStorage.getItem('userRole') || 'Admin';
             let userName = localStorage.getItem('userName') || 'Administrator';
-            let mapping = ROLE_MAPPINGS[role] || ROLE_MAPPINGS['Super Admin'];
+            let mapping = ROLE_MAPPINGS[role] || ROLE_MAPPINGS['Admin'];
             
             // Update Profile Name and Role in UI (Header)
             let profileNames = document.querySelectorAll('.admin-profile-name');
@@ -140,20 +140,30 @@ export function initRBAC() {
                         if (item.type === 'divider') {
                             avatarMenu.innerHTML += '<div class="my-1 border-t border-slate-100"></div>';
                         } else {
-                            let targetAttr = item.target ? 'target="' + item.target + '"' : '';
-                            let clickAttr = item.onclick ? 'onclick="' + item.onclick + '"' : '';
-                            let linkHtml = '<a href="' + item.action + '" ' + targetAttr + ' ' + clickAttr + ' class="flex items-center gap-3 px-4 py-2 text-sm transition-colors group ' + item.textClass + '">' +
-                                           '<div class="w-8 h-8 rounded-full flex items-center justify-center transition-colors ' + item.bgClass + ' ' + item.groupBgClass + '">' +
-                                           '<i class="fa-solid ' + item.icon + ' ' + item.colorClass + ' ' + item.groupHoverClass + '"></i>' +
-                                           '</div>' +
-                                           '<span class="font-medium">' + item.label + '</span>' +
-                                           '</a>';
-                            avatarMenu.innerHTML += linkHtml;
-                        }
+                        let targetAttr = item.target ? 'target="' + item.target + '"' : '';
+                        let clickAttr = item.onclick ? 'onclick="' + item.onclick + '"' : '';
+                        let linkHtml = '<a href="' + item.action + '" ' + targetAttr + ' ' + clickAttr + ' class="flex items-center gap-3 px-4 py-2 text-sm transition-colors group ' + item.textClass + '">' +
+                                       '<div class="w-8 h-8 rounded-full flex items-center justify-center transition-colors ' + item.bgClass + ' ' + item.groupBgClass + '">' +
+                                       '<i class="fa-solid ' + item.icon + ' transition-colors ' + item.colorClass + ' ' + item.groupHoverClass + '"></i>' +
+                                       '</div>' +
+                                       '<span class="font-semibold">' + item.label + '</span>' +
+                                       '</a>';
+                        avatarMenu.innerHTML += linkHtml;
                     }
-                });
+                }
+            });
+        }
+        
+        // Show or Hide "Tambah Pengguna" button
+        let btnTambah = document.getElementById('ev-bind-44');
+        if (btnTambah) {
+            if (role === 'Super Admin') {
+                btnTambah.classList.remove('hidden');
+            } else {
+                btnTambah.classList.add('hidden');
             }
         }
+    }
 
 export function initAdminHeader() {
     const greetingEl = document.getElementById('admin-header-greeting');
