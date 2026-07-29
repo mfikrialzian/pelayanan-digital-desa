@@ -110,6 +110,12 @@ export function toggleEditProfile(isCancel = false) {
         });
         actionButtons.classList.add('hidden');
         btnEdit.classList.remove('hidden');
+        
+        // Sembunyikan tombol avatar
+        const btnUbahFoto = document.getElementById('ev-bind-20');
+        if (btnUbahFoto) btnUbahFoto.classList.add('hidden');
+        const btnDeleteAvatar = document.getElementById('btn-delete-avatar');
+        if (btnDeleteAvatar) btnDeleteAvatar.classList.add('hidden');
     } else {
         // Start edit
         inputs.forEach(input => {
@@ -123,6 +129,16 @@ export function toggleEditProfile(isCancel = false) {
         inputs[0].focus();
         actionButtons.classList.remove('hidden');
         btnEdit.classList.add('hidden');
+        
+        // Munculkan tombol avatar
+        const btnUbahFoto = document.getElementById('ev-bind-20');
+        if (btnUbahFoto) btnUbahFoto.classList.remove('hidden');
+        
+        const btnDeleteAvatar = document.getElementById('btn-delete-avatar');
+        const currentAvatar = localStorage.getItem('userAvatar');
+        if (btnDeleteAvatar && currentAvatar && currentAvatar.trim() !== '') {
+            btnDeleteAvatar.classList.remove('hidden');
+        }
     }
 }
 
@@ -296,8 +312,6 @@ export function handleProfilePhotoChange(e) {
                     
                     const btnDelete = document.getElementById('btn-delete-avatar');
                     if (btnDelete) btnDelete.classList.remove('hidden');
-                    
-                    pushToast('Foto profil disesuaikan. Klik "Simpan Perubahan" untuk menyimpan permanen.', 'success');
                 }
                 
                 // Bersihkan memori
@@ -313,33 +327,18 @@ export function handleProfilePhotoChange(e) {
 }
 
 export function deleteProfilePhoto() {
-    Swal.fire({
-        title: 'Hapus Foto Profil?',
-        text: "Anda yakin ingin menghapus foto profil ini?",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#64748b',
-        confirmButtonText: 'Ya, Hapus!',
-        cancelButtonText: 'Batal'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            localStorage.removeItem('userAvatar');
-            const userNameEl = document.getElementById('profil-header-nama');
-            const userName = userNameEl ? userNameEl.innerText : 'Admin';
-            const defaultAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=0D8ABC&color=fff&size=100`;
-            
-            const avatarImg = document.getElementById('profil-avatar-img');
-            if (avatarImg) {
-                avatarImg.src = defaultAvatar;
-            }
-            
-            const btnDelete = document.getElementById('btn-delete-avatar');
-            if (btnDelete) btnDelete.classList.add('hidden');
-            
-            pushToast('Foto profil dihapus sementara. Klik "Simpan Perubahan" untuk menyimpan permanen.', 'info');
-        }
-    });
+    localStorage.removeItem('userAvatar');
+    const userNameEl = document.getElementById('profil-header-nama');
+    const userName = userNameEl ? userNameEl.innerText : 'Admin';
+    const defaultAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=0D8ABC&color=fff&size=100`;
+    
+    const avatarImg = document.getElementById('profil-avatar-img');
+    if (avatarImg) {
+        avatarImg.src = defaultAvatar;
+    }
+    
+    const btnDelete = document.getElementById('btn-delete-avatar');
+    if (btnDelete) btnDelete.classList.add('hidden');
 }
 
 export function savePassword(e) {
@@ -522,18 +521,33 @@ export function switchPengaturanAkunTab(tabId) {
 export function promptKeamananAccess() {
     Swal.fire({
         title: 'Verifikasi Keamanan',
-        text: 'Masukkan kata sandi Anda saat ini untuk mengakses menu Keamanan:',
-        input: 'password',
-        inputAttributes: {
-            autocapitalize: 'off',
-            autocorrect: 'off'
-        },
+        html: `
+            <div style="text-align: left; margin-bottom: 10px; font-size: 14px; font-weight: normal; color: #475569;">
+                Masukkan kata sandi Anda saat ini untuk mengakses menu Keamanan:
+            </div>
+            <div style="position: relative;">
+                <input id="swal-input-password" type="password" class="swal2-input" placeholder="Kata Sandi" style="width: 100%; box-sizing: border-box; margin: 0;" autocapitalize="off">
+                <i id="toggle-password" class="fas fa-eye" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #64748b;"></i>
+            </div>
+        `,
         showCancelButton: true,
         confirmButtonText: 'Verifikasi',
         cancelButtonText: 'Batal',
         confirmButtonColor: '#059669',
         showLoaderOnConfirm: true,
-        preConfirm: (password) => {
+        didOpen: () => {
+            const togglePassword = document.getElementById('toggle-password');
+            const passwordInput = document.getElementById('swal-input-password');
+            if (togglePassword && passwordInput) {
+                togglePassword.addEventListener('click', function () {
+                    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                    passwordInput.setAttribute('type', type);
+                    this.classList.toggle('fa-eye-slash');
+                });
+            }
+        },
+        preConfirm: () => {
+            const password = document.getElementById('swal-input-password').value;
             if (!password) {
                 Swal.showValidationMessage('Kata sandi tidak boleh kosong');
                 return false;
