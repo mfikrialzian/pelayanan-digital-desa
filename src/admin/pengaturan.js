@@ -116,6 +116,23 @@ export function toggleEditProfile(isCancel = false) {
         if (btnUbahFoto) btnUbahFoto.classList.add('hidden');
         const btnDeleteAvatar = document.getElementById('btn-delete-avatar');
         if (btnDeleteAvatar) btnDeleteAvatar.classList.add('hidden');
+        
+        // Kembalikan foto profil jika dibatalkan
+        if (isCancel) {
+            const avatarImg = document.getElementById('profil-avatar-img');
+            const originalAvatar = localStorage.getItem('userAvatar');
+            if (avatarImg) {
+                if (originalAvatar && originalAvatar.trim() !== '') {
+                    avatarImg.src = originalAvatar;
+                } else {
+                    const userNameEl = document.getElementById('profil-header-nama');
+                    const userName = userNameEl ? userNameEl.innerText : 'Admin';
+                    avatarImg.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=0D8ABC&color=fff&size=100`;
+                }
+                delete avatarImg.dataset.pendingAvatar;
+                delete avatarImg.dataset.pendingDelete;
+            }
+        }
     } else {
         // Start edit
         inputs.forEach(input => {
@@ -208,6 +225,17 @@ export function saveProfileData(e) {
                 if (headerEmail) headerEmail.innerText = email;
             }
             if (wa) localStorage.setItem('userPhone', wa);
+
+            const avatarImg = document.getElementById('profil-avatar-img');
+            if (avatarImg) {
+                if (avatarImg.dataset.pendingDelete) {
+                    localStorage.removeItem('userAvatar');
+                    delete avatarImg.dataset.pendingDelete;
+                } else if (avatarImg.dataset.pendingAvatar) {
+                    localStorage.setItem('userAvatar', avatarImg.dataset.pendingAvatar);
+                    delete avatarImg.dataset.pendingAvatar;
+                }
+            }
 
             const payload = {
                 username: localStorage.getItem('userId'),
@@ -307,8 +335,9 @@ export function handleProfilePhotoChange(e) {
                     const avatarImg = document.getElementById('profil-avatar-img');
                     if (avatarImg) {
                         avatarImg.src = dataUrl;
+                        avatarImg.dataset.pendingAvatar = dataUrl;
+                        delete avatarImg.dataset.pendingDelete;
                     }
-                    localStorage.setItem('userAvatar', dataUrl);
                     
                     const btnDelete = document.getElementById('btn-delete-avatar');
                     if (btnDelete) btnDelete.classList.remove('hidden');
@@ -327,7 +356,6 @@ export function handleProfilePhotoChange(e) {
 }
 
 export function deleteProfilePhoto() {
-    localStorage.removeItem('userAvatar');
     const userNameEl = document.getElementById('profil-header-nama');
     const userName = userNameEl ? userNameEl.innerText : 'Admin';
     const defaultAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=0D8ABC&color=fff&size=100`;
@@ -335,6 +363,8 @@ export function deleteProfilePhoto() {
     const avatarImg = document.getElementById('profil-avatar-img');
     if (avatarImg) {
         avatarImg.src = defaultAvatar;
+        avatarImg.dataset.pendingDelete = "true";
+        delete avatarImg.dataset.pendingAvatar;
     }
     
     const btnDelete = document.getElementById('btn-delete-avatar');
