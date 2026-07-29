@@ -21,8 +21,11 @@ Object.assign(window,
     WargaPengajuan, WargaStatus, WargaUI, ImageUtils
 );
 
-import './events/events_binding.js';
-
-if (typeof window.initApp === 'function') {
-    window.initApp();
-}
+// Gunakan dynamic import agar file ini dieksekusi SETELAH Object.assign selesai
+import('./events/events_binding.js').then(() => {
+    if (typeof window.initApp === 'function') {
+        window.initApp();
+    }
+}).catch(err => {
+    console.error("Gagal memuat events_binding.js:", err);
+});
