@@ -26,6 +26,7 @@ var ZettConstants = {
   SHEET_PENGGUNA: "Pengguna",
   SHEET_AKTIVITAS: "Aktivitas",
   SHEET_NOTIFIKASI: "Notifikasi",
+  SHEET_LOG_KEAMANAN: "Log_Keamanan",
   
   STATUS_PENDING: "Menunggu",
   STATUS_VERIFIKASI: "Verifikasi",
@@ -174,6 +175,14 @@ function setupDatabase() {
       var defaultUsername = props.getProperty('ADMIN_USERNAME') || "superadmin";
       var defaultPassword = props.getProperty('ADMIN_PASSWORD') || Utilities.getUuid().substring(0,8); 
       sPengguna.appendRow([Utilities.getUuid(), defaultUsername, defaultPassword, "Administrator (System)", "Super Admin", "Pusat", "Aktif", "-"]);
+    }
+
+    // 9. Inisialisasi Sheet Log Keamanan
+    var sLogKeamanan = ss.getSheetByName(ZettConstants.SHEET_LOG_KEAMANAN);
+    if (!sLogKeamanan) {
+      sLogKeamanan = ss.insertSheet(ZettConstants.SHEET_LOG_KEAMANAN);
+      sLogKeamanan.appendRow(["ID", "Waktu", "Pengguna", "Tindakan", "Deskripsi", "IP Address", "User Agent", "Status"]);
+      sLogKeamanan.getRange("A1:H1").setFontWeight("bold").setBackground("#b91c1c").setFontColor("#FFFFFF");
     }
 
     SpreadsheetApp.flush();

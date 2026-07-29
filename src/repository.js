@@ -522,3 +522,45 @@ var NotificationRepository = {
     sheet.appendRow([record.id, record.waktu, record.tipe, record.judul, record.pesan, "FALSE", record.idReferensi]);
   }
 };
+
+/**
+ * LogKeamananRepository - Audit trail sistem keamanan
+ */
+var LogKeamananRepository = {
+  getAll: function(limit) {
+    var sheet = BaseRepository.getSheet(ZettConstants.SHEET_LOG_KEAMANAN);
+    var data = sheet.getDataRange().getDisplayValues();
+    var list = [];
+    // Start from bottom for newest first
+    var max = limit ? Math.min(data.length - 1, limit) : data.length - 1;
+    for (var i = data.length - 1; i > data.length - 1 - max; i--) {
+      if (i === 0) break; // Skip header
+      list.push({
+        id: data[i][0],
+        waktu: data[i][1],
+        pengguna: data[i][2],
+        tindakan: data[i][3],
+        deskripsi: data[i][4],
+        ipAddress: data[i][5],
+        userAgent: data[i][6],
+        status: data[i][7]
+      });
+    }
+    return list;
+  },
+  insert: function(record) {
+    var sheet = BaseRepository.getSheet(ZettConstants.SHEET_LOG_KEAMANAN);
+    var id = Utilities.getUuid();
+    var waktu = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), "dd MMM yyyy HH:mm:ss");
+    sheet.appendRow([
+      id, 
+      waktu, 
+      record.pengguna || "Sistem", 
+      record.tindakan, 
+      record.deskripsi, 
+      record.ipAddress || "-", 
+      record.userAgent || "-", 
+      record.status || "Sukses"
+    ]);
+  }
+};

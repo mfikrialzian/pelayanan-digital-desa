@@ -2,7 +2,7 @@
  * AuthService - Manajemen Hak Akses Admin
  */
 var AuthService = {
-  login: function(username, password) {
+  login: function(username, password, deviceInfo) {
     try {
       var user = PenggunaRepository.getByUsername(username);
       
@@ -16,11 +16,40 @@ var AuthService = {
         var sessionData = JSON.stringify({ role: user.peran || "valid", username: username });
         cache.put("AUTH_" + token, sessionData, 21600); // 6 hours
         
-        // Update waktu login
         var tz = ZettConfig.TIMEZONE || "Asia/Makassar";
         var now = Utilities.formatDate(new Date(), tz, "dd MMM yyyy, HH:mm");
+        
+        // Track session in PropertiesService for Device Management
+        var props = PropertiesService.getScriptProperties();
+        var sessionKey = "SESSIONS_" + username;
+        var activeSessions = JSON.parse(props.getProperty(sessionKey) || "[]");
+        
+        // Clean up expired sessions from list (assuming 6 hours validity)
+        var currentTime = new Date().getTime();
+        activeSessions = activeSessions.filter(function(s) {
+           return (currentTime - s.timestamp) < (21600 * 1000); // within 6 hours
+        });
+        
+        activeSessions.push({
+          token: token,
+          deviceInfo: deviceInfo || "Unknown Device",
+          loginTime: now,
+          timestamp: currentTime
+        });
+        
+        props.setProperty(sessionKey, JSON.stringify(activeSessions));
+        
+        // Update waktu login di database
         PenggunaRepository.update(username, { terakhirLogin: now });
         SpreadsheetApp.flush();
+        
+        LogKeamananRepository.insert({
+          pengguna: username,
+          tindakan: "Login",
+          deskripsi: "Berhasil masuk ke sistem.",
+          userAgent: deviceInfo || "Unknown Device",
+          status: "Sukses"
+        });
         
         return { 
           success: true, 
@@ -32,6 +61,15 @@ var AuthService = {
           avatar: user.avatar
         };
       }
+      
+      LogKeamananRepository.insert({
+        pengguna: username,
+        tindakan: "Login Gagal",
+        deskripsi: "Kata sandi salah atau akun tidak aktif.",
+        userAgent: deviceInfo || "Unknown Device",
+        status: "Gagal"
+      });
+      
       return { success: false, message: "Username atau password salah!" };
     } catch (e) {
       return { success: false, message: "Auth Error: " + e.toString() };
@@ -40,9 +78,23 @@ var AuthService = {
 
   verifyToken: function(token) {
     if (!token) return false;
+    
+    // Also verify against activeSessions to allow manual revoking
     var cache = CacheService.getScriptCache();
     var sessionData = cache.get("AUTH_" + token);
-    return sessionData != null;
+    if (!sessionData) return false;
+    
+    try {
+      var parsed = JSON.parse(sessionData);
+      if (parsed.username) {
+        var props = PropertiesService.getScriptProperties();
+        var activeSessions = JSON.parse(props.getProperty("SESSIONS_" + parsed.username) || "[]");
+        var isValid = activeSessions.some(function(s) { return s.token === token; });
+        if (!isValid) return false; // Token was revoked manually
+      }
+    } catch (e) {}
+    
+    return true;
   },
 
   getUserDataFromToken: function(token) {
@@ -52,9 +104,55 @@ var AuthService = {
     try {
       return data ? JSON.parse(data) : null;
     } catch (e) {
-      // Legacy support if it was just a string
       return { role: data, username: null };
     }
+  },
+
+  getActiveSessions: function(token) {
+    if (!this.verifyToken(token)) return { success: false, message: "Sesi tidak valid." };
+    var userData = this.getUserDataFromToken(token);
+    
+    var props = PropertiesService.getScriptProperties();
+    var activeSessions = JSON.parse(props.getProperty("SESSIONS_" + userData.username) || "[]");
+    
+    // Flag the current session so frontend can identify it
+    activeSessions.forEach(function(s) {
+      if (s.token === token) s.isCurrent = true;
+      delete s.token; // Do not send full token to frontend for security, use timestamp or partial token as ID
+      s.id = s.timestamp.toString();
+    });
+    
+    return { success: true, data: activeSessions };
+  },
+
+  revokeSession: function(token, sessionIdToRevoke) {
+    if (!this.verifyToken(token)) return { success: false, message: "Sesi tidak valid." };
+    var userData = this.getUserDataFromToken(token);
+    
+    var props = PropertiesService.getScriptProperties();
+    var sessionKey = "SESSIONS_" + userData.username;
+    var activeSessions = JSON.parse(props.getProperty(sessionKey) || "[]");
+    
+    if (sessionIdToRevoke === "all_others") {
+      activeSessions = activeSessions.filter(function(s) { return s.token === token; });
+      LogKeamananRepository.insert({
+        pengguna: userData.username,
+        tindakan: "Cabut Sesi",
+        deskripsi: "Mencabut akses dari semua perangkat lain.",
+        status: "Sukses"
+      });
+    } else {
+      activeSessions = activeSessions.filter(function(s) { return s.timestamp.toString() !== sessionIdToRevoke; });
+      LogKeamananRepository.insert({
+        pengguna: userData.username,
+        tindakan: "Cabut Sesi",
+        deskripsi: "Mencabut akses perangkat tertentu.",
+        status: "Sukses"
+      });
+    }
+    
+    props.setProperty(sessionKey, JSON.stringify(activeSessions));
+    return { success: true, message: "Sesi berhasil dicabut." };
   },
 
   getRoleFromToken: function(token) {
@@ -73,6 +171,15 @@ var AuthService = {
 
   logout: function(token) {
     if (token) {
+      var userData = this.getUserDataFromToken(token);
+      if (userData && userData.username) {
+         LogKeamananRepository.insert({
+           pengguna: userData.username,
+           tindakan: "Logout",
+           deskripsi: "Keluar dari sistem secara manual.",
+           status: "Sukses"
+         });
+      }
       var cache = CacheService.getScriptCache();
       cache.remove("AUTH_" + token);
     }
@@ -123,10 +230,13 @@ var PenggunaService = {
         PenggunaRepository.update(payload.username, payload.updateData);
       } else if (action === "delete") {
         PenggunaRepository.deleteByUsername(payload.username);
+        LogKeamananRepository.insert({ pengguna: payload.username, tindakan: "Hapus Akun", deskripsi: "Akun telah dihapus oleh admin.", status: "Sukses" });
       } else if (action === "toggleStatus") {
         PenggunaRepository.update(payload.username, { status: payload.status });
+        LogKeamananRepository.insert({ pengguna: payload.username, tindakan: "Ubah Status", deskripsi: "Status akun diubah menjadi: " + payload.status, status: "Sukses" });
       } else if (action === "resetPassword") {
         PenggunaRepository.update(payload.username, { password: Sanitizer.hashPassword(payload.password) });
+        LogKeamananRepository.insert({ pengguna: payload.username, tindakan: "Ubah Sandi", deskripsi: "Sandi diubah oleh admin/sistem.", status: "Sukses" });
       }
       
       SpreadsheetApp.flush();
@@ -721,6 +831,209 @@ var NotificationService = {
     } catch(e) {
       Logger.log("NotificationService.getRecent Error: " + e.toString());
       return [];
+    }
+  }
+};
+
+
+
+/**
+ * OTPService - Layanan OTP Email dan WA
+ */
+var OTPService = {
+  requestContactOTP: function(token, target, type) {
+    if (!AuthService.verifyToken(token)) return { success: false, message: "Sesi tidak valid." };
+    var userSession = AuthService.getUserDataFromToken(token);
+    
+    // Generate 6 digit OTP
+    var otp = Math.floor(100000 + Math.random() * 900000).toString();
+    var expiry = new Date().getTime() + (3 * 60 * 1000); // 3 minutes
+    
+    var cache = PropertiesService.getScriptProperties();
+    var key = "OTP_" + userSession.username + "_" + type;
+    cache.setProperty(key, JSON.stringify({ otp: otp, expiry: expiry, target: target }));
+    
+    if (type === "email") {
+      var htmlBody = "<div style=\"font-family: Arial, sans-serif; max-width: 500px; margin: auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 10px;\">" +
+        "<div style=\"text-align: center; margin-bottom: 20px;\">" +
+        "<h2 style=\"color: #059669; margin: 0;\">Desa Narmada</h2>" +
+        "<p style=\"color: #64748b; font-size: 14px; margin: 5px 0 0;\">Pelayanan Digital Warga & Admin</p>" +
+        "</div>" +
+        "<h3 style=\"color: #0f172a;\">Halo " + userSession.username + ",</h3>" +
+        "<p style=\"color: #334155; line-height: 1.5;\">Anda baru saja meminta perubahan alamat email pada akun Anda. Berikut adalah kode verifikasi Anda:</p>" +
+        "<div style=\"text-align: center; margin: 30px 0;\">" +
+        "<span style=\"font-size: 32px; font-weight: bold; letter-spacing: 5px; color: #0f172a; background: #f1f5f9; padding: 10px 20px; border-radius: 8px;\">" + otp + "</span>" +
+        "</div>" +
+        "<p style=\"color: #ef4444; font-size: 14px; text-align: center;\">Kode ini akan kedaluwarsa dalam 3 menit.</p>" +
+        "<hr style=\"border: none; border-top: 1px solid #e2e8f0; margin: 20px 0;\">" +
+        "<p style=\"color: #94a3b8; font-size: 12px; text-align: center;\">Jika Anda tidak merasa meminta kode ini, abaikan email ini.</p>" +
+        "</div>";
+
+      try {
+        MailApp.sendEmail({
+          to: target,
+          subject: "Kode Verifikasi Pelayanan Digital Desa Narmada",
+          htmlBody: htmlBody
+        });
+      } catch (e) {
+        return { success: false, message: "Gagal mengirim email: " + e.toString() };
+      }
+    } else if (type === "wa") {
+      // Logic for WA OTP
+      // For now, simulated or throw error if API is not set.
+      return { success: false, message: "Layanan WA API belum dikonfigurasi. Hubungi Super Admin." };
+    }
+    
+    return { success: true, message: "OTP terkirim" };
+  },
+
+  requestResetOTP: function(identifier, method) {
+    var users = PenggunaRepository.getAll();
+    var user = users.find(function(u) { return u.username === identifier || u.email === identifier; });
+    
+    if (!user) return { success: false, message: "Akun dengan Username atau Email tersebut tidak ditemukan." };
+    
+    var target = "";
+    if (method === "email") {
+      if (!user.email) return { success: false, message: "Akun ini belum memiliki alamat Email yang terdaftar." };
+      target = user.email;
+    } else if (method === "wa") {
+      if (!user.wa) return { success: false, message: "Akun ini belum memiliki nomor WhatsApp yang terdaftar." };
+      target = user.wa;
+    }
+    
+    var otp = Math.floor(100000 + Math.random() * 900000).toString();
+    var expiry = new Date().getTime() + (3 * 60 * 1000);
+    
+    var cache = PropertiesService.getScriptProperties();
+    var key = "RESET_OTP_" + user.username;
+    cache.setProperty(key, JSON.stringify({ otp: otp, expiry: expiry, username: user.username }));
+    
+    if (method === "email") {
+      var htmlBody = "<div style=\"font-family: Arial, sans-serif; max-width: 500px; margin: auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 10px;\">" +
+        "<div style=\"text-align: center; margin-bottom: 20px;\">" +
+        "<h2 style=\"color: #059669; margin: 0;\">Desa Narmada</h2>" +
+        "<p style=\"color: #64748b; font-size: 14px; margin: 5px 0 0;\">Pelayanan Digital Warga & Admin</p>" +
+        "</div>" +
+        "<h3 style=\"color: #0f172a;\">Halo " + user.nama + ",</h3>" +
+        "<p style=\"color: #334155; line-height: 1.5;\">Anda baru saja meminta pemulihan sandi (Forgot Password). Berikut adalah kode verifikasi Anda:</p>" +
+        "<div style=\"text-align: center; margin: 30px 0;\">" +
+        "<span style=\"font-size: 32px; font-weight: bold; letter-spacing: 5px; color: #0f172a; background: #f1f5f9; padding: 10px 20px; border-radius: 8px;\">" + otp + "</span>" +
+        "</div>" +
+        "<p style=\"color: #ef4444; font-size: 14px; text-align: center;\">Kode ini akan kedaluwarsa dalam 3 menit.</p>" +
+        "<hr style=\"border: none; border-top: 1px solid #e2e8f0; margin: 20px 0;\">" +
+        "<p style=\"color: #94a3b8; font-size: 12px; text-align: center;\">Jika Anda tidak merasa meminta kode ini, mohon abaikan email ini.</p>" +
+        "</div>";
+
+      try {
+        MailApp.sendEmail({
+          to: target,
+          subject: "Kode OTP Reset Sandi - Desa Narmada",
+          htmlBody: htmlBody
+        });
+      } catch (e) {
+        return { success: false, message: "Gagal mengirim email: " + e.toString() };
+      }
+    } else if (method === "wa") {
+      return { success: false, message: "Layanan WA API belum dikonfigurasi. Hubungi Super Admin." };
+    }
+    
+    return { success: true, message: "OTP pemulihan sandi terkirim." };
+  },
+
+  verifyContactOTP: function(token, target, type, otpInput) {
+    if (!AuthService.verifyToken(token)) return { success: false, message: "Sesi tidak valid." };
+    var userSession = AuthService.getUserDataFromToken(token);
+    
+    var cache = PropertiesService.getScriptProperties();
+    var key = "OTP_" + userSession.username + "_" + type;
+    var dataStr = cache.getProperty(key);
+    
+    if (!dataStr) return { success: false, message: "OTP tidak ditemukan atau sudah digunakan." };
+    var data = JSON.parse(dataStr);
+    
+    if (new Date().getTime() > data.expiry) {
+      cache.deleteProperty(key);
+      return { success: false, message: "OTP telah kedaluwarsa." };
+    }
+    
+    if (data.otp !== otp) {
+      return { success: false, message: "OTP salah." };
+    }
+    
+    cache.deleteProperty(key);
+    return { success: true, target: data.target };
+  },
+
+  verifyResetOTP: function(identifier, otp) {
+    var users = PenggunaRepository.getAll();
+    var user = users.find(function(u) { return u.username === identifier || u.email === identifier; });
+    
+    if (!user) return { success: false, message: "Sesi OTP tidak valid." };
+    
+    var cache = PropertiesService.getScriptProperties();
+    var key = "RESET_OTP_" + user.username;
+    var dataStr = cache.getProperty(key);
+    
+    if (!dataStr) return { success: false, message: "OTP tidak ditemukan atau sudah digunakan." };
+    var data = JSON.parse(dataStr);
+    
+    if (new Date().getTime() > data.expiry) {
+      cache.deleteProperty(key);
+      return { success: false, message: "OTP telah kedaluwarsa." };
+    }
+    
+    if (data.otp !== otp) {
+      return { success: false, message: "OTP salah." };
+    }
+    
+    // Extend expiry for password reset step (give them 5 more minutes to enter new password)
+    data.expiry = new Date().getTime() + (5 * 60 * 1000);
+    data.verified = true;
+    cache.setProperty(key, JSON.stringify(data));
+    
+    return { success: true, message: "OTP Valid." };
+  },
+
+  resetPasswordWithOTP: function(identifier, newPassword) {
+    var lock = LockService.getScriptLock();
+    try {
+      lock.waitLock(15000);
+      var users = PenggunaRepository.getAll();
+      var user = users.find(function(u) { return u.username === identifier || u.email === identifier; });
+      
+      if (!user) return { success: false, message: "Sesi reset tidak valid." };
+      
+      var cache = PropertiesService.getScriptProperties();
+      var key = "RESET_OTP_" + user.username;
+      var dataStr = cache.getProperty(key);
+      
+      if (!dataStr) return { success: false, message: "Sesi reset telah kedaluwarsa." };
+      var data = JSON.parse(dataStr);
+      
+      if (!data.verified) return { success: false, message: "OTP belum diverifikasi." };
+      if (new Date().getTime() > data.expiry) {
+        cache.deleteProperty(key);
+        return { success: false, message: "Sesi reset telah kedaluwarsa." };
+      }
+      
+      // Update the password
+      PenggunaRepository.update(user.username, { password: Sanitizer.hashPassword(newPassword) });
+      cache.deleteProperty(key);
+      
+      LogKeamananRepository.insert({
+        pengguna: user.username,
+        tindakan: "Reset Sandi",
+        deskripsi: "Berhasil mengatur ulang kata sandi melalui OTP.",
+        status: "Sukses"
+      });
+      
+      SpreadsheetApp.flush();
+      return { success: true, message: "Kata sandi berhasil diperbarui." };
+    } catch (e) {
+      return { success: false, message: e.toString() };
+    } finally {
+      lock.releaseLock();
     }
   }
 };

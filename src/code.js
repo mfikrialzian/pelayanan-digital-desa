@@ -41,12 +41,30 @@ function getPengajuanStatus(searchKey) {
   return PengajuanService.getStatus(searchKey);
 }
 
-function checkAdminLogin(username, password) {
-  return AuthService.login(username, password);
+function checkAdminLogin(username, password, deviceInfo) {
+  return AuthService.login(username, password, deviceInfo);
 }
 
 function logoutAdmin(token) {
   return AuthService.logout(token);
+}
+
+function getActiveSessions(token) {
+  return AuthService.getActiveSessions(token);
+}
+
+function revokeSession(token, sessionId) {
+  return AuthService.revokeSession(token, sessionId);
+}
+
+function getLogKeamanan(token) {
+  if (!AuthService.verifyToken(token)) return { success: false, message: "Sesi tidak valid.", authError: true };
+  try {
+    var logs = LogKeamananRepository.getAll(50); // Get latest 50 logs
+    return { success: true, data: logs };
+  } catch(e) {
+    return { success: false, message: e.toString() };
+  }
 }
 
 function getAdminDashboardData(token, filterKeyword, page, statusFilter) {
@@ -133,6 +151,26 @@ function generateSuratPDF(token, idPengajuan) {
   return PDFGeneratorService.generateSurat(idPengajuan);
 }
 
+function requestContactOTP(token, target, type) {
+  return OTPService.requestContactOTP(token, target, type);
+}
+
+function verifyContactOTP(token, target, type, otpInput) {
+  return OTPService.verifyContactOTP(token, target, type, otpInput);
+}
+
+function requestResetOTP(identifier, method) {
+  return OTPService.requestResetOTP(identifier, method);
+}
+
+function verifyResetOTP(identifier, otpInput) {
+  return OTPService.verifyResetOTP(identifier, otpInput);
+}
+
+function resetPasswordWithOTP(identifier, newPassword) {
+  return OTPService.resetPasswordWithOTP(identifier, newPassword);
+}
+
 /**
  * REST API Gateway untuk Frontend Vercel
  */
@@ -152,6 +190,9 @@ function doPost(e) {
       'getPengajuanStatus': getPengajuanStatus,
       'checkAdminLogin': checkAdminLogin,
       'logoutAdmin': logoutAdmin,
+      'getActiveSessions': getActiveSessions,
+      'revokeSession': revokeSession,
+      'getLogKeamanan': getLogKeamanan,
       'getAdminDashboardData': getAdminDashboardData,
       'updatePengajuanStatus': updatePengajuanStatus,
       'crudLayanan': crudLayanan,
@@ -161,7 +202,13 @@ function doPost(e) {
       'updateAdminSetelan': updateAdminSetelan,
       'generateSuratPDF': generateSuratPDF,
       'getActivities': getActivities,
-      'getNotifications': getNotifications
+      'getNotifications': getNotifications,
+      'verifyCurrentPassword': verifyCurrentPassword,
+      'requestContactOTP': requestContactOTP,
+      'verifyContactOTP': verifyContactOTP,
+      'requestResetOTP': requestResetOTP,
+      'verifyResetOTP': verifyResetOTP,
+      'resetPasswordWithOTP': resetPasswordWithOTP
     };
     
     if (!ALLOWED_ACTIONS[action]) {
@@ -175,7 +222,7 @@ function doPost(e) {
       .setMimeType(ContentService.MimeType.JSON);
       
   } catch (err) {
-    AppLogger.error("doPost", err.toString(), payload);
+    AppLogger.error("doPost", err.toString(), e.postData ? e.postData.contents : "");
     var errResponse = { 
       success: false, 
       message: "Terjadi kesalahan internal server.",
