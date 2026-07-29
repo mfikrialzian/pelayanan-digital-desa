@@ -71,6 +71,14 @@ function getPenggunaList(token) {
 
 function crudPengguna(token, action, payload) {
   if (!AuthService.verifyToken(token)) return { success: false, message: "Sesi tidak valid atau telah berakhir. Silakan login kembali.", authError: true };
+  
+  if (action === "create") {
+    var role = AuthService.getRoleFromToken(token);
+    if (role !== "Super Admin") {
+      return { success: false, message: "Akses ditolak! Hanya Super Admin yang dapat menambahkan pengguna." };
+    }
+  }
+
   return PenggunaService.crud(action, payload);
 }
 

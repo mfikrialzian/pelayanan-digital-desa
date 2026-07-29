@@ -13,7 +13,7 @@ var AuthService = {
         
         var token = Utilities.getUuid() + "-" + new Date().getTime();
         var cache = CacheService.getScriptCache();
-        cache.put("AUTH_" + token, "valid", 21600); // 6 hours
+        cache.put("AUTH_" + token, user.peran || "valid", 21600); // 6 hours
         
         // Update waktu login
         var tz = ZettConfig.TIMEZONE || "Asia/Makassar";
@@ -40,8 +40,14 @@ var AuthService = {
   verifyToken: function(token) {
     if (!token) return false;
     var cache = CacheService.getScriptCache();
-    var isValid = cache.get("AUTH_" + token);
-    return isValid === "valid";
+    var role = cache.get("AUTH_" + token);
+    return role != null;
+  },
+
+  getRoleFromToken: function(token) {
+    if (!token) return null;
+    var cache = CacheService.getScriptCache();
+    return cache.get("AUTH_" + token);
   },
 
   logout: function(token) {
@@ -75,14 +81,21 @@ var PenggunaService = {
         if (existing) {
           return { success: false, message: "Username sudah digunakan!" };
         }
+        
+        // Buat format ID Profesional (Misal: ADM-8F2A9C)
+        var prefix = payload.peran === "Super Admin" ? "SADM" : "ADM";
+        var rawHash = Utilities.computeDigest(Utilities.DigestAlgorithm.MD5, new Date().getTime().toString() + payload.username);
+        var hex = rawHash.map(function(b) { return ('0' + (b & 0xFF).toString(16)).slice(-2); }).join('').toUpperCase().substring(0, 6);
+        var newId = prefix + "-" + hex;
+
         PenggunaRepository.insert({
-          id: Utilities.getUuid(),
+          id: newId,
           username: payload.username,
           password: Sanitizer.hashPassword(payload.password),
           nama: payload.nama,
           peran: payload.peran,
           unit: payload.unit || "Pusat",
-          status: "Aktif",
+          status: payload.status || "Aktif",
           terakhirLogin: "-"
         });
       } else if (action === "update") {
