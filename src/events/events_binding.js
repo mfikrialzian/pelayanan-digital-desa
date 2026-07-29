@@ -1036,3 +1036,45 @@ if (btnCancelOtp) {
 if (typeof window.bindOtpInputs === 'function') {
     window.bindOtpInputs();
 }
+
+// Bind Forgot Password Events
+const btnShowForgot = document.getElementById('btn-show-forgot-password');
+if (btnShowForgot) {
+    btnShowForgot.addEventListener('click', function(event) {
+        if(typeof window.showForgotPassword === 'function') window.showForgotPassword();
+    });
+}
+
+const btnBackToLogin = document.getElementById('btn-back-to-login');
+if (btnBackToLogin) {
+    btnBackToLogin.addEventListener('click', function(event) {
+        if(typeof window.showLogin === 'function') window.showLogin();
+    });
+}
+
+const btnSubmitForgot = document.getElementById('btn-submit-forgot');
+if (btnSubmitForgot) {
+    btnSubmitForgot.addEventListener('click', function(event) {
+        event.preventDefault();
+        if(typeof window.requestForgotOTP === 'function') window.requestForgotOTP();
+    });
+}
+
+const btnVerifyForgotOtp = document.getElementById('btn-verify-forgot-otp');
+if (btnVerifyForgotOtp) {
+    btnVerifyForgotOtp.addEventListener('click', function(event) {
+        if(typeof window.verifyForgotOTP === 'function') window.verifyForgotOTP();
+    });
+}
+
+const btnSaveNewPassword = document.getElementById('btn-save-new-password');
+if (btnSaveNewPassword) {
+    btnSaveNewPassword.addEventListener('click', function(event) {
+        if(typeof window.saveNewPassword === 'function') window.saveNewPassword();
+    });
+}
+
+// Initialize Forgot OTP Inputs
+if (typeof window.bindForgotOtpInputs === 'function') {
+    window.bindForgotOtpInputs();
+}

@@ -212,3 +212,217 @@ export function initAdminHeader() {
     setInterval(updateDateTime, 1000);
     fetchWeather();
 }
+
+let forgotTimerInterval;
+let forgotIdentifier = '';
+
+export function showForgotPassword() {
+    document.getElementById('ev-bind-9').classList.add('hidden'); // form-login
+    document.getElementById('form-forgot-password').classList.remove('hidden');
+    document.getElementById('forgot-step-1').classList.remove('hidden');
+    document.getElementById('forgot-step-2').classList.add('hidden');
+    document.getElementById('forgot-step-3').classList.add('hidden');
+    document.getElementById('forgot-identifier').value = '';
+}
+
+export function showLogin() {
+    document.getElementById('form-forgot-password').classList.add('hidden');
+    document.getElementById('ev-bind-9').classList.remove('hidden');
+    clearInterval(forgotTimerInterval);
+}
+
+export function requestForgotOTP() {
+    forgotIdentifier = document.getElementById('forgot-identifier').value.trim();
+    if (!forgotIdentifier) {
+        pushToast('Masukkan Username atau Email!', 'warning');
+        return;
+    }
+    
+    let method = document.querySelector('input[name="forgot_method"]:checked').value;
+    let btn = document.getElementById('btn-submit-forgot');
+    
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner animate-spin"></i> Mengirim...';
+    
+    if (isGoogleEnv) {
+        google.script.run
+            .withSuccessHandler(function (res) {
+                btn.disabled = false;
+                btn.innerHTML = 'Kirim Kode OTP';
+                if (res.success) {
+                    pushToast('OTP berhasil dikirim ke ' + method + ' Anda', 'success');
+                    document.getElementById('forgot-step-1').classList.add('hidden');
+                    document.getElementById('forgot-step-2').classList.remove('hidden');
+                    startForgotOtpTimer();
+                } else {
+                    pushToast(res.message, 'error');
+                }
+            })
+            .withFailureHandler(function (err) {
+                btn.disabled = false;
+                btn.innerHTML = 'Kirim Kode OTP';
+                pushToast('Error: ' + err, 'error');
+            })
+            .requestResetOTP(forgotIdentifier, method);
+    } else {
+        setTimeout(function() {
+            btn.disabled = false;
+            btn.innerHTML = 'Kirim Kode OTP';
+            pushToast('Simulasi: OTP terkirim ke ' + forgotIdentifier, 'success');
+            document.getElementById('forgot-step-1').classList.add('hidden');
+            document.getElementById('forgot-step-2').classList.remove('hidden');
+            startForgotOtpTimer();
+        }, 1500);
+    }
+}
+
+export function verifyForgotOTP() {
+    const inputs = document.querySelectorAll('.forgot-otp-input');
+    let otpCode = '';
+    inputs.forEach(input => otpCode += input.value);
+    
+    if (otpCode.length < 6) {
+        Swal.fire('OTP Tidak Lengkap', 'Masukkan 6 digit kode OTP', 'warning');
+        return;
+    }
+    
+    let btn = document.getElementById('btn-verify-forgot-otp');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner animate-spin"></i> Verifikasi...';
+    
+    if (isGoogleEnv) {
+        google.script.run
+            .withSuccessHandler(function (res) {
+                btn.disabled = false;
+                btn.innerHTML = 'Verifikasi OTP';
+                if (res.success) {
+                    clearInterval(forgotTimerInterval);
+                    document.getElementById('forgot-step-2').classList.add('hidden');
+                    document.getElementById('forgot-step-3').classList.remove('hidden');
+                    pushToast('Verifikasi sukses! Silakan masukkan sandi baru.', 'success');
+                } else {
+                    pushToast(res.message, 'error');
+                }
+            })
+            .withFailureHandler(function (err) {
+                btn.disabled = false;
+                btn.innerHTML = 'Verifikasi OTP';
+                pushToast('Error: ' + err, 'error');
+            })
+            .verifyResetOTP(forgotIdentifier, otpCode);
+    } else {
+        setTimeout(function() {
+            btn.disabled = false;
+            btn.innerHTML = 'Verifikasi OTP';
+            if (otpCode === '123456') {
+                clearInterval(forgotTimerInterval);
+                document.getElementById('forgot-step-2').classList.add('hidden');
+                document.getElementById('forgot-step-3').classList.remove('hidden');
+                pushToast('Verifikasi sukses!', 'success');
+            } else {
+                pushToast('OTP Salah', 'error');
+            }
+        }, 1000);
+    }
+}
+
+export function saveNewPassword() {
+    let p1 = document.getElementById('forgot-new-password').value;
+    let p2 = document.getElementById('forgot-confirm-password').value;
+    
+    if (!p1 || p1.length < 6) {
+        pushToast('Kata sandi minimal 6 karakter', 'warning');
+        return;
+    }
+    if (p1 !== p2) {
+        pushToast('Konfirmasi kata sandi tidak cocok', 'warning');
+        return;
+    }
+    
+    let btn = document.getElementById('btn-save-new-password');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner animate-spin"></i> Menyimpan...';
+    
+    if (isGoogleEnv) {
+        google.script.run
+            .withSuccessHandler(function (res) {
+                btn.disabled = false;
+                btn.innerHTML = 'Simpan Sandi Baru';
+                if (res.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: 'Kata sandi Anda telah diperbarui.',
+                        confirmButtonColor: '#059669'
+                    }).then(() => {
+                        showLogin();
+                    });
+                } else {
+                    pushToast(res.message, 'error');
+                }
+            })
+            .withFailureHandler(function (err) {
+                btn.disabled = false;
+                btn.innerHTML = 'Simpan Sandi Baru';
+                pushToast('Error: ' + err, 'error');
+            })
+            .resetPasswordWithOTP(forgotIdentifier, p1);
+    } else {
+        setTimeout(function() {
+            btn.disabled = false;
+            btn.innerHTML = 'Simpan Sandi Baru';
+            Swal.fire('Berhasil!', 'Simulasi: Sandi berhasil diubah.', 'success').then(() => showLogin());
+        }, 1500);
+    }
+}
+
+function startForgotOtpTimer() {
+    let timeLeft = 180;
+    const timerDisplay = document.getElementById('forgot-otp-timer');
+    clearInterval(forgotTimerInterval);
+    
+    forgotTimerInterval = setInterval(() => {
+        timeLeft--;
+        let m = Math.floor(timeLeft / 60);
+        let s = timeLeft % 60;
+        timerDisplay.textContent = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+        
+        if (timeLeft <= 0) {
+            clearInterval(forgotTimerInterval);
+            timerDisplay.textContent = "00:00 (Kedaluwarsa)";
+        }
+    }, 1000);
+}
+
+export function bindForgotOtpInputs() {
+    const inputs = document.querySelectorAll('.forgot-otp-input');
+    inputs.forEach((input, index) => {
+        input.addEventListener('input', function() {
+            this.value = this.value.replace(/[^0-9]/g, '');
+            if (this.value.length === 1 && index < inputs.length - 1) {
+                inputs[index + 1].focus();
+            }
+        });
+        
+        input.addEventListener('keydown', function(e) {
+            if (e.key === 'Backspace' && !this.value && index > 0) {
+                inputs[index - 1].focus();
+            }
+        });
+        
+        input.addEventListener('paste', function(e) {
+            e.preventDefault();
+            const pastedData = e.clipboardData.getData('text').replace(/[^0-9]/g, '').slice(0, 6);
+            if (pastedData) {
+                for(let i = 0; i < pastedData.length; i++) {
+                    if (inputs[i]) inputs[i].value = pastedData[i];
+                }
+                if (pastedData.length < 6) {
+                    inputs[pastedData.length].focus();
+                } else {
+                    inputs[5].focus();
+                }
+            }
+        });
+    });
+}
