@@ -169,7 +169,7 @@ export function initAdminCharts() {
                     labels: ['Selesai', 'Diproses', 'Menunggu', 'Ditolak'],
                     datasets: [{
                         data: [45, 25, 20, 10],
-                        backgroundColor: [narmadaGreen, narmadaBlue, '#f59e0b', '#ef4444'],
+                        backgroundColor: [narmadaGreen, '#f59e0b', narmadaBlue, '#ef4444'],
                         borderWidth: 0,
                         hoverOffset: 4
                     }]
