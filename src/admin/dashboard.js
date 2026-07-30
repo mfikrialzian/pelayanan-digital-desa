@@ -22,7 +22,7 @@ export function fetchAdminStats() {
                     selesai: selesaiCount,
                     uploadUlang: uploadUlangCount,
                     chartMingguan: [10, 15, 8, 20, 25, 12, 6],
-                    chartStatus: [pendingCount, verifikasiCount, selesaiCount, uploadUlangCount],
+                    chartStatus: [selesaiCount, verifikasiCount, pendingCount, uploadUlangCount], // Backend format
                     chartLayanan: { labels: ['Ket. Usaha', 'Ket. Domisili', 'SKCK', 'Ket. Tidak Mampu', 'Lainnya'], data: [35, 25, 20, 15, 5] }
                 };
                 window.lastDashboardStats = mockStats;
@@ -233,7 +233,14 @@ export function updateAdminChartsData(stats) {
     }
     
     if (stats.chartStatus) {
-        adminCharts.status.data.datasets[0].data = stats.chartStatus;
+        // Backend returns: [Selesai(0), Verifikasi(1), Menunggu(2), Perbaikan(3)]
+        // We want: [Menunggu, Verifikasi, Selesai, Perbaikan]
+        adminCharts.status.data.datasets[0].data = [
+            stats.chartStatus[2], // Menunggu
+            stats.chartStatus[1], // Verifikasi
+            stats.chartStatus[0], // Selesai
+            stats.chartStatus[3]  // Perbaikan
+        ];
         adminCharts.status.update();
     }
     
