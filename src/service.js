@@ -454,6 +454,7 @@ var PengajuanService = {
         todayUploadUlang: 0,
         recent: [],
         chartMingguan: [0, 0, 0, 0, 0, 0, 0],
+        chartBulanIni: [0, 0, 0, 0],
         chartStatus: [0, 0, 0, 0],
         chartLayanan: { labels: [], data: [] },
         chartLayanan7Hari: { labels: [], data: [] },
@@ -498,6 +499,14 @@ var PengajuanService = {
                     var day = tDate.getDay(); 
                     var mappedDay = day === 0 ? 6 : day - 1;
                     stats.chartMingguan[mappedDay]++;
+                }
+                
+                if (tDate.getMonth() === now.getMonth() && tDate.getFullYear() === now.getFullYear()) {
+                    var dDate = tDate.getDate();
+                    if (dDate <= 7) stats.chartBulanIni[0]++;
+                    else if (dDate <= 14) stats.chartBulanIni[1]++;
+                    else if (dDate <= 21) stats.chartBulanIni[2]++;
+                    else stats.chartBulanIni[3]++;
                 }
             }
         }
