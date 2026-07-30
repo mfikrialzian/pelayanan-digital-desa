@@ -260,6 +260,34 @@ export function initAdminCharts() {
             });
         }
         
+        const filterLayanan = document.getElementById('filter-layanan');
+        if (filterLayanan) {
+            filterLayanan.addEventListener('change', function(e) {
+                if (!window.lastDashboardStats) return;
+                let val = e.target.value;
+                let dataObj = null;
+                if (val === '7') {
+                    dataObj = window.lastDashboardStats.chartLayanan7Hari;
+                } else if (val === '30') {
+                    dataObj = window.lastDashboardStats.chartLayanan30Hari;
+                } else {
+                    dataObj = window.lastDashboardStats.chartLayanan;
+                }
+                
+                if (dataObj && dataObj.labels.length > 0) {
+                    adminCharts.layanan.data.labels = dataObj.labels;
+                    adminCharts.layanan.data.datasets[0].data = dataObj.data;
+                    let maxVal = Math.max(...dataObj.data) || 10;
+                    adminCharts.layanan.options.scales.y.max = maxVal + Math.ceil(maxVal * 0.2);
+                    adminCharts.layanan.update();
+                } else {
+                    adminCharts.layanan.data.labels = [];
+                    adminCharts.layanan.data.datasets[0].data = [];
+                    adminCharts.layanan.update();
+                }
+            });
+        }
+        
         if (window.lastDashboardStats) {
             updateAdminChartsData(window.lastDashboardStats);
         }
@@ -286,13 +314,24 @@ export function updateAdminChartsData(stats) {
         adminCharts.status.update();
     }
     
-    if (stats.chartLayanan && stats.chartLayanan.labels.length > 0) {
-        adminCharts.layanan.data.labels = stats.chartLayanan.labels;
-        adminCharts.layanan.data.datasets[0].data = stats.chartLayanan.data;
-        // Dynamically adjust Y axis max
-        let maxVal = Math.max(...stats.chartLayanan.data) || 10;
-        adminCharts.layanan.options.scales.y.max = maxVal + Math.ceil(maxVal * 0.2);
-        adminCharts.layanan.update();
+    if (stats.chartLayanan) {
+        const filterLayanan = document.getElementById('filter-layanan');
+        let val = filterLayanan ? filterLayanan.value : '7'; // Default to 7
+        let dataObj = stats.chartLayanan;
+        
+        if (val === '7' && stats.chartLayanan7Hari) {
+            dataObj = stats.chartLayanan7Hari;
+        } else if (val === '30' && stats.chartLayanan30Hari) {
+            dataObj = stats.chartLayanan30Hari;
+        }
+
+        if (dataObj.labels.length > 0) {
+            adminCharts.layanan.data.labels = dataObj.labels;
+            adminCharts.layanan.data.datasets[0].data = dataObj.data;
+            let maxVal = Math.max(...dataObj.data) || 10;
+            adminCharts.layanan.options.scales.y.max = maxVal + Math.ceil(maxVal * 0.2);
+            adminCharts.layanan.update();
+        }
     }
 }
 
