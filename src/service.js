@@ -461,9 +461,9 @@ var PengajuanService = {
         var tanggal = item.tanggal;
         var layanan = item.layanan;
 
-        if (stat === ZettConstants.STATUS_PENDING) { stats.pending++; stats.chartStatus[0]++; }
+        if (stat === ZettConstants.STATUS_PENDING) { stats.pending++; stats.chartStatus[2]++; }
         else if (stat === ZettConstants.STATUS_VERIFIKASI) { stats.verifikasi++; stats.chartStatus[1]++; }
-        else if (stat === ZettConstants.STATUS_SELESAI || stat === "Selesai" || stat === "Pelayanan Selesai") { stats.selesai++; stats.chartStatus[2]++; }
+        else if (stat === ZettConstants.STATUS_SELESAI || stat === "Selesai" || stat === "Pelayanan Selesai") { stats.selesai++; stats.chartStatus[0]++; }
         else if (stat === ZettConstants.STATUS_REUPLOAD || stat === ZettConstants.STATUS_DITOLAK) { stats.uploadUlang++; stats.chartStatus[3]++; }
         else { stats.chartStatus[3]++; }
 
