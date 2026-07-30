@@ -447,6 +447,11 @@ var PengajuanService = {
         verifikasi: 0,
         selesai: 0,
         uploadUlang: 0,
+        todayTotal: 0,
+        todayPending: 0,
+        todayVerifikasi: 0,
+        todaySelesai: 0,
+        todayUploadUlang: 0,
         recent: [],
         chartMingguan: [0, 0, 0, 0, 0, 0, 0],
         chartStatus: [0, 0, 0, 0],
@@ -461,23 +466,17 @@ var PengajuanService = {
         var tanggal = item.tanggal;
         var layanan = item.layanan;
 
-        if (stat === ZettConstants.STATUS_PENDING) { stats.pending++; stats.chartStatus[2]++; }
-        else if (stat === ZettConstants.STATUS_VERIFIKASI) { stats.verifikasi++; stats.chartStatus[1]++; }
-        else if (stat === ZettConstants.STATUS_SELESAI || stat === "Selesai" || stat === "Pelayanan Selesai") { stats.selesai++; stats.chartStatus[0]++; }
-        else if (stat === ZettConstants.STATUS_REUPLOAD || stat === ZettConstants.STATUS_DITOLAK) { stats.uploadUlang++; stats.chartStatus[3]++; }
-        else { stats.chartStatus[3]++; }
-
-        if (layanan) {
-            layananCounts[layanan] = (layananCounts[layanan] || 0) + 1;
-        }
-
+        var isToday = false;
         if (tanggal) {
-            // Handle DD/MM/YYYY format if it's a string, or process if it's already a Date
             var tDate = typeof tanggal === 'string' && tanggal.indexOf('/') !== -1 ? 
                 new Date(tanggal.split('/')[2], parseInt(tanggal.split('/')[1]) - 1, tanggal.split('/')[0]) : 
                 new Date(tanggal);
             
             if (!isNaN(tDate.getTime())) {
+                if (tDate.getDate() === now.getDate() && tDate.getMonth() === now.getMonth() && tDate.getFullYear() === now.getFullYear()) {
+                    isToday = true;
+                    stats.todayTotal++;
+                }
                 var diffTime = now.getTime() - tDate.getTime();
                 var diffDays = diffTime / (1000 * 60 * 60 * 24); 
                 if (diffDays >= 0 && diffDays <= 7) {
@@ -487,6 +486,12 @@ var PengajuanService = {
                 }
             }
         }
+
+        if (stat === ZettConstants.STATUS_PENDING) { stats.pending++; stats.chartStatus[2]++; if(isToday) stats.todayPending++; }
+        else if (stat === ZettConstants.STATUS_VERIFIKASI) { stats.verifikasi++; stats.chartStatus[1]++; if(isToday) stats.todayVerifikasi++; }
+        else if (stat === ZettConstants.STATUS_SELESAI || stat === "Selesai" || stat === "Pelayanan Selesai") { stats.selesai++; stats.chartStatus[0]++; if(isToday) stats.todaySelesai++; }
+        else if (stat === ZettConstants.STATUS_REUPLOAD || stat === ZettConstants.STATUS_DITOLAK) { stats.uploadUlang++; stats.chartStatus[3]++; if(isToday) stats.todayUploadUlang++; }
+        else { stats.chartStatus[3]++; if(isToday) stats.todayUploadUlang++; }
       });
       
       var sortableLayanan = [];
