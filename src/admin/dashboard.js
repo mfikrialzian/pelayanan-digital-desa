@@ -14,6 +14,20 @@ export function fetchAdminStats() {
                 let verifikasiCount = dummyPengajuanList.filter(r => r.status === "Verifikasi").length;
                 let selesaiCount = dummyPengajuanList.filter(r => r.status === "Selesai" || r.status === "Pelayanan Selesai").length;
                 let uploadUlangCount = dummyPengajuanList.filter(r => r.status === "Perbaikan" || r.status === "Upload Ulang").length;
+                let now = new Date();
+                let isToday = (dStr) => {
+                    if(!dStr) return false;
+                    let parts = dStr.split(' ')[0].split('/');
+                    if(parts.length !== 3) return false;
+                    let tDate = new Date(parts[2], parts[1]-1, parts[0]);
+                    return tDate.getDate() === now.getDate() && tDate.getMonth() === now.getMonth() && tDate.getFullYear() === now.getFullYear();
+                };
+
+                let todayTotal = dummyPengajuanList.filter(r => isToday(r.tanggal)).length;
+                let todayPending = dummyPengajuanList.filter(r => isToday(r.tanggal) && r.status === "Menunggu").length;
+                let todayVerifikasi = dummyPengajuanList.filter(r => isToday(r.tanggal) && r.status === "Verifikasi").length;
+                let todaySelesai = dummyPengajuanList.filter(r => isToday(r.tanggal) && (r.status === "Selesai" || r.status === "Pelayanan Selesai")).length;
+                let todayUploadUlang = dummyPengajuanList.filter(r => isToday(r.tanggal) && (r.status === "Perbaikan" || r.status === "Upload Ulang")).length;
 
                 let mockStats = {
                     total: dummyPengajuanList.length,
@@ -21,6 +35,11 @@ export function fetchAdminStats() {
                     verifikasi: verifikasiCount,
                     selesai: selesaiCount,
                     uploadUlang: uploadUlangCount,
+                    todayTotal: todayTotal,
+                    todayPending: todayPending,
+                    todayVerifikasi: todayVerifikasi,
+                    todaySelesai: todaySelesai,
+                    todayUploadUlang: todayUploadUlang,
                     chartMingguan: [10, 15, 8, 20, 25, 12, 6],
                     chartStatus: [selesaiCount, verifikasiCount, pendingCount, uploadUlangCount], // Backend format
                     chartLayanan: { labels: ['Ket. Usaha', 'Ket. Domisili', 'SKCK', 'Ket. Tidak Mampu', 'Lainnya'], data: [35, 25, 20, 15, 5] }
@@ -38,6 +57,28 @@ export function renderStatsDashboard(stats) {
             document.getElementById('stat-verifikasi').innerText = stats.verifikasi;
             document.getElementById('stat-selesai').innerText = stats.selesai;
             document.getElementById('stat-perbaikan').innerText = stats.uploadUlang;
+
+            const updateTrend = (id, count, textSuf) => {
+                let elIcon = document.getElementById('trend-' + id + '-icon');
+                let elText = document.getElementById('trend-' + id + '-text');
+                if(elIcon && elText) {
+                    if(count > 0) {
+                        elIcon.className = "fa-solid fa-arrow-trend-up";
+                        elText.innerText = "+" + count + " " + textSuf;
+                    } else {
+                        elIcon.className = "fa-solid fa-minus";
+                        elText.innerText = "Tidak ada aktivitas";
+                    }
+                }
+            };
+
+            if (stats.todayTotal !== undefined) {
+                updateTrend('total', stats.todayTotal, 'pengajuan masuk');
+                updateTrend('menunggu', stats.todayPending, 'pending baru');
+                updateTrend('verifikasi', stats.todayVerifikasi, 'diverifikasi');
+                updateTrend('selesai', stats.todaySelesai, 'selesai');
+                updateTrend('perbaikan', stats.todayUploadUlang, 'ditolak');
+            }
             
             if (stats.chartMingguan || stats.chartStatus) {
                 updateAdminChartsData(stats);
