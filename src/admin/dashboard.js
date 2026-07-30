@@ -62,12 +62,13 @@ export function renderStatsDashboard(stats) {
                 let elIcon = document.getElementById('trend-' + id + '-icon');
                 let elText = document.getElementById('trend-' + id + '-text');
                 if(elIcon && elText) {
+                    let parent = elIcon.parentElement;
                     if(count > 0) {
+                        if(parent) parent.classList.remove('hidden');
                         elIcon.className = "fa-solid fa-arrow-trend-up";
                         elText.innerText = "+" + count + " " + textSuf;
                     } else {
-                        elIcon.className = "fa-solid fa-minus";
-                        elText.innerText = "Tidak ada aktivitas";
+                        if(parent) parent.classList.add('hidden');
                     }
                 }
             };
