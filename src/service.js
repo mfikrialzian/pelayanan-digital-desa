@@ -455,10 +455,14 @@ var PengajuanService = {
         recent: [],
         chartMingguan: [0, 0, 0, 0, 0, 0, 0],
         chartStatus: [0, 0, 0, 0],
-        chartLayanan: { labels: [], data: [] }
+        chartLayanan: { labels: [], data: [] },
+        chartLayanan7Hari: { labels: [], data: [] },
+        chartLayanan30Hari: { labels: [], data: [] }
       };
 
-      var layananCounts = {};
+      var layananCountsAll = {};
+      var layananCounts7 = {};
+      var layananCounts30 = {};
       var now = new Date();
       
       rawData.forEach(function(item) {
@@ -479,6 +483,17 @@ var PengajuanService = {
                 }
                 var diffTime = now.getTime() - tDate.getTime();
                 var diffDays = diffTime / (1000 * 60 * 60 * 24); 
+                
+                if (layanan) {
+                    layananCountsAll[layanan] = (layananCountsAll[layanan] || 0) + 1;
+                    if (diffDays <= 7 && diffDays >= 0) {
+                        layananCounts7[layanan] = (layananCounts7[layanan] || 0) + 1;
+                    }
+                    if (diffDays <= 30 && diffDays >= 0) {
+                        layananCounts30[layanan] = (layananCounts30[layanan] || 0) + 1;
+                    }
+                }
+
                 if (diffDays >= 0 && diffDays <= 7) {
                     var day = tDate.getDay(); 
                     var mappedDay = day === 0 ? 6 : day - 1;
@@ -494,17 +509,30 @@ var PengajuanService = {
         else { stats.chartStatus[3]++; if(isToday) stats.todayUploadUlang++; }
       });
       
-      var sortableLayanan = [];
-      for (var l in layananCounts) {
-          sortableLayanan.push([l, layananCounts[l]]);
-      }
-      sortableLayanan.sort(function(a, b) { return b[1] - a[1]; });
-      
-      var topLayanan = sortableLayanan.slice(0, 5);
-      topLayanan.forEach(function(item) {
-          stats.chartLayanan.labels.push(item[0]);
-          stats.chartLayanan.data.push(item[1]);
-      });
+      var processTopLayanan = function(countsObj, targetChartObj) {
+          var sortable = [];
+          for (var l in countsObj) {
+              sortable.push([l, countsObj[l]]);
+          }
+          sortable.sort(function(a, b) { return b[1] - a[1]; });
+          
+          var top = sortable.slice(0, 4);
+          var othersCount = sortable.slice(4).reduce(function(sum, item) { return sum + item[1]; }, 0);
+          
+          top.forEach(function(item) {
+              targetChartObj.labels.push(item[0]);
+              targetChartObj.data.push(item[1]);
+          });
+          
+          if (othersCount > 0) {
+              targetChartObj.labels.push("Lainnya");
+              targetChartObj.data.push(othersCount);
+          }
+      };
+
+      processTopLayanan(layananCountsAll, stats.chartLayanan);
+      processTopLayanan(layananCounts7, stats.chartLayanan7Hari);
+      processTopLayanan(layananCounts30, stats.chartLayanan30Hari);
       
       stats.recent = PengajuanRepository.getRecent(5);
       
