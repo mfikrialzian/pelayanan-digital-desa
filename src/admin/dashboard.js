@@ -10,14 +10,19 @@ export function fetchAdminStats() {
                     .getDashboardStats();
             } else {
 
+                let pendingCount = dummyPengajuanList.filter(r => r.status === "Menunggu").length;
+                let verifikasiCount = dummyPengajuanList.filter(r => r.status === "Verifikasi").length;
+                let selesaiCount = dummyPengajuanList.filter(r => r.status === "Selesai" || r.status === "Pelayanan Selesai").length;
+                let uploadUlangCount = dummyPengajuanList.filter(r => r.status === "Perbaikan" || r.status === "Upload Ulang").length;
+
                 let mockStats = {
                     total: dummyPengajuanList.length,
-                    pending: dummyPengajuanList.filter(r => r.status === "Menunggu").length,
-                    verifikasi: dummyPengajuanList.filter(r => r.status === "Verifikasi").length,
-                    selesai: dummyPengajuanList.filter(r => r.status === "Selesai" || r.status === "Pelayanan Selesai").length,
-                    uploadUlang: dummyPengajuanList.filter(r => r.status === "Perbaikan" || r.status === "Upload Ulang").length,
+                    pending: pendingCount,
+                    verifikasi: verifikasiCount,
+                    selesai: selesaiCount,
+                    uploadUlang: uploadUlangCount,
                     chartMingguan: [10, 15, 8, 20, 25, 12, 6],
-                    chartStatus: [15, 20, 40, 5],
+                    chartStatus: [pendingCount, verifikasiCount, selesaiCount, uploadUlangCount],
                     chartLayanan: { labels: ['Ket. Usaha', 'Ket. Domisili', 'SKCK', 'Ket. Tidak Mampu', 'Lainnya'], data: [35, 25, 20, 15, 5] }
                 };
                 window.lastDashboardStats = mockStats;
