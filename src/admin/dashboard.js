@@ -17,7 +17,7 @@ export function fetchAdminStats() {
                     selesai: dummyPengajuanList.filter(r => r.status === "Selesai" || r.status === "Pelayanan Selesai").length,
                     uploadUlang: dummyPengajuanList.filter(r => r.status === "Perbaikan" || r.status === "Upload Ulang").length,
                     chartMingguan: [10, 15, 8, 20, 25, 12, 6],
-                    chartStatus: [40, 20, 15, 5],
+                    chartStatus: [15, 20, 40, 5],
                     chartLayanan: { labels: ['Ket. Usaha', 'Ket. Domisili', 'SKCK', 'Ket. Tidak Mampu', 'Lainnya'], data: [35, 25, 20, 15, 5] }
                 };
                 window.lastDashboardStats = mockStats;
@@ -166,10 +166,10 @@ export function initAdminCharts() {
             adminCharts.status = new Chart(ctxStatus, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Selesai', 'Diproses', 'Menunggu', 'Ditolak'],
+                    labels: ['Menunggu', 'Verifikasi', 'Selesai', 'Perbaikan'],
                     datasets: [{
-                        data: [45, 25, 20, 10],
-                        backgroundColor: [narmadaGreen, '#f59e0b', narmadaBlue, '#ef4444'],
+                        data: [20, 25, 45, 10],
+                        backgroundColor: [narmadaBlue, '#f59e0b', narmadaGreen, '#ef4444'],
                         borderWidth: 0,
                         hoverOffset: 4
                     }]
