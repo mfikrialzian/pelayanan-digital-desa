@@ -41,6 +41,7 @@ export function fetchAdminStats() {
                     todaySelesai: todaySelesai,
                     todayUploadUlang: todayUploadUlang,
                     chartMingguan: [10, 15, 8, 20, 25, 12, 6],
+                    chartBulanIni: [45, 60, 50, 58],
                     chartStatus: [selesaiCount, verifikasiCount, pendingCount, uploadUlangCount], // Backend format
                     chartLayanan: { labels: ['Ket. Usaha', 'Ket. Domisili', 'SKCK', 'Ket. Tidak Mampu', 'Lainnya'], data: [35, 25, 20, 15, 5] }
                 };
@@ -249,12 +250,13 @@ export function initAdminCharts() {
                     }]
                 },
                 options: {
+                    indexAxis: 'y',
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: { legend: { display: false } },
                     scales: {
-                        y: { beginAtZero: true, grid: { borderDash: [5, 5] }, max: 80 },
-                        x: { grid: { display: false } }
+                        x: { beginAtZero: true, grid: { borderDash: [5, 5] }, max: 80 },
+                        y: { grid: { display: false } }
                     }
                 }
             });
@@ -278,7 +280,7 @@ export function initAdminCharts() {
                     adminCharts.layanan.data.labels = dataObj.labels;
                     adminCharts.layanan.data.datasets[0].data = dataObj.data;
                     let maxVal = Math.max(...dataObj.data) || 10;
-                    adminCharts.layanan.options.scales.y.max = maxVal + Math.ceil(maxVal * 0.2);
+                    adminCharts.layanan.options.scales.x.max = maxVal + Math.ceil(maxVal * 0.2);
                     adminCharts.layanan.update();
                 } else {
                     adminCharts.layanan.data.labels = [];
@@ -288,6 +290,22 @@ export function initAdminCharts() {
             });
         }
         
+        const filterMingguan = document.getElementById('filter-mingguan');
+        if (filterMingguan) {
+            filterMingguan.addEventListener('change', function(e) {
+                if (!window.lastDashboardStats) return;
+                let val = e.target.value;
+                if (val === '7') {
+                    adminCharts.mingguan.data.labels = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
+                    if(window.lastDashboardStats.chartMingguan) adminCharts.mingguan.data.datasets[0].data = window.lastDashboardStats.chartMingguan;
+                } else if (val === '30') {
+                    adminCharts.mingguan.data.labels = ['Minggu 1', 'Minggu 2', 'Minggu 3', 'Minggu 4'];
+                    if(window.lastDashboardStats.chartBulanIni) adminCharts.mingguan.data.datasets[0].data = window.lastDashboardStats.chartBulanIni;
+                }
+                adminCharts.mingguan.update();
+            });
+        }
+
         if (window.lastDashboardStats) {
             updateAdminChartsData(window.lastDashboardStats);
         }
@@ -298,7 +316,16 @@ export function updateAdminChartsData(stats) {
     if (!adminCharts.mingguan || !adminCharts.status || !adminCharts.layanan) return;
     
     if (stats.chartMingguan) {
-        adminCharts.mingguan.data.datasets[0].data = stats.chartMingguan;
+        const filterMingguan = document.getElementById('filter-mingguan');
+        let valM = filterMingguan ? filterMingguan.value : '7';
+        
+        if (valM === '7') {
+            adminCharts.mingguan.data.labels = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
+            adminCharts.mingguan.data.datasets[0].data = stats.chartMingguan;
+        } else if (valM === '30' && stats.chartBulanIni) {
+            adminCharts.mingguan.data.labels = ['Minggu 1', 'Minggu 2', 'Minggu 3', 'Minggu 4'];
+            adminCharts.mingguan.data.datasets[0].data = stats.chartBulanIni;
+        }
         adminCharts.mingguan.update();
     }
     
@@ -329,7 +356,7 @@ export function updateAdminChartsData(stats) {
             adminCharts.layanan.data.labels = dataObj.labels;
             adminCharts.layanan.data.datasets[0].data = dataObj.data;
             let maxVal = Math.max(...dataObj.data) || 10;
-            adminCharts.layanan.options.scales.y.max = maxVal + Math.ceil(maxVal * 0.2);
+            adminCharts.layanan.options.scales.x.max = maxVal + Math.ceil(maxVal * 0.2);
             adminCharts.layanan.update();
         }
     }
