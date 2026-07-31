@@ -315,7 +315,6 @@ export function closeModalTambahPengguna(skipConfirm = false) {
     if (skipConfirm) {
         let subview = document.getElementById('subview-admin-tambah-pengguna');
         if (subview) subview.classList.add('hidden');
-        document.getElementById('mp-menu-container').classList.remove('hidden');
         document.getElementById('mp-content-daftar').classList.remove('hidden');
         return;
     }
@@ -325,7 +324,6 @@ export function closeModalTambahPengguna(skipConfirm = false) {
         function() {
             let subview = document.getElementById('subview-admin-tambah-pengguna');
             if (subview) subview.classList.add('hidden');
-            document.getElementById('mp-menu-container').classList.remove('hidden');
             document.getElementById('mp-content-daftar').classList.remove('hidden');
         }
     );
@@ -687,7 +685,6 @@ export function openModalEditPengguna(username) {
 export function closeModalEditPengguna() {
     let subview = document.getElementById('subview-admin-edit-pengguna');
     if (subview) subview.classList.add('hidden');
-    document.getElementById('mp-menu-container').classList.remove('hidden');
     document.getElementById('mp-content-daftar').classList.remove('hidden');
     
     let form = document.getElementById('form-edit-pengguna');
