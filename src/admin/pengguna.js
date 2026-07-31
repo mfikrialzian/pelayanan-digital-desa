@@ -311,7 +311,14 @@ export function openModalTambahPengguna() {
     renderJabatanTags('tp-jabatan-selected-tags', tpSelectedJabatan, 'removeTpJabatan');
 }
 
-export function closeModalTambahPengguna() {
+export function closeModalTambahPengguna(skipConfirm = false) {
+    if (skipConfirm) {
+        let subview = document.getElementById('subview-admin-tambah-pengguna');
+        if (subview) subview.classList.add('hidden');
+        document.getElementById('mp-menu-container').classList.remove('hidden');
+        document.getElementById('mp-content-daftar').classList.remove('hidden');
+        return;
+    }
     showCustomConfirm(
         '<i class="fa-solid fa-triangle-exclamation text-amber-500"></i> Batalkan Pembuatan',
         'Apakah Anda yakin ingin membatalkan? Data yang telah diisi akan hilang.',
@@ -369,7 +376,7 @@ export function simpanPenggunaBaru(event) {
             document.getElementById('btn-submit-tambah-pengguna').innerHTML = '<i class="fa-solid fa-spinner animate-spin"></i> Menyimpan...';
             
             callCrudPengguna('create', akunBaru, function() {
-                closeModalTambahPengguna();
+                closeModalTambahPengguna(true);
                 document.getElementById('btn-submit-tambah-pengguna').disabled = false;
                 document.getElementById('btn-submit-tambah-pengguna').innerHTML = '<i class="fa-solid fa-save mr-1.5"></i> Simpan Pengguna';
             });
