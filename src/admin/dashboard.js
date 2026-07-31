@@ -179,10 +179,10 @@ export function initAdminCharts() {
             adminCharts.mingguan = new Chart(ctxMingguan, {
                 type: 'line',
                 data: {
-                    labels: ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'],
+                    labels: ['Minggu 1', 'Minggu 2', 'Minggu 3', 'Minggu 4'],
                     datasets: [{
                         label: 'Pengajuan Baru',
-                        data: [12, 19, 15, 25, 22, 10, 5],
+                        data: [12, 19, 15, 10],
                         borderColor: narmadaGreen,
                         backgroundColor: 'rgba(5, 150, 105, 0.1)',
                         borderWidth: 3,
