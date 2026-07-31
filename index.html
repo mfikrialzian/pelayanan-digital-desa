@@ -2153,51 +2153,6 @@
                             <p class="text-xs text-slate-500">Belum ada aktifitas yang tercatat.</p>
                         </div>
                     </div>
-                </div><div id="subview-admin-laporan" class="hidden max-w-4xl mx-auto text-left space-y-4">
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center justify-center text-center space-y-4 min-h-[400px]">
-                        <div class="w-16 h-16 rounded-full bg-emerald-50 text-narmadaGreen flex items-center justify-center text-3xl mb-2">
-                            <i class="fa-solid fa-chart-simple"></i>
-                        </div>
-                        <h3 class="text-xl font-bold text-slate-800">Pusat Laporan &amp; Data Desa</h3>
-                        <p class="text-sm text-slate-500 max-w-md">Di sini Anda dapat melihat ringkasan data pengajuan layanan. Gunakan tombol export di bagian Daftar Pengajuan untuk mengunduh rekapitulasi data lengkap dalam bentuk spreadsheet.</p>
-                        
-                        <div class="grid grid-cols-2 gap-4 w-full max-w-lg mt-6">
-                            <div class="p-4 bg-slate-50 border border-slate-100 rounded-xl text-center">
-                                <p class="text-xs font-bold text-slate-500 mb-1">Total Permohonan</p>
-                                <p class="text-2xl font-black text-slate-800" id="laporan-total-all">-</p>
-                            </div>
-                            <div class="p-4 bg-slate-50 border border-slate-100 rounded-xl text-center">
-                                <p class="text-xs font-bold text-slate-500 mb-1">Permohonan Selesai</p>
-                                <p class="text-2xl font-black text-narmadaGreen" id="laporan-total-selesai">-</p>
-                            </div>
-                        </div>
-                    </div>
-                </div><div id="subview-admin-aktivitas" class="hidden max-w-4xl mx-auto text-left space-y-4">
-                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
-                        <div class="flex justify-between items-center mb-4 border-b border-slate-100 pb-3">
-                            <h4 class="text-sm font-bold text-slate-800 flex items-center gap-2">
-                                <i class="fa-solid fa-clock-rotate-left text-narmadaGreen"></i> Riwayat Log Aktivitas Sistem
-                            </h4>
-                            <button id="ev-bind-48" class="text-xs font-bold text-narmadaGreen hover:bg-emerald-50 px-3 py-1.5 rounded-lg transition-colors">
-                                <i class="fa-solid fa-rotate-right mr-1"></i> Segarkan
-                            </button>
-                        </div>
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left text-xs whitespace-nowrap">
-                                <thead class="text-slate-500 bg-slate-50 uppercase font-bold text-[10px]">
-                                    <tr>
-                                        <th class="px-4 py-3 rounded-l-xl">Waktu</th>
-                                        <th class="px-4 py-3">Tipe</th>
-                                        <th class="px-4 py-3">Pesan Aktivitas</th>
-                                        <th class="px-4 py-3 rounded-r-xl">Pelaku</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="tabel-log-aktivitas" class="divide-y divide-slate-50">
-                                    <tr><td colspan="4" class="px-4 py-8 text-center text-slate-400">Memuat log aktivitas...</td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
                    <!-- SUBVIEW EDIT PENGGUNA -->
                 <div id="subview-admin-edit-pengguna" class="hidden w-full max-w-4xl mx-auto mt-4 pb-10">
                     <div class="bg-slate-50 rounded-2xl shadow-sm border border-slate-100 flex flex-col">
@@ -2464,6 +2419,51 @@
                         </div>
                     </div>
                 </div>
+                </div><div id="subview-admin-laporan" class="hidden max-w-4xl mx-auto text-left space-y-4">
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center justify-center text-center space-y-4 min-h-[400px]">
+                        <div class="w-16 h-16 rounded-full bg-emerald-50 text-narmadaGreen flex items-center justify-center text-3xl mb-2">
+                            <i class="fa-solid fa-chart-simple"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-800">Pusat Laporan &amp; Data Desa</h3>
+                        <p class="text-sm text-slate-500 max-w-md">Di sini Anda dapat melihat ringkasan data pengajuan layanan. Gunakan tombol export di bagian Daftar Pengajuan untuk mengunduh rekapitulasi data lengkap dalam bentuk spreadsheet.</p>
+                        
+                        <div class="grid grid-cols-2 gap-4 w-full max-w-lg mt-6">
+                            <div class="p-4 bg-slate-50 border border-slate-100 rounded-xl text-center">
+                                <p class="text-xs font-bold text-slate-500 mb-1">Total Permohonan</p>
+                                <p class="text-2xl font-black text-slate-800" id="laporan-total-all">-</p>
+                            </div>
+                            <div class="p-4 bg-slate-50 border border-slate-100 rounded-xl text-center">
+                                <p class="text-xs font-bold text-slate-500 mb-1">Permohonan Selesai</p>
+                                <p class="text-2xl font-black text-narmadaGreen" id="laporan-total-selesai">-</p>
+                            </div>
+                        </div>
+                    </div>
+                </div><div id="subview-admin-aktivitas" class="hidden max-w-4xl mx-auto text-left space-y-4">
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
+                        <div class="flex justify-between items-center mb-4 border-b border-slate-100 pb-3">
+                            <h4 class="text-sm font-bold text-slate-800 flex items-center gap-2">
+                                <i class="fa-solid fa-clock-rotate-left text-narmadaGreen"></i> Riwayat Log Aktivitas Sistem
+                            </h4>
+                            <button id="ev-bind-48" class="text-xs font-bold text-narmadaGreen hover:bg-emerald-50 px-3 py-1.5 rounded-lg transition-colors">
+                                <i class="fa-solid fa-rotate-right mr-1"></i> Segarkan
+                            </button>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-xs whitespace-nowrap">
+                                <thead class="text-slate-500 bg-slate-50 uppercase font-bold text-[10px]">
+                                    <tr>
+                                        <th class="px-4 py-3 rounded-l-xl">Waktu</th>
+                                        <th class="px-4 py-3">Tipe</th>
+                                        <th class="px-4 py-3">Pesan Aktivitas</th>
+                                        <th class="px-4 py-3 rounded-r-xl">Pelaku</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabel-log-aktivitas" class="divide-y divide-slate-50">
+                                    <tr><td colspan="4" class="px-4 py-8 text-center text-slate-400">Memuat log aktivitas...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
 
             </div>
