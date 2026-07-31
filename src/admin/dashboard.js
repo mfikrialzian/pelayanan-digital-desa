@@ -182,7 +182,7 @@ export function initAdminCharts() {
                     labels: ['Minggu 1', 'Minggu 2', 'Minggu 3', 'Minggu 4'],
                     datasets: [{
                         label: 'Pengajuan Baru',
-                        data: [12, 19, 15, 10],
+                        data: [0, 0, 0, 0],
                         borderColor: narmadaGreen,
                         backgroundColor: 'rgba(5, 150, 105, 0.1)',
                         borderWidth: 3,
@@ -216,7 +216,7 @@ export function initAdminCharts() {
                 data: {
                     labels: ['Menunggu', 'Verifikasi', 'Selesai', 'Perbaikan'],
                     datasets: [{
-                        data: [20, 25, 45, 10],
+                        data: [0, 0, 0, 0],
                         backgroundColor: [narmadaBlue, '#f59e0b', narmadaGreen, '#ef4444'],
                         borderWidth: 0,
                         hoverOffset: 4
@@ -240,10 +240,10 @@ export function initAdminCharts() {
             adminCharts.layanan = new Chart(ctxLayanan, {
                 type: 'bar',
                 data: {
-                    labels: ['Ket. Usaha', 'Ket. Domisili', 'Pengantar SKCK', 'Ket. Tidak Mampu', 'Lainnya'],
+                    labels: ['Memuat...', 'Memuat...', 'Memuat...', 'Memuat...', 'Memuat...'],
                     datasets: [{
                         label: 'Total Pengajuan',
-                        data: [65, 45, 30, 25, 15],
+                        data: [0, 0, 0, 0, 0],
                         backgroundColor: narmadaBlue,
                         borderRadius: 6,
                         barThickness: 24
