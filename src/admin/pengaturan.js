@@ -404,8 +404,8 @@ export function saveProfileData(e) {
         avatar: localStorage.getItem('userAvatar') || ''
     };
 
-    const isEmailChanged = email !== oldEmail;
-    const isWaChanged = wa !== oldWa;
+    const isEmailChanged = email !== oldEmail && email !== '';
+    const isWaChanged = wa !== oldWa && wa !== '';
 
     if (isEmailChanged || isWaChanged) {
         // Prepare OTP
@@ -640,11 +640,11 @@ export function showPengaturanAkunMenu() {
     }
     
     // Populate profile inputs with current user data
-    const nama = localStorage.getItem('userName') || 'Muhamad Alzian';
-    const email = localStorage.getItem('userEmail') || 'alzian@desa-narmada.go.id';
-    const phone = localStorage.getItem('userPhone') || '081234567890';
+    const nama = localStorage.getItem('userName') || '';
+    const email = localStorage.getItem('userEmail') || '';
+    const phone = localStorage.getItem('userPhone') || '';
     const role = localStorage.getItem('userRole') || 'Administrator Desa';
-    const userId = localStorage.getItem('userId') || 'alzian_admin';
+    const userId = localStorage.getItem('userId') || '';
     const avatar = localStorage.getItem('userAvatar');
 
     const elNama = document.getElementById('input-profil-nama');
@@ -662,17 +662,20 @@ export function showPengaturanAkunMenu() {
             avatarImg.src = avatar;
             if (btnDeleteAvatar) btnDeleteAvatar.classList.remove('hidden');
         } else {
-            // Restore default avatar if not present
-            const defaultAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(nama)}&background=0D8ABC&color=fff&size=100`;
-            avatarImg.src = defaultAvatar;
+            avatarImg.src = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(nama || 'User') + '&background=0D8ABC&color=fff&size=100';
             if (btnDeleteAvatar) btnDeleteAvatar.classList.add('hidden');
         }
     }
 
-    const headNama = document.getElementById('profil-header-nama');
-    if (headNama) headNama.innerText = nama;
-    const headEmail = document.getElementById('profil-header-email');
-    if (headEmail) headEmail.innerText = email;
+    const headerNama = document.getElementById('profil-header-nama');
+    if (headerNama) headerNama.innerText = nama || 'Belum diatur';
+    
+    // Also update role tag under name if it exists
+    const roleTag = document.querySelector('#profil-header-nama + div > span');
+    if (roleTag) roleTag.innerText = role;
+
+    const headerEmail = document.getElementById('profil-header-email');
+    if (headerEmail) headerEmail.innerText = email || 'Belum ada email';
     
     const roleBadge = document.querySelector('#pa-content-profil .bg-emerald-100');
     if (roleBadge) roleBadge.innerText = role;
