@@ -2202,7 +2202,7 @@
                                     <!-- Multi-select Jabatan Edit -->
                                     <div>
                                         <label class="block text-[10px] font-bold text-slate-600 mb-1.5">Jabatan / Bidang *</label>
-                                        <div id="te-jabatan-container" class="w-full p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs relative">
+                                        <div id="te-jabatan-container" class="w-full p-3 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-800 relative transition-all">
                                             <p id="te-jabatan-locked" class="text-slate-500 font-medium hidden">Otomatis diset oleh sistem</p>
                                             <div id="te-jabatan-dropdown" class="flex flex-col gap-2">
                                                 <div class="flex flex-wrap gap-2" id="te-jabatan-selected-tags"></div>
@@ -2251,7 +2251,7 @@
                                     <h2 class="text-lg font-bold text-slate-800"><i class="fa-solid fa-user-plus text-narmadaGreen mr-2"></i> Tambah Pengguna Baru</h2>
                                     <p class="text-[10px] text-slate-500 mt-0.5">Ikuti langkah berikut untuk mendaftarkan akun.</p>
                                 </div>
-                                <button id="ev-bind-50" class="px-4 py-2 text-xs font-bold text-slate-600 bg-slate-50 border border-slate-200 hover:bg-slate-100 rounded-xl transition-colors">Batal</button>
+                                <button id="ev-bind-50" class="px-5 py-2.5 text-xs font-bold text-slate-600 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl transition-all">Batal</button>
                             </div>
                             
                             <!-- Stepper Container -->
@@ -2292,17 +2292,17 @@
                                     <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 space-y-5">
                                         <h3 class="text-sm font-bold text-slate-800 border-b border-slate-100 pb-3"><i class="fa-solid fa-address-card text-narmadaGreen mr-1.5"></i> Identitas Profil</h3>
                                         <div>
-                                            <label class="block text-[10px] font-bold text-slate-600 mb-1.5">Nama Lengkap *</label>
-                                            <input type="text" id="tp-nama" required class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors" placeholder="Masukkan nama lengkap">
+                                            <label class="block text-[10px] font-bold text-slate-600 mb-1 uppercase tracking-wider">Nama Lengkap *</label>
+                                            <input type="text" id="tp-nama" required class="w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-xl focus:ring-1 focus:ring-narmadaGreen focus:border-narmadaGreen block px-4 py-2.5 outline-none transition-all placeholder-slate-400" placeholder="Masukkan nama lengkap">
                                         </div>
                                         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                                             <div>
-                                                <label class="block text-[10px] font-bold text-slate-600 mb-1.5">Email (Opsional)</label>
-                                                <input type="email" id="tp-email" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors" placeholder="email@contoh.com">
+                                                <label class="block text-[10px] font-bold text-slate-600 mb-1 uppercase tracking-wider">Email (Opsional)</label>
+                                                <input type="email" id="tp-email" class="w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-xl focus:ring-1 focus:ring-narmadaGreen focus:border-narmadaGreen block px-4 py-2.5 outline-none transition-all placeholder-slate-400" placeholder="email@contoh.com">
                                             </div>
                                             <div>
-                                                <label class="block text-[10px] font-bold text-slate-600 mb-1.5">Nomor WhatsApp (Opsional)</label>
-                                                <input type="text" id="tp-wa" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors" placeholder="08xxxxxxxxxx">
+                                                <label class="block text-[10px] font-bold text-slate-600 mb-1 uppercase tracking-wider">Nomor WhatsApp (Opsional)</label>
+                                                <input type="text" id="tp-wa" class="w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-xl focus:ring-1 focus:ring-narmadaGreen focus:border-narmadaGreen block px-4 py-2.5 outline-none transition-all placeholder-slate-400" placeholder="08xxxxxxxxxx">
                                             </div>
                                         </div>
                                     </div>
@@ -2313,8 +2313,8 @@
                                     <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 space-y-5">
                                         <h3 class="text-sm font-bold text-slate-800 border-b border-slate-100 pb-3"><i class="fa-solid fa-user-shield text-narmadaGreen mr-1.5"></i> Kredensial & Jenis Akun</h3>
                                         <div>
-                                            <label class="block text-[10px] font-bold text-slate-600 mb-1.5">Jenis Akun *</label>
-                                            <select id="tp-peran" required class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors">
+                                            <label class="block text-[10px] font-bold text-slate-600 mb-1 uppercase tracking-wider">Jenis Akun *</label>
+                                            <select id="tp-peran" required class="w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-xl focus:ring-1 focus:ring-narmadaGreen focus:border-narmadaGreen block px-4 py-2.5 outline-none transition-all placeholder-slate-400">
                                                 <option value="" disabled selected>Pilih jenis akun...</option>
                                                 <option value="Operator Pelayanan">Operator Pelayanan</option>
                                                 <option value="Sekretaris Desa">Sekretaris Desa</option>
@@ -2323,8 +2323,8 @@
                                         </div>
                                         <!-- Multi-select Jabatan -->
                                         <div>
-                                            <label class="block text-[10px] font-bold text-slate-600 mb-1.5">Jabatan / Bidang *</label>
-                                            <div id="tp-jabatan-container" class="w-full p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs relative">
+                                            <label class="block text-[10px] font-bold text-slate-600 mb-1 uppercase tracking-wider">Jabatan / Bidang *</label>
+                                            <div id="tp-jabatan-container" class="w-full p-3 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-800 relative transition-all">
                                                 <p id="tp-jabatan-locked" class="text-slate-500 font-medium hidden">Otomatis diset oleh sistem</p>
                                                 <div id="tp-jabatan-dropdown" class="flex flex-col gap-2">
                                                     <div class="flex flex-wrap gap-2 empty:hidden" id="tp-jabatan-selected-tags"></div>
@@ -2341,8 +2341,8 @@
                                             </div>
                                         </div>
                                         <div>
-                                            <label class="block text-[10px] font-bold text-slate-600 mb-1.5">Username *</label>
-                                            <input type="text" id="tp-username" required class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors font-mono" placeholder="Ketik username...">
+                                            <label class="block text-[10px] font-bold text-slate-600 mb-1 uppercase tracking-wider">Username *</label>
+                                            <input type="text" id="tp-username" required class="w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-xl focus:ring-1 focus:ring-narmadaGreen focus:border-narmadaGreen block px-4 py-2.5 outline-none transition-all placeholder-slate-400 font-mono" placeholder="Ketik username...">
                                             <div class="mt-2 hidden" id="tp-username-suggestions-container">
                                                 <p class="text-[9px] text-slate-500 mb-1">Saran Username:</p>
                                                 <div class="flex flex-wrap gap-2" id="tp-username-suggestions">
@@ -2358,16 +2358,16 @@
                                     <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 space-y-5">
                                         <h3 class="text-sm font-bold text-slate-800 border-b border-slate-100 pb-3"><i class="fa-solid fa-lock text-narmadaGreen mr-1.5"></i> Keamanan Akses</h3>
                                         <div>
-                                            <label class="block text-[10px] font-bold text-slate-600 mb-1.5">Kata Sandi *</label>
+                                            <label class="block text-[10px] font-bold text-slate-600 mb-1 uppercase tracking-wider">Kata Sandi *</label>
                                             <div class="relative">
-                                                <input type="password" id="tp-password" required class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors pr-10" placeholder="Ketik kata sandi">
+                                                <input type="password" id="tp-password" required class="w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-xl focus:ring-1 focus:ring-narmadaGreen focus:border-narmadaGreen block px-4 py-2.5 outline-none transition-all placeholder-slate-400 pr-10" placeholder="Ketik kata sandi">
                                                 <button type="button" onclick="const p = document.getElementById('tp-password'); p.type = p.type === 'password' ? 'text' : 'password';" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"><i class="fa-solid fa-eye"></i></button>
                                             </div>
                                         </div>
                                         <div>
-                                            <label class="block text-[10px] font-bold text-slate-600 mb-1.5">Konfirmasi Kata Sandi *</label>
+                                            <label class="block text-[10px] font-bold text-slate-600 mb-1 uppercase tracking-wider">Konfirmasi Kata Sandi *</label>
                                             <div class="relative">
-                                                <input type="password" id="tp-password-confirm" required class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors pr-10" placeholder="Ketik ulang kata sandi">
+                                                <input type="password" id="tp-password-confirm" required class="w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-xl focus:ring-1 focus:ring-narmadaGreen focus:border-narmadaGreen block px-4 py-2.5 outline-none transition-all placeholder-slate-400 pr-10" placeholder="Ketik ulang kata sandi">
                                             </div>
                                             <p id="tp-password-error" class="text-[9px] text-red-500 font-bold mt-1.5 hidden">Kata sandi tidak cocok!</p>
                                         </div>
