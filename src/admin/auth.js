@@ -193,11 +193,22 @@ export function initAdminHeader() {
 
     if (!dateEl) return; // Exit if not on admin page
 
-    // Update Name and Role
+    // Update Name, Role, and Avatar
     const userName = localStorage.getItem('userName') || 'Administrator';
     const userRole = localStorage.getItem('userRole') || 'Super Admin';
+    const userAvatar = localStorage.getItem('userAvatar') || `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=0D8ABC&color=fff`;
+
     if (nameEl) nameEl.textContent = userName;
     if (roleEl) roleEl.textContent = userRole + ' Desa Narmada';
+    
+    const topbarName = document.getElementById('admin-topbar-name');
+    if (topbarName) topbarName.textContent = userName;
+    
+    const topbarRole = document.getElementById('admin-topbar-role');
+    if (topbarRole) topbarRole.textContent = userRole;
+    
+    const topbarAvatar = document.getElementById('admin-topbar-avatar');
+    if (topbarAvatar) topbarAvatar.src = userAvatar;
 
     function updateDateTime() {
         const now = new Date();
