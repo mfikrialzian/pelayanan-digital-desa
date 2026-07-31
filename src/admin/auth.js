@@ -105,31 +105,24 @@ export function handleAdminLogout() {
             let userName = localStorage.getItem('userName') || 'Administrator';
             let mapping = ROLE_MAPPINGS[role] || ROLE_MAPPINGS['Admin'];
             
-            // Update Profile Name and Role in UI (Header)
-            let profileNames = document.querySelectorAll('.admin-profile-name');
-            let profileRoles = document.querySelectorAll('.admin-profile-role');
-            if (profileNames.length === 0) {
-                // Specific targeted updates for the layout
-                let hName = document.querySelector('header span.text-base.leading-none');
-                if (hName) hName.innerText = userName;
-                let hRole = document.querySelector('header span.bg-emerald-100');
-                if (hRole) hRole.innerText = role;
-                
-                let dName = document.querySelector('#admin-profile-trigger p.text-sm');
-                if (dName) dName.innerText = userName;
-                let dRole = document.querySelector('#admin-profile-trigger p.text-\\[10px\\]');
-                if (dRole) dRole.innerText = role;
-                
-                let userAvatar = localStorage.getItem('userAvatar');
-                let headerAvatarImg = document.querySelector('#admin-profile-trigger img');
-                if (headerAvatarImg) {
-                    if (userAvatar && userAvatar.trim() !== '') {
-                        headerAvatarImg.src = userAvatar;
-                    } else {
-                        headerAvatarImg.src = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(userName) + '&background=0D8ABC&color=fff';
-                    }
-                }
+            // Update Profile Name, Role, and Avatar in UI (Header)
+            const nameEl = document.getElementById('admin-header-name');
+            const roleEl = document.getElementById('admin-header-role');
+            const topbarName = document.getElementById('admin-topbar-name');
+            const topbarRole = document.getElementById('admin-topbar-role');
+            const topbarAvatar = document.getElementById('admin-topbar-avatar');
+            
+            let userAvatar = localStorage.getItem('userAvatar');
+            if (!userAvatar || userAvatar.trim() === '') {
+                userAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=0D8ABC&color=fff`;
             }
+
+            if (nameEl) nameEl.textContent = userName;
+            if (roleEl) roleEl.textContent = role + ' Desa Narmada';
+            
+            if (topbarName) topbarName.textContent = userName;
+            if (topbarRole) topbarRole.textContent = role;
+            if (topbarAvatar) topbarAvatar.src = userAvatar;
 
             // Render Sidebar
             let sidebarNav = document.getElementById('admin-sidebar-nav');
@@ -193,22 +186,6 @@ export function initAdminHeader() {
 
     if (!dateEl) return; // Exit if not on admin page
 
-    // Update Name, Role, and Avatar
-    const userName = localStorage.getItem('userName') || 'Administrator';
-    const userRole = localStorage.getItem('userRole') || 'Super Admin';
-    const userAvatar = localStorage.getItem('userAvatar') || `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=0D8ABC&color=fff`;
-
-    if (nameEl) nameEl.textContent = userName;
-    if (roleEl) roleEl.textContent = userRole + ' Desa Narmada';
-    
-    const topbarName = document.getElementById('admin-topbar-name');
-    if (topbarName) topbarName.textContent = userName;
-    
-    const topbarRole = document.getElementById('admin-topbar-role');
-    if (topbarRole) topbarRole.textContent = userRole;
-    
-    const topbarAvatar = document.getElementById('admin-topbar-avatar');
-    if (topbarAvatar) topbarAvatar.src = userAvatar;
 
     function updateDateTime() {
         const now = new Date();
