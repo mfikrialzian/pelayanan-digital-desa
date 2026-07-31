@@ -250,13 +250,12 @@ export function initAdminCharts() {
                     }]
                 },
                 options: {
-                    indexAxis: 'y',
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: { legend: { display: false } },
                     scales: {
-                        x: { beginAtZero: true, grid: { borderDash: [5, 5] }, max: 80 },
-                        y: { grid: { display: false } }
+                        y: { beginAtZero: true, grid: { borderDash: [5, 5] }, max: 80 },
+                        x: { grid: { display: false }, ticks: { display: false } }
                     }
                 }
             });
@@ -280,7 +279,7 @@ export function initAdminCharts() {
                     adminCharts.layanan.data.labels = dataObj.labels;
                     adminCharts.layanan.data.datasets[0].data = dataObj.data;
                     let maxVal = Math.max(...dataObj.data) || 10;
-                    adminCharts.layanan.options.scales.x.max = maxVal + Math.ceil(maxVal * 0.2);
+                    adminCharts.layanan.options.scales.y.max = maxVal + Math.ceil(maxVal * 0.2);
                     adminCharts.layanan.update();
                 } else {
                     adminCharts.layanan.data.labels = [];
@@ -356,7 +355,7 @@ export function updateAdminChartsData(stats) {
             adminCharts.layanan.data.labels = dataObj.labels;
             adminCharts.layanan.data.datasets[0].data = dataObj.data;
             let maxVal = Math.max(...dataObj.data) || 10;
-            adminCharts.layanan.options.scales.x.max = maxVal + Math.ceil(maxVal * 0.2);
+            adminCharts.layanan.options.scales.y.max = maxVal + Math.ceil(maxVal * 0.2);
             adminCharts.layanan.update();
         }
     }
@@ -370,9 +369,9 @@ export async function fetchWeather() {
     if (!weatherIconEl || !weatherTempEl || !weatherDescEl) return;
     
     try {
-        // Narmada coordinates (approx: -8.58, 116.12)
-        const lat = -8.5833;
-        const lon = 116.1167;
+        // Narmada coordinates (approx: -8.59, 116.17)
+        const lat = -8.5913;
+        const lon = 116.1776;
         const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
         if (!res.ok) throw new Error('Weather fetch failed');
         const data = await res.json();
@@ -386,10 +385,10 @@ export async function fetchWeather() {
         let desc = 'Berawan';
         
         if (code === 0) { icon = '☀️'; desc = 'Cerah'; }
-        else if (code === 1 || code === 2) { icon = '⛅'; desc = 'Cerah Berawan'; }
+        else if (code === 1 || code === 2 || code === 51) { icon = '⛅'; desc = 'Cerah Berawan'; }
         else if (code === 3) { icon = '☁️'; desc = 'Berawan'; }
         else if (code === 45 || code === 48) { icon = '🌫️'; desc = 'Berkabut'; }
-        else if (code >= 51 && code <= 55) { icon = '🌦️'; desc = 'Gerimis'; }
+        else if (code >= 52 && code <= 55) { icon = '🌦️'; desc = 'Gerimis'; }
         else if (code >= 61 && code <= 65) { icon = '🌧️'; desc = 'Hujan'; }
         else if (code >= 71 && code <= 77) { icon = '❄️'; desc = 'Salju'; }
         else if (code >= 80 && code <= 82) { icon = '🌧️'; desc = 'Hujan Deras'; }
