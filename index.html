@@ -1314,15 +1314,10 @@
                                             <input type="text" value="alzian_admin" readonly class="w-full bg-slate-50 border border-slate-200 text-slate-800 text-xs md:text-sm font-semibold rounded-xl focus:ring-0 block px-4 py-2.5 outline-none cursor-not-allowed">
                                         </div>
                                         
-                                        <!-- Peran -->
+                                        <!-- Jenis Akun -->
                                         <div>
-                                            <label class="block text-[9px] md:text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Peran Akses (Role)</label>
-                                            <div class="flex items-center gap-2 px-4 py-2.5 bg-emerald-50/50 border border-emerald-100 rounded-xl w-max">
-                                                <div class="w-6 h-6 rounded-full bg-emerald-100 text-narmadaGreen flex items-center justify-center">
-                                                    <i class="fa-solid fa-shield-halved text-[10px]"></i>
-                                                </div>
-                                                <span class="text-xs md:text-sm font-bold text-narmadaGreen">Administrator Utama</span>
-                                            </div>
+                                            <label class="block text-[9px] md:text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Jenis Akun</label>
+                                            <p class="text-xs md:text-sm text-slate-800 font-semibold" id="admin-profile-role-view">Loading...</p>
                                         </div>
 
                                         <!-- Status Akun -->
@@ -2006,7 +2001,7 @@
                                 <i class="fa-solid fa-user-tie"></i>
                             </div>
                             <div>
-                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Pimpinan</p>
+                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Sekdes & Kades</p>
                                 <h3 class="text-xl font-bold text-slate-800 leading-none mt-1" id="stat-user-pimpinan">0</h3>
                             </div>
                         </div>
@@ -2046,8 +2041,8 @@
                                         <i class="fa-solid fa-shield-halved"></i>
                                     </div>
                                     <div class="flex-grow">
-                                        <h4 class="font-bold text-slate-800">Peran & Hak Akses</h4>
-                                        <p class="text-[11px] text-slate-500">Lihat panduan lengkap mengenai batasan wewenang dari setiap peran (role).</p>
+                                        <h4 class="font-bold text-slate-800">Pengaturan Hak Akses</h4>
+                                        <p class="text-[11px] text-slate-500">Atur batasan wewenang untuk setiap jenis akun.</p>
                                     </div>
                                     <i class="fa-solid fa-chevron-right text-slate-300 group-hover:text-narmadaGreen transition-colors" id="mp-icon-akses"></i>
                                 </div>
@@ -2083,10 +2078,11 @@
                                         <input type="text" id="mp-search-user" placeholder="Cari nama atau username..." class="pl-8 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-narmadaGreen focus:ring-1 focus:ring-narmadaGreen w-full md:w-48 transition-all">
                                     </div>
                                     <select id="mp-filter-role" class="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-600 focus:outline-none focus:border-narmadaGreen focus:ring-1 focus:ring-narmadaGreen cursor-pointer transition-all">
-                                        <option value="all">Semua Peran</option>
-                                        <option value="Admin Utama">Admin Utama</option>
-                                        <option value="Admin">Admin</option>
-                                        <option value="Pimpinan">Pimpinan</option>
+                                        <option value="all">Semua Jenis Akun</option>
+                                        <option value="Super Admin">Super Admin</option>
+                                        <option value="Operator Pelayanan">Operator Pelayanan</option>
+                                        <option value="Sekretaris Desa">Sekretaris Desa</option>
+                                        <option value="Kepala Desa">Kepala Desa</option>
                                     </select>
                                     <button id="ev-bind-44" class="hidden px-4 py-1.5 bg-narmadaGreen hover:bg-emerald-600 text-white text-sm font-bold rounded-lg transition-colors shadow-sm flex items-center gap-2 shrink-0">
                                         <i class="fa-solid fa-plus"></i> Tambah Pengguna
@@ -2099,7 +2095,7 @@
                                         <tr class="bg-slate-50 text-slate-500 text-[10px] uppercase tracking-wider border-b border-slate-100">
                                             <th class="py-3 px-4 font-bold">Nama</th>
                                             <th class="py-3 px-4 font-bold">Username</th>
-                                            <th class="py-3 px-4 font-bold">Peran</th>
+                                            <th class="py-3 px-4 font-bold">Jenis Akun</th>
                                             <th class="py-3 px-4 font-bold">Status</th>
                                             <th class="py-3 px-4 font-bold">Terakhir Login</th>
                                             <th class="py-3 px-4 font-bold text-right">Aksi</th>
@@ -2113,202 +2109,27 @@
                         </div>
                     </div>
 
-                    <!-- Peran & Hak Akses -->
+                    <!-- Hak Akses -->
                     <div id="mp-content-akses" class="hidden w-full max-w-4xl mx-auto mt-4">
                         <button id="ev-bind-45" class="text-sm font-semibold text-slate-500 hover:text-narmadaGreen transition-colors flex items-center gap-2 mb-4">
                             <i class="fa-solid fa-arrow-left"></i> Kembali ke Menu Manajemen
                         </button>
                         <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5">
                             <h4 class="text-sm font-bold text-slate-800 border-b border-slate-100 pb-3 flex items-center gap-2 mb-4">
-                                <i class="fa-solid fa-shield-halved text-narmadaGreen"></i> Penjelasan Peran & Hak Akses
+                                <i class="fa-solid fa-shield-halved text-narmadaGreen"></i> Pengaturan Hak Akses Jenis Akun
                             </h4>
                             <div class="overflow-x-auto rounded-xl border border-slate-100">
                                 <table class="w-full text-left border-collapse min-w-[600px]">
                                     <thead>
                                         <tr class="bg-slate-50 text-slate-600 text-xs font-bold border-b border-slate-100">
                                             <th class="py-4 px-5">Modul / Menu</th>
-                                            <th class="py-4 px-2 text-center w-32"><i class="fa-solid fa-user-shield text-red-500 block mb-1 text-lg"></i> Super Admin</th>
                                             <th class="py-4 px-2 text-center w-32"><i class="fa-solid fa-user-pen text-blue-500 block mb-1 text-lg"></i> Operator Pelayanan</th>
-                                            <th class="py-4 px-2 text-center w-32"><i class="fa-solid fa-user-tie text-purple-500 block mb-1 text-lg"></i> Pimpinan</th>
+                                            <th class="py-4 px-2 text-center w-32"><i class="fa-solid fa-user-tie text-purple-500 block mb-1 text-lg"></i> Sekretaris Desa</th>
+                                            <th class="py-4 px-2 text-center w-32"><i class="fa-solid fa-user-tie text-emerald-500 block mb-1 text-lg"></i> Kepala Desa</th>
                                         </tr>
                                     </thead>
-                                    <tbody class="text-sm divide-y divide-slate-50">
-                                        <!-- Row: Dashboard -->
-                                        <tr class="hover:bg-slate-50 transition-colors">
-                                            <td class="py-3 px-5 font-semibold text-slate-700"><i class="fa-solid fa-house w-6 text-slate-400"></i> Dashboard</td>
-                                            <td class="py-3 px-2 text-center">
-                                                <label class="relative inline-flex items-center cursor-not-allowed" title="Hak akses dasar tidak bisa diubah">
-                                                    <input type="checkbox" class="sr-only peer" checked disabled>
-                                                    <div class="w-9 h-5 bg-slate-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-narmadaGreen opacity-60"></div>
-                                                </label>
-                                            </td>
-                                            <td class="py-3 px-2 text-center">
-                                                <label class="relative inline-flex items-center cursor-pointer">
-                                                    <input type="checkbox" class="sr-only peer" checked>
-                                                    <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-narmadaGreen"></div>
-                                                </label>
-                                            </td>
-                                            <td class="py-3 px-2 text-center">
-                                                <label class="relative inline-flex items-center cursor-pointer">
-                                                    <input type="checkbox" class="sr-only peer" checked>
-                                                    <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-narmadaGreen"></div>
-                                                </label>
-                                            </td>
-                                        </tr>
-                                        <!-- Row: Pengajuan -->
-                                        <tr class="hover:bg-slate-50 transition-colors">
-                                            <td class="py-3 px-5 font-semibold text-slate-700"><i class="fa-solid fa-file-signature w-6 text-slate-400"></i> Pengajuan</td>
-                                            <td class="py-3 px-2 text-center">
-                                                <label class="relative inline-flex items-center cursor-not-allowed" title="Hak akses dasar tidak bisa diubah">
-                                                    <input type="checkbox" class="sr-only peer" checked disabled>
-                                                    <div class="w-9 h-5 bg-slate-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-narmadaGreen opacity-60"></div>
-                                                </label>
-                                            </td>
-                                            <td class="py-3 px-2 text-center">
-                                                <label class="relative inline-flex items-center cursor-pointer">
-                                                    <input type="checkbox" class="sr-only peer" checked>
-                                                    <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-narmadaGreen"></div>
-                                                </label>
-                                            </td>
-                                            <td class="py-3 px-2 text-center">
-                                                <label class="relative inline-flex items-center cursor-pointer">
-                                                    <input type="checkbox" class="sr-only peer" checked>
-                                                    <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-narmadaGreen"></div>
-                                                </label>
-                                            </td>
-                                        </tr>
-                                        <!-- Row: Verifikasi -->
-                                        <tr class="hover:bg-slate-50 transition-colors">
-                                            <td class="py-3 px-5 font-semibold text-slate-700"><i class="fa-solid fa-clipboard-check w-6 text-slate-400"></i> Verifikasi</td>
-                                            <td class="py-3 px-2 text-center">
-                                                <label class="relative inline-flex items-center cursor-not-allowed" title="Hak akses dasar tidak bisa diubah">
-                                                    <input type="checkbox" class="sr-only peer" checked disabled>
-                                                    <div class="w-9 h-5 bg-slate-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-narmadaGreen opacity-60"></div>
-                                                </label>
-                                            </td>
-                                            <td class="py-3 px-2 text-center">
-                                                <label class="relative inline-flex items-center cursor-pointer">
-                                                    <input type="checkbox" class="sr-only peer" checked>
-                                                    <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-narmadaGreen"></div>
-                                                </label>
-                                            </td>
-                                            <td class="py-3 px-2 text-center">
-                                                <label class="relative inline-flex items-center cursor-pointer">
-                                                    <input type="checkbox" class="sr-only peer">
-                                                    <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-narmadaGreen"></div>
-                                                </label>
-                                            </td>
-                                        </tr>
-                                        <!-- Row: Data Warga -->
-                                        <tr class="hover:bg-slate-50 transition-colors">
-                                            <td class="py-3 px-5 font-semibold text-slate-700"><i class="fa-solid fa-users w-6 text-slate-400"></i> Data Warga</td>
-                                            <td class="py-3 px-2 text-center">
-                                                <label class="relative inline-flex items-center cursor-not-allowed" title="Hak akses dasar tidak bisa diubah">
-                                                    <input type="checkbox" class="sr-only peer" checked disabled>
-                                                    <div class="w-9 h-5 bg-slate-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-narmadaGreen opacity-60"></div>
-                                                </label>
-                                            </td>
-                                            <td class="py-3 px-2 text-center">
-                                                <label class="relative inline-flex items-center cursor-pointer">
-                                                    <input type="checkbox" class="sr-only peer" checked>
-                                                    <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-narmadaGreen"></div>
-                                                </label>
-                                            </td>
-                                            <td class="py-3 px-2 text-center">
-                                                <label class="relative inline-flex items-center cursor-pointer">
-                                                    <input type="checkbox" class="sr-only peer" checked>
-                                                    <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-narmadaGreen"></div>
-                                                </label>
-                                            </td>
-                                        </tr>
-                                        <!-- Row: Dokumen -->
-                                        <tr class="hover:bg-slate-50 transition-colors">
-                                            <td class="py-3 px-5 font-semibold text-slate-700"><i class="fa-solid fa-folder-open w-6 text-slate-400"></i> Dokumen</td>
-                                            <td class="py-3 px-2 text-center">
-                                                <label class="relative inline-flex items-center cursor-not-allowed" title="Hak akses dasar tidak bisa diubah">
-                                                    <input type="checkbox" class="sr-only peer" checked disabled>
-                                                    <div class="w-9 h-5 bg-slate-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-narmadaGreen opacity-60"></div>
-                                                </label>
-                                            </td>
-                                            <td class="py-3 px-2 text-center">
-                                                <label class="relative inline-flex items-center cursor-pointer">
-                                                    <input type="checkbox" class="sr-only peer" checked>
-                                                    <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-narmadaGreen"></div>
-                                                </label>
-                                            </td>
-                                            <td class="py-3 px-2 text-center">
-                                                <label class="relative inline-flex items-center cursor-pointer">
-                                                    <input type="checkbox" class="sr-only peer" checked>
-                                                    <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-narmadaGreen"></div>
-                                                </label>
-                                            </td>
-                                        </tr>
-                                        <!-- Row: Laporan -->
-                                        <tr class="hover:bg-slate-50 transition-colors">
-                                            <td class="py-3 px-5 font-semibold text-slate-700"><i class="fa-solid fa-chart-pie w-6 text-slate-400"></i> Laporan</td>
-                                            <td class="py-3 px-2 text-center">
-                                                <label class="relative inline-flex items-center cursor-not-allowed" title="Hak akses dasar tidak bisa diubah">
-                                                    <input type="checkbox" class="sr-only peer" checked disabled>
-                                                    <div class="w-9 h-5 bg-slate-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-narmadaGreen opacity-60"></div>
-                                                </label>
-                                            </td>
-                                            <td class="py-3 px-2 text-center">
-                                                <label class="relative inline-flex items-center cursor-pointer">
-                                                    <input type="checkbox" class="sr-only peer" checked>
-                                                    <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-narmadaGreen"></div>
-                                                </label>
-                                            </td>
-                                            <td class="py-3 px-2 text-center">
-                                                <label class="relative inline-flex items-center cursor-pointer">
-                                                    <input type="checkbox" class="sr-only peer" checked>
-                                                    <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-narmadaGreen"></div>
-                                                </label>
-                                            </td>
-                                        </tr>
-                                        <!-- Row: Pengaturan -->
-                                        <tr class="hover:bg-slate-50 transition-colors">
-                                            <td class="py-3 px-5 font-semibold text-slate-700"><i class="fa-solid fa-gear w-6 text-slate-400"></i> Pengaturan</td>
-                                            <td class="py-3 px-2 text-center">
-                                                <label class="relative inline-flex items-center cursor-not-allowed" title="Hak akses dasar tidak bisa diubah">
-                                                    <input type="checkbox" class="sr-only peer" checked disabled>
-                                                    <div class="w-9 h-5 bg-slate-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-narmadaGreen opacity-60"></div>
-                                                </label>
-                                            </td>
-                                            <td class="py-3 px-2 text-center">
-                                                <label class="relative inline-flex items-center cursor-pointer">
-                                                    <input type="checkbox" class="sr-only peer">
-                                                    <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-narmadaGreen"></div>
-                                                </label>
-                                            </td>
-                                            <td class="py-3 px-2 text-center">
-                                                <label class="relative inline-flex items-center cursor-pointer">
-                                                    <input type="checkbox" class="sr-only peer">
-                                                    <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-narmadaGreen"></div>
-                                                </label>
-                                            </td>
-                                        </tr>
-                                        <!-- Row: Manajemen User -->
-                                        <tr class="hover:bg-slate-50 transition-colors">
-                                            <td class="py-3 px-5 font-semibold text-slate-700"><i class="fa-solid fa-users-gear w-6 text-slate-400"></i> Manajemen User</td>
-                                            <td class="py-3 px-2 text-center">
-                                                <label class="relative inline-flex items-center cursor-not-allowed" title="Hak akses dasar tidak bisa diubah">
-                                                    <input type="checkbox" class="sr-only peer" checked disabled>
-                                                    <div class="w-9 h-5 bg-slate-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-narmadaGreen opacity-60"></div>
-                                                </label>
-                                            </td>
-                                            <td class="py-3 px-2 text-center">
-                                                <label class="relative inline-flex items-center cursor-pointer">
-                                                    <input type="checkbox" class="sr-only peer">
-                                                    <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-narmadaGreen"></div>
-                                                </label>
-                                            </td>
-                                            <td class="py-3 px-2 text-center">
-                                                <label class="relative inline-flex items-center cursor-pointer">
-                                                    <input type="checkbox" class="sr-only peer">
-                                                    <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-narmadaGreen"></div>
-                                                </label>
-                                            </td>
-                                        </tr>
+                                    <tbody id="hak-akses-tbody" class="text-sm divide-y divide-slate-50">
+                                        <!-- Rendered by JS -->
                                     </tbody>
                                 </table>
                             </div>
@@ -2385,8 +2206,8 @@
                         <!-- Header -->
                         <div class="w-full flex justify-between items-center bg-white p-5 border-b border-slate-100 rounded-t-2xl">
                             <div>
-                                <h2 class="text-lg font-bold text-slate-800"><i class="fa-solid fa-pen-to-square text-blue-600 mr-2"></i> Edit Pengguna</h2>
-                                <p class="text-[10px] text-slate-500 mt-0.5">Ubah informasi dan peran untuk pengguna ini.</p>
+                                <h2 class="text-lg font-bold text-slate-800"><i class="fa-solid fa-user-pen text-blue-600 mr-2"></i> Edit Pengguna</h2>
+                                <p class="text-[10px] text-slate-500 mt-0.5">Ubah informasi dan jenis akun untuk pengguna ini.</p>
                             </div>
                             <div class="flex gap-2">
                                 <button id="ev-bind-49" class="px-4 py-2 text-xs font-bold text-slate-600 bg-slate-50 border border-slate-200 hover:bg-slate-100 rounded-xl transition-colors">Batal</button>
@@ -2416,16 +2237,17 @@
                                         </div>
                                     </div>
                                     
-                                    <!-- Right Column: Peran & Akses -->
+                                    <!-- Right Column: Jenis Akun & Akses -->
                                     <div class="space-y-4">
                                         <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 space-y-4 h-full">
-                                            <h3 class="text-sm font-bold text-slate-800 border-b border-slate-100 pb-3"><i class="fa-solid fa-user-shield text-blue-600 mr-1.5"></i> Peran & Akses</h3>
+                                            <h3 class="text-sm font-bold text-slate-800 border-b border-slate-100 pb-3"><i class="fa-solid fa-user-shield text-blue-600 mr-1.5"></i> Jenis Akun & Akses</h3>
                                             <div>
-                                                <label class="block text-[10px] font-bold text-slate-600 mb-1">Peran (Role) *</label>
+                                                <label class="block text-[10px] font-bold text-slate-600 mb-1">Jenis Akun *</label>
                                                 <select id="te-peran" required class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:ring-blue-600 focus:border-blue-600 outline-none transition-colors">
-                                                    <option value="Admin">Admin</option>
-                                                    <option value="Pimpinan">Pimpinan</option>
-                                                    <option value="Admin Utama">Admin Utama</option>
+                                                    <option value="Super Admin">Super Admin</option>
+                                                    <option value="Operator Pelayanan">Operator Pelayanan</option>
+                                                    <option value="Sekretaris Desa">Sekretaris Desa</option>
+                                                    <option value="Kepala Desa">Kepala Desa</option>
                                                 </select>
                                             </div>
                                             <div>
@@ -2481,13 +2303,14 @@
                                         </div>
 
                                         <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 space-y-4">
-                                            <h3 class="text-sm font-bold text-slate-800 border-b border-slate-100 pb-3"><i class="fa-solid fa-user-shield text-narmadaGreen mr-1.5"></i> Peran & Akses</h3>
+                                            <h3 class="text-sm font-bold text-slate-800 border-b border-slate-100 pb-3"><i class="fa-solid fa-user-shield text-narmadaGreen mr-1.5"></i> Jenis Akun & Akses</h3>
                                             <div>
-                                                <label class="block text-[10px] font-bold text-slate-600 mb-1">Peran (Role) *</label>
+                                                <label class="block text-[10px] font-bold text-slate-600 mb-1">Jenis Akun *</label>
                                                 <select id="tp-peran" required class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors">
-                                                    <option value="Admin">Admin</option>
-                                                    <option value="Pimpinan">Pimpinan</option>
-                                                    <option value="Admin Utama">Admin Utama</option>
+                                                    <option value="Super Admin">Super Admin</option>
+                                                    <option value="Operator Pelayanan">Operator Pelayanan</option>
+                                                    <option value="Sekretaris Desa">Sekretaris Desa</option>
+                                                    <option value="Kepala Desa">Kepala Desa</option>
                                                 </select>
                                             </div>
                                             <div>

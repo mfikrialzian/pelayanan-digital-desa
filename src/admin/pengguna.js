@@ -1,3 +1,5 @@
+import { ROLE_MAPPINGS, SIDEBAR_ITEMS } from './admin_core.js';
+
 export function initManajemenPengguna() {
     let token = localStorage.getItem('adminToken_Narmada');
     if (!token || !isGoogleEnv) return;
@@ -44,10 +46,8 @@ export function filterUserTable() {
             let filtered = users.filter(function(u) {
                 let matchSearch = u.nama.toLowerCase().includes(searchVal) || u.username.toLowerCase().includes(searchVal);
                 let matchRole = true;
-                if (roleVal !== 'all') {
-                    if (roleVal === 'Super Admin' && u.peran !== 'Super Admin') matchRole = false;
-                    if (roleVal === 'Operator' && !u.peran.includes('Operator')) matchRole = false;
-                    if (roleVal === 'Pimpinan' && !u.peran.includes('Desa')) matchRole = false;
+                if (roleVal !== 'all' && u.peran !== roleVal) {
+                    matchRole = false;
                 }
                 return matchSearch && matchRole;
             });
@@ -122,6 +122,64 @@ export function switchManajemenPenggunaTab(tabId) {
             // Tampilkan konten yang dipilih
             let activeContent = document.getElementById('mp-content-' + tabId);
             if (activeContent) activeContent.classList.remove('hidden');
+
+            if (tabId === 'akses') {
+                renderHakAksesTable();
+            }
+        }
+
+export function renderHakAksesTable() {
+            let tbody = document.getElementById('hak-akses-tbody');
+            if (!tbody) return;
+            
+            let html = '';
+            
+            SIDEBAR_ITEMS.forEach(function(item) {
+                let opAccess = ROLE_MAPPINGS['Operator Pelayanan'] && ROLE_MAPPINGS['Operator Pelayanan'].sidebar && ROLE_MAPPINGS['Operator Pelayanan'].sidebar.includes(item.id);
+                let secAccess = ROLE_MAPPINGS['Sekretaris Desa'] && ROLE_MAPPINGS['Sekretaris Desa'].sidebar && ROLE_MAPPINGS['Sekretaris Desa'].sidebar.includes(item.id);
+                let kadesAccess = ROLE_MAPPINGS['Kepala Desa'] && ROLE_MAPPINGS['Kepala Desa'].sidebar && ROLE_MAPPINGS['Kepala Desa'].sidebar.includes(item.id);
+                
+                let opCheck = opAccess ? 'checked' : '';
+                let secCheck = secAccess ? 'checked' : '';
+                let kadesCheck = kadesAccess ? 'checked' : '';
+                
+                // Dashboard is disabled for edit because it's a base right
+                let opDisabled = item.id === 'dashboard' ? 'disabled' : '';
+                let secDisabled = item.id === 'dashboard' ? 'disabled' : '';
+                let kadesDisabled = item.id === 'dashboard' ? 'disabled' : '';
+
+                let opCursor = opDisabled ? 'cursor-not-allowed' : 'cursor-pointer';
+                let secCursor = secDisabled ? 'cursor-not-allowed' : 'cursor-pointer';
+                let kadesCursor = kadesDisabled ? 'cursor-not-allowed' : 'cursor-pointer';
+                
+                let opOpacity = opDisabled ? 'opacity-60' : '';
+                let secOpacity = secDisabled ? 'opacity-60' : '';
+                let kadesOpacity = kadesDisabled ? 'opacity-60' : '';
+
+                html += '<tr class="hover:bg-slate-50 transition-colors">' +
+                    '<td class="py-3 px-5 font-semibold text-slate-700"><i class="fa-solid ' + item.icon + ' w-6 text-slate-400"></i> ' + escapeHtml(item.label) + '</td>' +
+                    '<td class="py-3 px-2 text-center">' +
+                        '<label class="relative inline-flex items-center ' + opCursor + '">' +
+                            '<input type="checkbox" class="sr-only peer" ' + opCheck + ' ' + opDisabled + '>' +
+                            '<div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[\'\'] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-narmadaGreen ' + opOpacity + '"></div>' +
+                        '</label>' +
+                    '</td>' +
+                    '<td class="py-3 px-2 text-center">' +
+                        '<label class="relative inline-flex items-center ' + secCursor + '">' +
+                            '<input type="checkbox" class="sr-only peer" ' + secCheck + ' ' + secDisabled + '>' +
+                            '<div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[\'\'] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-narmadaGreen ' + secOpacity + '"></div>' +
+                        '</label>' +
+                    '</td>' +
+                    '<td class="py-3 px-2 text-center">' +
+                        '<label class="relative inline-flex items-center ' + kadesCursor + '">' +
+                            '<input type="checkbox" class="sr-only peer" ' + kadesCheck + ' ' + kadesDisabled + '>' +
+                            '<div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[\'\'] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-narmadaGreen ' + kadesOpacity + '"></div>' +
+                        '</label>' +
+                    '</td>' +
+                '</tr>';
+            });
+            
+            tbody.innerHTML = html;
         }
 
 export function saveRoleAccess() {
@@ -271,8 +329,8 @@ export function updateStatistikPengguna() {
     window.usersData.forEach(function(u) {
         stats.total++;
         if (u.peran === 'Super Admin') stats.admin++;
-        if (u.peran.includes('Operator')) stats.operator++;
-        if (u.peran.includes('Desa') || u.peran === 'Pimpinan') stats.pimpinan++;
+        if (u.peran === 'Operator Pelayanan') stats.operator++;
+        if (u.peran === 'Sekretaris Desa' || u.peran === 'Kepala Desa') stats.pimpinan++;
     });
     stats.viewer = Math.floor(Math.random() * 3) + 1;
 

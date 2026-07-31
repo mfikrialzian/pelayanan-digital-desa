@@ -403,27 +403,19 @@ export const AVATAR_ITEMS = [
 
 export const ROLE_MAPPINGS = {
             "Super Admin": {
-                sidebar: ['dashboard', 'daftar-layanan', 'pengajuan', 'kontak', 'verifikasi', 'tte', 'data-penduduk', 'dokumen', 'laporan', 'beranda', 'kredensial', 'aktivitas'],
+                sidebar: ['dashboard', 'pengajuan', 'verifikasi', 'tte', 'data-penduduk', 'dokumen', 'daftar-layanan', 'kontak', 'laporan', 'beranda', 'kredensial', 'aktivitas'],
                 avatar: ['pengaturan-akun', 'panduan', 'log-saya', 'divider', 'logout']
             },
-            "Admin": {
-                sidebar: ['dashboard', 'daftar-layanan', 'pengajuan', 'kontak', 'verifikasi', 'laporan', 'aktivitas'],
-                avatar: ['pengaturan-akun', 'panduan', 'log-saya', 'divider', 'logout']
-            },
-            "Operator Pelayanan 1": {
-                sidebar: ['dashboard', 'pengajuan', 'verifikasi', 'data-penduduk', 'laporan'],
-                avatar: ['pengaturan-akun', 'log-saya', 'divider', 'logout']
-            },
-            "Operator Pelayanan 2": {
-                sidebar: ['dashboard', 'pengajuan', 'verifikasi', 'data-penduduk', 'laporan'],
+            "Operator Pelayanan": {
+                sidebar: ['dashboard', 'pengajuan', 'data-penduduk', 'verifikasi', 'laporan'],
                 avatar: ['pengaturan-akun', 'log-saya', 'divider', 'logout']
             },
             "Sekretaris Desa": {
-                sidebar: ['dashboard', 'pengajuan', 'verifikasi', 'tte', 'data-penduduk', 'laporan'],
+                sidebar: ['dashboard', 'verifikasi', 'tte', 'pengajuan', 'data-penduduk', 'laporan'],
                 avatar: ['pengaturan-akun', 'log-saya', 'divider', 'logout']
             },
             "Kepala Desa": {
-                sidebar: ['dashboard', 'pengajuan', 'tte', 'data-penduduk', 'laporan'],
+                sidebar: ['dashboard', 'tte', 'pengajuan', 'data-penduduk', 'laporan'],
                 avatar: ['pengaturan-akun', 'log-saya', 'divider', 'logout']
             }
         };
