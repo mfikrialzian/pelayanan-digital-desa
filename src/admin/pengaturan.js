@@ -677,14 +677,26 @@ export function showPengaturanAkunMenu() {
     const headerEmail = document.getElementById('profil-header-email');
     if (headerEmail) headerEmail.innerText = email || 'Belum ada email';
     
+    const verifEmail = document.getElementById('verif-icon-email');
+    if (verifEmail) {
+        if (email) verifEmail.classList.remove('hidden');
+        else verifEmail.classList.add('hidden');
+    }
+
+    const verifWa = document.getElementById('verif-icon-wa');
+    if (verifWa) {
+        if (phone) verifWa.classList.remove('hidden');
+        else verifWa.classList.add('hidden');
+    }
+
     const roleBadge = document.querySelector('#pa-content-profil .bg-emerald-100');
     if (roleBadge) roleBadge.innerText = role;
 
-    const usernameInput = document.querySelector('#pa-content-profil input[value="alzian_admin"]');
+    const usernameInput = document.getElementById('admin-profile-username-view');
     if (usernameInput) usernameInput.value = userId;
 
-    const roleInput = document.querySelector('#pa-content-profil input[value="Administrator Utama"]');
-    if (roleInput) roleInput.value = role;
+    const roleText = document.getElementById('admin-profile-role-view');
+    if (roleText) roleText.innerText = role;
 }
 
 export function switchPengaturanAkunTab(tabId) {
