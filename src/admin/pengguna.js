@@ -312,10 +312,16 @@ export function openModalTambahPengguna() {
 }
 
 export function closeModalTambahPengguna() {
-    let subview = document.getElementById('subview-admin-tambah-pengguna');
-    if (subview) subview.classList.add('hidden');
-    document.getElementById('mp-menu-container').classList.remove('hidden');
-    document.getElementById('mp-content-daftar').classList.remove('hidden');
+    showCustomConfirm(
+        '<i class="fa-solid fa-triangle-exclamation text-amber-500"></i> Batalkan Pembuatan',
+        'Apakah Anda yakin ingin membatalkan? Data yang telah diisi akan hilang.',
+        function() {
+            let subview = document.getElementById('subview-admin-tambah-pengguna');
+            if (subview) subview.classList.add('hidden');
+            document.getElementById('mp-menu-container').classList.remove('hidden');
+            document.getElementById('mp-content-daftar').classList.remove('hidden');
+        }
+    );
 }
 
 export function callCrudPengguna(action, payload, onSuccess) {
