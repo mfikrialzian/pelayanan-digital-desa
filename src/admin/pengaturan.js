@@ -178,8 +178,10 @@ function executeProfileSave(payload) {
         localStorage.setItem('userName', payload.nama);
         const headerNama = document.getElementById('profil-header-nama');
         if (headerNama) headerNama.innerText = payload.nama;
-        const topbarName = document.querySelector('.admin-topbar-name');
+        const topbarName = document.getElementById('admin-topbar-name');
         if (topbarName) topbarName.innerText = payload.nama;
+        const headerGreetingName = document.getElementById('admin-header-name');
+        if (headerGreetingName) headerGreetingName.innerText = payload.nama;
     }
     if (payload.email) {
         localStorage.setItem('userEmail', payload.email);
