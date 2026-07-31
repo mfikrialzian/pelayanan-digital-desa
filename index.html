@@ -2159,12 +2159,12 @@
                         <!-- Header -->
                         <div class="w-full flex justify-between items-center bg-white p-5 border-b border-slate-100 rounded-t-2xl">
                             <div>
-                                <h2 class="text-lg font-bold text-slate-800"><i class="fa-solid fa-user-pen text-blue-600 mr-2"></i> Edit Pengguna</h2>
+                                <h2 class="text-lg font-bold text-slate-800"><i class="fa-solid fa-user-pen text-narmadaGreen mr-2"></i> Edit Pengguna</h2>
                                 <p class="text-[10px] text-slate-500 mt-0.5">Ubah informasi dasar, akses, atau keamanan akun.</p>
                             </div>
                             <div class="flex gap-2">
-                                <button id="ev-bind-49" class="px-4 py-2 text-xs font-bold text-slate-600 bg-slate-50 border border-slate-200 hover:bg-slate-100 rounded-xl transition-colors">Batal</button>
-                                <button type="button" id="btn-submit-edit-pengguna" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl shadow-sm transition-colors flex items-center gap-1.5">
+                                <button id="ev-bind-49" class="px-5 py-2.5 text-xs font-bold text-slate-600 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl transition-all">Batal</button>
+                                <button type="button" id="btn-submit-edit-pengguna" class="px-5 py-2 bg-narmadaGreen hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-sm transition-colors flex items-center gap-1.5">
                                     <i class="fa-solid fa-save"></i> Simpan Perubahan
                                 </button>
                             </div>
@@ -2177,23 +2177,23 @@
                                 
                                 <!-- Container 1: Profil -->
                                 <div class="space-y-5">
-                                    <h3 class="text-sm font-bold text-slate-800 border-b border-slate-100 pb-3"><i class="fa-solid fa-address-card text-blue-600 mr-1.5"></i> Identitas Profil</h3>
+                                    <h3 class="text-sm font-bold text-slate-800 border-b border-slate-100 pb-3"><i class="fa-solid fa-address-card text-narmadaGreen mr-1.5"></i> Identitas Profil</h3>
                                     <div>
-                                        <label class="block text-[10px] font-bold text-slate-600 mb-1.5">Nama Lengkap *</label>
-                                        <input type="text" id="te-nama" required class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:ring-blue-600 focus:border-blue-600 outline-none transition-colors" oninput="this.value = this.value.replace(/\b\w/g, l => l.toUpperCase());">
+                                        <label class="block text-[10px] font-bold text-slate-600 mb-1 uppercase tracking-wider">Nama Lengkap *</label>
+                                        <input type="text" id="te-nama" required class="w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-xl focus:ring-1 focus:ring-narmadaGreen focus:border-narmadaGreen block px-4 py-2.5 outline-none transition-all placeholder-slate-400" oninput="this.value = this.value.replace(/\b\w/g, l => l.toUpperCase());">
                                     </div>
                                 </div>
                                 
                                 <!-- Container 2: Akses -->
                                 <div class="space-y-5">
-                                    <h3 class="text-sm font-bold text-slate-800 border-b border-slate-100 pb-3"><i class="fa-solid fa-user-shield text-blue-600 mr-1.5"></i> Kredensial & Jenis Akun</h3>
+                                    <h3 class="text-sm font-bold text-slate-800 border-b border-slate-100 pb-3"><i class="fa-solid fa-user-shield text-narmadaGreen mr-1.5"></i> Kredensial & Jenis Akun</h3>
                                     <div>
-                                        <label class="block text-[10px] font-bold text-slate-600 mb-1.5">Username (Tidak dapat diubah)</label>
-                                        <input type="text" id="te-username" disabled class="w-full px-4 py-2.5 rounded-xl bg-slate-100 border border-slate-200 text-xs text-slate-500 cursor-not-allowed font-mono">
+                                        <label class="block text-[10px] font-bold text-slate-600 mb-1 uppercase tracking-wider">Username (Tidak dapat diubah)</label>
+                                        <input type="text" id="te-username" disabled class="w-full bg-slate-100 border border-slate-200 text-slate-500 text-sm rounded-xl cursor-not-allowed block px-4 py-2.5 font-mono">
                                     </div>
                                     <div>
-                                        <label class="block text-[10px] font-bold text-slate-600 mb-1.5">Jenis Akun *</label>
-                                        <select id="te-peran" required class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:ring-blue-600 focus:border-blue-600 outline-none transition-colors">
+                                        <label class="block text-[10px] font-bold text-slate-600 mb-1 uppercase tracking-wider">Jenis Akun *</label>
+                                        <select id="te-peran" required class="w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-xl focus:ring-1 focus:ring-narmadaGreen focus:border-narmadaGreen block px-4 py-2.5 outline-none transition-all placeholder-slate-400">
                                             <option value="Operator Pelayanan">Operator Pelayanan</option>
                                             <option value="Sekretaris Desa">Sekretaris Desa</option>
                                             <option value="Kepala Desa">Kepala Desa</option>
@@ -2201,7 +2201,7 @@
                                     </div>
                                     <!-- Multi-select Jabatan Edit -->
                                     <div>
-                                        <label class="block text-[10px] font-bold text-slate-600 mb-1.5">Jabatan / Bidang *</label>
+                                        <label class="block text-[10px] font-bold text-slate-600 mb-1 uppercase tracking-wider">Jabatan / Bidang *</label>
                                         <div id="te-jabatan-container" class="w-full p-3 rounded-xl bg-slate-50 border border-slate-200 text-sm text-slate-800 relative transition-all">
                                             <p id="te-jabatan-locked" class="text-slate-500 font-medium hidden">Otomatis diset oleh sistem</p>
                                             <div id="te-jabatan-dropdown" class="flex flex-col gap-2">
@@ -2223,13 +2223,13 @@
                                 <!-- Container 3: Keamanan -->
                                 <div class="space-y-5">
                                     <div class="flex justify-between items-end border-b border-slate-100 pb-3">
-                                        <h3 class="text-sm font-bold text-slate-800"><i class="fa-solid fa-lock text-blue-600 mr-1.5"></i> Ganti Kata Sandi</h3>
+                                        <h3 class="text-sm font-bold text-slate-800"><i class="fa-solid fa-lock text-narmadaGreen mr-1.5"></i> Ganti Kata Sandi</h3>
                                         <span class="text-[9px] text-slate-400 font-bold px-2 py-0.5 bg-slate-100 rounded-full">Opsional</span>
                                     </div>
                                     <div>
-                                        <label class="block text-[10px] font-bold text-slate-600 mb-1.5">Kata Sandi Baru</label>
+                                        <label class="block text-[10px] font-bold text-slate-600 mb-1 uppercase tracking-wider">Kata Sandi Baru</label>
                                         <div class="relative">
-                                            <input type="password" id="te-password" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:ring-blue-600 focus:border-blue-600 outline-none transition-colors pr-10" placeholder="Kosongkan jika tidak ingin mengubah sandi">
+                                            <input type="password" id="te-password" class="w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-xl focus:ring-1 focus:ring-narmadaGreen focus:border-narmadaGreen block px-4 py-2.5 outline-none transition-all placeholder-slate-400 pr-10" placeholder="Kosongkan jika tidak ingin mengubah sandi">
                                             <button type="button" onclick="const p = document.getElementById('te-password'); p.type = p.type === 'password' ? 'text' : 'password';" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"><i class="fa-solid fa-eye"></i></button>
                                         </div>
                                     </div>

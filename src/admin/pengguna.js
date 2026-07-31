@@ -703,7 +703,7 @@ export function simpanEditPengguna(event) {
     }
 
     showCustomConfirm(
-        '<i class="fa-solid fa-floppy-disk text-blue-600"></i> Konfirmasi Perubahan',
+        '<i class="fa-solid fa-floppy-disk text-narmadaGreen"></i> Konfirmasi Perubahan',
         'Apakah Anda yakin ingin menyimpan perubahan data pengguna ini?',
         function() {
             let payload = { username: username, updateData: { nama: nama, peran: peran, status: status, jabatan: jabatan } };
