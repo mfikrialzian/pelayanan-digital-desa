@@ -28,7 +28,7 @@ export function switchAdminTab(tabId, updateUrl = true) {
                 if (!allowed && tabId === 'aktivitas' && mapping.avatar.includes('aktivitas-semua')) allowed = true;
                 
                 if (!allowed && tabId !== 'verifikasi' && tabId !== 'layanan') {
-                    pushToast("Akses Ditolak: Peran Anda (" + role + ") tidak memiliki akses ke menu ini.", "error");
+                    pushToast("Akses Ditolak: Jenis Akun Anda (" + role + ") tidak memiliki akses ke menu ini.", "error");
                     return;
                 }
             }
@@ -379,43 +379,43 @@ window.triggerNewNotification = function(tipe, detailPemohon) {
 };
 
 export const SIDEBAR_ITEMS = [
-            { id: 'dashboard', icon: 'fa-house', label: 'Dashboard', action: "switchAdminTab('dashboard')" },
-            { id: 'daftar-layanan', icon: 'fa-layer-group', label: 'Layanan', action: "switchAdminTab('daftar-layanan')" },
-            { id: 'pengajuan', icon: 'fa-file-lines', label: 'Pengajuan', action: "switchAdminTab('pengajuan')" },
-            { id: 'kontak', icon: 'fa-address-book', label: 'Kontak Pelayanan', action: "switchAdminTab('kontak')" },
-            { id: 'verifikasi', icon: 'fa-check-to-slot', label: 'Verifikasi Berkas', action: "switchAdminTab('dashboard')" },
-            { id: 'tte', icon: 'fa-signature', label: 'Persetujuan & TTE', action: "pushToast('Fitur Persetujuan & TTE segera hadir', 'info')" },
-            { id: 'data-penduduk', icon: 'fa-users', label: 'Data Penduduk', action: "pushToast('Fitur Data Penduduk segera hadir', 'info')" },
-            { id: 'dokumen', icon: 'fa-folder-open', label: 'Dokumen & Surat', action: "", disabled: true },
-            { id: 'laporan', icon: 'fa-chart-simple', label: 'Laporan', action: "switchAdminTab('laporan')" },
-            { id: 'beranda', icon: 'fa-gear', label: 'Pengaturan Web', action: "switchAdminTab('beranda')" },
-            { id: 'kredensial', icon: 'fa-regular fa-user', label: 'Manajemen Pengguna', action: "switchAdminTab('kredensial')" },
-            { id: 'aktivitas', icon: 'fa-clock-rotate-left', label: 'Log Aktivitas', action: "switchAdminTab('aktivitas')" }
-        ];
+    { id: 'dashboard', icon: 'fa-house', label: 'Dashboard', action: "switchAdminTab('dashboard')" },
+    { id: 'pengajuan', icon: 'fa-file-lines', label: 'Pengajuan', action: "switchAdminTab('pengajuan')" },
+    { id: 'verifikasi', icon: 'fa-check-to-slot', label: 'Verifikasi Berkas', action: "switchAdminTab('dashboard')" },
+    { id: 'tte', icon: 'fa-signature', label: 'Persetujuan & TTE', action: "pushToast('Fitur Persetujuan & TTE segera hadir', 'info')" },
+    { id: 'data-penduduk', icon: 'fa-users', label: 'Data Penduduk', action: "pushToast('Fitur Data Penduduk segera hadir', 'info')" },
+    { id: 'dokumen', icon: 'fa-folder-open', label: 'Dokumen & Surat', action: "", disabled: true },
+    { id: 'daftar-layanan', icon: 'fa-layer-group', label: 'Layanan', action: "switchAdminTab('daftar-layanan')" },
+    { id: 'kontak', icon: 'fa-address-book', label: 'Kontak Pelayanan', action: "switchAdminTab('kontak')" },
+    { id: 'laporan', icon: 'fa-chart-simple', label: 'Laporan', action: "switchAdminTab('laporan')" },
+    { id: 'beranda', icon: 'fa-gear', label: 'Pengaturan Web', action: "switchAdminTab('beranda')" },
+    { id: 'kredensial', icon: 'fa-regular fa-user', label: 'Manajemen Pengguna', action: "switchAdminTab('kredensial')" },
+    { id: 'aktivitas', icon: 'fa-clock-rotate-left', label: 'Log Aktivitas', action: "switchAdminTab('aktivitas')" }
+];
 
 export const AVATAR_ITEMS = [
-            { id: 'pengaturan-akun', icon: 'fa-gear', label: 'Pengaturan Akun', action: "javascript:switchAdminTab('pengaturan-akun');", onclick: "document.getElementById('admin-profile-trigger').click()", colorClass: "text-slate-500", groupHoverClass: "group-hover:text-narmadaGreen", bgClass: "bg-slate-100", groupBgClass: "group-hover:bg-emerald-50", textClass: "text-slate-700 hover:bg-slate-50 hover:text-narmadaGreen" },
-            { id: 'panduan', icon: 'fa-regular fa-circle-question', label: 'Bantuan & Panduan', action: "javascript:void(0);", onclick: "pushToast('Fitur Bantuan & Panduan segera hadir', 'info'); document.getElementById('admin-profile-trigger').click()", colorClass: "text-slate-500", groupHoverClass: "group-hover:text-narmadaGreen", bgClass: "bg-slate-100", groupBgClass: "group-hover:bg-emerald-50", textClass: "text-slate-700 hover:bg-slate-50 hover:text-narmadaGreen" },
-            { id: 'log-saya', icon: 'fa-clock-rotate-left', label: 'Riwayat Aktivitas', action: "javascript:switchAdminTab('aktivitas');", onclick: "document.getElementById('admin-profile-trigger').click()", colorClass: "text-slate-500", groupHoverClass: "group-hover:text-narmadaGreen", bgClass: "bg-slate-100", groupBgClass: "group-hover:bg-emerald-50", textClass: "text-slate-700 hover:bg-slate-50 hover:text-narmadaGreen" },
-            { id: 'divider', type: 'divider' },
-            { id: 'logout', icon: 'fa-arrow-right-from-bracket', label: 'Keluar', action: "javascript:void(0)", onclick: "document.getElementById('admin-profile-trigger').click(); confirmAdminLogout();", colorClass: "text-red-500", groupHoverClass: "", bgClass: "bg-red-50", groupBgClass: "group-hover:bg-red-100", textClass: "text-red-600 hover:bg-red-50" }
-        ];
+    { id: 'pengaturan-akun', icon: 'fa-gear', label: 'Pengaturan Akun', action: "javascript:switchAdminTab('pengaturan-akun');", onclick: "document.getElementById('admin-profile-trigger').click()", colorClass: "text-slate-500", groupHoverClass: "group-hover:text-narmadaGreen", bgClass: "bg-slate-100", groupBgClass: "group-hover:bg-emerald-50", textClass: "text-slate-700 hover:bg-slate-50 hover:text-narmadaGreen" },
+    { id: 'panduan', icon: 'fa-regular fa-circle-question', label: 'Bantuan & Panduan', action: "javascript:void(0);", onclick: "pushToast('Fitur Bantuan & Panduan segera hadir', 'info'); document.getElementById('admin-profile-trigger').click()", colorClass: "text-slate-500", groupHoverClass: "group-hover:text-narmadaGreen", bgClass: "bg-slate-100", groupBgClass: "group-hover:bg-emerald-50", textClass: "text-slate-700 hover:bg-slate-50 hover:text-narmadaGreen" },
+    { id: 'log-saya', icon: 'fa-clock-rotate-left', label: 'Riwayat Aktivitas', action: "javascript:switchAdminTab('aktivitas');", onclick: "document.getElementById('admin-profile-trigger').click()", colorClass: "text-slate-500", groupHoverClass: "group-hover:text-narmadaGreen", bgClass: "bg-slate-100", groupBgClass: "group-hover:bg-emerald-50", textClass: "text-slate-700 hover:bg-slate-50 hover:text-narmadaGreen" },
+    { id: 'divider', type: 'divider' },
+    { id: 'logout', icon: 'fa-arrow-right-from-bracket', label: 'Keluar', action: "javascript:void(0)", onclick: "document.getElementById('admin-profile-trigger').click(); confirmAdminLogout();", colorClass: "text-red-500", groupHoverClass: "", bgClass: "bg-red-50", groupBgClass: "group-hover:bg-red-100", textClass: "text-red-600 hover:bg-red-50" }
+];
 
 export const ROLE_MAPPINGS = {
-            "Super Admin": {
-                sidebar: ['dashboard', 'pengajuan', 'verifikasi', 'tte', 'data-penduduk', 'dokumen', 'daftar-layanan', 'kontak', 'laporan', 'beranda', 'kredensial', 'aktivitas'],
-                avatar: ['pengaturan-akun', 'panduan', 'log-saya', 'divider', 'logout']
-            },
-            "Operator Pelayanan": {
-                sidebar: ['dashboard', 'pengajuan', 'data-penduduk', 'verifikasi', 'laporan'],
-                avatar: ['pengaturan-akun', 'log-saya', 'divider', 'logout']
-            },
-            "Sekretaris Desa": {
-                sidebar: ['dashboard', 'verifikasi', 'tte', 'pengajuan', 'data-penduduk', 'laporan'],
-                avatar: ['pengaturan-akun', 'log-saya', 'divider', 'logout']
-            },
-            "Kepala Desa": {
-                sidebar: ['dashboard', 'tte', 'pengajuan', 'data-penduduk', 'laporan'],
-                avatar: ['pengaturan-akun', 'log-saya', 'divider', 'logout']
-            }
-        };
+    "Super Admin": {
+        sidebar: ['dashboard', 'pengajuan', 'verifikasi', 'tte', 'data-penduduk', 'dokumen', 'daftar-layanan', 'kontak', 'laporan', 'beranda', 'kredensial', 'aktivitas'],
+        avatar: ['pengaturan-akun', 'panduan', 'log-saya', 'divider', 'logout']
+    },
+    "Operator Pelayanan": {
+        sidebar: ['dashboard', 'pengajuan', 'verifikasi', 'data-penduduk', 'laporan'],
+        avatar: ['pengaturan-akun', 'log-saya', 'divider', 'logout']
+    },
+    "Sekretaris Desa": {
+        sidebar: ['dashboard', 'pengajuan', 'verifikasi', 'tte', 'data-penduduk', 'laporan'],
+        avatar: ['pengaturan-akun', 'log-saya', 'divider', 'logout']
+    },
+    "Kepala Desa": {
+        sidebar: ['dashboard', 'pengajuan', 'tte', 'data-penduduk', 'laporan'],
+        avatar: ['pengaturan-akun', 'log-saya', 'divider', 'logout']
+    }
+};

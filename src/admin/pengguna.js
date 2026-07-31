@@ -139,6 +139,10 @@ export function renderHakAksesTable() {
                 let secAccess = ROLE_MAPPINGS['Sekretaris Desa'] && ROLE_MAPPINGS['Sekretaris Desa'].sidebar && ROLE_MAPPINGS['Sekretaris Desa'].sidebar.includes(item.id);
                 let kadesAccess = ROLE_MAPPINGS['Kepala Desa'] && ROLE_MAPPINGS['Kepala Desa'].sidebar && ROLE_MAPPINGS['Kepala Desa'].sidebar.includes(item.id);
                 
+                let opCheckId = 'ha-op-' + item.id;
+                let secCheckId = 'ha-sec-' + item.id;
+                let kadesCheckId = 'ha-kades-' + item.id;
+
                 let opCheck = opAccess ? 'checked' : '';
                 let secCheck = secAccess ? 'checked' : '';
                 let kadesCheck = kadesAccess ? 'checked' : '';
@@ -160,19 +164,19 @@ export function renderHakAksesTable() {
                     '<td class="py-3 px-5 font-semibold text-slate-700"><i class="fa-solid ' + item.icon + ' w-6 text-slate-400"></i> ' + escapeHtml(item.label) + '</td>' +
                     '<td class="py-3 px-2 text-center">' +
                         '<label class="relative inline-flex items-center ' + opCursor + '">' +
-                            '<input type="checkbox" class="sr-only peer" ' + opCheck + ' ' + opDisabled + '>' +
+                            '<input type="checkbox" id="' + opCheckId + '" class="sr-only peer" ' + opCheck + ' ' + opDisabled + '>' +
                             '<div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[\'\'] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-narmadaGreen ' + opOpacity + '"></div>' +
                         '</label>' +
                     '</td>' +
                     '<td class="py-3 px-2 text-center">' +
                         '<label class="relative inline-flex items-center ' + secCursor + '">' +
-                            '<input type="checkbox" class="sr-only peer" ' + secCheck + ' ' + secDisabled + '>' +
+                            '<input type="checkbox" id="' + secCheckId + '" class="sr-only peer" ' + secCheck + ' ' + secDisabled + '>' +
                             '<div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[\'\'] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-narmadaGreen ' + secOpacity + '"></div>' +
                         '</label>' +
                     '</td>' +
                     '<td class="py-3 px-2 text-center">' +
                         '<label class="relative inline-flex items-center ' + kadesCursor + '">' +
-                            '<input type="checkbox" class="sr-only peer" ' + kadesCheck + ' ' + kadesDisabled + '>' +
+                            '<input type="checkbox" id="' + kadesCheckId + '" class="sr-only peer" ' + kadesCheck + ' ' + kadesDisabled + '>' +
                             '<div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[\'\'] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-narmadaGreen ' + kadesOpacity + '"></div>' +
                         '</label>' +
                     '</td>' +
@@ -183,6 +187,25 @@ export function renderHakAksesTable() {
         }
 
 export function saveRoleAccess() {
+            let newOpSidebar = [];
+            let newSecSidebar = [];
+            let newKadesSidebar = [];
+            
+            SIDEBAR_ITEMS.forEach(function(item) {
+                let opCheck = document.getElementById('ha-op-' + item.id);
+                if (opCheck && opCheck.checked) newOpSidebar.push(item.id);
+                
+                let secCheck = document.getElementById('ha-sec-' + item.id);
+                if (secCheck && secCheck.checked) newSecSidebar.push(item.id);
+                
+                let kadesCheck = document.getElementById('ha-kades-' + item.id);
+                if (kadesCheck && kadesCheck.checked) newKadesSidebar.push(item.id);
+            });
+            
+            if (ROLE_MAPPINGS['Operator Pelayanan']) ROLE_MAPPINGS['Operator Pelayanan'].sidebar = newOpSidebar;
+            if (ROLE_MAPPINGS['Sekretaris Desa']) ROLE_MAPPINGS['Sekretaris Desa'].sidebar = newSecSidebar;
+            if (ROLE_MAPPINGS['Kepala Desa']) ROLE_MAPPINGS['Kepala Desa'].sidebar = newKadesSidebar;
+            
             pushToast('Perubahan Hak Akses berhasil disimpan!', 'success');
         }
 
@@ -256,11 +279,36 @@ export function renderActivities(res, tbody) {
     tbody.innerHTML = html;
 }
 
+// --- STATE VARIABLES ---
+let tpCurrentStep = 1;
+let tpSelectedJabatan = [];
+let teSelectedJabatan = [];
+let isPenggunaUIInitialized = false;
+
+export function initPenggunaUI() {
+    if (isPenggunaUIInitialized) return;
+    setupStepEvents();
+    setupJabatanEvents();
+    setupUsernameSuggestions();
+    isPenggunaUIInitialized = true;
+}
+
 export function openModalTambahPengguna() {
+    initPenggunaUI();
     document.getElementById('mp-menu-container').classList.add('hidden');
     document.getElementById('mp-content-daftar').classList.add('hidden');
     let subview = document.getElementById('subview-admin-tambah-pengguna');
     if (subview) subview.classList.remove('hidden');
+    
+    // Reset Step Builder
+    tpCurrentStep = 1;
+    tpSelectedJabatan = [];
+    document.getElementById('form-tambah-pengguna').reset();
+    document.getElementById('tp-username-suggestions-container').classList.add('hidden');
+    document.getElementById('tp-jabatan-dropdown').classList.remove('hidden');
+    document.getElementById('tp-jabatan-locked').classList.add('hidden');
+    updateStepUI();
+    renderJabatanTags('tp-jabatan-selected-tags', tpSelectedJabatan, 'removeTpJabatan');
 }
 
 export function closeModalTambahPengguna() {
@@ -268,10 +316,6 @@ export function closeModalTambahPengguna() {
     if (subview) subview.classList.add('hidden');
     document.getElementById('mp-menu-container').classList.remove('hidden');
     document.getElementById('mp-content-daftar').classList.remove('hidden');
-    
-    // Reset form
-    let form = document.getElementById('form-tambah-pengguna');
-    if (form) form.reset();
 }
 
 export function callCrudPengguna(action, payload, onSuccess) {
@@ -297,19 +341,23 @@ export function callCrudPengguna(action, payload, onSuccess) {
 }
 
 export function simpanPenggunaBaru(event) {
-    event.preventDefault();
+    if (event) event.preventDefault();
+
+    if (!validateStep(3)) return; // Double check
 
     let nama = document.getElementById('tp-nama').value;
     let username = document.getElementById('tp-username').value;
     let password = document.getElementById('tp-password').value;
     let peran = document.getElementById('tp-peran').value;
-    let status = document.getElementById('tp-status').value;
+    let email = document.getElementById('tp-email').value;
+    let wa = document.getElementById('tp-wa').value;
+    let jabatan = tpSelectedJabatan.join(', ');
     
     showCustomConfirm(
         '<i class="fa-solid fa-floppy-disk text-narmadaGreen"></i> Konfirmasi Simpan',
         'Apakah Anda yakin ingin menyimpan pengguna baru ini?',
         function() {
-            let akunBaru = { username: username, password: password, peran: peran, nama: nama, status: status };
+            let akunBaru = { username: username, password: password, peran: peran, nama: nama, status: 'Aktif', jabatan: jabatan, email: email, wa: wa };
             
             document.getElementById('btn-submit-tambah-pengguna').disabled = true;
             document.getElementById('btn-submit-tambah-pengguna').innerHTML = '<i class="fa-solid fa-spinner animate-spin"></i> Menyimpan...';
@@ -317,7 +365,7 @@ export function simpanPenggunaBaru(event) {
             callCrudPengguna('create', akunBaru, function() {
                 closeModalTambahPengguna();
                 document.getElementById('btn-submit-tambah-pengguna').disabled = false;
-                document.getElementById('btn-submit-tambah-pengguna').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Simpan Pengguna';
+                document.getElementById('btn-submit-tambah-pengguna').innerHTML = '<i class="fa-solid fa-save mr-1.5"></i> Simpan Pengguna';
             });
         }
     );
@@ -346,8 +394,254 @@ export function updateStatistikPengguna() {
     if (elViewer) elViewer.innerText = stats.viewer;
 }
 
+// --- STEP BUILDER LOGIC ---
+function updateStepUI() {
+    [1, 2, 3, 4].forEach(s => {
+        const stepDiv = document.getElementById('tp-step-' + s);
+        if (stepDiv) {
+            if (s === tpCurrentStep) stepDiv.classList.remove('hidden');
+            else stepDiv.classList.add('hidden');
+        }
+    });
+
+    const btnPrev = document.getElementById('tp-btn-prev');
+    const btnNext = document.getElementById('tp-btn-next');
+    const btnSubmit = document.getElementById('btn-submit-tambah-pengguna');
+    
+    if (tpCurrentStep === 1) {
+        btnPrev.classList.add('hidden');
+        btnNext.classList.remove('hidden');
+        btnSubmit.classList.add('hidden');
+    } else if (tpCurrentStep < 4) {
+        btnPrev.classList.remove('hidden');
+        btnNext.classList.remove('hidden');
+        btnSubmit.classList.add('hidden');
+    } else {
+        btnPrev.classList.remove('hidden');
+        btnNext.classList.add('hidden');
+        btnSubmit.classList.remove('hidden');
+        renderReviewData();
+    }
+
+    const bar = document.getElementById('tp-progress-bar');
+    if (bar) bar.style.width = ((tpCurrentStep - 1) / 3) * 100 + '%';
+
+    [1, 2, 3, 4].forEach(s => {
+        const ind = document.getElementById('tp-step-indicator-' + s);
+        const lbl = document.getElementById('tp-step-label-' + s);
+        if (!ind) return;
+        if (s < tpCurrentStep) {
+            ind.className = 'w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs bg-emerald-500 text-white transition-colors';
+            ind.innerHTML = '<i class="fa-solid fa-check"></i>';
+            if(lbl) lbl.className = 'text-[9px] font-bold text-emerald-500 absolute -bottom-5 w-max text-center';
+        } else if (s === tpCurrentStep) {
+            ind.className = 'w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs bg-narmadaGreen text-white ring-4 ring-emerald-50 transition-colors';
+            ind.innerHTML = s;
+            if(lbl) lbl.className = 'text-[9px] font-bold text-narmadaGreen absolute -bottom-5 w-max text-center';
+        } else {
+            ind.className = 'w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs bg-slate-100 text-slate-400 transition-colors';
+            ind.innerHTML = s;
+            if(lbl) lbl.className = 'text-[9px] font-bold text-slate-400 absolute -bottom-5 w-max text-center';
+        }
+    });
+}
+
+function validateStep(step) {
+    if (step === 1) {
+        const nama = document.getElementById('tp-nama').value.trim();
+        if (!nama) { pushToast('Nama Lengkap harus diisi!', 'warning'); return false; }
+        return true;
+    }
+    if (step === 2) {
+        const peran = document.getElementById('tp-peran').value;
+        const username = document.getElementById('tp-username').value.trim();
+        if (!peran) { pushToast('Jenis Akun harus dipilih!', 'warning'); return false; }
+        if (peran === 'Operator Pelayanan' && tpSelectedJabatan.length === 0) { pushToast('Pilih minimal satu Jabatan/Bidang!', 'warning'); return false; }
+        if (!username) { pushToast('Username harus diisi!', 'warning'); return false; }
+        if (username.includes(' ')) { pushToast('Username tidak boleh mengandung spasi!', 'warning'); return false; }
+        return true;
+    }
+    if (step === 3) {
+        const pass = document.getElementById('tp-password').value;
+        const confirm = document.getElementById('tp-password-confirm').value;
+        const err = document.getElementById('tp-password-error');
+        if (!pass) { pushToast('Kata sandi harus diisi!', 'warning'); return false; }
+        if (pass !== confirm) { err.classList.remove('hidden'); return false; }
+        err.classList.add('hidden');
+        return true;
+    }
+    return true;
+}
+
+function setupStepEvents() {
+    const btnNext = document.getElementById('tp-btn-next');
+    const btnPrev = document.getElementById('tp-btn-prev');
+    if (btnNext) {
+        btnNext.addEventListener('click', function() {
+            if (validateStep(tpCurrentStep)) {
+                tpCurrentStep++;
+                if (tpCurrentStep > 4) tpCurrentStep = 4;
+                updateStepUI();
+            }
+        });
+    }
+    if (btnPrev) {
+        btnPrev.addEventListener('click', function() {
+            tpCurrentStep--;
+            if (tpCurrentStep < 1) tpCurrentStep = 1;
+            updateStepUI();
+        });
+    }
+}
+
+function renderReviewData() {
+    const nama = document.getElementById('tp-nama').value || '-';
+    const email = document.getElementById('tp-email').value || '-';
+    const wa = document.getElementById('tp-wa').value || '-';
+    const peran = document.getElementById('tp-peran').value || '-';
+    const jabatan = tpSelectedJabatan.join(', ') || '-';
+    const username = document.getElementById('tp-username').value || '-';
+    document.getElementById('tp-review-nama').textContent = nama;
+    document.getElementById('tp-review-kontak').textContent = email + ' / ' + wa;
+    document.getElementById('tp-review-akun').textContent = peran;
+    document.getElementById('tp-review-jabatan').textContent = jabatan;
+    document.getElementById('tp-review-username').textContent = username;
+}
+
+// --- JABATAN MULTI-SELECT ---
+function renderJabatanTags(containerId, dataArray, removeCallback) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    container.innerHTML = '';
+    dataArray.forEach(val => {
+        const tag = document.createElement('div');
+        tag.className = 'flex items-center gap-1.5 px-2.5 py-1 bg-white border border-slate-200 rounded-lg text-[10px] font-bold text-slate-700 shadow-sm';
+        tag.innerHTML = `<span>${val}</span> <button type="button" class="text-slate-400 hover:text-red-500 transition-colors" onclick="${removeCallback}('${val}')"><i class="fa-solid fa-xmark"></i></button>`;
+        container.appendChild(tag);
+    });
+}
+
+window.removeTpJabatan = function(val) {
+    tpSelectedJabatan = tpSelectedJabatan.filter(j => j !== val);
+    renderJabatanTags('tp-jabatan-selected-tags', tpSelectedJabatan, 'removeTpJabatan');
+};
+
+window.removeTeJabatan = function(val) {
+    teSelectedJabatan = teSelectedJabatan.filter(j => j !== val);
+    renderJabatanTags('te-jabatan-selected-tags', teSelectedJabatan, 'removeTeJabatan');
+};
+
+function setupJabatanEvents() {
+    const tpRole = document.getElementById('tp-peran');
+    const tpSelect = document.getElementById('tp-jabatan-select');
+    const teRole = document.getElementById('te-peran');
+    const teSelect = document.getElementById('te-jabatan-select');
+
+    if (tpRole) {
+        tpRole.addEventListener('change', function() {
+            const role = this.value;
+            if (role === 'Kepala Desa' || role === 'Sekretaris Desa') {
+                document.getElementById('tp-jabatan-dropdown').classList.add('hidden');
+                document.getElementById('tp-jabatan-locked').classList.remove('hidden');
+                document.getElementById('tp-jabatan-locked').textContent = role;
+                tpSelectedJabatan = [role];
+            } else {
+                document.getElementById('tp-jabatan-dropdown').classList.remove('hidden');
+                document.getElementById('tp-jabatan-locked').classList.add('hidden');
+                tpSelectedJabatan = [];
+                renderJabatanTags('tp-jabatan-selected-tags', tpSelectedJabatan, 'removeTpJabatan');
+            }
+        });
+    }
+    if (tpSelect) {
+        tpSelect.addEventListener('change', function() {
+            const val = this.value;
+            if (val && !tpSelectedJabatan.includes(val)) {
+                tpSelectedJabatan.push(val);
+                renderJabatanTags('tp-jabatan-selected-tags', tpSelectedJabatan, 'removeTpJabatan');
+            }
+            this.value = ''; 
+        });
+    }
+
+    if (teRole) {
+        teRole.addEventListener('change', function() {
+            const role = this.value;
+            if (role === 'Kepala Desa' || role === 'Sekretaris Desa') {
+                document.getElementById('te-jabatan-dropdown').classList.add('hidden');
+                document.getElementById('te-jabatan-locked').classList.remove('hidden');
+                document.getElementById('te-jabatan-locked').textContent = role;
+                teSelectedJabatan = [role];
+            } else {
+                document.getElementById('te-jabatan-dropdown').classList.remove('hidden');
+                document.getElementById('te-jabatan-locked').classList.add('hidden');
+                if (!teSelectedJabatan.every(j => j !== 'Kepala Desa' && j !== 'Sekretaris Desa')) {
+                    teSelectedJabatan = [];
+                }
+                renderJabatanTags('te-jabatan-selected-tags', teSelectedJabatan, 'removeTeJabatan');
+            }
+        });
+    }
+    if (teSelect) {
+        teSelect.addEventListener('change', function() {
+            const val = this.value;
+            if (val && !teSelectedJabatan.includes(val)) {
+                teSelectedJabatan.push(val);
+                renderJabatanTags('te-jabatan-selected-tags', teSelectedJabatan, 'removeTeJabatan');
+            }
+            this.value = '';
+        });
+    }
+}
+
+// --- USERNAME AUTO-SUGGEST ---
+function setupUsernameSuggestions() {
+    const tpNama = document.getElementById('tp-nama');
+    const tpUsername = document.getElementById('tp-username');
+    const container = document.getElementById('tp-username-suggestions-container');
+    const sugDiv = document.getElementById('tp-username-suggestions');
+    
+    if (tpNama && tpUsername) {
+        tpNama.addEventListener('input', function() {
+            const val = this.value.trim().toLowerCase();
+            if (val.length < 3) { container.classList.add('hidden'); return; }
+            container.classList.remove('hidden');
+            const words = val.split(' ').filter(w => w.length > 0);
+            
+            let suggestions = [];
+            if (words.length === 1) {
+                suggestions.push(words[0]);
+                suggestions.push(words[0] + '123');
+                suggestions.push('admin_' + words[0]);
+            } else if (words.length >= 2) {
+                const first = words[0];
+                const last = words[words.length - 1];
+                suggestions.push(first + '_' + last);
+                suggestions.push(first[0] + last);
+                suggestions.push(first + last);
+            }
+            
+            sugDiv.innerHTML = '';
+            suggestions.forEach(sug => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'px-2 py-1 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 rounded-md text-[10px] font-bold border border-emerald-200 transition-colors';
+                btn.textContent = sug;
+                btn.onclick = () => { tpUsername.value = sug; container.classList.add('hidden'); };
+                sugDiv.appendChild(btn);
+            });
+        });
+        
+        // Disable spaces in username field
+        tpUsername.addEventListener('input', function() {
+            this.value = this.value.toLowerCase().replace(/\s+/g, '_');
+        });
+    }
+}
+
 export function openModalEditPengguna(username) {
     if (!window.usersData) return;
+    initPenggunaUI();
     let user = window.usersData.find(function(u) { return u.username === username; });
     if (!user) { pushToast('Data pengguna tidak ditemukan!', 'error'); return; }
     
@@ -356,6 +650,20 @@ export function openModalEditPengguna(username) {
     document.getElementById('te-nama').value = user.nama;
     document.getElementById('te-peran').value = user.peran;
     document.getElementById('te-status').value = user.status;
+    document.getElementById('te-password').value = '';
+
+    // Initialize jabatan logic for edit
+    teSelectedJabatan = user.jabatan ? user.jabatan.split(',').map(s => s.trim()).filter(s => s) : [];
+    if (user.peran === 'Kepala Desa' || user.peran === 'Sekretaris Desa') {
+        document.getElementById('te-jabatan-dropdown').classList.add('hidden');
+        document.getElementById('te-jabatan-locked').classList.remove('hidden');
+        document.getElementById('te-jabatan-locked').textContent = user.peran;
+        teSelectedJabatan = [user.peran];
+    } else {
+        document.getElementById('te-jabatan-dropdown').classList.remove('hidden');
+        document.getElementById('te-jabatan-locked').classList.add('hidden');
+        renderJabatanTags('te-jabatan-selected-tags', teSelectedJabatan, 'removeTeJabatan');
+    }
     
     document.getElementById('mp-menu-container').classList.add('hidden');
     document.getElementById('mp-content-daftar').classList.add('hidden');
@@ -374,20 +682,26 @@ export function closeModalEditPengguna() {
 }
 
 export function simpanEditPengguna(event) {
-    event.preventDefault();
+    if (event) event.preventDefault();
 
     let username = document.getElementById('te-username-hidden').value;
     let nama = document.getElementById('te-nama').value;
     let peran = document.getElementById('te-peran').value;
     let status = document.getElementById('te-status').value;
+    let jabatan = teSelectedJabatan.join(', ');
+    let password = document.getElementById('te-password').value;
+    
+    if (peran === 'Operator Pelayanan' && teSelectedJabatan.length === 0) {
+        pushToast('Pilih minimal satu Jabatan/Bidang!', 'warning');
+        return;
+    }
 
     showCustomConfirm(
         '<i class="fa-solid fa-floppy-disk text-blue-600"></i> Konfirmasi Perubahan',
         'Apakah Anda yakin ingin menyimpan perubahan data pengguna ini?',
         function() {
-
-            
-            let payload = { username: username, updateData: { nama: nama, peran: peran, status: status } };
+            let payload = { username: username, updateData: { nama: nama, peran: peran, status: status, jabatan: jabatan } };
+            if (password) payload.updateData.password = password;
             
             document.getElementById('btn-submit-edit-pengguna').disabled = true;
             document.getElementById('btn-submit-edit-pengguna').innerHTML = '<i class="fa-solid fa-spinner animate-spin"></i> Menyimpan...';
@@ -395,7 +709,7 @@ export function simpanEditPengguna(event) {
             callCrudPengguna('update', payload, function() {
                 closeModalEditPengguna();
                 document.getElementById('btn-submit-edit-pengguna').disabled = false;
-                document.getElementById('btn-submit-edit-pengguna').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Simpan Perubahan';
+                document.getElementById('btn-submit-edit-pengguna').innerHTML = '<i class="fa-solid fa-save mr-1.5"></i> Simpan Perubahan';
             });
         }
     );
