@@ -132,10 +132,29 @@ export function handleAdminLogout() {
                     let item = SIDEBAR_ITEMS.find(function(i) { return i.id === itemId; });
                     if (item) {
                         let disabledAttr = item.disabled ? 'disabled=""' : '';
-                        let btnHtml = '<button id="tab-adm-' + item.id + '" onclick="' + item.action + '" ' + disabledAttr + ' class="w-full text-left flex items-center px-3 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-semibold text-sm transition-colors">' +
-                                      '<i class="fa-solid ' + item.icon + ' w-5 text-center mr-2"></i> ' + item.label +
-                                      '</button>';
-                        sidebarNav.innerHTML += btnHtml;
+                        if (item.subItems) {
+                            let btnHtml = '<div class="w-full">' +
+                                '<button onclick="toggleSidebarDropdown(\'' + item.id + '\')" class="w-full text-left flex items-center justify-between px-3 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-semibold text-sm transition-colors">' +
+                                '<div class="flex items-center"><i class="fa-solid ' + item.icon + ' w-5 text-center mr-2"></i> ' + item.label + '</div>' +
+                                '<i id="icon-' + item.id + '" class="fa-solid fa-chevron-down text-[10px] transition-transform duration-300"></i>' +
+                                '</button>' +
+                                '<div id="sub-' + item.id + '" class="hidden flex-col pl-7 pr-2 py-1 space-y-1">';
+                            item.subItems.forEach(function(subItem) {
+                                if (mapping.sidebar.includes(subItem.id)) {
+                                    let badgeHtml = subItem.badgeId ? '<span id="' + subItem.badgeId + '" class="bg-red-100 text-red-600 px-1.5 py-0.5 rounded-md text-[9px] font-bold hidden">0</span>' : '';
+                                    btnHtml += '<button id="tab-adm-' + subItem.id + '" onclick="' + subItem.action + '" class="w-full text-left flex items-center justify-between px-3 py-2 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-lg font-semibold text-[13px] transition-colors">' +
+                                        '<span>' + subItem.label + '</span>' + badgeHtml +
+                                        '</button>';
+                                }
+                            });
+                            btnHtml += '</div></div>';
+                            sidebarNav.innerHTML += btnHtml;
+                        } else {
+                            let btnHtml = '<button id="tab-adm-' + item.id + '" onclick="' + item.action + '" ' + disabledAttr + ' class="w-full text-left flex items-center px-3 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-semibold text-sm transition-colors">' +
+                                          '<i class="fa-solid ' + item.icon + ' w-5 text-center mr-2"></i> ' + item.label +
+                                          '</button>';
+                            sidebarNav.innerHTML += btnHtml;
+                        }
                     }
                 });
             }
@@ -434,3 +453,21 @@ export function bindForgotOtpInputs() {
         });
     });
 }
+
+ w i n d o w . t o g g l e S i d e b a r D r o p d o w n   =   f u n c t i o n ( i d )   { 
+         l e t   s u b   =   d o c u m e n t . g e t E l e m e n t B y I d ( ' s u b - '   +   i d ) ; 
+         l e t   i c o n   =   d o c u m e n t . g e t E l e m e n t B y I d ( ' i c o n - '   +   i d ) ; 
+         i f   ( s u b   & &   i c o n )   { 
+                 i f   ( s u b . c l a s s L i s t . c o n t a i n s ( ' h i d d e n ' ) )   { 
+                         s u b . c l a s s L i s t . r e m o v e ( ' h i d d e n ' ) ; 
+                         s u b . c l a s s L i s t . a d d ( ' f l e x ' ) ; 
+                         i c o n . s t y l e . t r a n s f o r m   =   ' r o t a t e ( 1 8 0 d e g ) ' ; 
+                 }   e l s e   { 
+                         s u b . c l a s s L i s t . a d d ( ' h i d d e n ' ) ; 
+                         s u b . c l a s s L i s t . r e m o v e ( ' f l e x ' ) ; 
+                         i c o n . s t y l e . t r a n s f o r m   =   ' r o t a t e ( 0 d e g ) ' ; 
+                 } 
+         } 
+ } ; 
+  
+ 

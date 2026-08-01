@@ -38,8 +38,26 @@ export function renderAdminTable(response) {
                     return '<span class="text-slate-400 block text-[10px]">' + l + '</span>';
                 }).join("");
 
+                let aksiHtml = '';
+                if (window.currentPengajuanFilterStatus === 'Menunggu') {
+                    aksiHtml = '<button onclick="quickProcessPengajuan(\'' + row.id + '\')" class="px-3 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold text-[10px] transition-all flex items-center justify-center gap-1.5 shadow-sm mx-auto min-w-[90px] border border-blue-200"><i class="fa-solid fa-arrow-right-to-bracket"></i> Proses</button>';
+                } else if (window.currentPengajuanFilterStatus === 'Proses') {
+                    aksiHtml = '<div class="flex flex-col gap-1.5 items-center justify-center">' +
+                        '<button onclick="openManageStatusModalById(\'' + row.id + '\')" class="px-3 py-1.5 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-700 font-bold text-[10px] transition-all flex items-center justify-center gap-1.5 shadow-sm min-w-[90px] border border-amber-200"><i class="fa-solid fa-check-double"></i> Verifikasi</button>' +
+                        ((row.status === 'Verifikasi' || row.status === 'Pelayanan Selesai' || row.status === 'Selesai') ? 
+                        '<button onclick="triggerGeneratePDF(\'' + row.id + '\')" class="px-3 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-[10px] transition-all flex items-center justify-center gap-1.5 shadow-sm min-w-[90px] border border-emerald-200"><i class="fa-solid fa-print"></i> Cetak Pengajuan</button>' : '') +
+                        '</div>';
+                } else if (window.currentPengajuanFilterStatus === 'Selesai') {
+                    aksiHtml = '<div class="flex flex-col gap-1.5 items-center justify-center">' +
+                        '<a href="' + waLink + '" target="_blank" class="px-3 py-1.5 rounded-lg bg-green-50 hover:bg-green-100 text-green-600 font-bold text-[10px] transition-all flex items-center justify-center gap-1.5 shadow-sm min-w-[90px] border border-green-200"><i class="fa-brands fa-whatsapp text-xs"></i> Kirim WA</a>' +
+                        ((row.status === 'Verifikasi' || row.status === 'Pelayanan Selesai' || row.status === 'Selesai') ? 
+                        '<button onclick="triggerGeneratePDF(\'' + row.id + '\')" class="px-3 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-[10px] transition-all flex items-center justify-center gap-1.5 shadow-sm min-w-[90px] border border-emerald-200"><i class="fa-solid fa-print"></i> Cetak Pengajuan</button>' : '') +
+                        '</div>';
+                } else {
+                    aksiHtml = '<a href="' + waLink + '" target="_blank" class="px-3 py-1.5 rounded-lg bg-green-50 hover:bg-green-100 text-green-600 font-bold text-[10px] transition-all flex items-center justify-center gap-1.5 shadow-sm mx-auto min-w-[90px] border border-green-200"><i class="fa-brands fa-whatsapp text-xs"></i> Kirim WA</a>';
+                }
+
                 let trHtml = '<tr class="hover:bg-emerald-50/50 transition-all border-b border-slate-101">' +
-                    '<td class="p-4 text-center"><input type="checkbox" class="rounded border-slate-300 text-narmadaGreen focus:ring-narmadaGreen"></td>' +
                     '<td class="p-4 text-center font-bold text-slate-500 text-[10px]">' + rowNo + '</td>' +
                     '<td class="p-4">' +
                     '<p class="text-[9px] font-bold text-slate-700 mt-0.5">' + row.tanggal + '</p>' +
@@ -53,23 +71,7 @@ export function renderAdminTable(response) {
                     '</td>' +
                     '<td class="p-4"><span class="font-bold text-narmadaGreen text-[11px]">' + row.layanan + '</span></td>' +
                     '<td class="p-4 text-center"><span class="px-2.5 py-1 rounded-full text-[10px] font-bold border ' + badgeColor + '">' + row.status + '</span></td>' +
-                    '<td class="p-4 text-center">' +
-                    '<div class="flex flex-col gap-1.5 items-center justify-center">' +
-                    '<button onclick="openManageStatusModalById(\'' + row.id + '\')" class="px-3 py-1.5 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-700 font-bold text-[10px] transition-all flex items-center justify-center gap-1.5 shadow-sm w-[90px] border border-amber-200">' +
-                    '<i class="fa-solid fa-pencil"></i> Edit' +
-                    '</button>' +
-                    ((row.status === 'Verifikasi' || row.status === 'Pelayanan Selesai' || row.status === 'Selesai') ? 
-                        '<button onclick="triggerGeneratePDF(\'' + row.id + '\')" class="px-3 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold text-[10px] transition-all flex items-center justify-center gap-1.5 shadow-sm w-[90px] border border-blue-200">' +
-                        '<i class="fa-solid fa-file-pdf"></i> PDF' +
-                        '</button>' 
-                    : '') +
-                    '</div>' +
-                    '</td>' +
-                    '<td class="p-4 text-center">' +
-                    '<a href="' + waLink + '" target="_blank" class="px-3 py-1.5 rounded-lg bg-green-50 hover:bg-green-100 text-green-600 font-bold text-[10px] transition-all flex items-center justify-center gap-1.5 shadow-sm mx-auto max-w-[100px] border border-green-200">' +
-                    '<i class="fa-brands fa-whatsapp text-xs"></i> Kirim WA' +
-                    '</a>' +
-                    '</td>' +
+                    '<td class="p-4 text-center">' + aksiHtml + '</td>' +
                     '</tr>';
 
                 htmlBuffer += trHtml;
@@ -508,3 +510,53 @@ export function cetakMassal() {
     }
     window.print();
 }
+
+window.currentPengajuanFilterStatus = 'Semua';
+
+window.openPengajuanFilter = function(status) {
+    window.currentPengajuanFilterStatus = status;
+    switchAdminTab('pengajuan');
+    runAdminFilter();
+};
+
+window.quickProcessPengajuan = function(id) {
+    let row = window.loadedPengajuanList.find(r => r.id === id);
+    if (!row) return;
+    showLoading();
+    google.script.run.withSuccessHandler(function(response) {
+        hideLoading();
+        if (response.status === 'success') {
+            pushToast('Pengajuan ' + id + ' berhasil diproses.', 'success');
+            loadAdminPengajuanTab();
+        } else {
+            pushToast(response.message || 'Gagal memproses.', 'error');
+        }
+    }).updatePengajuanStatus(id, 'Proses', 'Sedang diproses oleh operator', row.wa);
+};
+
+window.updatePengajuanSidebarBadges = function(list) {
+    let menunggu = 0, proses = 0, perbaikan = 0, selesai = 0;
+    list.forEach(item => {
+        if (item.status === 'Menunggu') menunggu++;
+        else if (item.status === 'Proses' || item.status === 'Verifikasi') proses++;
+        else if (item.status === 'Perbaikan' || item.status === 'Upload Ulang') perbaikan++;
+        else if (item.status === 'Selesai' || item.status === 'Pelayanan Selesai') selesai++;
+    });
+
+    const updateBadge = (id, count) => {
+        let b = document.getElementById(id);
+        if (b) {
+            b.innerText = count;
+            if (count > 0) {
+                b.classList.remove('hidden');
+            } else {
+                b.classList.add('hidden');
+            }
+        }
+    };
+    updateBadge('badge-pengajuan-menunggu', menunggu);
+    updateBadge('badge-pengajuan-proses', proses);
+    updateBadge('badge-pengajuan-perbaikan', perbaikan);
+};
+
+

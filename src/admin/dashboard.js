@@ -117,6 +117,9 @@ export function fetchAdminDashboardData() {
                         .withSuccessHandler(function (res) {
                             if (res && res.authError) { pushToast(res.error, "error"); handleAdminLogout(); return; }
                             renderAdminTable(res);
+                            if (res.data && typeof updatePengajuanSidebarBadges === 'function') {
+                                updatePengajuanSidebarBadges(res.data);
+                            }
                         })
                         .getAdminDashboardData(localStorage.getItem('adminToken_Narmada'), adminKeyword, currentAdminPage, activeStatusFilter);
                 } catch (e) { }
@@ -128,7 +131,7 @@ export function fetchAdminDashboardData() {
                     if (activeStatusFilter) {
                         if (activeStatusFilter === "Selesai") {
                             matchS = (r.status === "Pelayanan Selesai" || r.status === "Selesai");
-                        } else {
+                        } else if (activeStatusFilter !== "Semua") {
                             matchS = (r.status === activeStatusFilter);
                         }
                     }
@@ -142,6 +145,9 @@ export function fetchAdminDashboardData() {
 
                 setTimeout(function () {
                     renderAdminTable({ data: paginated, totalPages: pages, currentPage: currentAdminPage, totalItems: total });
+                    if (typeof updatePengajuanSidebarBadges === 'function') {
+                        updatePengajuanSidebarBadges(dummyPengajuanList);
+                    }
                 }, 400);
             }
         }

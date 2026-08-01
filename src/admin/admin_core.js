@@ -380,12 +380,17 @@ window.triggerNewNotification = function(tipe, detailPemohon) {
 
 export const SIDEBAR_ITEMS = [
     { id: 'dashboard', icon: 'fa-house', label: 'Dashboard', action: "switchAdminTab('dashboard')" },
-    { id: 'pengajuan', icon: 'fa-file-lines', label: 'Pengajuan', action: "switchAdminTab('pengajuan')" },
+    { id: 'layanan-group', icon: 'fa-layer-group', label: 'Layanan', subItems: [
+        { id: 'daftar-layanan', label: 'Daftar Layanan', action: "switchAdminTab('daftar-layanan')" },
+        { id: 'pengajuan-menunggu', label: 'Daftar Pengajuan', badgeId: 'badge-pengajuan-menunggu', action: "openPengajuanFilter('Menunggu')" },
+        { id: 'pengajuan-proses', label: 'Proses Pengajuan', badgeId: 'badge-pengajuan-proses', action: "openPengajuanFilter('Proses')" },
+        { id: 'pengajuan-perbaiki', label: 'Perbaiki Pengajuan', badgeId: 'badge-pengajuan-perbaikan', action: "openPengajuanFilter('Perbaikan')" },
+        { id: 'pengajuan-selesai', label: 'Pengajuan Selesai', action: "openPengajuanFilter('Selesai')" }
+    ]},
     { id: 'verifikasi', icon: 'fa-check-to-slot', label: 'Verifikasi Berkas', action: "switchAdminTab('dashboard')" },
     { id: 'tte', icon: 'fa-signature', label: 'Persetujuan & TTE', action: "pushToast('Fitur Persetujuan & TTE segera hadir', 'info')" },
     { id: 'data-penduduk', icon: 'fa-users', label: 'Data Penduduk', action: "pushToast('Fitur Data Penduduk segera hadir', 'info')" },
     { id: 'dokumen', icon: 'fa-folder-open', label: 'Dokumen & Surat', action: "", disabled: true },
-    { id: 'daftar-layanan', icon: 'fa-layer-group', label: 'Layanan', action: "switchAdminTab('daftar-layanan')" },
     { id: 'kontak', icon: 'fa-address-book', label: 'Kontak Pelayanan', action: "switchAdminTab('kontak')" },
     { id: 'laporan', icon: 'fa-chart-simple', label: 'Laporan', action: "switchAdminTab('laporan')" },
     { id: 'beranda', icon: 'fa-gear', label: 'Pengaturan Web', action: "switchAdminTab('beranda')" },
@@ -403,19 +408,19 @@ export const AVATAR_ITEMS = [
 
 export const ROLE_MAPPINGS = {
     "Super Admin": {
-        sidebar: ['dashboard', 'pengajuan', 'verifikasi', 'tte', 'data-penduduk', 'dokumen', 'daftar-layanan', 'kontak', 'laporan', 'beranda', 'kredensial', 'aktivitas'],
+        sidebar: ['dashboard', 'layanan-group', 'daftar-layanan', 'pengajuan-menunggu', 'pengajuan-proses', 'pengajuan-perbaiki', 'pengajuan-selesai', 'verifikasi', 'tte', 'data-penduduk', 'dokumen', 'kontak', 'laporan', 'beranda', 'kredensial', 'aktivitas'],
         avatar: ['pengaturan-akun', 'panduan', 'log-saya', 'divider', 'logout']
     },
     "Operator Pelayanan": {
-        sidebar: ['dashboard', 'pengajuan', 'verifikasi', 'data-penduduk', 'laporan'],
+        sidebar: ['dashboard', 'layanan-group', 'pengajuan-menunggu', 'pengajuan-proses', 'pengajuan-perbaiki', 'pengajuan-selesai', 'verifikasi', 'data-penduduk', 'laporan'],
         avatar: ['pengaturan-akun', 'log-saya', 'divider', 'logout']
     },
     "Sekretaris Desa": {
-        sidebar: ['dashboard', 'pengajuan', 'verifikasi', 'tte', 'data-penduduk', 'laporan'],
+        sidebar: ['dashboard', 'layanan-group', 'pengajuan-menunggu', 'pengajuan-proses', 'pengajuan-perbaiki', 'pengajuan-selesai', 'verifikasi', 'tte', 'data-penduduk', 'laporan'],
         avatar: ['pengaturan-akun', 'log-saya', 'divider', 'logout']
     },
     "Kepala Desa": {
-        sidebar: ['dashboard', 'pengajuan', 'tte', 'data-penduduk', 'laporan'],
+        sidebar: ['dashboard', 'layanan-group', 'pengajuan-menunggu', 'pengajuan-proses', 'pengajuan-perbaiki', 'pengajuan-selesai', 'tte', 'data-penduduk', 'laporan'],
         avatar: ['pengaturan-akun', 'log-saya', 'divider', 'logout']
     }
 };
