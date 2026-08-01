@@ -454,20 +454,19 @@ export function bindForgotOtpInputs() {
     });
 }
 
- w i n d o w . t o g g l e S i d e b a r D r o p d o w n   =   f u n c t i o n ( i d )   { 
-         l e t   s u b   =   d o c u m e n t . g e t E l e m e n t B y I d ( ' s u b - '   +   i d ) ; 
-         l e t   i c o n   =   d o c u m e n t . g e t E l e m e n t B y I d ( ' i c o n - '   +   i d ) ; 
-         i f   ( s u b   & &   i c o n )   { 
-                 i f   ( s u b . c l a s s L i s t . c o n t a i n s ( ' h i d d e n ' ) )   { 
-                         s u b . c l a s s L i s t . r e m o v e ( ' h i d d e n ' ) ; 
-                         s u b . c l a s s L i s t . a d d ( ' f l e x ' ) ; 
-                         i c o n . s t y l e . t r a n s f o r m   =   ' r o t a t e ( 1 8 0 d e g ) ' ; 
-                 }   e l s e   { 
-                         s u b . c l a s s L i s t . a d d ( ' h i d d e n ' ) ; 
-                         s u b . c l a s s L i s t . r e m o v e ( ' f l e x ' ) ; 
-                         i c o n . s t y l e . t r a n s f o r m   =   ' r o t a t e ( 0 d e g ) ' ; 
-                 } 
-         } 
- } ; 
-  
- 
+window.toggleSidebarDropdown = function(id) {
+    let sub = document.getElementById('sub-' + id);
+    let icon = document.getElementById('icon-' + id);
+    if (sub && icon) {
+        if (sub.classList.contains('hidden')) {
+            sub.classList.remove('hidden');
+            sub.classList.add('flex');
+            icon.style.transform = 'rotate(180deg)';
+        } else {
+            sub.classList.add('hidden');
+            sub.classList.remove('flex');
+            icon.style.transform = 'rotate(0deg)';
+        }
+    }
+};
+
