@@ -1,10 +1,13 @@
 export function openLayananEditor(id) {
             document.getElementById('subview-admin-daftar-layanan').classList.add('hidden');
             document.getElementById('subview-admin-layanan').classList.remove('hidden');
+            let titleEl = document.getElementById('unified-editor-title');
             if(id === '__NEW__') {
                 document.getElementById('builder-select-layanan').value = '[+] TAMBAH LAYANAN BARU';
+                if(titleEl) titleEl.innerText = 'Buat Layanan Baru';
             } else {
                 document.getElementById('builder-select-layanan').value = id;
+                if(titleEl) titleEl.innerText = 'Edit Layanan: ' + id;
             }
             handleBuilderLayananLoad();
         }
