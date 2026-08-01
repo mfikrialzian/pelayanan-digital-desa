@@ -6,6 +6,37 @@ export function renderAdminTable(response) {
             document.getElementById('btn-adm-prev').disabled = response.currentPage <= 1;
             document.getElementById('btn-adm-next').disabled = response.currentPage >= response.totalPages;
 
+            let titleEl = document.getElementById('pengajuan-table-title');
+            let countEl = document.getElementById('pengajuan-table-count');
+            
+            if (titleEl) {
+                let status = window.currentPengajuanFilterStatus;
+                let titleText = "Daftar Pengajuan";
+                let countColor = "bg-slate-100 text-slate-600";
+                
+                if (status === 'Menunggu') {
+                    titleText = "Daftar Pengajuan Masuk";
+                    countColor = "bg-blue-50 text-blue-600";
+                } else if (status === 'Proses') {
+                    titleText = "Daftar Proses Pengajuan";
+                    countColor = "bg-amber-50 text-amber-600";
+                } else if (status === 'Perbaikan') {
+                    titleText = "Daftar Perbaiki Pengajuan";
+                    countColor = "bg-red-50 text-red-600";
+                } else if (status === 'Selesai') {
+                    titleText = "Daftar Pengajuan Selesai";
+                    countColor = "bg-emerald-50 text-emerald-600";
+                } else {
+                    titleText = "Semua Pengajuan";
+                }
+                titleEl.innerText = titleText;
+                
+                if (countEl) {
+                    countEl.innerText = response.totalItems + " Pengajuan";
+                    countEl.className = countColor + " px-2 py-0.5 rounded text-[10px] font-bold";
+                }
+            }
+
             if (!response.data || response.data.length === 0) {
                 tbody.innerHTML = "<tr><td colspan='7' class='p-6 text-center text-slate-400 italic'>Tidak ada berkas pelayanan terdaftar dengan kriteria ini.</td></tr>";
                 return;

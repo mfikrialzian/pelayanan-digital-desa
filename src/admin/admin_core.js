@@ -383,9 +383,9 @@ window.triggerNewNotification = function(tipe, detailPemohon) {
 
 export const SIDEBAR_ITEMS = [
     { id: 'dashboard', icon: 'fa-house', label: 'Dashboard', action: "switchAdminTab('dashboard')" },
-    { id: 'layanan-group', icon: 'fa-layer-group', label: 'Layanan', subItems: [
-        { id: 'daftar-layanan', label: 'Daftar Layanan', action: "switchAdminTab('daftar-layanan')" },
-        { id: 'pengajuan-menunggu', label: 'Daftar Pengajuan', badgeId: 'badge-pengajuan-menunggu', action: "openPengajuanFilter('Menunggu')" },
+    { id: 'daftar-layanan', icon: 'fa-layer-group', label: 'Layanan', action: "switchAdminTab('daftar-layanan')" },
+    { id: 'pengajuan-group', icon: 'fa-file-lines', label: 'Pengajuan', subItems: [
+        { id: 'pengajuan-menunggu', label: 'Pengajuan Masuk', badgeId: 'badge-pengajuan-menunggu', action: "openPengajuanFilter('Menunggu')" },
         { id: 'pengajuan-proses', label: 'Proses Pengajuan', badgeId: 'badge-pengajuan-proses', action: "openPengajuanFilter('Proses')" },
         { id: 'pengajuan-perbaiki', label: 'Perbaiki Pengajuan', badgeId: 'badge-pengajuan-perbaikan', action: "openPengajuanFilter('Perbaikan')" },
         { id: 'pengajuan-selesai', label: 'Pengajuan Selesai', action: "openPengajuanFilter('Selesai')" }
@@ -410,19 +410,19 @@ export const AVATAR_ITEMS = [
 
 export const ROLE_MAPPINGS = {
     "Super Admin": {
-        sidebar: ['dashboard', 'layanan-group', 'daftar-layanan', 'pengajuan-menunggu', 'pengajuan-proses', 'pengajuan-perbaiki', 'pengajuan-selesai', 'tte', 'data-penduduk', 'dokumen', 'kontak', 'laporan', 'beranda', 'kredensial', 'aktivitas'],
+        sidebar: ['dashboard', 'daftar-layanan', 'pengajuan-group', 'pengajuan-menunggu', 'pengajuan-proses', 'pengajuan-perbaiki', 'pengajuan-selesai', 'tte', 'data-penduduk', 'dokumen', 'kontak', 'laporan', 'beranda', 'kredensial', 'aktivitas'],
         avatar: ['pengaturan-akun', 'panduan', 'log-saya', 'divider', 'logout']
     },
     "Operator Pelayanan": {
-        sidebar: ['dashboard', 'layanan-group', 'pengajuan-menunggu', 'pengajuan-proses', 'pengajuan-perbaiki', 'pengajuan-selesai', 'data-penduduk', 'laporan'],
+        sidebar: ['dashboard', 'pengajuan-group', 'pengajuan-menunggu', 'pengajuan-proses', 'pengajuan-perbaiki', 'pengajuan-selesai', 'data-penduduk', 'laporan'],
         avatar: ['pengaturan-akun', 'log-saya', 'divider', 'logout']
     },
     "Sekretaris Desa": {
-        sidebar: ['dashboard', 'layanan-group', 'pengajuan-menunggu', 'pengajuan-proses', 'pengajuan-perbaiki', 'pengajuan-selesai', 'tte', 'data-penduduk', 'laporan'],
+        sidebar: ['dashboard', 'pengajuan-group', 'pengajuan-menunggu', 'pengajuan-proses', 'pengajuan-perbaiki', 'pengajuan-selesai', 'tte', 'data-penduduk', 'laporan'],
         avatar: ['pengaturan-akun', 'log-saya', 'divider', 'logout']
     },
     "Kepala Desa": {
-        sidebar: ['dashboard', 'layanan-group', 'pengajuan-menunggu', 'pengajuan-proses', 'pengajuan-perbaiki', 'pengajuan-selesai', 'tte', 'data-penduduk', 'laporan'],
+        sidebar: ['dashboard', 'pengajuan-group', 'pengajuan-menunggu', 'pengajuan-proses', 'pengajuan-perbaiki', 'pengajuan-selesai', 'tte', 'data-penduduk', 'laporan'],
         avatar: ['pengaturan-akun', 'log-saya', 'divider', 'logout']
     }
 };

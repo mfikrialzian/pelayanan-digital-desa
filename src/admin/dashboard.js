@@ -220,7 +220,7 @@ export function initAdminCharts() {
             adminCharts.status = new Chart(ctxStatus, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Menunggu', 'Verifikasi', 'Selesai', 'Perbaikan'],
+                    labels: ['Menunggu', 'Proses', 'Selesai', 'Perbaikan'],
                     datasets: [{
                         data: [0, 0, 0, 0],
                         backgroundColor: [narmadaBlue, '#f59e0b', narmadaGreen, '#ef4444'],
@@ -336,7 +336,7 @@ export function updateAdminChartsData(stats) {
     
     if (stats.chartStatus) {
         // Backend returns: [Selesai(0), Verifikasi(1), Menunggu(2), Perbaikan(3)]
-        // We want: [Menunggu, Verifikasi, Selesai, Perbaikan]
+        // We want: [Menunggu, Proses, Selesai, Perbaikan]
         adminCharts.status.data.datasets[0].data = [
             stats.chartStatus[2], // Menunggu
             stats.chartStatus[1], // Verifikasi

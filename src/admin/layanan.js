@@ -471,7 +471,7 @@ export function renderLayananTable(list) {
                         '<td class="py-4 px-4 align-top">' + docHtml + '</td>' +
                         '<td class="py-4 px-4 align-top">' + qHtml + '</td>' +
                         '<td class="py-4 px-4 text-center align-middle">' +
-                        '<div class="flex flex-col gap-2 items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">' +
+                        '<div class="flex flex-col gap-2 items-center justify-center">' +
                         '<button onclick="switchAdminTab(\'layanan\'); populateBuilderLayananToEdit(\'' + row.id + '\')" class="w-20 py-1.5 rounded-lg bg-amber-50 hover:bg-amber-100 hover:-translate-y-0.5 text-amber-700 font-bold text-[10px] transition-all flex items-center justify-center gap-1.5 shadow-sm border border-amber-200/50">' +
                         '<i class="fa-solid fa-pencil"></i> Edit' +
                         '</button>' +
