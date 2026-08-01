@@ -522,6 +522,17 @@ export function populateBuilderLayananToEdit(id) {
             document.getElementById('builder-select-layanan').value = found.nama;
             document.getElementById('wrapper-builder-nama').classList.add('hidden');
             document.getElementById('builder-layanan-nama').value = found.nama;
+
+            let titleEl = document.getElementById('unified-editor-title');
+            if(titleEl) titleEl.innerHTML = '<i class="fa-solid fa-layer-group text-narmadaGreen mr-2"></i> Edit Layanan: ' + found.nama;
+            
+            document.querySelectorAll('input[name="builder-bidang"]').forEach(cb => cb.checked = false);
+            if (found.bidang) {
+                let savedBidang = found.bidang.split(',').map(b => b.trim());
+                document.querySelectorAll('input[name="builder-bidang"]').forEach(cb => {
+                    if (savedBidang.includes(cb.value)) cb.checked = true;
+                });
+            }
             
             document.getElementById('builder-template-pratinjau').value = found.templatePratinjau || "";
 
@@ -988,6 +999,9 @@ export function submitBuilderDataToServer() {
             let selectVal = document.getElementById('builder-select-layanan').value;
             let isNew = selectVal === "[+] TAMBAH LAYANAN BARU";
             let name = document.getElementById('builder-layanan-nama').value.trim();
+            let bidangChecked = [];
+            document.querySelectorAll('input[name="builder-bidang"]:checked').forEach(cb => bidangChecked.push(cb.value));
+            let bidangStr = bidangChecked.join(',');
             let templateDocId = document.getElementById('builder-template-doc-id').value.trim();
             let templatePratinjau = document.getElementById('builder-template-pratinjau').value.trim();
 
@@ -1041,6 +1055,7 @@ export function submitBuilderDataToServer() {
                 judulSectionIsian: jSec,
                 deskripsiSectionIsian: dSec,
                 logikaKondisional: "[]",
+                bidang: bidangStr,
                 templateDocId: templateDocId,
                 templatePratinjau: templatePratinjau
             };
@@ -1070,6 +1085,7 @@ export function submitBuilderDataToServer() {
                         deskripsi: "Pelayanan baru terdaftar via Service Builder.",
                         judulSectionIsian: payload.judulSectionIsian,
                         deskripsiSectionIsian: payload.deskripsiSectionIsian,
+                        bidang: payload.bidang,
                         logikaKondisional: payload.logikaKondisional,
                         requirements: activeReqs.map(function (r) { return { id: "REQ-" + Math.random(), name: r }; }),
                         fields: builderQuestions
@@ -1080,6 +1096,7 @@ export function submitBuilderDataToServer() {
                         dummyLayananList[idx].nama = payload.nama;
                         dummyLayananList[idx].judulSectionIsian = payload.judulSectionIsian;
                         dummyLayananList[idx].deskripsiSectionIsian = payload.deskripsiSectionIsian;
+                        dummyLayananList[idx].bidang = payload.bidang;
                         dummyLayananList[idx].logikaKondisional = payload.logikaKondisional;
                         dummyLayananList[idx].requirements = activeReqs.map(function (r) { return { id: "REQ-" + Math.random(), name: r }; });
                         dummyLayananList[idx].fields = builderQuestions;
@@ -1100,6 +1117,9 @@ export function resetBuilderFormState() {
             document.getElementById("builder-keperluan-new-doc").value = "";
             document.getElementById('builder-select-layanan').value = "[+] TAMBAH LAYANAN BARU";
             document.getElementById('builder-layanan-nama').value = "";
+            let titleEl = document.getElementById('unified-editor-title');
+            if(titleEl) titleEl.innerHTML = '<i class="fa-solid fa-layer-group text-narmadaGreen mr-2"></i> Buat Layanan Baru';
+            document.querySelectorAll('input[name="builder-bidang"]').forEach(cb => cb.checked = false);
             document.getElementById('builder-template-doc-id').value = "";
             document.getElementById('builder-template-pratinjau').value = "";
             document.getElementById('wrapper-builder-nama').classList.remove('hidden');
