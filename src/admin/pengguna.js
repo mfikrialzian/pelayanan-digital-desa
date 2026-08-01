@@ -134,9 +134,6 @@ export function renderHakAksesTable() {
             
             let html = '';
             
-            
-            let flatItems = [];
-            
             let flatItems = [];
             SIDEBAR_ITEMS.forEach(function(item) {
                 flatItems.push(item);
