@@ -17,6 +17,9 @@ export function switchAdminTab(tabId, updateUrl = true) {
                 // Normalisasi ID untuk pengecekan (misal 'pengaturan-akun' diijinkan jika ada di avatar)
                 let allowed = false;
                 
+                // Super Admin has absolute access
+                if (role === 'Super Admin') allowed = true;
+                
                 // Dashboard is always allowed for admin roles
                 if (tabId === 'dashboard') allowed = true;
                 
@@ -387,7 +390,6 @@ export const SIDEBAR_ITEMS = [
         { id: 'pengajuan-perbaiki', label: 'Perbaiki Pengajuan', badgeId: 'badge-pengajuan-perbaikan', action: "openPengajuanFilter('Perbaikan')" },
         { id: 'pengajuan-selesai', label: 'Pengajuan Selesai', action: "openPengajuanFilter('Selesai')" }
     ]},
-    { id: 'verifikasi', icon: 'fa-check-to-slot', label: 'Verifikasi Berkas', action: "switchAdminTab('dashboard')" },
     { id: 'tte', icon: 'fa-signature', label: 'Persetujuan & TTE', action: "pushToast('Fitur Persetujuan & TTE segera hadir', 'info')" },
     { id: 'data-penduduk', icon: 'fa-users', label: 'Data Penduduk', action: "pushToast('Fitur Data Penduduk segera hadir', 'info')" },
     { id: 'dokumen', icon: 'fa-folder-open', label: 'Dokumen & Surat', action: "", disabled: true },
@@ -408,15 +410,15 @@ export const AVATAR_ITEMS = [
 
 export const ROLE_MAPPINGS = {
     "Super Admin": {
-        sidebar: ['dashboard', 'layanan-group', 'daftar-layanan', 'pengajuan-menunggu', 'pengajuan-proses', 'pengajuan-perbaiki', 'pengajuan-selesai', 'verifikasi', 'tte', 'data-penduduk', 'dokumen', 'kontak', 'laporan', 'beranda', 'kredensial', 'aktivitas'],
+        sidebar: ['dashboard', 'layanan-group', 'daftar-layanan', 'pengajuan-menunggu', 'pengajuan-proses', 'pengajuan-perbaiki', 'pengajuan-selesai', 'tte', 'data-penduduk', 'dokumen', 'kontak', 'laporan', 'beranda', 'kredensial', 'aktivitas'],
         avatar: ['pengaturan-akun', 'panduan', 'log-saya', 'divider', 'logout']
     },
     "Operator Pelayanan": {
-        sidebar: ['dashboard', 'layanan-group', 'pengajuan-menunggu', 'pengajuan-proses', 'pengajuan-perbaiki', 'pengajuan-selesai', 'verifikasi', 'data-penduduk', 'laporan'],
+        sidebar: ['dashboard', 'layanan-group', 'pengajuan-menunggu', 'pengajuan-proses', 'pengajuan-perbaiki', 'pengajuan-selesai', 'data-penduduk', 'laporan'],
         avatar: ['pengaturan-akun', 'log-saya', 'divider', 'logout']
     },
     "Sekretaris Desa": {
-        sidebar: ['dashboard', 'layanan-group', 'pengajuan-menunggu', 'pengajuan-proses', 'pengajuan-perbaiki', 'pengajuan-selesai', 'verifikasi', 'tte', 'data-penduduk', 'laporan'],
+        sidebar: ['dashboard', 'layanan-group', 'pengajuan-menunggu', 'pengajuan-proses', 'pengajuan-perbaiki', 'pengajuan-selesai', 'tte', 'data-penduduk', 'laporan'],
         avatar: ['pengaturan-akun', 'log-saya', 'divider', 'logout']
     },
     "Kepala Desa": {

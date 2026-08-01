@@ -134,7 +134,29 @@ export function renderHakAksesTable() {
             
             let html = '';
             
+            
+            let flatItems = [];
+            
+            let flatItems = [];
             SIDEBAR_ITEMS.forEach(function(item) {
+                flatItems.push(item);
+                if (item.subItems) {
+                    item.subItems.forEach(function(sub) {
+                        flatItems.push(sub);
+                    });
+                }
+            });
+            
+            flatItems.forEach(function(item) {
+                flatItems.push(item);
+                if (item.subItems) {
+                    item.subItems.forEach(function(sub) {
+                        flatItems.push(sub);
+                    });
+                }
+            });
+            
+            flatItems.forEach(function(item) {
                 let opAccess = ROLE_MAPPINGS['Operator Pelayanan'] && ROLE_MAPPINGS['Operator Pelayanan'].sidebar && ROLE_MAPPINGS['Operator Pelayanan'].sidebar.includes(item.id);
                 let secAccess = ROLE_MAPPINGS['Sekretaris Desa'] && ROLE_MAPPINGS['Sekretaris Desa'].sidebar && ROLE_MAPPINGS['Sekretaris Desa'].sidebar.includes(item.id);
                 let kadesAccess = ROLE_MAPPINGS['Kepala Desa'] && ROLE_MAPPINGS['Kepala Desa'].sidebar && ROLE_MAPPINGS['Kepala Desa'].sidebar.includes(item.id);
@@ -191,7 +213,17 @@ export function saveRoleAccess() {
             let newSecSidebar = [];
             let newKadesSidebar = [];
             
+            let flatItems = [];
             SIDEBAR_ITEMS.forEach(function(item) {
+                flatItems.push(item);
+                if (item.subItems) {
+                    item.subItems.forEach(function(sub) {
+                        flatItems.push(sub);
+                    });
+                }
+            });
+            
+            flatItems.forEach(function(item) {
                 let opCheck = document.getElementById('ha-op-' + item.id);
                 if (opCheck && opCheck.checked) newOpSidebar.push(item.id);
                 
