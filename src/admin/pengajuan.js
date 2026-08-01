@@ -546,6 +546,7 @@ window.currentPengajuanFilterStatus = 'Semua';
 
 window.openPengajuanFilter = function(status) {
     window.currentPengajuanFilterStatus = status;
+    activeStatusFilter = status;
     switchAdminTab('pengajuan');
     runAdminFilter();
 };
