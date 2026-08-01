@@ -50,12 +50,12 @@ export function renderBuilderKeperluanList() {
     
     builderKeperluanList.forEach((item, index) => {
         // Add to UI list
-        let html = `<div class="bg-white border border-slate-200 rounded-xl p-3 shadow-sm text-left mb-2 flex justify-between items-center gap-2">
+        let html = `<div class="bg-white border border-slate-200 rounded-xl p-3 shadow-sm text-left mb-2 flex justify-between items-center gap-2 animate-fade-in">
             <div class="flex-1 min-w-0">
                 <h5 class="text-xs font-extrabold text-slate-800 truncate">${item.nama}</h5>
                 <p class="text-[10px] text-slate-500 truncate mt-0.5"><i class="fa-solid fa-link"></i> ${item.doc ? item.doc : 'Tidak ada template / Default'}</p>
             </div>
-            <button type="button" onclick="deleteKeperluanAtIndex(${index})" class="px-2 py-1.5 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-lg text-xs font-bold transition-colors shadow-sm shrink-0" title="Hapus"><i class="fa-solid fa-trash"></i></button>
+            <button type="button" onclick="deleteKeperluanAtIndex(${index})" class="px-3 py-2 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-lg text-xs font-bold transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] cursor-pointer shadow-sm shrink-0" title="Hapus"><i class="fa-solid fa-trash"></i></button>
         </div>`;
         container.innerHTML += html;
         
@@ -198,14 +198,14 @@ export function renderRequirementsMappingList() {
             }
 
             keys.forEach(function (kep) {
-                let html = '<div class="bg-white border border-slate-200 rounded-xl p-3 shadow-sm text-left mb-2">' +
+                let html = '<div class="bg-white border border-slate-200 rounded-xl p-3 shadow-sm text-left mb-2 animate-fade-in">' +
                     '<h5 class="text-[10px] font-extrabold text-narmadaGreen mb-2 border-b pb-1 flex items-center gap-1.5"><i class="fa-solid fa-folder-open"></i> Keperluan: ' + kep + '</h5>' +
                     '<div class="space-y-1.5 pl-1">';
 
                 builderReqMap[kep].forEach(function (req, idx) {
                     html += '<div class="flex justify-between items-center bg-slate-50 p-2 rounded-lg border border-slate-101 text-[10px] font-semibold text-slate-700">' +
                         '<span><i class="fa-solid fa-check text-emerald-500 mr-1"></i> ' + req + '</span>' +
-                        '<button onclick="removeRequirementFromKeperluan(\'' + kep + '\', ' + idx + ')" class="text-red-500 hover:text-red-700 px-1 bg-white border border-slate-200 rounded shadow-sm"><i class="fa-solid fa-xmark"></i></button>' +
+                        '<button onclick="removeRequirementFromKeperluan(\'' + kep + '\', ' + idx + ')" class="text-red-500 hover:text-red-700 p-2 bg-white border border-slate-200 rounded shadow-sm transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] cursor-pointer"><i class="fa-solid fa-xmark"></i></button>' +
                         '</div>';
                 });
 

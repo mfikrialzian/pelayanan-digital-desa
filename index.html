@@ -1560,10 +1560,10 @@
             
             <!-- TABS -->
             <div class="flex overflow-x-auto custom-scrollbar gap-2 pb-1">
-                <button type="button" id="bl-tab-1" onclick="switchBuilderTab(1)" class="bl-tab-btn active px-4 py-2 text-xs font-bold border-b-2 border-narmadaGreen text-narmadaGreen whitespace-nowrap transition-colors">1. Info Dasar</button>
-                <button type="button" id="bl-tab-2" onclick="switchBuilderTab(2)" class="bl-tab-btn px-4 py-2 text-xs font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-700 whitespace-nowrap transition-colors">2. Keperluan</button>
-                <button type="button" id="bl-tab-3" onclick="switchBuilderTab(3)" class="bl-tab-btn px-4 py-2 text-xs font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-700 whitespace-nowrap transition-colors">3. Berkas Wajib</button>
-                <button type="button" id="bl-tab-4" onclick="switchBuilderTab(4)" class="bl-tab-btn px-4 py-2 text-xs font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-700 whitespace-nowrap transition-colors">4. Pertanyaan</button>
+                <button type="button" id="bl-tab-1" onclick="switchBuilderTab(1)" class="cursor-pointer hover:scale-[1.02] active:scale-[0.98] bl-tab-btn active px-4 py-2 text-xs font-bold border-b-2 border-narmadaGreen text-narmadaGreen whitespace-nowrap transition-colors">1. Info Dasar</button>
+                <button type="button" id="bl-tab-2" onclick="switchBuilderTab(2)" class="cursor-pointer hover:scale-[1.02] active:scale-[0.98] bl-tab-btn px-4 py-2 text-xs font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-700 whitespace-nowrap transition-colors">2. Keperluan</button>
+                <button type="button" id="bl-tab-3" onclick="switchBuilderTab(3)" class="cursor-pointer hover:scale-[1.02] active:scale-[0.98] bl-tab-btn px-4 py-2 text-xs font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-700 whitespace-nowrap transition-colors">3. Berkas Wajib</button>
+                <button type="button" id="bl-tab-4" onclick="switchBuilderTab(4)" class="cursor-pointer hover:scale-[1.02] active:scale-[0.98] bl-tab-btn px-4 py-2 text-xs font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-700 whitespace-nowrap transition-colors">4. Pertanyaan</button>
             </div>
         </div>
         
@@ -1574,11 +1574,11 @@
                 <!-- STEP 1: Profil -->
                 <div id="bl-step-1" class="space-y-6">
                     <h3 class="text-sm font-bold text-slate-800 border-b border-slate-100 pb-3"><i class="fa-solid fa-info-circle text-narmadaGreen mr-1.5"></i> Informasi Dasar Layanan</h3>
-                    <select id="builder-select-layanan" class="hidden"><option value="[+] TAMBAH LAYANAN BARU">[+] TAMBAH LAYANAN BARU</option></select>
+                    <select id="builder-select-layanan" class="transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-narmadaGreen focus-visible:outline-none hidden"><option value="[+] TAMBAH LAYANAN BARU">[+] TAMBAH LAYANAN BARU</option></select>
                     
                     <div id="wrapper-builder-nama">
                         <label class="block text-[10px] font-bold text-slate-600 mb-1 uppercase tracking-wider">Nama Pelayanan *</label>
-                        <input type="text" id="builder-layanan-nama" list="saran-nama-layanan" placeholder="Contoh: Surat Pengantar Nikah" class="w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-xl focus:ring-1 focus:ring-narmadaGreen focus:border-narmadaGreen block px-4 py-2.5 outline-none transition-all placeholder-slate-400">
+                        <input type="text" id="builder-layanan-nama" list="saran-nama-layanan" placeholder="Contoh: Surat Pengantar Nikah" class="transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-narmadaGreen focus-visible:outline-none w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-xl focus:ring-1 focus:ring-narmadaGreen focus:border-narmadaGreen block px-4 py-2.5 outline-none transition-all placeholder-slate-400">
                         <datalist id="saran-nama-layanan"></datalist>
                     </div>
                 </div>
@@ -1591,27 +1591,27 @@
                     <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-4">
                         <div>
                             <label class="block text-[10px] font-bold text-slate-600 mb-1 uppercase tracking-wider">Ketik Nama Keperluan</label>
-                            <input type="text" id="builder-keperluan-new-input" placeholder="Contoh: Melamar Pekerjaan" class="w-full bg-white border border-slate-200 text-slate-800 text-sm rounded-xl focus:ring-1 focus:ring-narmadaGreen focus:border-narmadaGreen block px-4 py-2.5 outline-none transition-all placeholder-slate-400">
+                            <input type="text" id="builder-keperluan-new-input" placeholder="Contoh: Melamar Pekerjaan" class="transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-narmadaGreen focus-visible:outline-none w-full bg-white border border-slate-200 text-slate-800 text-sm rounded-xl focus:ring-1 focus:ring-narmadaGreen focus:border-narmadaGreen block px-4 py-2.5 outline-none transition-all placeholder-slate-400">
                         </div>
                         <div>
                             <label class="block text-[10px] font-bold text-slate-600 mb-1 uppercase tracking-wider">ID / Link Google Docs (Opsional)</label>
-                            <input type="text" id="builder-keperluan-new-doc" placeholder="Contoh: https://docs.google.com/document/d/..." class="w-full bg-white border border-slate-200 text-slate-800 text-sm rounded-xl focus:ring-1 focus:ring-narmadaGreen focus:border-narmadaGreen block px-4 py-2.5 outline-none transition-all placeholder-slate-400">
+                            <input type="text" id="builder-keperluan-new-doc" placeholder="Contoh: https://docs.google.com/document/d/..." class="transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-narmadaGreen focus-visible:outline-none w-full bg-white border border-slate-200 text-slate-800 text-sm rounded-xl focus:ring-1 focus:ring-narmadaGreen focus:border-narmadaGreen block px-4 py-2.5 outline-none transition-all placeholder-slate-400">
                         </div>
                         <div class="flex justify-end pt-2">
-                            <button id="ev-bind-33" type="button" class="px-5 py-2 bg-narmadaGreen hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-colors shadow-sm"><i class="fa-solid fa-plus mr-1"></i> Tambah Keperluan</button>
+                            <button id="ev-bind-33" type="button" class="cursor-pointer hover:scale-[1.02] active:scale-[0.98] px-5 py-2 bg-narmadaGreen hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-colors shadow-sm"><i class="fa-solid fa-plus mr-1"></i> Tambah Keperluan</button>
                         </div>
                     </div>
 
                     <div class="space-y-2 mt-4">
                         <h4 class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Daftar Keperluan:</h4>
                         <div id="builder-keperluan-list" class="space-y-2 max-h-[300px] overflow-y-auto pr-2"></div>
-                        <select id="builder-keperluan-select" class="hidden"></select>
-                        <button id="ev-bind-32" type="button" class="hidden"></button>
+                        <select id="builder-keperluan-select" class="transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-narmadaGreen focus-visible:outline-none hidden"></select>
+                        <button id="ev-bind-32" type="button" class="cursor-pointer transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] hidden"></button>
                     </div>
 
                     <div id="wrapper-builder-template-pratinjau" class="mt-6">
                         <label class="block text-[10px] font-bold text-slate-600 mb-1 uppercase tracking-wider">Template Pratinjau Surat (Untuk Verifikasi)</label>
-                        <textarea id="builder-template-pratinjau" rows="4" placeholder="Ketik format surat default di sini, gunakan kurung kurawal untuk variabel..." class="w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-xl focus:ring-1 focus:ring-narmadaGreen focus:border-narmadaGreen block px-4 py-2.5 outline-none transition-all placeholder-slate-400 resize-y custom-scrollbar"></textarea>
+                        <textarea id="builder-template-pratinjau" rows="4" placeholder="Ketik format surat default di sini, gunakan kurung kurawal untuk variabel..." class="transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-narmadaGreen focus-visible:outline-none w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-xl focus:ring-1 focus:ring-narmadaGreen focus:border-narmadaGreen block px-4 py-2.5 outline-none transition-all placeholder-slate-400 resize-y custom-scrollbar"></textarea>
                     </div>
                 </div>
 
@@ -1623,16 +1623,16 @@
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
                                         <label class="block text-[10px] font-bold text-slate-600 mb-1">Berlaku Untuk Keperluan:</label>
-                                        <select id="builder-req-keperluan" class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors"></select>
+                                        <select id="builder-req-keperluan" class="transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-narmadaGreen focus-visible:outline-none w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors"></select>
                                     </div>
                                     <div>
                                         <label class="block text-[10px] font-bold text-slate-600 mb-1">Nama Persyaratan:</label>
                                         <div class="flex gap-2">
-                                            <input type="text" id="builder-req-input" list="saran-persyaratan-list" placeholder="Ketik atau pilih saran..." class="flex-grow px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors">
+                                            <input type="text" id="builder-req-input" list="saran-persyaratan-list" placeholder="Ketik atau pilih saran..." class="transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-narmadaGreen focus-visible:outline-none flex-grow px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors">
                                             <datalist id="saran-persyaratan-list"></datalist>
-                                            <button id="ev-bind-35" type="button" class="px-4 py-2 bg-slate-800 text-white rounded-xl text-xs font-bold hover:bg-slate-900 shadow-sm transition-colors"><i class="fa-solid fa-plus"></i> Tambah</button>
+                                            <button id="ev-bind-35" type="button" class="cursor-pointer hover:scale-[1.02] active:scale-[0.98] px-4 py-2 bg-slate-800 text-white rounded-xl text-xs font-bold hover:bg-slate-900 shadow-sm transition-colors"><i class="fa-solid fa-plus"></i> Tambah</button>
                                         </div>
-                                        <div id="builder-req-suggestions" class="flex flex-wrap gap-1.5 mt-2"></div>
+                                        <div id="builder-req-suggestions" class="flex flex-wrap gap-2.5 mt-2"></div>
                                     </div>
                                 </div>
 
@@ -1653,30 +1653,30 @@
                                     <div class="sm:col-span-3 grid grid-cols-1 sm:grid-cols-2 gap-3 mb-1 border-b border-slate-200 pb-3">
                                         <div>
                                             <label class="block text-[10px] font-bold text-slate-600 mb-0.5">Keperluan Surat (Opsional)</label>
-                                            <select id="builder-q-keperluan" class="w-full px-2.5 py-1.5 rounded-lg bg-slate-50 border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors">
+                                            <select id="builder-q-keperluan" class="transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-narmadaGreen focus-visible:outline-none w-full px-2.5 py-1.5 rounded-lg bg-slate-50 border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors">
                                                 <option value="Wajib">Wajib (Berlaku Semua Keperluan)</option>
                                             </select>
                                         </div>
                                         <div>
                                             <label class="block text-[10px] font-bold text-slate-600 mb-0.5">Judul Penanda (Opsional)</label>
-                                            <input type="text" id="builder-q-judul" placeholder="Contoh: Data Pribadi" class="w-full px-2.5 py-1.5 rounded-lg bg-slate-50 border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors">
+                                            <input type="text" id="builder-q-judul" placeholder="Contoh: Data Pribadi" class="transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-narmadaGreen focus-visible:outline-none w-full px-2.5 py-1.5 rounded-lg bg-slate-50 border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors">
                                         </div>
                                     </div>
 
                                     <div class="sm:col-span-2 mt-1">
                                         <label class="block text-[10px] font-bold text-slate-600 mb-0.5">Nama Pertanyaan / Label</label>
-                                        <input type="text" id="builder-q-label" placeholder="Contoh: Bidang Usaha" class="w-full px-2.5 py-1.5 rounded-lg bg-slate-50 border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors">
+                                        <input type="text" id="builder-q-label" placeholder="Contoh: Bidang Usaha" class="transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-narmadaGreen focus-visible:outline-none w-full px-2.5 py-1.5 rounded-lg bg-slate-50 border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors">
                                     </div>
                                     <div class="mt-1">
                                         <label class="block text-[10px] font-bold text-slate-600 mb-0.5">Wajib Diisi?</label>
-                                        <select id="builder-q-required" class="w-full px-2.5 py-1.5 rounded-lg bg-slate-50 border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors">
+                                        <select id="builder-q-required" class="transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-narmadaGreen focus-visible:outline-none w-full px-2.5 py-1.5 rounded-lg bg-slate-50 border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors">
                                             <option value="ya">Ya (Wajib)</option>
                                             <option value="tidak">Tidak (Opsional)</option>
                                         </select>
                                     </div>
                                     <div class="mt-1">
                                         <label class="block text-[10px] font-bold text-slate-600 mb-0.5">Tipe Input</label>
-                                        <select id="builder-q-type" class="w-full px-2.5 py-1.5 rounded-lg bg-slate-50 border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors">
+                                        <select id="builder-q-type" class="transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-narmadaGreen focus-visible:outline-none w-full px-2.5 py-1.5 rounded-lg bg-slate-50 border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors">
                                             <option value="text">Input Teks</option>
                                             <option value="dropdown">Dropdown (Pilihan)</option>
                                             <option value="number">Angka (Number)</option>
@@ -1686,15 +1686,15 @@
 
                                     <div id="wrapper-q-options" class="hidden sm:col-span-3">
                                         <label class="block text-[10px] font-bold text-slate-600 mb-0.5">Opsi Pilihan (Pisahkan dengan koma)</label>
-                                        <input type="text" id="builder-q-options" placeholder="Contoh: Pertanian, Perdagangan, Jasa" class="w-full px-2.5 py-1.5 rounded-lg bg-white border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors">
+                                        <input type="text" id="builder-q-options" placeholder="Contoh: Pertanian, Perdagangan, Jasa" class="transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-narmadaGreen focus-visible:outline-none w-full px-2.5 py-1.5 rounded-lg bg-white border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors">
                                     </div>
                                     <div id="wrapper-q-limit" class="hidden sm:col-span-3">
                                         <label class="block text-[10px] font-bold text-slate-600 mb-0.5">Batas Maksimal Digit (Opsional)</label>
-                                        <input type="number" id="builder-q-limit" placeholder="Contoh: 16 untuk NIK" class="w-full px-2.5 py-1.5 rounded-lg bg-white border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors">
+                                        <input type="number" id="builder-q-limit" placeholder="Contoh: 16 untuk NIK" class="transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-narmadaGreen focus-visible:outline-none w-full px-2.5 py-1.5 rounded-lg bg-white border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors">
                                     </div>
                                     <div class="sm:col-span-3 flex justify-end gap-2">
-                                        <button id="btn-cancel-update-question" class="hidden px-4 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 rounded-lg text-xs font-bold transition-colors">Batal</button>
-                                        <button id="btn-add-update-question" class="px-4 py-2 bg-narmadaGreen hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition-colors flex items-center gap-1.5 shadow-sm">
+                                        <button id="btn-cancel-update-question" class="cursor-pointer hover:scale-[1.02] active:scale-[0.98] hidden px-4 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 rounded-lg text-xs font-bold transition-colors">Batal</button>
+                                        <button id="btn-add-update-question" class="cursor-pointer hover:scale-[1.02] active:scale-[0.98] px-4 py-2 bg-narmadaGreen hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition-colors flex items-center gap-2.5 shadow-sm">
                                             <i class="fa-solid fa-plus"></i> <span>Tambahkan Pertanyaan</span>
                                         </button>
                                     </div>
@@ -1708,7 +1708,7 @@
                                     <div class="grid grid-cols-1 gap-3 mb-3">
                                         <div>
                                             <label class="block text-[10px] font-bold text-slate-600 mb-0.5">Keperluan Surat</label>
-                                            <select id="builder-repeater-keperluan" class="w-full px-2.5 py-1.5 rounded-lg bg-white border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors">
+                                            <select id="builder-repeater-keperluan" class="transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-narmadaGreen focus-visible:outline-none w-full px-2.5 py-1.5 rounded-lg bg-white border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors">
                                                 <option value="Wajib">Wajib (Berlaku Semua Keperluan)</option>
                                             </select>
                                         </div>
@@ -1716,10 +1716,10 @@
                                     <div class="mb-3">
                                         <label class="block text-[10px] font-bold text-slate-600 mb-0.5">Pilih Pertanyaan</label>
                                         <div class="flex gap-2">
-                                            <select id="builder-repeater-select" class="flex-grow px-2.5 py-1.5 rounded-lg bg-white border border-indigo-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors">
+                                            <select id="builder-repeater-select" class="transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-narmadaGreen focus-visible:outline-none flex-grow px-2.5 py-1.5 rounded-lg bg-white border border-indigo-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors">
                                                 <option value="">-- Pilih Pertanyaan Tunggal --</option>
                                             </select>
-                                            <button id="ev-bind-36" type="button" class="px-3 py-1.5 bg-slate-50 hover:bg-slate-100 text-slate-600 border border-slate-200 rounded-lg text-xs font-bold transition-colors whitespace-nowrap shadow-sm"><i class="fa-solid fa-plus"></i> Sisipkan</button>
+                                            <button id="ev-bind-36" type="button" class="cursor-pointer hover:scale-[1.02] active:scale-[0.98] px-3 py-1.5 bg-slate-50 hover:bg-slate-100 text-slate-600 border border-slate-200 rounded-lg text-xs font-bold transition-colors whitespace-nowrap shadow-sm"><i class="fa-solid fa-plus"></i> Sisipkan</button>
                                         </div>
                                     </div>
                                     <div class="mb-3">
@@ -1729,8 +1729,8 @@
                                         </div>
                                     </div>
                                     <div class="flex justify-end gap-2">
-                                        <button id="btn-cancel-update-repeater" class="hidden px-4 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 rounded-lg text-xs font-bold transition-colors">Batal</button>
-                                        <button id="btn-add-update-repeater" class="px-4 py-2 bg-narmadaGreen hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition-colors flex items-center gap-1.5 shadow-sm">
+                                        <button id="btn-cancel-update-repeater" class="cursor-pointer hover:scale-[1.02] active:scale-[0.98] hidden px-4 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 rounded-lg text-xs font-bold transition-colors">Batal</button>
+                                        <button id="btn-add-update-repeater" class="cursor-pointer hover:scale-[1.02] active:scale-[0.98] px-4 py-2 bg-narmadaGreen hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition-colors flex items-center gap-2.5 shadow-sm">
                                             <i class="fa-solid fa-save"></i> <span>Tambahkan Grup</span>
                                         </button>
                                     </div>
@@ -1745,13 +1745,13 @@
                 </div>
                 <!-- FOOTER NAV BUTTONS -->
                 <div class="mt-8 flex justify-between items-center pt-4 border-t border-slate-100">
-                    <button type="button" id="bl-btn-prev" onclick="switchBuilderTab(blCurrentStep - 1)" class="px-5 py-2.5 text-xs font-bold text-slate-600 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl transition-all hidden"><i class="fa-solid fa-arrow-left mr-1.5"></i> Kembali</button>
-                    <button type="button" id="ev-bind-30" class="px-5 py-2.5 text-xs font-bold text-slate-600 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl transition-all">Batal</button>
+                    <button type="button" id="bl-btn-prev" onclick="switchBuilderTab(blCurrentStep - 1)" class="cursor-pointer hover:scale-[1.02] active:scale-[0.98] px-5 py-2.5 text-xs font-bold text-slate-600 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl transition-all hidden"><i class="fa-solid fa-arrow-left mr-1.5"></i> Kembali</button>
+                    <button type="button" id="ev-bind-30" class="cursor-pointer hover:scale-[1.02] active:scale-[0.98] px-5 py-2.5 text-xs font-bold text-slate-600 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl transition-all">Batal</button>
                     
                     <div class="flex-1"></div>
                     
-                    <button type="button" id="bl-btn-next" onclick="switchBuilderTab(blCurrentStep + 1)" class="px-5 py-2.5 text-xs font-bold text-white bg-narmadaGreen hover:bg-emerald-700 shadow-sm rounded-xl transition-all">Selanjutnya <i class="fa-solid fa-arrow-right ml-1.5"></i></button>
-                    <button type="button" id="ev-bind-31" class="px-5 py-2.5 text-xs font-bold text-white bg-narmadaGreen hover:bg-emerald-700 shadow-sm rounded-xl transition-all"><i class="fa-solid fa-save mr-1.5"></i> Simpan Perubahan</button>
+                    <button type="button" id="bl-btn-next" onclick="switchBuilderTab(blCurrentStep + 1)" class="cursor-pointer hover:scale-[1.02] active:scale-[0.98] px-5 py-2.5 text-xs font-bold text-white bg-narmadaGreen hover:bg-emerald-700 shadow-sm rounded-xl transition-all">Selanjutnya <i class="fa-solid fa-arrow-right ml-1.5"></i></button>
+                    <button type="button" id="ev-bind-31" class="cursor-pointer hover:scale-[1.02] active:scale-[0.98] px-5 py-2.5 text-xs font-bold text-white bg-narmadaGreen hover:bg-emerald-700 shadow-sm rounded-xl transition-all"><i class="fa-solid fa-save mr-1.5"></i> Simpan Perubahan</button>
                 </div>
             </form>
         </div>
@@ -1773,15 +1773,15 @@
                             <!-- Sisi Kanan: Pencarian Kapsul dan Tombol Tambah -->
                             <div class="flex items-center gap-2 w-full sm:w-auto">
                                 <!-- Form Pencarian Kapsul -->
-                                <div class="flex items-center gap-1 bg-slate-50 border border-slate-200 p-1 rounded-xl shadow-inner flex-grow">
-                                    <input type="text" id="admin-layanan-keyword-filter" oninput="runLayananFilter()" placeholder="Cari layanan..." class="bg-transparent border-none focus:ring-0 text-xs px-2 w-32 sm:w-48 outline-none">
-                                    <button id="ev-bind-37" class="w-7 h-7 bg-white hover:bg-slate-100 text-slate-500 rounded-lg text-xs transition-all shadow-sm flex items-center justify-center border border-slate-200 shrink-0">
+                                <div class="flex items-center gap-2 bg-slate-50 border border-slate-200 p-2 rounded-xl shadow-inner flex-grow">
+                                    <input type="text" id="admin-layanan-keyword-filter" oninput="runLayananFilter()" placeholder="Cari layanan..." class="transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-narmadaGreen focus-visible:outline-none bg-transparent border-none focus:ring-0 text-xs px-2 w-32 sm:w-48 outline-none">
+                                    <button id="ev-bind-37" class="cursor-pointer hover:scale-[1.02] active:scale-[0.98] w-7 h-7 bg-white hover:bg-slate-100 text-slate-500 rounded-lg text-xs transition-all shadow-sm flex items-center justify-center border border-slate-200 shrink-0">
                                         <i class="fa-solid fa-magnifying-glass"></i>
                                     </button>
                                 </div>
 
                                 <!-- Tombol Tambah -->
-                                <button id="ev-bind-38" class="px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-xs font-bold shadow transition-all flex items-center gap-1.5 shrink-0">
+                                <button id="ev-bind-38" class="cursor-pointer hover:scale-[1.02] active:scale-[0.98] px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-xs font-bold shadow transition-all flex items-center gap-2.5 shrink-0">
                                     <i class="fa-solid fa-plus"></i> Tambah Baru
                                 </button>
                             </div>
@@ -1815,16 +1815,16 @@
                         </div>
                         
                         <form id="form-manage-status" class="flex-1 flex flex-col md:flex-row min-h-0 bg-white relative">
-                            <input type="hidden" id="edit-status-id">
+                            <input type="hidden" id="edit-status-id" class="transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-narmadaGreen focus-visible:outline-none">
                             
                             <!-- Kiri: Konten Surat & Lampiran -->
                             <div class="flex-1 flex flex-col min-h-0 border-r border-slate-100">
                                 <!-- Tabs Nav -->
                                 <div class="px-5 border-b border-slate-100 flex gap-4 bg-slate-50/50 shrink-0">
-                                    <button type="button" id="btn-tab-draf" class="py-3 px-2 text-xs font-bold text-narmadaGreen border-b-2 border-narmadaGreen transition-colors flex items-center gap-2">
+                                    <button type="button" id="btn-tab-draf" class="cursor-pointer hover:scale-[1.02] active:scale-[0.98] py-3 px-2 text-xs font-bold text-narmadaGreen border-b-2 border-narmadaGreen transition-colors flex items-center gap-2">
                                         <i class="fa-solid fa-file-lines"></i> Draf Surat
                                     </button>
-                                    <button type="button" id="btn-tab-lampiran" class="py-3 px-2 text-xs font-bold text-slate-400 border-b-2 border-transparent hover:text-slate-600 transition-colors flex items-center gap-2">
+                                    <button type="button" id="btn-tab-lampiran" class="cursor-pointer hover:scale-[1.02] active:scale-[0.98] py-3 px-2 text-xs font-bold text-slate-400 border-b-2 border-transparent hover:text-slate-600 transition-colors flex items-center gap-2">
                                         <i class="fa-solid fa-images"></i> Dokumen Lampiran
                                     </button>
                                 </div>
@@ -1856,7 +1856,7 @@
                                     <div class="space-y-4">
                                         <div>
                                             <label class="block text-[10px] font-extrabold text-slate-700 uppercase tracking-wide mb-1.5">Ubah Status</label>
-                                            <select id="edit-status-select" required class="w-full px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-xs font-medium focus:ring-2 focus:ring-narmadaGreen/20 focus:border-narmadaGreen outline-none transition-all shadow-sm">
+                                            <select id="edit-status-select" required class="transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-narmadaGreen focus-visible:outline-none w-full px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-xs font-medium focus:ring-2 focus:ring-narmadaGreen/20 focus:border-narmadaGreen outline-none transition-all shadow-sm">
                                                 <option value="Menunggu">Menunggu</option>
                                                 <option value="Verifikasi">Verifikasi</option>
                                                 <option value="Selesai">Selesai</option>
@@ -1865,17 +1865,17 @@
                                         </div>
                                         <div>
                                             <label class="block text-[10px] font-extrabold text-slate-700 uppercase tracking-wide mb-1.5">Pesan WA Otomatis</label>
-                                            <textarea id="edit-status-catatan" oninput="markVerifikasiDirty()" required rows="6" class="w-full px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-[11px] leading-relaxed focus:ring-2 focus:ring-narmadaGreen/20 focus:border-narmadaGreen outline-none transition-all shadow-sm resize-none custom-scrollbar" placeholder="Ketik pesan konfirmasi atau revisi untuk pemohon di sini..."></textarea>
+                                            <textarea id="edit-status-catatan" oninput="markVerifikasiDirty()" required rows="6" class="transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-narmadaGreen focus-visible:outline-none w-full px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-[11px] leading-relaxed focus:ring-2 focus:ring-narmadaGreen/20 focus:border-narmadaGreen outline-none transition-all shadow-sm resize-none custom-scrollbar" placeholder="Ketik pesan konfirmasi atau revisi untuk pemohon di sini..."></textarea>
                                         </div>
                                     </div>
                                 </div>
 
                                 <!-- Area Bawah Kanan: Tombol Simpan -->
                                 <div class="p-4 bg-white border-t border-slate-100 shrink-0 flex flex-col gap-2 z-10">
-                                    <button id="ev-bind-39" type="button" class="w-full px-4 py-2.5 bg-gradient-to-r from-narmadaGreen to-emerald-700 hover:from-emerald-600 hover:to-emerald-800 text-white text-xs font-bold rounded-xl shadow-sm transition-all flex justify-center items-center gap-2 tap-squish">
+                                    <button id="ev-bind-39" type="button" class="cursor-pointer hover:scale-[1.02] active:scale-[0.98] w-full px-4 py-2.5 bg-gradient-to-r from-narmadaGreen to-emerald-700 hover:from-emerald-600 hover:to-emerald-800 text-white text-xs font-bold rounded-xl shadow-sm transition-all flex justify-center items-center gap-2 tap-squish">
                                         <i class="fa-solid fa-check"></i> Simpan Verifikasi
                                     </button>
-                                    <button id="ev-bind-40" type="button" class="w-full px-4 py-2.5 text-xs font-bold text-slate-600 bg-white hover:bg-slate-50 border border-slate-200 rounded-xl transition-all tap-squish">
+                                    <button id="ev-bind-40" type="button" class="cursor-pointer hover:scale-[1.02] active:scale-[0.98] w-full px-4 py-2.5 text-xs font-bold text-slate-600 bg-white hover:bg-slate-50 border border-slate-200 rounded-xl transition-all tap-squish">
                                         Tutup Peninjauan
                                     </button>
                                 </div>
