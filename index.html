@@ -1547,70 +1547,77 @@
                             </div>
                         </div>
                     </div>
-                </div><div id="subview-admin-layanan" class="hidden space-y-6 text-left">
-                    <!-- STICKY HEADER -->
-                    <div class="w-full flex justify-between items-center bg-white p-5 rounded-2xl shadow-sm border border-slate-100 sticky top-0 z-40">
+                </div><<div id="subview-admin-layanan" class="hidden w-full max-w-4xl mx-auto mt-4 pb-10">
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col">
+        <!-- Header & Stepper -->
+        <div class="w-full bg-white p-5 md:p-6 border-b border-slate-100 rounded-t-2xl flex flex-col gap-4">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h2 class="text-lg font-bold text-slate-800" id="unified-editor-title"><i class="fa-solid fa-layer-group text-narmadaGreen mr-2"></i> Editor Layanan</h2>
+                    <p class="text-[10px] text-slate-500 mt-1">Konfigurasi detail, keperluan, persyaratan, dan pertanyaan.</p>
+                </div>
+            </div>
+            
+            <!-- TABS -->
+            <div class="flex overflow-x-auto custom-scrollbar gap-2 pb-1">
+                <button type="button" id="bl-tab-1" onclick="switchBuilderTab(1)" class="bl-tab-btn active px-4 py-2 text-xs font-bold border-b-2 border-narmadaGreen text-narmadaGreen whitespace-nowrap transition-colors">1. Info Dasar</button>
+                <button type="button" id="bl-tab-2" onclick="switchBuilderTab(2)" class="bl-tab-btn px-4 py-2 text-xs font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-700 whitespace-nowrap transition-colors">2. Keperluan</button>
+                <button type="button" id="bl-tab-3" onclick="switchBuilderTab(3)" class="bl-tab-btn px-4 py-2 text-xs font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-700 whitespace-nowrap transition-colors">3. Berkas Wajib</button>
+                <button type="button" id="bl-tab-4" onclick="switchBuilderTab(4)" class="bl-tab-btn px-4 py-2 text-xs font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-700 whitespace-nowrap transition-colors">4. Pertanyaan</button>
+            </div>
+        </div>
+        
+        <!-- Body -->
+        <div class="p-5 md:p-8">
+            <form id="form-builder-layanan" class="max-w-2xl mx-auto" onsubmit="event.preventDefault();">
+                
+                <!-- STEP 1: Profil -->
+                <div id="bl-step-1" class="space-y-6">
+                    <h3 class="text-sm font-bold text-slate-800 border-b border-slate-100 pb-3"><i class="fa-solid fa-info-circle text-narmadaGreen mr-1.5"></i> Informasi Dasar Layanan</h3>
+                    <select id="builder-select-layanan" class="hidden"><option value="[+] TAMBAH LAYANAN BARU">[+] TAMBAH LAYANAN BARU</option></select>
+                    
+                    <div id="wrapper-builder-nama">
+                        <label class="block text-[10px] font-bold text-slate-600 mb-1 uppercase tracking-wider">Nama Pelayanan *</label>
+                        <input type="text" id="builder-layanan-nama" list="saran-nama-layanan" placeholder="Contoh: Surat Pengantar Nikah" class="w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-xl focus:ring-1 focus:ring-narmadaGreen focus:border-narmadaGreen block px-4 py-2.5 outline-none transition-all placeholder-slate-400">
+                        <datalist id="saran-nama-layanan"></datalist>
+                    </div>
+                </div>
+
+                <!-- STEP 2: Keperluan -->
+                <div id="bl-step-2" class="space-y-6 hidden">
+                    <h3 class="text-sm font-bold text-slate-800 border-b border-slate-100 pb-3"><i class="fa-solid fa-list-check text-narmadaGreen mr-1.5"></i> Keperluan Surat & Template Dokumen</h3>
+                    <p class="text-[10px] text-slate-500">Tentukan daftar keperluan. Anda bisa menyematkan ID/Link Google Docs template (Opsional) untuk setiap keperluan yang berbeda format.</p>
+                    
+                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-4">
                         <div>
-                            <h2 class="text-lg font-bold text-slate-800" id="unified-editor-title">Editor Layanan</h2>
-                            <p class="text-[10px] text-slate-500">Konfigurasi detail, berkas persyaratan, dan kolom pertanyaan.</p>
+                            <label class="block text-[10px] font-bold text-slate-600 mb-1 uppercase tracking-wider">Ketik Nama Keperluan</label>
+                            <input type="text" id="builder-keperluan-new-input" placeholder="Contoh: Melamar Pekerjaan" class="w-full bg-white border border-slate-200 text-slate-800 text-sm rounded-xl focus:ring-1 focus:ring-narmadaGreen focus:border-narmadaGreen block px-4 py-2.5 outline-none transition-all placeholder-slate-400">
                         </div>
-                        <div class="flex gap-2">
-                            <button id="ev-bind-30" class="px-4 py-2 text-xs font-bold text-slate-600 bg-slate-50 border border-slate-200 hover:bg-slate-100 rounded-xl transition-colors">Batal</button>
-                            <button id="ev-bind-31" class="px-5 py-2 bg-narmadaGreen hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-sm flex items-center gap-2 transition-colors">
-                                <i class="fa-solid fa-save"></i> Simpan Perubahan
-                            </button>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-600 mb-1 uppercase tracking-wider">ID / Link Google Docs (Opsional)</label>
+                            <input type="text" id="builder-keperluan-new-doc" placeholder="Contoh: https://docs.google.com/document/d/..." class="w-full bg-white border border-slate-200 text-slate-800 text-sm rounded-xl focus:ring-1 focus:ring-narmadaGreen focus:border-narmadaGreen block px-4 py-2.5 outline-none transition-all placeholder-slate-400">
+                        </div>
+                        <div class="flex justify-end pt-2">
+                            <button id="ev-bind-33" type="button" class="px-5 py-2 bg-narmadaGreen hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-colors shadow-sm"><i class="fa-solid fa-plus mr-1"></i> Tambah Keperluan</button>
                         </div>
                     </div>
 
-                    <div class="max-w-4xl mx-auto space-y-6">
-                        <!-- INFO DASAR & KEPERLUAN -->
-                            <div class="space-y-4 border-b border-slate-100 pb-5 mb-2">
-                                <h3 class="text-sm font-bold text-slate-800 border-b border-slate-100 pb-3"><i class="fa-solid fa-info-circle text-narmadaGreen"></i> Info Dasar</h3>
-                                
-                                <!-- HIDDEN SELECT (For compatibility with existing JS, we hide it and set it programmatically) -->
-                                <select id="builder-select-layanan" class="hidden"><option value="[+] TAMBAH LAYANAN BARU">[+] TAMBAH LAYANAN BARU</option></select>
-                                
-                                <div id="wrapper-builder-nama">
-                                    <label class="block text-[10px] font-bold text-slate-600 mb-1">Nama Pelayanan *</label>
-                                    <input type="text" id="builder-layanan-nama" list="saran-nama-layanan" placeholder="Contoh: Surat Pengantar Nikah" class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors">
-                                    <datalist id="saran-nama-layanan"></datalist>
-                                </div>
-                                <div id="wrapper-builder-template">
-                                    <label class="block text-[10px] font-bold text-slate-600 mb-1">ID Template Google Docs (PDF) *</label>
-                                    <input type="text" id="builder-template-doc-id" placeholder="Kosongkan jika tidak butuh PDF" class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors">
-                                </div>
-                                <div id="wrapper-builder-template-pratinjau" class="mt-4">
-                                    <label class="block text-[10px] font-bold text-slate-600 mb-1">Template Pratinjau Surat (Untuk Verifikasi)</label>
-                                    <textarea id="builder-template-pratinjau" rows="4" placeholder="Ketik format surat di sini, gunakan kurung kurawal untuk variabel, misal: {Nama Lengkap}..." class="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors resize-y custom-scrollbar"></textarea>
-                                </div>
-                            </div>
+                    <div class="space-y-2 mt-4">
+                        <h4 class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Daftar Keperluan:</h4>
+                        <div id="builder-keperluan-list" class="space-y-2 max-h-[300px] overflow-y-auto pr-2"></div>
+                        <select id="builder-keperluan-select" class="hidden"></select>
+                        <button id="ev-bind-32" type="button" class="hidden"></button>
+                    </div>
 
-                            <div class="space-y-4 border-b border-slate-100 pb-5 mb-2">
-                                <h3 class="text-sm font-bold text-slate-800 border-b border-slate-100 pb-3"><i class="fa-solid fa-list-check text-narmadaGreen"></i> Keperluan Surat</h3>
-                                <p class="text-[9px] text-slate-500">Tentukan daftar keperluan (opsi dropdown) yang bisa dipilih warga saat mengajukan layanan ini.</p>
-                                
-                                <div>
-                                    <div class="flex gap-2">
-                                        <select id="builder-keperluan-select" class="flex-grow px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors">
-                                            <option value="">-- Pilih / Edit Keperluan --</option>
-                                            <option value="__ADD_NEW__" class="font-extrabold text-emerald-600">[+] TAMBAH KEPERLUAN BARU...</option>
-                                        </select>
-                                        <button id="ev-bind-32" type="button" class="px-3 py-2 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-xl text-xs font-bold transition-colors shadow-sm" title="Hapus opsi terpilih">
-                                            <i class="fa-solid fa-trash"></i>
-                                        </button>
-                                    </div>
+                    <div id="wrapper-builder-template-pratinjau" class="mt-6">
+                        <label class="block text-[10px] font-bold text-slate-600 mb-1 uppercase tracking-wider">Template Pratinjau Surat (Untuk Verifikasi)</label>
+                        <textarea id="builder-template-pratinjau" rows="4" placeholder="Ketik format surat default di sini, gunakan kurung kurawal untuk variabel..." class="w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-xl focus:ring-1 focus:ring-narmadaGreen focus:border-narmadaGreen block px-4 py-2.5 outline-none transition-all placeholder-slate-400 resize-y custom-scrollbar"></textarea>
+                    </div>
+                </div>
 
-                                    <div id="wrapper-new-keperluan" class="hidden mt-2.5 p-4 bg-slate-50 border border-slate-100 rounded-xl space-y-2">
-                                        <label class="block text-[10px] font-bold text-slate-600">Ketik Keperluan Baru</label>
-                                        <div class="flex gap-2">
-                                            <input type="text" id="builder-keperluan-new-input" placeholder="Contoh: Melamar Pekerjaan" class="flex-grow px-3 py-2 rounded-lg bg-white border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors">
-                                            <button id="ev-bind-33" type="button" class="px-4 py-2 bg-narmadaGreen hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition-colors shadow-sm">Simpan</button>
-                                            <button id="ev-bind-34" type="button" class="px-3 py-2 bg-white hover:bg-slate-50 border border-slate-200 text-slate-600 rounded-lg text-xs font-bold transition-colors">Batal</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="space-y-4 border-b border-slate-100 pb-5 mb-2">
+                <!-- STEP 3: Persyaratan -->
+                <div id="bl-step-3" class="space-y-6 hidden">
+                    <div class="space-y-4 border-b border-slate-100 pb-5 mb-2">
                                 <h3 class="text-sm font-bold text-slate-800 border-b border-slate-100 pb-3"><i class="fa-solid fa-file-invoice text-emerald-600"></i> Berkas Persyaratan (Upload Warga)</h3>
                                 
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1634,8 +1641,11 @@
                                     <div id="builder-req-mapping-list" class="space-y-2 max-h-[250px] overflow-y-auto pr-2"></div>
                                 </div>
                             </div>
+                </div>
 
-                            <!-- PERTANYAAN CARD -->
+                <!-- STEP 4: Pertanyaan -->
+                <div id="bl-step-4" class="space-y-6 hidden">
+                    <!-- PERTANYAAN CARD -->
                             <div class="space-y-4 border-b border-slate-100 pb-5 mb-2">
                                 <h3 class="text-sm font-bold text-slate-800 border-b border-slate-100 pb-3"><i class="fa-solid fa-question-circle text-blue-600"></i> Formulir Pertanyaan Tambahan</h3>
                                 
@@ -1730,9 +1740,23 @@
                                     <h4 class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Daftar Pertanyaan Yang Dibuat:</h4>
                                     <div id="builder-q-list" class="space-y-2 max-h-[300px] overflow-y-auto pr-2"></div>
                                 </div>
-                            </div>
-                    </div>
-                </div><div id="subview-admin-daftar-layanan" class="hidden space-y-6 text-left">
+                </div>
+
+                </div>
+                <!-- FOOTER NAV BUTTONS -->
+                <div class="mt-8 flex justify-between items-center pt-4 border-t border-slate-100">
+                    <button type="button" id="bl-btn-prev" onclick="switchBuilderTab(blCurrentStep - 1)" class="px-5 py-2.5 text-xs font-bold text-slate-600 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl transition-all hidden"><i class="fa-solid fa-arrow-left mr-1.5"></i> Kembali</button>
+                    <button type="button" id="ev-bind-30" class="px-5 py-2.5 text-xs font-bold text-slate-600 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl transition-all">Batal</button>
+                    
+                    <div class="flex-1"></div>
+                    
+                    <button type="button" id="bl-btn-next" onclick="switchBuilderTab(blCurrentStep + 1)" class="px-5 py-2.5 text-xs font-bold text-white bg-narmadaGreen hover:bg-emerald-700 shadow-sm rounded-xl transition-all">Selanjutnya <i class="fa-solid fa-arrow-right ml-1.5"></i></button>
+                    <button type="button" id="ev-bind-31" class="px-5 py-2.5 text-xs font-bold text-white bg-narmadaGreen hover:bg-emerald-700 shadow-sm rounded-xl transition-all"><i class="fa-solid fa-save mr-1.5"></i> Simpan Perubahan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>/div><div id="subview-admin-daftar-layanan" class="hidden space-y-6 text-left">
                     <div class="bg-white rounded-2xl border border-slate-100 overflow-hidden shadow-sm p-5 space-y-4">
                         <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3 border-b border-slate-100 pb-4">
                             <!-- Sisi Kiri: Judul dan Info Jumlah -->

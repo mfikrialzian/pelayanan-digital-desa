@@ -1,3 +1,91 @@
+
+export let blCurrentStep = 1;
+export let builderKeperluanList = []; // Array of {nama, doc}
+
+export function switchBuilderTab(step) {
+    if (step < 1 || step > 4) return;
+    blCurrentStep = step;
+    
+    // Update Tabs
+    for (let i = 1; i <= 4; i++) {
+        let tab = document.getElementById('bl-tab-' + i);
+        let content = document.getElementById('bl-step-' + i);
+        if (tab && content) {
+            if (i === step) {
+                tab.className = 'bl-tab-btn active px-4 py-2 text-xs font-bold border-b-2 border-narmadaGreen text-narmadaGreen whitespace-nowrap transition-colors';
+                content.classList.remove('hidden');
+            } else {
+                tab.className = 'bl-tab-btn px-4 py-2 text-xs font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-700 whitespace-nowrap transition-colors';
+                content.classList.add('hidden');
+            }
+        }
+    }
+    
+    // Update Next/Prev Buttons
+    let btnPrev = document.getElementById('bl-btn-prev');
+    let btnNext = document.getElementById('bl-btn-next');
+    
+    if (btnPrev) {
+        if (step === 1) btnPrev.classList.add('hidden');
+        else btnPrev.classList.remove('hidden');
+    }
+    
+    if (btnNext) {
+        if (step === 4) btnNext.classList.add('hidden');
+        else btnNext.classList.remove('hidden');
+    }
+}
+
+export function renderBuilderKeperluanList() {
+    let container = document.getElementById('builder-keperluan-list');
+    let select = document.getElementById('builder-keperluan-select');
+    
+    container.innerHTML = "";
+    select.innerHTML = '<option value="">-- Pilih / Edit Keperluan --</option>';
+    
+    if (builderKeperluanList.length === 0) {
+        container.innerHTML = '<p class="text-[10px] text-slate-400 italic">Belum ada keperluan yang ditambahkan.</p>';
+        return;
+    }
+    
+    builderKeperluanList.forEach((item, index) => {
+        // Add to UI list
+        let html = `<div class="bg-white border border-slate-200 rounded-xl p-3 shadow-sm text-left mb-2 flex justify-between items-center gap-2">
+            <div class="flex-1 min-w-0">
+                <h5 class="text-xs font-extrabold text-slate-800 truncate">${item.nama}</h5>
+                <p class="text-[10px] text-slate-500 truncate mt-0.5"><i class="fa-solid fa-link"></i> ${item.doc ? item.doc : 'Tidak ada template / Default'}</p>
+            </div>
+            <button type="button" onclick="deleteKeperluanAtIndex(${index})" class="px-2 py-1.5 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-lg text-xs font-bold transition-colors shadow-sm shrink-0" title="Hapus"><i class="fa-solid fa-trash"></i></button>
+        </div>`;
+        container.innerHTML += html;
+        
+        // Add to hidden select for compatibility with other scripts (req mapping, etc)
+        let opt = document.createElement('option');
+        opt.value = item.nama;
+        opt.text = item.nama;
+        select.add(opt);
+    });
+}
+
+export function deleteKeperluanAtIndex(index) {
+    if (index >= 0 && index < builderKeperluanList.length) {
+        let name = builderKeperluanList[index].nama;
+        // Check if there are requirements mapped to this keperluan
+        if (window.builderReqMap && window.builderReqMap[name]) {
+            askConfirmation("Hapus Keperluan", `Keperluan '${name}' memiliki persyaratan terkait. Tetap hapus?`, function() {
+                delete window.builderReqMap[name];
+                builderKeperluanList.splice(index, 1);
+                renderBuilderKeperluanList();
+                pushToast("Keperluan telah dihapus.", "success");
+            });
+        } else {
+            builderKeperluanList.splice(index, 1);
+            renderBuilderKeperluanList();
+            pushToast("Keperluan telah dihapus.", "success");
+        }
+    }
+}
+
 export function openLayananEditor(id) {
             document.getElementById('subview-admin-daftar-layanan').classList.add('hidden');
             document.getElementById('subview-admin-layanan').classList.remove('hidden');
@@ -10,6 +98,7 @@ export function openLayananEditor(id) {
                 if(titleEl) titleEl.innerText = 'Edit Layanan: ' + id;
             }
             handleBuilderLayananLoad();
+            switchBuilderTab(1);
         }
 
 export function closeLayananEditor() {
@@ -238,32 +327,29 @@ export function handleKeperluanSelectChange() {
         }
 
 export function saveNewKeperluanOption() {
-            let input = document.getElementById('builder-keperluan-new-input');
-            let val = input.value.trim();
-            if (!val) {
-                pushToast("Ketik opsi keperluan terlebih dahulu!", "error");
+            let inputNama = document.getElementById('builder-keperluan-new-input');
+            let inputDoc = document.getElementById('builder-keperluan-new-doc');
+            
+            let nama = inputNama.value.trim();
+            let doc = inputDoc.value.trim();
+            
+            if (!nama) {
+                pushToast("Ketik nama keperluan terlebih dahulu!", "error");
                 return;
             }
 
-            let select = document.getElementById('builder-keperluan-select');
-
-            for (let i = 0; i < select.options.length; i++) {
-                if (select.options[i].value.toLowerCase() === val.toLowerCase()) {
-                    pushToast("Opsi keperluan '" + val + "' sudah terdaftar!", "error");
-                    return;
-                }
+            let exists = builderKeperluanList.find(k => k.nama.toLowerCase() === nama.toLowerCase());
+            if (exists) {
+                pushToast("Keperluan '" + nama + "' sudah terdaftar!", "error");
+                return;
             }
 
-            let opt = document.createElement('option');
-            opt.value = val;
-            opt.text = val;
+            builderKeperluanList.push({ nama: nama, doc: doc });
+            renderBuilderKeperluanList();
 
-            select.add(opt, select.options[select.options.length - 1]);
-            select.value = val;
-
-            input.value = "";
-            document.getElementById('wrapper-new-keperluan').classList.add('hidden');
-            pushToast("Keperluan '" + val + "' berhasil ditambahkan!", "success");
+            inputNama.value = "";
+            inputDoc.value = "";
+            pushToast("Keperluan '" + nama + "' berhasil ditambahkan!", "success");
         }
 
 export function cancelNewKeperluanOption() {
@@ -436,7 +522,7 @@ export function populateBuilderLayananToEdit(id) {
             document.getElementById('builder-select-layanan').value = found.nama;
             document.getElementById('wrapper-builder-nama').classList.add('hidden');
             document.getElementById('builder-layanan-nama').value = found.nama;
-            document.getElementById('builder-template-doc-id').value = found.templateDocId || "";
+            
             document.getElementById('builder-template-pratinjau').value = found.templatePratinjau || "";
 
             let selectKeperluan = document.getElementById('builder-keperluan-select');
@@ -1008,6 +1094,10 @@ export function submitBuilderDataToServer() {
         }
 
 export function resetBuilderFormState() {
+            builderKeperluanList = [];
+            renderBuilderKeperluanList();
+            document.getElementById("builder-keperluan-new-input").value = "";
+            document.getElementById("builder-keperluan-new-doc").value = "";
             document.getElementById('builder-select-layanan').value = "[+] TAMBAH LAYANAN BARU";
             document.getElementById('builder-layanan-nama').value = "";
             document.getElementById('builder-template-doc-id').value = "";
@@ -1056,3 +1146,26 @@ export function deleteBuilderMasterLayanan(nama) {
 export let currentRepeaterGroup = [];
 
 export let editingRepeaterIndex = -1;
+
+document.addEventListener('DOMContentLoaded', function() {
+    for (let i = 1; i <= 4; i++) {
+        let tab = document.getElementById('bl-tab-' + i);
+        if (tab) {
+            tab.addEventListener('click', () => switchBuilderTab(i));
+        }
+    }
+    
+    let btnPrev = document.getElementById('bl-btn-prev');
+    if (btnPrev) {
+        btnPrev.addEventListener('click', () => switchBuilderTab(blCurrentStep - 1));
+    }
+    
+    let btnNext = document.getElementById('bl-btn-next');
+    if (btnNext) {
+        btnNext.addEventListener('click', () => switchBuilderTab(blCurrentStep + 1));
+    }
+});
+window.deleteKeperluanAtIndex = deleteKeperluanAtIndex;
+
+window.switchBuilderTab = switchBuilderTab;
+window.blCurrentStep = blCurrentStep;
