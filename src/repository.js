@@ -423,11 +423,11 @@ var PengajuanRepository = {
       if (stat) {
         var rowStatus = row[8];
         if (stat === "Selesai") {
-          matchesS = (rowStatus === ZettConstants.STATUS_SELESAI || rowStatus === "Selesai" || rowStatus === "Pelayanan Selesai");
+          matchesS = (rowStatus === ZettConstants.STATUS_SELESAI);
         } else if (stat === "Diperiksa") {
-          matchesS = (rowStatus === "Diperiksa" || rowStatus === "Proses" || rowStatus === "Verifikasi");
+          matchesS = (rowStatus === ZettConstants.STATUS_DIPERIKSA);
         } else if (stat === "Perbaikan") {
-          matchesS = (rowStatus === "Perbaikan" || rowStatus === "Upload Ulang");
+          matchesS = (rowStatus === ZettConstants.STATUS_REUPLOAD);
         } else {
           matchesS = (rowStatus === stat);
         }
