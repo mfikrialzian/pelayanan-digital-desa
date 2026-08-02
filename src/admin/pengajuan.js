@@ -82,8 +82,8 @@ export function renderAdminTable(response) {
                         '</div>';
                 } else if (window.currentPengajuanFilterStatus === 'Proses') {
                     aksiHtml = '<div class="flex flex-col gap-1.5 items-center justify-center">' +
-                        '<button onclick="openManageStatusModalById(\'' + row.id + '\')" class="px-3 py-1.5 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-700 font-bold text-[10px] transition-all flex items-center justify-center gap-1.5 shadow-sm min-w-[90px] border border-amber-200"><i class="fa-solid fa-check-double"></i> Verifikasi</button>' +
-                        ((row.status === 'Verifikasi' || row.status === 'Pelayanan Selesai' || row.status === 'Selesai') ? 
+                        '<button onclick="window.openManageStatusModalById(\'' + row.id + '\')" class="px-3 py-1.5 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-700 font-bold text-[10px] transition-all flex items-center justify-center gap-1.5 shadow-sm min-w-[90px] border border-amber-200"><i class="fa-solid fa-check-double"></i> Periksa</button>' +
+                        ((row.status === 'Diperiksa' || row.status === 'Verifikasi' || row.status === 'Pelayanan Selesai' || row.status === 'Selesai') ? 
                         '<button onclick="triggerGeneratePDF(\'' + row.id + '\')" class="px-3 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-[10px] transition-all flex items-center justify-center gap-1.5 shadow-sm min-w-[90px] border border-emerald-200"><i class="fa-solid fa-print"></i> Cetak Pengajuan</button>' : '') +
                         '</div>';
                 } else if (window.currentPengajuanFilterStatus === 'Selesai') {
