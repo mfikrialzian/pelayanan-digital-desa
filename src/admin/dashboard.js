@@ -44,6 +44,10 @@ export function renderStatsDashboard(stats) {
             if (stats.chartMingguan || stats.chartStatus) {
                 updateAdminChartsData(stats);
             }
+            
+            if (typeof updatePengajuanSidebarBadges === 'function') {
+                updatePengajuanSidebarBadges(stats);
+            }
         }
 
 export function fetchUserDashboardData(nik, noReq) {
@@ -164,9 +168,6 @@ export function fetchAdminDashboardData() {
                         .withSuccessHandler(function (res) {
                             if (res && res.authError) { pushToast(res.error, "error"); handleAdminLogout(); return; }
                             renderAdminTable(res);
-                            if (res.data && typeof updatePengajuanSidebarBadges === 'function') {
-                                updatePengajuanSidebarBadges(res.data);
-                            }
                         })
                         .getAdminDashboardData(localStorage.getItem('adminToken_Narmada'), adminKeyword, currentAdminPage, activeStatusFilter);
                 } catch (e) { }

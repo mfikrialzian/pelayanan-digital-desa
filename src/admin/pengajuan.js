@@ -553,26 +553,19 @@ window.quickProcessPengajuan = function(id) {
     }).updatePengajuanStatus(localStorage.getItem('adminToken_Narmada'), id, 'Diperiksa', 'Sedang diproses oleh operator');
 };
 
-window.updatePengajuanSidebarBadges = function(list) {
-    let menunggu = 0, proses = 0, perbaikan = 0, selesai = 0;
-    list.forEach(item => {
-        if (item.status === 'Menunggu') menunggu++;
-        else if (item.status === 'Diperiksa') proses++;
-        else if (item.status === 'Perbaikan') perbaikan++;
-        else if (item.status === 'Selesai') selesai++;
-    });
-
+window.updatePengajuanSidebarBadges = function(stats) {
+    if (!stats) return;
     const updateBadge = (id, count) => {
         let b = document.getElementById(id);
         if (b) {
-            b.innerText = count;
+            b.innerText = count || 0;
             b.classList.remove('hidden'); // Selalu tampilkan angka
         }
     };
-    updateBadge('badge-pengajuan-menunggu', menunggu);
-    updateBadge('badge-pengajuan-proses', proses);
-    updateBadge('badge-pengajuan-perbaikan', perbaikan);
-    updateBadge('badge-pengajuan-selesai', selesai);
+    updateBadge('badge-pengajuan-menunggu', stats.pending);
+    updateBadge('badge-pengajuan-proses', stats.diperiksa);
+    updateBadge('badge-pengajuan-perbaikan', stats.perbaikan);
+    updateBadge('badge-pengajuan-selesai', stats.selesai);
 };
 
 
