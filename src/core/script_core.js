@@ -1,90 +1,4 @@
-window.dummyLayananList = [
-            {
-                id: "LAY-001",
-                nama: "Surat Keterangan Usaha (SKU)",
-                deskripsi: "Untuk pengurusan legalitas usaha dan modal bank.",
-                judulSectionIsian: "Melamar Pekerjaan,Pengajuan Kredit Usaha Rakyat (KUR)",
-                deskripsiSectionIsian: "Pilih keperluan pengurusan surat Anda.",
-                logikaKondisional: "[]",
-                fields: [
-                    { id: "FLD-001", name: "{Wajib;;Data Usaha} Nama Usaha", type: "text", options: "", required: "ya", label: "Nama Usaha" },
-                    { id: "FLD-002", name: "{Melamar Pekerjaan;;Posisi} Posisi yang dilamar", type: "text", options: "", required: "ya", label: "Posisi" }
-                ],
-                requirements: [
-                    { id: "REQ-001", name: "[Wajib] Foto KTP Asli Pemohon" },
-                    { id: "REQ-002", name: "[Wajib] Foto Kartu Keluarga (KK)" },
-                    { id: "REQ-003", name: "[Pengajuan Kredit Usaha Rakyat (KUR)] Foto Lokasi Tempat Usaha" }
-                ]
-            },
-            {
-                id: "LAY-002",
-                nama: "Permohonan KK Barcode",
-                deskripsi: "Untuk pengurusan Kartu Keluarga dengan barcode.",
-                judulSectionIsian: "Rubah Pendidikan Anak,Penambahan Anggota Keluarga",
-                deskripsiSectionIsian: "Pilih keperluan permohonan KK Barcode Anda.",
-                logikaKondisional: "[]",
-                fields: [
-                    { id: "FLD-KK-001", name: "{Wajib;;Data Pemohon} Nama Kepala Keluarga", type: "text", options: "", required: "ya", label: "Nama Kepala Keluarga" },
-                    { id: "FLD-KK-002", name: "{Wajib;;Data Pemohon} Nomor KK", type: "text", options: "", required: "ya", label: "Nomor KK" },
-                    { id: "FLD-KK-003", name: "{Rubah Pendidikan Anak;;Data Anak} Nama Lengkap Anak", type: "text", options: "", required: "ya", label: "Nama Lengkap Anak" },
-                    { id: "FLD-KK-004", name: "{Rubah Pendidikan Anak;;Data Anak} Pendidikan Anak", type: "dropdown", options: "TIDAK/BELUM SEKOLAH,SD/SEDERAJAT,SMP/SEDERAJAT,SMA/SEDERAJAT,DIPLOMA,SARJANA", required: "ya", label: "Pendidikan Anak" }
-                ],
-                requirements: [
-                    { id: "REQ-KK-001", name: "[Wajib] Foto KTP Asli Pemohon" },
-                    { id: "REQ-KK-002", name: "[Wajib] Foto Kartu Keluarga (KK) Lama" }
-                ]
-            }
-        ];
-
-
-
-window.dummyPengajuanList = [
-            {
-                id: "REQ-20260701-0001",
-                tanggal: "01/07/2026 10:00:00",
-                nik: "3275011212950001",
-                nama: "Budi Santoso",
-                layanan: "Surat Keterangan Usaha (SKU)",
-                wa: "+6281234567890",
-                alamat: "Jalan Melati No. 4, Dusun Narmada Barat",
-                linkDokumen: "[Wajib] Foto KTP Asli Pemohon: https://placehold.co/100x75?text=KTP, \n [Wajib] Foto Kartu Keluarga (KK): https://placehold.co/100x75?text=KK",
-                status: "Verifikasi",
-                catatan: "Menunggu verifikasi berkas digital oleh admin.",
-                detailLayanan: "Keperluan Surat: Pengajuan Kredit Usaha Rakyat (KUR) | Nama Usaha: Toko Kelontong Budi"
-            },
-            {
-                id: "REQ-20260701-0002",
-                tanggal: "01/07/2026 14:30:00",
-                nik: "3275011212950002",
-                nama: "Siti Aminah",
-                layanan: "Permohonan KK Barcode",
-                wa: "+6289876543210",
-                alamat: "Jalan Mawar No. 12, Dusun Narmada Timur",
-                linkDokumen: "[Wajib] Foto KTP Asli Pemohon: https://placehold.co/100x75?text=KTP, \n [Wajib] Foto Kartu Keluarga (KK) Lama: https://placehold.co/100x75?text=KK",
-                status: "Verifikasi",
-                catatan: "Menunggu verifikasi berkas digital oleh admin.",
-                detailLayanan: "Keperluan Surat: Rubah Pendidikan Anak | Nama Kepala Keluarga: AHMAD FAUZI | Nomor KK: 5204011234560001 | Nama Lengkap Anak: ANDI FAUZI; SARI FAUZI | Pendidikan Anak: SMP/SEDERAJAT; SMA/SEDERAJAT"
-            }
-        ];
-
-
-window.dummySetelan = {
-            username: "", // Dihapus untuk keamanan
-            password: "", // Dihapus untuk keamanan
-            kontak_wa: "+6281234567890",
-            nama_desa: "Narmada",
-            logo_url_desa: "https://upload.wikimedia.org/wikipedia/commons/e/e4/Coat_of_arms_of_Indonesia_Garuda_Pancasila.svg",
-            deskripsi_banner: "Urus kebutuhan administrasi desa lebih mudah, cepat, dan transparan.",
-            banner_url_desa: "",
-            status_jam_pelayanan: "on",
-            deskripsi_jam_pelayanan: "Senin - Jumat 08.00 - 14.00 WITA",
-            status_alur: "on",
-            deskripsi_alur: "Ajukan Online -> Verifikasi -> Serahkan Berkas Fisik -> Ambil Surat",
-            status_banner_semi: "on",
-            deskripsi_banner_semi: "Anda dapat mengajukan permohonan secara online dari rumah. Setelah permohonan diverifikasi, silakan datang ke kantor desa untuk menyerahkan dokumen fisik sesuai dengan persyaratan."
-        };
-
-        window.AppState = {
+window.AppState = {
             activeView: 'beranda',
             activeAdminTab: 'dashboard',
             currentAdminPage: 1,
@@ -93,7 +7,7 @@ window.dummySetelan = {
             selectedLayananGlobal: null,
             uploadDataStore: {},
             currentWizardStep: 1,
-            globalSettings: Object.assign({}, dummySetelan),
+            globalSettings: {},
             isGoogleEnv: typeof google !== 'undefined' && typeof google.script !== 'undefined',
             isServiceOpen: false,
             editingQuestionIndex: -1
@@ -186,8 +100,7 @@ window.topText = dayName + " " + timeTxt;
             el.className = "text-xs font-medium text-slate-600 mt-1";
         }
         function loadCMSConfigurationAndLayanan() {
-            if (isGoogleEnv) {
-                try {
+            try {
                     google.script.run
                         .withSuccessHandler(function (res) {
                             globalSettings = res;
@@ -195,18 +108,15 @@ window.topText = dayName + " " + timeTxt;
                             loadLayananDataWarga();
                         })
                         .withFailureHandler(function () {
-                            applyCMSConfigurations(dummySetelan);
+                            
                             loadLayananDataWarga();
                         })
                         .getAdminSetelan();
                 } catch (e) {
-                    applyCMSConfigurations(dummySetelan);
+                    
                     loadLayananDataWarga();
                 }
-            } else {
-                applyCMSConfigurations(dummySetelan);
-                loadLayananDataWarga();
-            }
+
         }
 
         function applyCMSConfigurations(settings) {
@@ -217,7 +127,7 @@ window.logoAdminLogin = document.getElementById('admin-login-logo');
 
             if (titleWarga) titleWarga.innerText = settings.nama_desa.toUpperCase();
 
-window.defaultLogo = settings.logo_url_desa || dummySetelan.logo_url_desa;
+window.defaultLogo = settings.logo_url_desa;
             // Konversi jika itu adalah link Google Drive
 window.finalLogo = defaultLogo.indexOf('drive.google.com') !== -1 ? getDirectDriveImageUrl(defaultLogo) : defaultLogo;
 

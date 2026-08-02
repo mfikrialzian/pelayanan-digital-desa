@@ -77,17 +77,14 @@ export function loadLayananDataWarga() {
             }
             container.innerHTML = skeletonHtml;
 
-            if (isGoogleEnv) {
-                try {
+            try {
                     google.script.run
                         .withSuccessHandler(function (list) { renderLayananListWarga(list); })
                         .getLayananList();
                 } catch (e) {
                     renderLayananListWarga(dummyLayananList);
                 }
-            } else {
-                renderLayananListWarga(dummyLayananList);
-            }
+
         }
 
 export function renderLayananListWarga(list) {
@@ -755,8 +752,7 @@ export function handleWargaSubmit() {
                 detailLayanan: detailLayananPayload
             };
 
-            if (isGoogleEnv) {
-                try {
+            try {
                     google.script.run
                         .withSuccessHandler(function (response) {
                             submitBtn.disabled = false;
@@ -782,23 +778,7 @@ export function handleWargaSubmit() {
                     submitBtn.innerHTML = '<span>Kirim Pengajuan</span>';
                     pushToast("Koneksi gagal: " + e.toString(), "error");
                 }
-            } else {
-                setTimeout(function () {
-                    submitBtn.disabled = false;
-                    submitBtn.innerHTML = '<span>Kirim Pengajuan</span>';
-                    let mockId = "REQ-20260701-000" + (dummyPengajuanList.length + 1);
-                    dummyPengajuanList.unshift({
-                        id: mockId, tanggal: "01/07/2026 15:45:00", nik: wargaData.nik, nama: wargaData.nama,
-                        layanan: wargaData.layanan, wa: wargaData.wa, alamat: wargaData.alamat, linkDokumen: "Foto KTP: #, Foto KK: #",
-                        status: "Menunggu", catatan: "Menunggu verifikasi berkas digital oleh admin.", detailLayanan: JSON.stringify(wargaData.detailLayanan)
-                    });
 
-                    localStorage.removeItem('wargaDraft_Narmada');
-                    localStorage.setItem('lastSubmitTime_Narmada', Date.now());
-
-                    showWizardSuccessScreen(mockId);
-                }, 1200);
-            }
             }, "Batal", "Ya, Kirim Pengajuan");
         }
 

@@ -7,21 +7,14 @@ export function runSearchStatus() {
             boxList.innerHTML = '<div class="animate-pulse space-y-4"><div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm h-32 w-full"></div><div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm h-32 w-full"></div></div>';
             wrapper.classList.remove('hidden');
 
-            if (isGoogleEnv) {
-                try {
+            try {
                     google.script.run
                         .withSuccessHandler(function (res) { renderStatusCards(res); })
                         .getPengajuanStatus(key);
                 } catch (e) {
                     renderStatusCards([]);
                 }
-            } else {
-                let localKey = key.toLowerCase();
-                let localRes = dummyPengajuanList.filter(function (r) {
-                    return r.id.toLowerCase().indexOf(localKey) !== -1 || r.nik === localKey;
-                });
-                setTimeout(function () { renderStatusCards(localRes); }, 500);
-            }
+
         }
 
 export function renderStatusCards(results) {
@@ -162,8 +155,7 @@ export function runReuploadProcessDirect(event, idPengajuan, labelNamaBerkas) {
                     ctx.drawImage(img, 0, 0, 1024, 768);
                     let compressedBase64 = canvas.toDataURL("image/jpeg", 0.70);
 
-                    if (isGoogleEnv) {
-                        try {
+                    try {
                             google.script.run
                                 .withSuccessHandler(function (res) {
                                     if (res.success) {
@@ -175,17 +167,7 @@ export function runReuploadProcessDirect(event, idPengajuan, labelNamaBerkas) {
                                 })
                                 .processReuploadBerkas(idPengajuan, labelNamaBerkas, compressedBase64, currentNik);
                         } catch (err) { }
-                    } else {
-                        setTimeout(function () {
-                            let findIdx = dummyPengajuanList.findIndex(function (r) { return r.id === idPengajuan; });
-                            if (findIdx !== -1) {
-                                dummyPengajuanList[findIdx].status = "Menunggu";
-                                dummyPengajuanList[findIdx].catatan = "Berkas '" + labelNamaBerkas + "' sudah diupload ulang. Segera segarkan dashboard.";
-                            }
-                            pushToast("SIMULASI: Berkas '" + labelNamaBerkas + "' diperbarui.", "success");
-                            runSearchStatus();
-                        }, 1000);
-                    }
+
                 };
                 img.src = e.target.result;
             };

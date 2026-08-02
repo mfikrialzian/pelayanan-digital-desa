@@ -115,8 +115,7 @@ export function renderAdminTable(response) {
 
 export function triggerGeneratePDF(idPengajuan) {
             pushToast("Mempersiapkan dokumen PDF... Mohon tunggu.", "info");
-            if (isGoogleEnv) {
-                google.script.run
+            google.script.run
                     .withSuccessHandler(function (res) {
                         if (res && res.authError) { pushToast(res.message, "error"); handleAdminLogout(); return; }
                         if (res.success) {
@@ -127,11 +126,7 @@ export function triggerGeneratePDF(idPengajuan) {
                         }
                     })
                     .generateSuratPDF(localStorage.getItem('adminToken_Narmada'), idPengajuan);
-            } else {
-                setTimeout(function () {
-                    pushToast("SIMULASI: PDF Surat berhasil digenerate.", "success");
-                }, 1500);
-            }
+
         }
 
 export function runAdminFilter() {
@@ -469,8 +464,7 @@ export function executeAdminStatusUpdate() {
             let nextStat = document.getElementById('edit-status-select').value;
             let nextNotes = document.getElementById('edit-status-catatan').value.trim();
 
-            if (isGoogleEnv) {
-                try {
+            try {
                     google.script.run
                         .withSuccessHandler(function (res) {
                             if (res && res.authError) { pushToast(res.message, "error"); handleAdminLogout(); return; }
@@ -483,17 +477,7 @@ export function executeAdminStatusUpdate() {
                         })
                         .updatePengajuanStatus(localStorage.getItem('adminToken_Narmada'), id, nextStat, nextNotes);
                 } catch (e) { }
-            } else {
-                let findIdx = dummyPengajuanList.findIndex(function (r) { return r.id === id; });
-                if (findIdx !== -1) {
-                    dummyPengajuanList[findIdx].status = nextStat;
-                    dummyPengajuanList[findIdx].catatan = nextNotes || "-";
-                    pushToast("SIMULASI: Status berkas diperbarui.", "success");
-                    resetVerifikasiDirty();
-                    switchAdminTab('dashboard');
-                    fetchAdminStats();
-                }
-            }
+
         }
 
 export function exportDataExcel() {

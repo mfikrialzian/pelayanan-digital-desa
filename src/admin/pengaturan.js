@@ -1,6 +1,5 @@
 export function loadAdminSettingsForm() {
-            if (isGoogleEnv) {
-                google.script.run.withSuccessHandler(function (res) {
+            google.script.run.withSuccessHandler(function (res) {
                     globalSettings = res;
                     document.getElementById('setelan-wa').value = res.kontak_wa || "";
                     document.getElementById('setelan-nama-desa').value = res.nama_desa || "";
@@ -16,21 +15,7 @@ export function loadAdminSettingsForm() {
                     document.getElementById('setelan-toggle-alur').checked = (res.status_alur === "on");
                     document.getElementById('setelan-toggle-banner').checked = (res.status_banner_semi === "on");
                 }).getAdminSetelan();
-            } else {
-                document.getElementById('setelan-wa').value = dummySetelan.kontak_wa;
-                document.getElementById('setelan-nama-desa').value = dummySetelan.nama_desa;
-                document.getElementById('setelan-logo-url-desa').value = dummySetelan.logo_url_desa;
-                document.getElementById('setelan-deskripsi-banner').value = dummySetelan.deskripsi_banner;
-                document.getElementById('setelan-banner-url-desa').value = dummySetelan.banner_url_desa;
 
-                document.getElementById('setelan-desc-jam').value = dummySetelan.deskripsi_jam_pelayanan;
-                document.getElementById('setelan-desc-alur').value = dummySetelan.deskripsi_alur;
-                document.getElementById('setelan-desc-banner-semi').value = dummySetelan.deskripsi_banner_semi;
-
-                document.getElementById('setelan-toggle-jam').checked = (dummySetelan.status_jam_pelayanan === "on");
-                document.getElementById('setelan-toggle-alur').checked = (dummySetelan.status_alur === "on");
-                document.getElementById('setelan-toggle-banner').checked = (dummySetelan.status_banner_semi === "on");
-            }
         }
 
 export function saveAdminSettings() {
@@ -53,20 +38,14 @@ export function saveAdminSettings() {
                 status_banner_semi: document.getElementById('setelan-toggle-banner').checked ? "on" : "off"
             };
 
-            if (isGoogleEnv) {
-                google.script.run.withSuccessHandler(function (res) {
+            google.script.run.withSuccessHandler(function (res) {
                     if (res && res.authError) { pushToast(res.message, "error"); handleAdminLogout(); return; }
                     if (res.success) {
                         pushToast(res.message, "success");
                         loadCMSConfigurationAndLayanan();
                     }
                 }).updateAdminSetelan(localStorage.getItem('adminToken_Narmada'), payload);
-            } else {
-                dummySetelan = payload;
-                globalSettings = payload;
-                applyCMSConfigurations(payload);
-                pushToast("SIMULASI: Konfigurasi setelan disimpan.", "success");
-            }
+
         }
 
 export function toggleDarkModeUI(element) {
@@ -556,7 +535,7 @@ export function savePassword(e) {
     const token = localStorage.getItem('adminToken_Narmada');
     const username = localStorage.getItem('userId');
     
-    if (!token || !isGoogleEnv) {
+    if (!token) {
         pushToast("Error: Tidak dapat menghubungi server.", "error");
         return;
     }
@@ -748,8 +727,7 @@ window.loadLogKeamanan = function() {
     let token = localStorage.getItem('adminToken_Narmada');
     if (!token) return;
     
-    if (window.isGoogleEnv) {
-        google.script.run
+    google.script.run
             .withSuccessHandler(function(res) {
                 if (res.success) {
                     renderLogKeamananTable(res.data);
@@ -761,16 +739,7 @@ window.loadLogKeamanan = function() {
                 tbody.innerHTML = '<tr><td colspan="4" class="p-6 text-center text-red-500 text-xs">Error: ' + err + '</td></tr>';
             })
             .getLogKeamanan(token);
-    } else {
-        // Mock data
-        setTimeout(function() {
-            renderLogKeamananTable([
-                { waktu: "Hari ini, 09:00", tindakan: "Login", deskripsi: "Berhasil masuk ke sistem.", pengguna: "alzian_admin", userAgent: "Chrome Windows", status: "Sukses" },
-                { waktu: "Kemarin, 15:30", tindakan: "Cabut Sesi", deskripsi: "Mencabut akses dari semua perangkat.", pengguna: "alzian_admin", userAgent: "Safari Mac", status: "Sukses" },
-                { waktu: "28 Jul 2026, 10:00", tindakan: "Login Gagal", deskripsi: "Kata sandi salah.", pengguna: "unknown", userAgent: "Firefox Linux", status: "Gagal" }
-            ]);
-        }, 800);
-    }
+
 };
 
 function renderLogKeamananTable(logs) {
@@ -815,8 +784,7 @@ function loadActiveSessions() {
     let token = localStorage.getItem('adminToken_Narmada');
     if (!token) return;
     
-    if (window.isGoogleEnv) {
-        google.script.run
+    google.script.run
             .withSuccessHandler(function(res) {
                 if (res.success) {
                     renderSessionsTable(res.data);
@@ -828,15 +796,7 @@ function loadActiveSessions() {
                 tbody.innerHTML = '<tr><td colspan="4" class="p-6 text-center text-red-500 text-xs">Error: ' + err + '</td></tr>';
             })
             .getActiveSessions(token);
-    } else {
-        // Mock data
-        setTimeout(function() {
-            renderSessionsTable([
-                { id: "123", loginTime: "Hari ini, 08:15", deviceInfo: "Chrome on Windows", isCurrent: true },
-                { id: "456", loginTime: "Kemarin, 14:30", deviceInfo: "Safari on MacOS", isCurrent: false }
-            ]);
-        }, 800);
-    }
+
 }
 
 function renderSessionsTable(sessions) {
@@ -897,8 +857,7 @@ window.revokeAdminSession = function(sessionId) {
     }).then((result) => {
         if (result.isConfirmed) {
             let token = localStorage.getItem('adminToken_Narmada');
-            if (window.isGoogleEnv) {
-                window.pushToast("Memproses...", "info");
+            window.pushToast("Memproses...", "info");
                 google.script.run
                     .withSuccessHandler(function(res) {
                         if (res.success) {
@@ -912,10 +871,7 @@ window.revokeAdminSession = function(sessionId) {
                         window.pushToast("Error: " + err, "error");
                     })
                     .revokeSession(token, sessionId);
-            } else {
-                window.pushToast("Sesi berhasil dicabut (Mock).", "success");
-                loadActiveSessions();
-            }
+
         }
     });
 };
@@ -955,7 +911,7 @@ export function promptKeamananAccess() {
                 return false;
             }
             const token = localStorage.getItem('adminToken_Narmada');
-            if (!token || !isGoogleEnv) {
+            if (!token) {
                 return new Promise((resolve) => setTimeout(() => resolve({ success: true }), 1000));
             }
             

@@ -3,8 +3,7 @@ export async function fetchNotifications() {
     if (!container) return;
     container.innerHTML = `<div class="text-center text-slate-400 py-4 text-xs">Memuat notifikasi...</div>`;
     
-    if (isGoogleEnv) {
-        google.script.run
+    google.script.run
             .withSuccessHandler(function (res) {
                 renderNotifications(res, container);
             })
@@ -12,11 +11,7 @@ export async function fetchNotifications() {
                 container.innerHTML = `<div class="text-center text-red-500 py-4 text-xs">Gagal: ${err.toString()}</div>`;
             })
             .getNotifications(localStorage.getItem('adminToken_Narmada'), 10);
-    } else {
-        setTimeout(function() {
-            renderNotifications({ success: true, data: [] }, container);
-        }, 800);
-    }
+
 }
 
 export function renderNotifications(res, container) {

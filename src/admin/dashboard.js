@@ -1,6 +1,5 @@
 export function fetchAdminStats() {
-            if (isGoogleEnv) {
-                google.script.run
+            google.script.run
                     .withSuccessHandler(function (stats) {
                         window.lastDashboardStats = stats;
                         renderStatsDashboard(stats);
@@ -9,48 +8,7 @@ export function fetchAdminStats() {
                         fetchNotifications();
                     })
                     .getDashboardStats();
-            } else {
 
-                let pendingCount = dummyPengajuanList.filter(r => r.status === "Menunggu").length;
-                let verifikasiCount = dummyPengajuanList.filter(r => r.status === "Diperiksa").length;
-                let selesaiCount = dummyPengajuanList.filter(r => r.status === "Selesai").length;
-                let uploadUlangCount = dummyPengajuanList.filter(r => r.status === "Perbaikan").length;
-                let now = new Date();
-                let isToday = (dStr) => {
-                    if(!dStr) return false;
-                    let parts = dStr.split(' ')[0].split('/');
-                    if(parts.length !== 3) return false;
-                    let tDate = new Date(parts[2], parts[1]-1, parts[0]);
-                    return tDate.getDate() === now.getDate() && tDate.getMonth() === now.getMonth() && tDate.getFullYear() === now.getFullYear();
-                };
-
-                let todayTotal = dummyPengajuanList.filter(r => isToday(r.tanggal)).length;
-                let todayPending = dummyPengajuanList.filter(r => isToday(r.tanggal) && r.status === "Menunggu").length;
-                let todayVerifikasi = dummyPengajuanList.filter(r => isToday(r.tanggal) && (r.status === "Diperiksa")).length;
-                let todaySelesai = dummyPengajuanList.filter(r => isToday(r.tanggal) && (r.status === "Selesai")).length;
-                let todayUploadUlang = dummyPengajuanList.filter(r => isToday(r.tanggal) && (r.status === "Perbaikan")).length;
-
-                let mockStats = {
-                    total: dummyPengajuanList.length,
-                    pending: pendingCount,
-                    diperiksa: verifikasiCount,
-                    selesai: selesaiCount,
-                    perbaikan: uploadUlangCount,
-                    todayTotal: todayTotal,
-                    todayPending: todayPending,
-                    todayVerifikasi: todayVerifikasi,
-                    todaySelesai: todaySelesai,
-                    todayUploadUlang: todayUploadUlang,
-                    chartMingguan: [10, 15, 8, 20, 25, 12, 6],
-                    chartBulanIni: [45, 60, 50, 58],
-                    chartStatus: [selesaiCount, verifikasiCount, pendingCount, uploadUlangCount], // Backend format
-                    chartLayanan: { labels: ['Ket. Usaha', 'Ket. Domisili', 'SKCK', 'Ket. Tidak Mampu', 'Lainnya'], data: [35, 25, 20, 15, 5] }
-                };
-                window.lastDashboardStats = mockStats;
-                renderStatsDashboard(mockStats);
-                fetchAdminDashboardData();
-                fetchNotifications();
-            }
         }
 
 export function renderStatsDashboard(stats) {
@@ -93,18 +51,12 @@ export function fetchUserDashboardData(nik, noReq) {
             if(!tbody) return;
             tbody.innerHTML = getTableSkeleton(4, 3);
 
-            if (isGoogleEnv) {
-                try {
+            try {
                     google.script.run
                         .withSuccessHandler(function (res) { renderUserTable(res); })
                         .getUserDashboardData(nik, noReq);
                 } catch (e) { }
-            } else {
-                let filtered = dummyPengajuanList.filter(function (r) {
-                    return (r.nik === nik && r.id === noReq);
-                });
-                renderUserTable({ data: filtered });
-            }
+
         }
 
 window.currentDashInboxPage = 1;
@@ -114,8 +66,7 @@ export function fetchDashboardInboxData() {
     if (!tbody) return;
     tbody.innerHTML = getTableSkeleton(6, 5);
 
-    if (isGoogleEnv) {
-        try {
+    try {
             google.script.run
                 .withSuccessHandler(function (res) {
                     if (res && res.authError) return;
@@ -123,23 +74,7 @@ export function fetchDashboardInboxData() {
                 })
                 .getAdminDashboardData(localStorage.getItem('adminToken_Narmada'), '', window.currentDashInboxPage, 'Menunggu');
         } catch (e) { }
-    } else {
-        let filtered = dummyPengajuanList.filter(function (r) {
-            return r.status === 'Menunggu';
-        });
 
-        let total = filtered.length;
-        let limit = 10;
-        let pages = Math.max(1, Math.ceil(total / limit));
-        let paginated = filtered.slice((window.currentDashInboxPage - 1) * limit, window.currentDashInboxPage * limit);
-
-        renderDashboardInboxTable({
-            data: paginated,
-            totalPages: pages,
-            currentPage: window.currentDashInboxPage,
-            totalItems: total
-        });
-    }
 }
 
 window.changeDashPage = function(delta) {
@@ -224,8 +159,7 @@ export function fetchAdminDashboardData() {
             if (!tbody) return;
             tbody.innerHTML = getTableSkeleton(7, 5);
 
-            if (isGoogleEnv) {
-                try {
+            try {
                     google.script.run
                         .withSuccessHandler(function (res) {
                             if (res && res.authError) { pushToast(res.error, "error"); handleAdminLogout(); return; }
@@ -236,37 +170,7 @@ export function fetchAdminDashboardData() {
                         })
                         .getAdminDashboardData(localStorage.getItem('adminToken_Narmada'), adminKeyword, currentAdminPage, activeStatusFilter);
                 } catch (e) { }
-            } else {
-                let fKeyword = adminKeyword.toLowerCase().trim();
-                let filtered = dummyPengajuanList.filter(function (r) {
-                    let matchK = !fKeyword || r.nama.toLowerCase().indexOf(fKeyword) !== -1 || r.id.toLowerCase().indexOf(fKeyword) !== -1 || r.nik.indexOf(fKeyword) !== -1;
-                    let matchS = true;
-                    if (activeStatusFilter) {
-                        if (activeStatusFilter === "Selesai") {
-                            matchS = (r.status === "Pelayanan Selesai" || r.status === "Selesai");
-                        } else if (activeStatusFilter === "Diperiksa") {
-                            matchS = (r.status === "Diperiksa");
-                        } else if (activeStatusFilter === "Perbaikan") {
-                            matchS = (r.status === "Perbaikan");
-                        } else if (activeStatusFilter !== "Semua") {
-                            matchS = (r.status === activeStatusFilter);
-                        }
-                    }
-                    return matchK && matchS;
-                });
 
-                let total = filtered.length;
-                let limit = 10;
-                let pages = Math.max(1, Math.ceil(total / limit));
-                let paginated = filtered.slice((currentAdminPage - 1) * limit, currentAdminPage * limit);
-
-                setTimeout(function () {
-                    renderAdminTable({ data: paginated, totalPages: pages, currentPage: currentAdminPage, totalItems: total });
-                    if (typeof updatePengajuanSidebarBadges === 'function') {
-                        updatePengajuanSidebarBadges(dummyPengajuanList);
-                    }
-                }, 400);
-            }
         }
 
 export let adminCharts = {

@@ -227,15 +227,12 @@ export function loadBuilderLayananList() {
                 extractSuggestions(list);
             };
 
-            if (isGoogleEnv) {
-                try {
+            try {
                     google.script.run.withSuccessHandler(layHandler).getLayananList();
                 } catch (e) {
                     layHandler(dummyLayananList);
                 }
-            } else {
-                layHandler(dummyLayananList);
-            }
+
         }
 
 export function extractSuggestions(list) {
@@ -505,13 +502,12 @@ export function loadBuilderDaftarLayananTab() {
                 }
             };
 
-            if (isGoogleEnv) {
-                try {
+            try {
                     google.script.run.withSuccessHandler(successHandler).getLayananList();
                 } catch (e) {
                     setTimeout(function () { successHandler(dummyLayananList); }, 200);
                 }
-            }
+
         }
 
 export function populateBuilderLayananToEdit(id) {
@@ -1062,8 +1058,7 @@ export function submitBuilderDataToServer() {
 
             let action = payload.id ? "update" : "create";
 
-            if (isGoogleEnv) {
-                google.script.run
+            google.script.run
                     .withSuccessHandler(function (res) {
                         if (res && res.authError) { pushToast(res.message, "error"); handleAdminLogout(); return; }
                         if (res.success) {
@@ -1077,37 +1072,7 @@ export function submitBuilderDataToServer() {
                         }
                     })
                     .crudLayanan(localStorage.getItem('adminToken_Narmada'), action, payload);
-            } else {
-                if (!payload.id) {
-                    dummyLayananList.push({
-                        id: "LAY-MOCK-" + Math.random().toString(36).substr(2, 5).toUpperCase(),
-                        nama: payload.nama,
-                        deskripsi: "Pelayanan baru terdaftar via Service Builder.",
-                        judulSectionIsian: payload.judulSectionIsian,
-                        deskripsiSectionIsian: payload.deskripsiSectionIsian,
-                        bidang: payload.bidang,
-                        logikaKondisional: payload.logikaKondisional,
-                        requirements: activeReqs.map(function (r) { return { id: "REQ-" + Math.random(), name: r }; }),
-                        fields: builderQuestions
-                    });
-                } else {
-                    let idx = dummyLayananList.findIndex(l => l.id === payload.id);
-                    if (idx !== -1) {
-                        dummyLayananList[idx].nama = payload.nama;
-                        dummyLayananList[idx].judulSectionIsian = payload.judulSectionIsian;
-                        dummyLayananList[idx].deskripsiSectionIsian = payload.deskripsiSectionIsian;
-                        dummyLayananList[idx].bidang = payload.bidang;
-                        dummyLayananList[idx].logikaKondisional = payload.logikaKondisional;
-                        dummyLayananList[idx].requirements = activeReqs.map(function (r) { return { id: "REQ-" + Math.random(), name: r }; });
-                        dummyLayananList[idx].fields = builderQuestions;
-                    }
-                }
-                pushToast("SIMULASI: Sukses mempublikasikan layanan baru.", "success");
-                resetBuilderFormState();
-                executeSwitchAdminTab('daftar-layanan');
-                loadBuilderLayananList();
-                renderLayananListWarga(dummyLayananList);
-            }
+
         }
 
 export function resetBuilderFormState() {
@@ -1143,8 +1108,7 @@ export function resetBuilderFormState() {
 
 export function deleteBuilderMasterLayanan(nama) {
             askConfirmation("Hapus Layanan", "Apakah Anda yakin ingin menghapus layanan '" + nama + "' dari sistem secara permanen?", function () {
-                if (isGoogleEnv) {
-                    google.script.run
+                google.script.run
                         .withSuccessHandler(function (res) {
                             if (res && res.authError) { pushToast(res.message, "error"); handleAdminLogout(); return; }
                             if (res.success) {
@@ -1154,12 +1118,7 @@ export function deleteBuilderMasterLayanan(nama) {
                             }
                         })
                         .crudLayanan(localStorage.getItem('adminToken_Narmada'), "delete", { nama: nama });
-                } else {
-                    dummyLayananList = dummyLayananList.filter(l => l.nama !== nama);
-                    pushToast("SIMULASI: Layanan terhapus.", "success");
-                    loadBuilderLayananList();
-                    renderLayananListWarga(dummyLayananList);
-                }
+
             });
         }
 

@@ -24,8 +24,7 @@ export function runAdminLoginAuth() {
             }
             let deviceInfo = getDeviceInfo();
 
-            if (isGoogleEnv) {
-                google.script.run
+            google.script.run
                     .withSuccessHandler(function (res) {
                         btn.disabled = false;
                         btn.innerHTML = '<span>Login</span>';
@@ -50,31 +49,7 @@ export function runAdminLoginAuth() {
                         pushToast("Error: " + err, "error");
                     })
                     .checkAdminLogin(u, p, deviceInfo);
-            } else {
-                setTimeout(function () {
-                    btn.disabled = false;
-                    btn.innerHTML = '<span>Login</span>';
-                    
-                    let userMatch = window.usersData.find(function(user) {
-                        return user.username === u && user.password === p;
-                    });
 
-                    if (userMatch) {
-                        localStorage.setItem('adminToken_Narmada', 'dummy-token');
-                        localStorage.setItem('userRole', userMatch.role || 'Super Admin');
-                        localStorage.setItem('userName', userMatch.name || 'Admin');
-                        if (userMatch.email) localStorage.setItem('userEmail', userMatch.email); else localStorage.removeItem('userEmail');
-                        if (userMatch.nik) localStorage.setItem('userNIK', userMatch.nik); else localStorage.removeItem('userNIK');
-                        if (userMatch.phone) localStorage.setItem('userPhone', userMatch.phone); else localStorage.removeItem('userPhone');
-                        if (userMatch.avatar) localStorage.setItem('userAvatar', userMatch.avatar); else localStorage.removeItem('userAvatar');
-                        localStorage.setItem('userId', userMatch.username || 'admin');
-                        initRBAC();
-                        switchView('admin');
-                    } else {
-                        pushToast("Kredensial login admin salah!", "error");
-                    }
-                }, 800);
-            }
         }
 
 export function confirmAdminLogout() {
@@ -85,7 +60,7 @@ export function confirmAdminLogout() {
 
 export function handleAdminLogout() {
             let token = localStorage.getItem('adminToken_Narmada');
-            if (token && isGoogleEnv) {
+            if (token) {
                 google.script.run.logoutAdmin(token);
             }
             localStorage.removeItem('adminToken_Narmada');
@@ -271,8 +246,7 @@ export function requestForgotOTP() {
     btn.disabled = true;
     btn.innerHTML = '<i class="fa-solid fa-spinner animate-spin"></i> Mengirim...';
     
-    if (isGoogleEnv) {
-        google.script.run
+    google.script.run
             .withSuccessHandler(function (res) {
                 btn.disabled = false;
                 btn.innerHTML = 'Kirim Kode OTP';
@@ -291,16 +265,7 @@ export function requestForgotOTP() {
                 pushToast('Error: ' + err, 'error');
             })
             .requestResetOTP(forgotIdentifier, method);
-    } else {
-        setTimeout(function() {
-            btn.disabled = false;
-            btn.innerHTML = 'Kirim Kode OTP';
-            pushToast('Simulasi: OTP terkirim ke ' + forgotIdentifier, 'success');
-            document.getElementById('forgot-step-1').classList.add('hidden');
-            document.getElementById('forgot-step-2').classList.remove('hidden');
-            startForgotOtpTimer();
-        }, 1500);
-    }
+
 }
 
 export function verifyForgotOTP() {
@@ -317,8 +282,7 @@ export function verifyForgotOTP() {
     btn.disabled = true;
     btn.innerHTML = '<i class="fa-solid fa-spinner animate-spin"></i> Verifikasi...';
     
-    if (isGoogleEnv) {
-        google.script.run
+    google.script.run
             .withSuccessHandler(function (res) {
                 btn.disabled = false;
                 btn.innerHTML = 'Verifikasi OTP';
@@ -337,20 +301,7 @@ export function verifyForgotOTP() {
                 pushToast('Error: ' + err, 'error');
             })
             .verifyResetOTP(forgotIdentifier, otpCode);
-    } else {
-        setTimeout(function() {
-            btn.disabled = false;
-            btn.innerHTML = 'Verifikasi OTP';
-            if (otpCode === '123456') {
-                clearInterval(forgotTimerInterval);
-                document.getElementById('forgot-step-2').classList.add('hidden');
-                document.getElementById('forgot-step-3').classList.remove('hidden');
-                pushToast('Verifikasi sukses!', 'success');
-            } else {
-                pushToast('OTP Salah', 'error');
-            }
-        }, 1000);
-    }
+
 }
 
 export function saveNewPassword() {
@@ -370,8 +321,7 @@ export function saveNewPassword() {
     btn.disabled = true;
     btn.innerHTML = '<i class="fa-solid fa-spinner animate-spin"></i> Menyimpan...';
     
-    if (isGoogleEnv) {
-        google.script.run
+    google.script.run
             .withSuccessHandler(function (res) {
                 btn.disabled = false;
                 btn.innerHTML = 'Simpan Sandi Baru';
@@ -394,13 +344,7 @@ export function saveNewPassword() {
                 pushToast('Error: ' + err, 'error');
             })
             .resetPasswordWithOTP(forgotIdentifier, p1);
-    } else {
-        setTimeout(function() {
-            btn.disabled = false;
-            btn.innerHTML = 'Simpan Sandi Baru';
-            Swal.fire('Berhasil!', 'Simulasi: Sandi berhasil diubah.', 'success').then(() => showLogin());
-        }, 1500);
-    }
+
 }
 
 function startForgotOtpTimer() {

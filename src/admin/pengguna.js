@@ -2,7 +2,7 @@ import { ROLE_MAPPINGS, SIDEBAR_ITEMS } from './admin_core.js';
 
 export function initManajemenPengguna() {
     let token = localStorage.getItem('adminToken_Narmada');
-    if (!token || !isGoogleEnv) return;
+    if (!token) return;
     
     backToManajemenPengguna();
     let tbody = document.getElementById('mp-table-body');
@@ -256,8 +256,7 @@ export async function fetchActivities() {
     if (!tbody) return;
     tbody.innerHTML = `<tr><td colspan="4" class="px-4 py-8 text-center text-slate-400">Memuat log aktivitas...</td></tr>`;
     
-    if (isGoogleEnv) {
-        google.script.run
+    google.script.run
             .withSuccessHandler(function (res) {
                 renderActivities(res, tbody);
             })
@@ -265,11 +264,7 @@ export async function fetchActivities() {
                 tbody.innerHTML = `<tr><td colspan="4" class="px-4 py-8 text-center text-red-500">Gagal memuat: ${err.toString()}</td></tr>`;
             })
             .getActivities(localStorage.getItem('adminToken_Narmada'), 50);
-    } else {
-        setTimeout(function() {
-            renderActivities({ success: true, data: [] }, tbody);
-        }, 800);
-    }
+
 }
 
 export function renderActivities(res, tbody) {
@@ -360,7 +355,7 @@ export function closeModalTambahPengguna(skipConfirm = false) {
 
 export function callCrudPengguna(action, payload, onSuccess) {
     let token = localStorage.getItem('adminToken_Narmada');
-    if (!token || !isGoogleEnv) return;
+    if (!token) return;
     
     google.script.run
         .withSuccessHandler(function (res) {
