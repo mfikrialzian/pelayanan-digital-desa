@@ -1001,6 +1001,50 @@
                             </div>
                         </div>
                         
+                        <!-- TABEL PENGGAJUAN MASUK DI DASHBOARD -->
+                        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col overflow-hidden mt-6">
+                            <!-- Table Header & Filters -->
+                            <div class="p-5 border-b border-slate-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                                <div class="flex items-center gap-2">
+                                    <h3 class="text-sm font-bold text-slate-800">Daftar Pengajuan</h3>
+                                    <span id="dashboard-table-count" class="bg-blue-50 text-blue-600 px-2 py-0.5 rounded text-[10px] font-bold"></span>
+                                </div>
+                                <div class="flex items-center gap-2 overflow-x-auto w-full md:w-auto pb-1 md:pb-0">
+                                    <button class="px-4 py-1.5 bg-emerald-50 text-narmadaGreen font-bold text-xs rounded-full whitespace-nowrap">Hari Ini</button>
+                                    <button class="px-4 py-1.5 bg-transparent text-slate-500 hover:bg-slate-50 hover:text-slate-700 font-semibold text-xs rounded-full whitespace-nowrap transition-colors">Minggu Ini</button>
+                                    <button class="px-4 py-1.5 bg-transparent text-slate-500 hover:bg-slate-50 hover:text-slate-700 font-semibold text-xs rounded-full whitespace-nowrap transition-colors">Bulan Ini</button>
+                                    <button class="px-4 py-1.5 bg-transparent text-slate-500 hover:bg-slate-50 hover:text-slate-700 font-semibold text-xs rounded-full whitespace-nowrap transition-colors">Semua</button>
+                                </div>
+                            </div>
+
+                            <!-- Table Wrapper -->
+                            <div class="overflow-x-auto">
+                                <table class="w-full min-w-full text-left border-collapse">
+                                    <thead>
+                                        <tr class="bg-slate-50 text-[10px] uppercase tracking-wider text-slate-500 font-bold border-b border-slate-100">
+                                            <th class="py-4 px-2 w-12 text-center">NO</th>
+                                            <th class="py-4 px-4 w-32">WAKTU</th>
+                                            <th class="py-4 px-4">PEMOHON</th>
+                                            <th class="py-4 px-4 w-48">LAYANAN</th>
+                                            <th class="py-4 px-4 text-center w-24">STATUS</th>
+                                            <th class="py-4 px-4 text-center w-20">AKSI</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="table-dashboard-rows" class="text-xs text-slate-700">
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <!-- Pagination -->
+                            <div class="p-4 border-t border-slate-100 flex justify-between items-center bg-slate-50/50">
+                                <div class="text-[10px] font-semibold text-slate-500" id="txt-dash-pagination-info"></div>
+                                <div class="flex gap-1">
+                                    <button id="btn-dash-prev" class="w-7 h-7 flex items-center justify-center rounded-lg bg-white border border-slate-200 text-slate-400 hover:text-emerald-600 hover:border-emerald-200 transition-colors disabled:opacity-50" onclick="changeDashPage(-1)"><i class="fa-solid fa-chevron-left text-[10px]"></i></button>
+                                    <button id="btn-dash-next" class="w-7 h-7 flex items-center justify-center rounded-lg bg-white border border-slate-200 text-slate-400 hover:text-emerald-600 hover:border-emerald-200 transition-colors disabled:opacity-50" onclick="changeDashPage(1)"><i class="fa-solid fa-chevron-right text-[10px]"></i></button>
+                                </div>
+                            </div>
+                        </div>
+
                     </div> <!-- end subview-admin-dashboard -->
                     
                 <div id="subview-admin-pengajuan" class="hidden space-y-6 text-left w-full">

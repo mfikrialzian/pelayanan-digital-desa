@@ -5,6 +5,7 @@ export function fetchAdminStats() {
                         window.lastDashboardStats = stats;
                         renderStatsDashboard(stats);
                         fetchAdminDashboardData();
+                        fetchDashboardInboxData();
                         fetchNotifications();
                     })
                     .getDashboardStats();
@@ -105,6 +106,150 @@ export function fetchUserDashboardData(nik, noReq) {
                 renderUserTable({ data: filtered });
             }
         }
+
+window.currentDashInboxPage = 1;
+
+export function fetchDashboardInboxData() {
+    let tbody = document.getElementById('table-dashboard-rows');
+    if (!tbody) return;
+    tbody.innerHTML = getTableSkeleton(6, 5);
+
+    if (isGoogleEnv) {
+        try {
+            google.script.run
+                .withSuccessHandler(function (res) {
+                    if (res && res.authError) return;
+                    renderDashboardInboxTable(res);
+                })
+                .getAdminDashboardData(localStorage.getItem('adminToken_Narmada'), '', window.currentDashInboxPage, 'Menunggu');
+        } catch (e) { }
+    } else {
+        let filtered = dummyPengajuanList.filter(function (r) {
+            return r.status === 'Menunggu';
+        });
+
+        let total = filtered.length;
+        let limit = 10;
+        let pages = Math.max(1, Math.ceil(total / limit));
+        let paginated = filtered.slice((window.currentDashInboxPage - 1) * limit, window.currentDashInboxPage * limit);
+
+        renderDashboardInboxTable({
+            data: paginated,
+            totalPages: pages,
+            currentPage: window.currentDashInboxPage,
+            totalItems: total
+        });
+    }
+}
+
+window.changeDashPage = function(delta) {
+    window.currentDashInboxPage += delta;
+    fetchDashboardInboxData();
+};
+
+window.toggleInboxRow = function(id) {
+    let row = document.getElementById('inbox-detail-' + id);
+    let icon = document.getElementById('inbox-icon-' + id);
+    if(row) {
+        if(row.classList.contains('hidden')) {
+            row.classList.remove('hidden');
+            if(icon) icon.classList.add('rotate-180');
+        } else {
+            row.classList.add('hidden');
+            if(icon) icon.classList.remove('rotate-180');
+        }
+    }
+};
+
+window.copyInboxReq = function(req) {
+    navigator.clipboard.writeText(req).then(() => {
+        pushToast('No Request berhasil disalin', 'success');
+    });
+};
+
+export function renderDashboardInboxTable(response) {
+    let tbody = document.getElementById('table-dashboard-rows');
+    if (!tbody) return;
+
+    let info = document.getElementById('txt-dash-pagination-info');
+    if(info) info.innerText = "Halaman " + response.currentPage + " dari " + response.totalPages + " (" + response.totalItems + " Berkas)";
+    
+    let btnPrev = document.getElementById('btn-dash-prev');
+    if(btnPrev) btnPrev.disabled = response.currentPage <= 1;
+    let btnNext = document.getElementById('btn-dash-next');
+    if(btnNext) btnNext.disabled = response.currentPage >= response.totalPages;
+    
+    let countEl = document.getElementById('dashboard-table-count');
+    if(countEl) countEl.innerText = response.totalItems + " Pengajuan";
+
+    tbody.innerHTML = '';
+    if (!response.data || response.data.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="py-8 text-center text-slate-400 font-medium"><i class="fa-regular fa-folder-open text-3xl mb-3 block text-slate-300"></i><div class="mt-2">Tidak ada pengajuan masuk</div></td></tr>';
+        return;
+    }
+
+    let no = (response.currentPage - 1) * 10 + 1;
+    response.data.forEach(function (row) {
+        let datePart = "-";
+        let timePart = "-";
+        if (row.tanggal) {
+            let parts = row.tanggal.split(' ');
+            if (parts.length > 1) {
+                datePart = parts[0];
+                timePart = parts[1];
+            } else {
+                datePart = parts[0];
+            }
+        }
+        
+        let trMain = document.createElement('tr');
+        trMain.className = 'border-b border-slate-100 hover:bg-slate-50 transition-colors cursor-pointer group';
+        trMain.onclick = function() { window.toggleInboxRow(row.id); };
+        
+        trMain.innerHTML = `
+            <td class="py-3 px-2 text-center font-medium text-slate-500">${no++}</td>
+            <td class="py-3 px-4">
+                <div class="font-bold text-slate-800">${timePart}</div>
+                <div class="text-[10px] text-slate-500 mt-0.5">${datePart} <span class="mx-1">|</span> <i class="fa-solid fa-location-dot text-slate-400"></i> ${row.alamat || 'Kantor Desa Narmada'}</div>
+            </td>
+            <td class="py-3 px-4">
+                <div class="font-bold text-slate-800 flex items-center gap-2">${row.nama || '-'}
+                   <i id="inbox-icon-${row.id}" class="fa-solid fa-chevron-down text-[10px] text-slate-400 transition-transform duration-300"></i>
+                </div>
+            </td>
+            <td class="py-3 px-4 font-semibold text-slate-700">${row.layanan || '-'}</td>
+            <td class="py-3 px-4 text-center">
+                <span class="bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-[10px] font-bold">Menunggu</span>
+            </td>
+            <td class="py-3 px-4 text-center">
+                <button onclick="event.stopPropagation(); window.openPengajuanFilter('Menunggu'); setTimeout(() => window.quickProcessPengajuan('${row.id}'), 300);" class="bg-emerald-50 hover:bg-emerald-600 text-emerald-600 hover:text-white px-3 py-1.5 rounded-lg text-xs font-bold transition-colors"><i class="fa-solid fa-check"></i> Proses</button>
+            </td>
+        `;
+        
+        let trDetail = document.createElement('tr');
+        trDetail.id = 'inbox-detail-' + row.id;
+        trDetail.className = 'hidden bg-slate-50/50 border-b border-slate-100';
+        trDetail.innerHTML = `
+            <td colspan="6" class="px-4 py-3">
+                <div class="flex items-center gap-6 text-xs text-slate-600 ml-10">
+                    <div class="flex items-center gap-2">
+                        <span class="font-mono font-medium text-slate-700 bg-white px-2 py-1 rounded border border-slate-200">${row.id}</span>
+                        <button onclick="window.copyInboxReq('${row.id}')" class="text-slate-400 hover:text-blue-500 transition-colors" title="Salin No Request"><i class="fa-regular fa-copy"></i></button>
+                    </div>
+                    <div class="flex items-center gap-1.5" title="NIK">
+                        <i class="fa-regular fa-id-card text-slate-400"></i> ${row.nik || '-'}
+                    </div>
+                    <div class="flex items-center gap-1.5" title="WhatsApp">
+                        <i class="fa-brands fa-whatsapp text-emerald-500"></i> ${row.telepon || '-'}
+                    </div>
+                </div>
+            </td>
+        `;
+        
+        tbody.appendChild(trMain);
+        tbody.appendChild(trDetail);
+    });
+}
 
 export function fetchAdminDashboardData() {
             let tbody = document.getElementById('table-admin-rows');

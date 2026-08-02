@@ -385,7 +385,6 @@ export const SIDEBAR_ITEMS = [
     { id: 'dashboard', icon: 'fa-house', label: 'Dashboard', action: "switchAdminTab('dashboard')" },
     { id: 'daftar-layanan', icon: 'fa-layer-group', label: 'Layanan', action: "switchAdminTab('daftar-layanan')" },
     { id: 'pengajuan-group', icon: 'fa-file-lines', label: 'Pengajuan', subItems: [
-        { id: 'pengajuan-menunggu', label: 'Pengajuan Masuk', badgeId: 'badge-pengajuan-menunggu', action: "openPengajuanFilter('Menunggu')" },
         { id: 'pengajuan-proses', label: 'Proses Pengajuan', badgeId: 'badge-pengajuan-proses', action: "openPengajuanFilter('Proses')" },
         { id: 'pengajuan-perbaiki', label: 'Perbaiki Pengajuan', badgeId: 'badge-pengajuan-perbaikan', action: "openPengajuanFilter('Perbaikan')" },
         { id: 'pengajuan-selesai', label: 'Pengajuan Selesai', action: "openPengajuanFilter('Selesai')" }
