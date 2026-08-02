@@ -203,53 +203,43 @@ export function renderDashboardInboxTable(response) {
         }
         
         let trMain = document.createElement('tr');
-        trMain.className = 'border-b border-slate-100 hover:bg-slate-50 transition-colors cursor-pointer group';
-        trMain.onclick = function() { window.toggleInboxRow(row.id); };
+        trMain.className = 'border-b border-slate-100 hover:bg-slate-50 transition-colors';
         
         trMain.innerHTML = `
-            <td class="py-3 px-2 text-center font-medium text-slate-500">${no++}</td>
-            <td class="py-3 px-4">
-                <div class="font-bold text-slate-800">${timePart}</div>
-                <div class="text-[10px] text-slate-500 mt-0.5">${datePart} <span class="mx-1">|</span> <i class="fa-solid fa-location-dot text-slate-400"></i> ${row.alamat || 'Kantor Desa Narmada'}</div>
-            </td>
-            <td class="py-3 px-4">
-                <div class="font-bold text-slate-800 flex items-center gap-2">${row.nama || '-'}
-                   <i id="inbox-icon-${row.id}" class="fa-solid fa-chevron-down text-[10px] text-slate-400 transition-transform duration-300"></i>
+            <td class="py-4 px-2 text-center font-medium text-slate-500">${no++}</td>
+            <td class="py-4 px-4 align-top pt-5">
+                <div class="font-bold text-slate-800 mb-1">${datePart} ${timePart}</div>
+                <div class="text-[10px] font-medium text-slate-500 flex items-center gap-1.5 mt-2">
+                    <i class="fa-solid fa-location-dot text-slate-400"></i> ${row.alamat || 'Kantor Desa Narmada'}
                 </div>
             </td>
-            <td class="py-3 px-4 font-semibold text-slate-700">${row.layanan || '-'}</td>
-            <td class="py-3 px-4 text-center">
-                <span class="bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-[10px] font-bold">Menunggu</span>
-            </td>
-            <td class="py-3 px-4 text-center">
-                <button onclick="event.stopPropagation(); window.openPengajuanFilter('Menunggu'); setTimeout(() => window.quickProcessPengajuan('${row.id}'), 300);" class="bg-emerald-50 hover:bg-emerald-600 text-emerald-600 hover:text-white px-3 py-1.5 rounded-lg text-xs font-bold transition-colors"><i class="fa-solid fa-check"></i> Proses</button>
-            </td>
-        `;
-        
-        let trDetail = document.createElement('tr');
-        trDetail.id = 'inbox-detail-' + row.id;
-        trDetail.className = 'hidden bg-slate-50/50 border-b border-slate-100';
-        trDetail.innerHTML = `
-            <td colspan="6" class="px-4 py-3">
-                <div class="flex items-center gap-6 text-xs text-slate-600 ml-10">
-                    <div class="flex items-center gap-2">
-                        <span class="font-mono font-medium text-slate-700 bg-white px-2 py-1 rounded border border-slate-200">${row.id}</span>
+            <td class="py-4 px-4 align-top pt-5">
+                <div class="flex flex-col gap-1 text-[11px] font-semibold text-slate-600">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="text-slate-800">No Req:</span>
+                        <span class="font-mono bg-white px-2 py-0.5 rounded border border-slate-200">${row.id}</span>
                         <button onclick="window.copyInboxReq('${row.id}')" class="text-slate-400 hover:text-blue-500 transition-colors" title="Salin No Request"><i class="fa-regular fa-copy"></i></button>
                     </div>
-                    <div class="flex items-center gap-1.5" title="NIK">
-                        <i class="fa-regular fa-id-card text-slate-400"></i> ${row.nik || '-'}
-                    </div>
-                    <div class="flex items-center gap-1.5" title="WhatsApp">
-                        <i class="fa-brands fa-whatsapp text-emerald-500"></i> ${row.telepon || '-'}
+                    <div><span class="text-slate-800">Nama:</span> ${row.nama || '-'}</div>
+                    <div><span class="text-slate-800">NIK:</span> ${row.nik || '-'}</div>
+                    <div class="flex items-center gap-1 mt-1 text-slate-500">
+                        <i class="fa-brands fa-whatsapp text-emerald-500 text-[13px]"></i> ${row.telepon || '-'}
                     </div>
                 </div>
+            </td>
+            <td class="py-4 px-4 font-bold text-emerald-600 align-top pt-5">${row.layanan || '-'}</td>
+            <td class="py-4 px-4 text-center align-top pt-5">
+                <span class="bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-[10px] font-bold border border-blue-100">Menunggu</span>
+            </td>
+            <td class="py-4 px-4 text-center align-top pt-5">
+                <button onclick="event.stopPropagation(); window.openPengajuanFilter('Menunggu'); setTimeout(() => window.quickProcessPengajuan('${row.id}'), 300);" class="bg-blue-50 hover:bg-blue-600 text-blue-600 hover:text-white px-3 py-1.5 rounded-lg text-[11px] font-bold transition-colors w-full border border-blue-100 hover:border-blue-600"><i class="fa-solid fa-check mr-1"></i> Proses</button>
             </td>
         `;
         
         tbody.appendChild(trMain);
-        tbody.appendChild(trDetail);
     });
 }
+
 
 export function fetchAdminDashboardData() {
             let tbody = document.getElementById('table-admin-rows');
