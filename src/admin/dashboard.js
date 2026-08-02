@@ -33,9 +33,9 @@ export function fetchAdminStats() {
                 let mockStats = {
                     total: dummyPengajuanList.length,
                     pending: pendingCount,
-                    verifikasi: verifikasiCount,
+                    diperiksa: verifikasiCount,
                     selesai: selesaiCount,
-                    uploadUlang: uploadUlangCount,
+                    perbaikan: uploadUlangCount,
                     todayTotal: todayTotal,
                     todayPending: todayPending,
                     todayVerifikasi: todayVerifikasi,
@@ -56,9 +56,9 @@ export function fetchAdminStats() {
 export function renderStatsDashboard(stats) {
             document.getElementById('stat-total').innerText = stats.total;
             document.getElementById('stat-menunggu').innerText = stats.pending;
-            document.getElementById('stat-verifikasi').innerText = stats.verifikasi;
+            document.getElementById('stat-verifikasi').innerText = stats.diperiksa;
             document.getElementById('stat-selesai').innerText = stats.selesai;
-            document.getElementById('stat-perbaikan').innerText = stats.uploadUlang;
+            document.getElementById('stat-perbaikan').innerText = stats.perbaikan;
 
             const updateTrend = (id, count, textSuf) => {
                 let elIcon = document.getElementById('trend-' + id + '-icon');

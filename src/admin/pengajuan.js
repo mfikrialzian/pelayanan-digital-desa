@@ -20,9 +20,6 @@ export function renderAdminTable(response) {
                 } else if (status === 'Diperiksa') {
                     titleText = "Daftar Pengajuan Diperiksa";
                     countColor = "bg-amber-50 text-amber-600";
-                } else if (status === 'Proses') {
-                    titleText = "Daftar Proses Pengajuan";
-                    countColor = "bg-amber-50 text-amber-600";
                 } else if (status === 'Perbaikan') {
                     titleText = "Daftar Perbaiki Pengajuan";
                     countColor = "bg-red-50 text-red-600";
@@ -80,8 +77,6 @@ export function renderAdminTable(response) {
                         ((row.status === 'Diperiksa' || row.status === 'Selesai') ? 
                         '<button onclick="triggerGeneratePDF(\'' + row.id + '\')" class="px-3 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-[10px] transition-all flex items-center justify-center gap-1.5 shadow-sm min-w-[90px] border border-emerald-200"><i class="fa-solid fa-print"></i> Cetak Pengajuan</button>' : '') +
                         '</div>';
-                } else if (window.currentPengajuanFilterStatus === 'Proses') {
-                    aksiHtml = '<div class="flex flex-col gap-1.5 items-center justify-center">' +
                         '<button onclick="window.openManageStatusModalById(\'' + row.id + '\')" class="px-3 py-1.5 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-700 font-bold text-[10px] transition-all flex items-center justify-center gap-1.5 shadow-sm min-w-[90px] border border-amber-200"><i class="fa-solid fa-check-double"></i> Periksa</button>' +
                         ((row.status === 'Diperiksa' || row.status === 'Selesai') ? 
                         '<button onclick="triggerGeneratePDF(\'' + row.id + '\')" class="px-3 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-[10px] transition-all flex items-center justify-center gap-1.5 shadow-sm min-w-[90px] border border-emerald-200"><i class="fa-solid fa-print"></i> Cetak Pengajuan</button>' : '') +
@@ -565,13 +560,13 @@ window.quickProcessPengajuan = function(id) {
     showLoading();
     google.script.run.withSuccessHandler(function(response) {
         hideLoading();
-        if (response.status === 'success') {
+        if (response && response.success) {
             pushToast('Pengajuan ' + id + ' berhasil diproses.', 'success');
             loadAdminPengajuanTab();
         } else {
             pushToast(response.message || 'Gagal memproses.', 'error');
         }
-    }).updatePengajuanStatus(id, 'Diperiksa', 'Sedang diproses oleh operator', row.wa);
+    }).updatePengajuanStatus(localStorage.getItem('adminToken_Narmada'), id, 'Diperiksa', 'Sedang diproses oleh operator');
 };
 
 window.updatePengajuanSidebarBadges = function(list) {

@@ -289,7 +289,7 @@ export function verifyOTPAndSave() {
             .withFailureHandler(function (err) {
                 Swal.fire('Error', 'Gagal menghubungi server.', 'error');
             })
-            .verifyContactOTP(token, otpCode, pendingProfileUpdate.type);
+            .verifyContactOTP(token, pendingProfileUpdate.target, pendingProfileUpdate.type, otpCode);
     } else {
         // Local simulation
         setTimeout(() => {
