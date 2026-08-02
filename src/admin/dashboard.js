@@ -190,49 +190,27 @@ export function renderDashboardInboxTable(response) {
 
     let no = (response.currentPage - 1) * 10 + 1;
     response.data.forEach(function (row) {
-        let datePart = "-";
-        let timePart = "-";
-        if (row.tanggal) {
-            let parts = row.tanggal.split(' ');
-            if (parts.length > 1) {
-                datePart = parts[0];
-                timePart = parts[1];
-            } else {
-                datePart = parts[0];
-            }
-        }
-        
         let trMain = document.createElement('tr');
-        trMain.className = 'border-b border-slate-100 hover:bg-slate-50 transition-colors';
+        trMain.className = 'hover:bg-emerald-50/50 transition-all border-b border-slate-101';
         
         trMain.innerHTML = `
-            <td class="py-4 px-2 text-center font-medium text-slate-500">${no++}</td>
-            <td class="py-4 px-4 align-top pt-5">
-                <div class="font-bold text-slate-800 mb-1">${datePart} ${timePart}</div>
-                <div class="text-[10px] font-medium text-slate-500 flex items-center gap-1.5 mt-2">
-                    <i class="fa-solid fa-location-dot text-slate-400"></i> ${row.alamat || 'Kantor Desa Narmada'}
-                </div>
+            <td class="p-4 text-center font-bold text-slate-500 text-[10px]">${no++}</td>
+            <td class="p-4">
+                <p class="text-[9px] font-bold text-slate-700 mt-0.5">${row.tanggal || '-'}</p>
+                <p class="text-[9px] text-slate-500 font-semibold italic mt-0.5"><i class="fa-solid fa-map-location-dot"></i> ${row.alamat || "-"}</p>
             </td>
-            <td class="py-4 px-4 align-top pt-5">
-                <div class="flex flex-col gap-1 text-[11px] font-semibold text-slate-600">
-                    <div class="flex items-center gap-2 mb-1">
-                        <span class="text-slate-800">No Req:</span>
-                        <span class="font-mono bg-white px-2 py-0.5 rounded border border-slate-200">${row.id}</span>
-                        <button onclick="window.copyInboxReq('${row.id}')" class="text-slate-400 hover:text-blue-500 transition-colors" title="Salin No Request"><i class="fa-regular fa-copy"></i></button>
-                    </div>
-                    <div><span class="text-slate-800">Nama:</span> ${row.nama || '-'}</div>
-                    <div><span class="text-slate-800">NIK:</span> ${row.nik || '-'}</div>
-                    <div class="flex items-center gap-1 mt-1 text-slate-500">
-                        <i class="fa-brands fa-whatsapp text-emerald-500 text-[13px]"></i> ${row.telepon || '-'}
-                    </div>
-                </div>
+            <td class="p-4">
+                <p class="text-[11px] font-bold text-slate-700">No Req: <span class="font-extrabold text-slate-950">${row.id}</span></p>
+                <p class="text-[11px] font-bold text-slate-700 mt-0.5">Nama: ${row.nama || '-'}</p>
+                <p class="text-[11px] font-bold text-slate-700 mt-0.5">NIK: ${row.nik || '-'}</p>
+                <p class="text-[10px] text-green-600 font-bold mt-0.5"><i class="fa-brands fa-whatsapp"></i> ${row.telepon || row.wa || '-'}</p>
             </td>
-            <td class="py-4 px-4 font-bold text-emerald-600 align-top pt-5">${row.layanan || '-'}</td>
-            <td class="py-4 px-4 text-center align-top pt-5">
-                <span class="bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-[10px] font-bold border border-blue-100">Menunggu</span>
+            <td class="p-4"><span class="font-bold text-narmadaGreen text-[11px]">${row.layanan || '-'}</span></td>
+            <td class="p-4 text-center">
+                <span class="px-2.5 py-1 rounded-full text-[10px] font-bold border bg-blue-100 text-blue-700 border-blue-200">Menunggu</span>
             </td>
-            <td class="py-4 px-4 text-center align-top pt-5">
-                <button onclick="event.stopPropagation(); window.openPengajuanFilter('Menunggu'); setTimeout(() => window.quickProcessPengajuan('${row.id}'), 300);" class="bg-blue-50 hover:bg-blue-600 text-blue-600 hover:text-white px-3 py-1.5 rounded-lg text-[11px] font-bold transition-colors w-full border border-blue-100 hover:border-blue-600"><i class="fa-solid fa-check mr-1"></i> Proses</button>
+            <td class="p-4 text-center">
+                <button onclick="event.stopPropagation(); window.openPengajuanFilter('Menunggu'); setTimeout(() => window.quickProcessPengajuan('${row.id}'), 300);" class="px-3 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold text-[10px] transition-all flex items-center justify-center gap-1.5 shadow-sm mx-auto min-w-[90px] border border-blue-200"><i class="fa-solid fa-arrow-right-to-bracket"></i> Proses</button>
             </td>
         `;
         
