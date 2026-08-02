@@ -512,7 +512,7 @@ var PengajuanService = {
         }
 
         if (stat === ZettConstants.STATUS_PENDING) { stats.pending++; stats.chartStatus[2]++; if(isToday) stats.todayPending++; }
-        else if (stat === ZettConstants.STATUS_VERIFIKASI) { stats.verifikasi++; stats.chartStatus[1]++; if(isToday) stats.todayVerifikasi++; }
+        else if (stat === ZettConstants.STATUS_DIPERIKSA) { stats.verifikasi++; stats.chartStatus[1]++; if(isToday) stats.todayVerifikasi++; }
         else if (stat === ZettConstants.STATUS_SELESAI || stat === "Selesai" || stat === "Pelayanan Selesai") { stats.selesai++; stats.chartStatus[0]++; if(isToday) stats.todaySelesai++; }
         else if (stat === ZettConstants.STATUS_REUPLOAD || stat === ZettConstants.STATUS_DITOLAK) { stats.uploadUlang++; stats.chartStatus[3]++; if(isToday) stats.todayUploadUlang++; }
         else { stats.chartStatus[3]++; if(isToday) stats.todayUploadUlang++; }

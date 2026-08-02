@@ -29,7 +29,7 @@ var ZettConstants = {
   SHEET_LOG_KEAMANAN: "Log_Keamanan",
   
   STATUS_PENDING: "Menunggu",
-  STATUS_VERIFIKASI: "Verifikasi",
+  STATUS_DIPERIKSA: "Diperiksa",
   STATUS_SELESAI: "Selesai",
   STATUS_REUPLOAD: "Perbaikan",
   

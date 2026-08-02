@@ -424,8 +424,8 @@ var PengajuanRepository = {
         var rowStatus = row[8];
         if (stat === "Selesai") {
           matchesS = (rowStatus === ZettConstants.STATUS_SELESAI || rowStatus === "Selesai" || rowStatus === "Pelayanan Selesai");
-        } else if (stat === "Proses") {
-          matchesS = (rowStatus === "Proses" || rowStatus === "Verifikasi");
+        } else if (stat === "Diperiksa") {
+          matchesS = (rowStatus === "Diperiksa" || rowStatus === "Proses" || rowStatus === "Verifikasi");
         } else if (stat === "Perbaikan") {
           matchesS = (rowStatus === "Perbaikan" || rowStatus === "Upload Ulang");
         } else {
