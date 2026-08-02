@@ -37,9 +37,9 @@ export function renderStatusCards(results) {
             results.forEach(function (item) {
                 let badgeColor = "bg-slate-100 text-slate-700 border-slate-200";
                 if (item.status === "Menunggu") badgeColor = "bg-blue-50 text-blue-600 border-blue-200";
-                else if (item.status === "Diperiksa" || item.status === "Verifikasi" || item.status === "Proses") badgeColor = "bg-amber-50 text-amber-600 border-amber-200 font-bold";
-                else if (item.status === "Selesai" || item.status === "Pelayanan Selesai") badgeColor = "bg-slate-900 text-emerald-400 border-slate-900";
-                else if (item.status === "Perbaikan" || item.status === "Upload Ulang") badgeColor = "bg-red-50 text-red-600 border-red-200 font-bold";
+                else if (item.status === "Diperiksa") badgeColor = "bg-amber-50 text-amber-600 border-amber-200 font-bold";
+                else if (item.status === "Selesai") badgeColor = "bg-slate-900 text-emerald-400 border-slate-900";
+                else if (item.status === "Perbaikan") badgeColor = "bg-red-50 text-red-600 border-red-200 font-bold";
 
                 let cleanWaNum = item.wa.replace('+', '');
                 let encodedNote = encodeURIComponent(item.catatan || "");
@@ -107,7 +107,7 @@ export function renderStatusCards(results) {
                     '<div class="border-t border-slate-50 pt-2"><span class="text-slate-400 block text-[9px] font-bold uppercase tracking-wide mb-1">ISIAN FORMULIR WARGA:</span>' + parsedDetailsHtml + '</div>' +
                     '<div class="p-2.5 bg-slate-50 border rounded-lg text-[11px] italic text-slate-600 shadow-inner mt-2"><strong>Catatan Petugas:</strong> "' + item.catatan + '"</div>';
 
-                if (item.status === "Perbaikan" || item.status === "Upload Ulang") {
+                if (item.status === "Perbaikan") {
                     let matchedLayanan = (window.loadedLayananList || dummyLayananList).find(function (lay) {
                         return lay.nama === item.layanan;
                     });

@@ -12,9 +12,9 @@ export function fetchAdminStats() {
             } else {
 
                 let pendingCount = dummyPengajuanList.filter(r => r.status === "Menunggu").length;
-                let verifikasiCount = dummyPengajuanList.filter(r => r.status === "Diperiksa" || r.status === "Proses" || r.status === "Verifikasi").length;
-                let selesaiCount = dummyPengajuanList.filter(r => r.status === "Selesai" || r.status === "Pelayanan Selesai").length;
-                let uploadUlangCount = dummyPengajuanList.filter(r => r.status === "Perbaikan" || r.status === "Upload Ulang").length;
+                let verifikasiCount = dummyPengajuanList.filter(r => r.status === "Diperiksa").length;
+                let selesaiCount = dummyPengajuanList.filter(r => r.status === "Selesai").length;
+                let uploadUlangCount = dummyPengajuanList.filter(r => r.status === "Perbaikan").length;
                 let now = new Date();
                 let isToday = (dStr) => {
                     if(!dStr) return false;
@@ -26,9 +26,9 @@ export function fetchAdminStats() {
 
                 let todayTotal = dummyPengajuanList.filter(r => isToday(r.tanggal)).length;
                 let todayPending = dummyPengajuanList.filter(r => isToday(r.tanggal) && r.status === "Menunggu").length;
-                let todayVerifikasi = dummyPengajuanList.filter(r => isToday(r.tanggal) && (r.status === "Diperiksa" || r.status === "Proses" || r.status === "Verifikasi")).length;
-                let todaySelesai = dummyPengajuanList.filter(r => isToday(r.tanggal) && (r.status === "Selesai" || r.status === "Pelayanan Selesai")).length;
-                let todayUploadUlang = dummyPengajuanList.filter(r => isToday(r.tanggal) && (r.status === "Perbaikan" || r.status === "Upload Ulang")).length;
+                let todayVerifikasi = dummyPengajuanList.filter(r => isToday(r.tanggal) && (r.status === "Diperiksa")).length;
+                let todaySelesai = dummyPengajuanList.filter(r => isToday(r.tanggal) && (r.status === "Selesai")).length;
+                let todayUploadUlang = dummyPengajuanList.filter(r => isToday(r.tanggal) && (r.status === "Perbaikan")).length;
 
                 let mockStats = {
                     total: dummyPengajuanList.length,
@@ -245,9 +245,9 @@ export function fetchAdminDashboardData() {
                         if (activeStatusFilter === "Selesai") {
                             matchS = (r.status === "Pelayanan Selesai" || r.status === "Selesai");
                         } else if (activeStatusFilter === "Diperiksa") {
-                            matchS = (r.status === "Diperiksa" || r.status === "Proses" || r.status === "Verifikasi");
+                            matchS = (r.status === "Diperiksa");
                         } else if (activeStatusFilter === "Perbaikan") {
-                            matchS = (r.status === "Perbaikan" || r.status === "Upload Ulang");
+                            matchS = (r.status === "Perbaikan");
                         } else if (activeStatusFilter !== "Semua") {
                             matchS = (r.status === activeStatusFilter);
                         }
