@@ -244,6 +244,10 @@ export function fetchAdminDashboardData() {
                     if (activeStatusFilter) {
                         if (activeStatusFilter === "Selesai") {
                             matchS = (r.status === "Pelayanan Selesai" || r.status === "Selesai");
+                        } else if (activeStatusFilter === "Proses") {
+                            matchS = (r.status === "Proses" || r.status === "Verifikasi");
+                        } else if (activeStatusFilter === "Perbaikan") {
+                            matchS = (r.status === "Perbaikan" || r.status === "Upload Ulang");
                         } else if (activeStatusFilter !== "Semua") {
                             matchS = (r.status === activeStatusFilter);
                         }
