@@ -566,16 +566,13 @@ window.updatePengajuanSidebarBadges = function(list) {
         let b = document.getElementById(id);
         if (b) {
             b.innerText = count;
-            if (count > 0) {
-                b.classList.remove('hidden');
-            } else {
-                b.classList.add('hidden');
-            }
+            b.classList.remove('hidden'); // Selalu tampilkan angka
         }
     };
     updateBadge('badge-pengajuan-menunggu', menunggu);
     updateBadge('badge-pengajuan-proses', proses);
     updateBadge('badge-pengajuan-perbaikan', perbaikan);
+    updateBadge('badge-pengajuan-selesai', selesai);
 };
 
 
