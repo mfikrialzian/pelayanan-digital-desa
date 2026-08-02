@@ -305,7 +305,7 @@ if (el_card_stat_menunggu) {
 const el_card_stat_verifikasi = document.getElementById('card-stat-verifikasi');
 if (el_card_stat_verifikasi) {
     el_card_stat_verifikasi.addEventListener('click', function(event) {
-        setStatusFilter('Verifikasi')
+        setStatusFilter('Diperiksa')
     });
 } else {
     console.warn("Element #card-stat-verifikasi not found for event binding.");

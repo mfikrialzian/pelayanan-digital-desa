@@ -911,7 +911,7 @@
                                 <div class="absolute -right-4 -top-4 w-16 h-16 bg-amber-50 rounded-full group-hover:scale-150 transition-transform duration-500 z-0"></div>
                                 <div class="relative z-10">
                                     <div class="flex justify-between items-start mb-2">
-                                        <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Proses</h3>
+                                        <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Diperiksa</h3>
                                         <div class="w-8 h-8 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center shrink-0">
                                             <i class="fa-solid fa-magnifying-glass text-sm"></i>
                                         </div>
@@ -1868,13 +1868,11 @@
                         </div>
                     </div>
                 </div><div id="subview-admin-verifikasi" class="hidden space-y-6 text-left w-full h-full">
-                    <!-- FASE: VERIFIKASI BERKAS -->
+                    <!-- FASE: PERIKSA BERKAS -->
                     <div class="bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col overflow-hidden h-full w-full">
                         <!-- Header -->
                         <div class="p-5 border-b border-slate-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shrink-0 bg-white">
-                            <h3 class="text-sm font-bold text-slate-800 flex items-center gap-2">
-                                <i class="fa-solid fa-file-signature text-narmadaGreen"></i> Verifikasi Berkas
-                            </h3>
+                            <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2" id="manage-status-title"><i class="fa-solid fa-file-signature text-narmadaGreen"></i> Periksa Berkas</h2>
                         </div>
                         
                         <form id="form-manage-status" class="flex-1 flex flex-col md:flex-row min-h-0 bg-white relative">
@@ -1921,7 +1919,7 @@
                                             <label class="block text-[10px] font-extrabold text-slate-700 uppercase tracking-wide mb-1.5">Ubah Status</label>
                                             <select id="edit-status-select" required class="transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-narmadaGreen focus-visible:outline-none w-full px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-xs font-medium focus:ring-2 focus:ring-narmadaGreen/20 focus:border-narmadaGreen outline-none transition-all shadow-sm">
                                                 <option value="Menunggu">Menunggu</option>
-                                                <option value="Verifikasi">Verifikasi</option>
+                                                <option value="Diperiksa">Diperiksa</option>
                                                 <option value="Selesai">Selesai</option>
                                                 <option value="Perbaikan">Perbaikan</option>
                                             </select>
@@ -1935,9 +1933,9 @@
 
                                 <!-- Area Bawah Kanan: Tombol Simpan -->
                                 <div class="p-4 bg-white border-t border-slate-100 shrink-0 flex flex-col gap-2 z-10">
-                                    <button id="ev-bind-39" type="button" class="cursor-pointer hover:scale-[1.02] active:scale-[0.98] w-full px-4 py-2.5 bg-gradient-to-r from-narmadaGreen to-emerald-700 hover:from-emerald-600 hover:to-emerald-800 text-white text-xs font-bold rounded-xl shadow-sm transition-all flex justify-center items-center gap-2 tap-squish">
-                                        <i class="fa-solid fa-check"></i> Simpan Verifikasi
-                                    </button>
+                                    <button type="button" onclick="confirmSaveVerification()" class="px-5 py-2.5 rounded-xl bg-narmadaGreen hover:bg-emerald-700 text-white font-bold text-xs transition-all shadow-lg shadow-emerald-900/20 flex items-center gap-2 w-full justify-center">
+                                <i class="fa-solid fa-check"></i> Simpan Periksa
+                            </button>
                                     <button id="ev-bind-40" type="button" class="cursor-pointer hover:scale-[1.02] active:scale-[0.98] w-full px-4 py-2.5 text-xs font-bold text-slate-600 bg-white hover:bg-slate-50 border border-slate-200 rounded-xl transition-all tap-squish">
                                         Tutup Peninjauan
                                     </button>

@@ -12,7 +12,7 @@ export function fetchAdminStats() {
             } else {
 
                 let pendingCount = dummyPengajuanList.filter(r => r.status === "Menunggu").length;
-                let verifikasiCount = dummyPengajuanList.filter(r => r.status === "Verifikasi").length;
+                let verifikasiCount = dummyPengajuanList.filter(r => r.status === "Diperiksa").length;
                 let selesaiCount = dummyPengajuanList.filter(r => r.status === "Selesai" || r.status === "Pelayanan Selesai").length;
                 let uploadUlangCount = dummyPengajuanList.filter(r => r.status === "Perbaikan" || r.status === "Upload Ulang").length;
                 let now = new Date();
@@ -26,7 +26,7 @@ export function fetchAdminStats() {
 
                 let todayTotal = dummyPengajuanList.filter(r => isToday(r.tanggal)).length;
                 let todayPending = dummyPengajuanList.filter(r => isToday(r.tanggal) && r.status === "Menunggu").length;
-                let todayVerifikasi = dummyPengajuanList.filter(r => isToday(r.tanggal) && r.status === "Verifikasi").length;
+                let todayVerifikasi = dummyPengajuanList.filter(r => isToday(r.tanggal) && r.status === "Diperiksa").length;
                 let todaySelesai = dummyPengajuanList.filter(r => isToday(r.tanggal) && (r.status === "Selesai" || r.status === "Pelayanan Selesai")).length;
                 let todayUploadUlang = dummyPengajuanList.filter(r => isToday(r.tanggal) && (r.status === "Perbaikan" || r.status === "Upload Ulang")).length;
 
@@ -244,8 +244,8 @@ export function fetchAdminDashboardData() {
                     if (activeStatusFilter) {
                         if (activeStatusFilter === "Selesai") {
                             matchS = (r.status === "Pelayanan Selesai" || r.status === "Selesai");
-                        } else if (activeStatusFilter === "Proses") {
-                            matchS = (r.status === "Proses" || r.status === "Verifikasi");
+                        } else if (activeStatusFilter === "Diperiksa") {
+                            matchS = (r.status === "Diperiksa" || r.status === "Proses" || r.status === "Verifikasi");
                         } else if (activeStatusFilter === "Perbaikan") {
                             matchS = (r.status === "Perbaikan" || r.status === "Upload Ulang");
                         } else if (activeStatusFilter !== "Semua") {
@@ -337,7 +337,7 @@ export function initAdminCharts() {
             adminCharts.status = new Chart(ctxStatus, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Menunggu', 'Proses', 'Selesai', 'Perbaikan'],
+                    labels: ['Menunggu', 'Diperiksa', 'Selesai', 'Perbaikan'],
                     datasets: [{
                         data: [0, 0, 0, 0],
                         backgroundColor: [narmadaBlue, '#f59e0b', narmadaGreen, '#ef4444'],

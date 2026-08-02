@@ -17,6 +17,9 @@ export function renderAdminTable(response) {
                 if (status === 'Menunggu') {
                     titleText = "Daftar Pengajuan Masuk";
                     countColor = "bg-blue-50 text-blue-600";
+                } else if (status === 'Diperiksa') {
+                    titleText = "Daftar Pengajuan Diperiksa";
+                    countColor = "bg-amber-50 text-amber-600";
                 } else if (status === 'Proses') {
                     titleText = "Daftar Proses Pengajuan";
                     countColor = "bg-amber-50 text-amber-600";
@@ -50,7 +53,7 @@ export function renderAdminTable(response) {
                 let rowNo = startIndex + idx + 1;
                 let badgeColor = "bg-slate-100 text-slate-600 font-bold border-slate-200";
                 if (row.status === "Menunggu") badgeColor = "bg-blue-100 text-blue-700 font-bold border-blue-200";
-                else if (row.status === "Verifikasi") badgeColor = "bg-amber-100 text-amber-700 font-bold border-amber-200";
+                else if (row.status === "Diperiksa" || row.status === "Verifikasi" || row.status === "Proses") badgeColor = "bg-amber-100 text-amber-700 font-bold border-amber-200";
                 else if (row.status === "Selesai" || row.status === "Pelayanan Selesai") badgeColor = "bg-emerald-100 text-emerald-700 font-bold border-emerald-200";
                 else if (row.status === "Perbaikan" || row.status === "Upload Ulang") badgeColor = "bg-red-100 text-red-700 font-bold border-red-200";
 
@@ -72,6 +75,11 @@ export function renderAdminTable(response) {
                 let aksiHtml = '';
                 if (window.currentPengajuanFilterStatus === 'Menunggu') {
                     aksiHtml = '<button onclick="quickProcessPengajuan(\'' + row.id + '\')" class="px-3 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold text-[10px] transition-all flex items-center justify-center gap-1.5 shadow-sm mx-auto min-w-[90px] border border-blue-200"><i class="fa-solid fa-arrow-right-to-bracket"></i> Proses</button>';
+                } else if (window.currentPengajuanFilterStatus === 'Diperiksa') {
+                    aksiHtml = '<button onclick="window.openManageStatusModalById(\'' + row.id + '\')" class="px-3 py-1.5 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-700 font-bold text-[10px] transition-all flex items-center justify-center gap-1.5 shadow-sm min-w-[90px] border border-amber-200"><i class="fa-solid fa-check-double"></i> Periksa</button>' +
+                        ((row.status === 'Diperiksa' || row.status === 'Verifikasi' || row.status === 'Pelayanan Selesai' || row.status === 'Selesai') ? 
+                        '<button onclick="triggerGeneratePDF(\'' + row.id + '\')" class="px-3 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-[10px] transition-all flex items-center justify-center gap-1.5 shadow-sm min-w-[90px] border border-emerald-200"><i class="fa-solid fa-print"></i> Cetak Pengajuan</button>' : '') +
+                        '</div>';
                 } else if (window.currentPengajuanFilterStatus === 'Proses') {
                     aksiHtml = '<div class="flex flex-col gap-1.5 items-center justify-center">' +
                         '<button onclick="openManageStatusModalById(\'' + row.id + '\')" class="px-3 py-1.5 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-700 font-bold text-[10px] transition-all flex items-center justify-center gap-1.5 shadow-sm min-w-[90px] border border-amber-200"><i class="fa-solid fa-check-double"></i> Verifikasi</button>' +
@@ -307,7 +315,7 @@ export function openManageStatusModalById(id) {
 export function closeManageStatusModal() {
             if (window.isVerifikasiDirty) {
                 askConfirmation(
-                    "Batal Verifikasi?",
+                    "Batal Periksa?",
                     "Anda telah mengubah status atau catatan. Perubahan belum disimpan. Yakin ingin membatalkan?",
                     function() {
                         resetVerifikasiDirty();
@@ -453,7 +461,7 @@ export function calculateAutoVerificationResult(nama, id, layanan) {
 
 export function confirmSaveVerification() {
             askConfirmation(
-                "Konfirmasi Verifikasi",
+                "Konfirmasi Periksa",
                 "Apakah Anda yakin ingin menyimpan hasil verifikasi berkas ini?",
                 function() {
                     executeAdminStatusUpdate();
@@ -563,14 +571,14 @@ window.quickProcessPengajuan = function(id) {
         } else {
             pushToast(response.message || 'Gagal memproses.', 'error');
         }
-    }).updatePengajuanStatus(id, 'Proses', 'Sedang diproses oleh operator', row.wa);
+    }).updatePengajuanStatus(id, 'Diperiksa', 'Sedang diproses oleh operator', row.wa);
 };
 
 window.updatePengajuanSidebarBadges = function(list) {
     let menunggu = 0, proses = 0, perbaikan = 0, selesai = 0;
     list.forEach(item => {
         if (item.status === 'Menunggu') menunggu++;
-        else if (item.status === 'Proses' || item.status === 'Verifikasi') proses++;
+        else if (item.status === 'Diperiksa' || item.status === 'Proses' || item.status === 'Verifikasi') proses++;
         else if (item.status === 'Perbaikan' || item.status === 'Upload Ulang') perbaikan++;
         else if (item.status === 'Selesai' || item.status === 'Pelayanan Selesai') selesai++;
     });
