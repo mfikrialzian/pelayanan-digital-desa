@@ -637,13 +637,13 @@
                 </div>
                 
                 <div class="flex-grow flex flex-col justify-center max-w-lg relative z-20">
-                    <h2 class="text-3xl md:text-4xl lg:text-[40px] font-extrabold tracking-tight mb-1 leading-[1.1] text-white">Sistem<br>Pelayanan Digital</h2>
-                    <h3 class="text-lg md:text-xl font-bold text-[#6EE7B7] mb-3">Portal Administrasi Digital</h3>
-                    <p class="text-emerald-50/90 text-xs md:text-sm font-medium leading-relaxed mb-6 max-w-md">Kelola pelayanan administrasi desa secara cepat, aman, transparan, dan terintegrasi.</p>
+                    <h2 class="text-3xl lg:text-[36px] font-extrabold tracking-tight mb-1 leading-[1.1] text-white">Sistem<br>Pelayanan Digital</h2>
+                    <h3 class="text-lg md:text-lg font-bold text-[#6EE7B7] mb-2">Portal Administrasi Digital</h3>
+                    <p class="text-emerald-50/90 text-[11px] md:text-xs font-medium leading-relaxed mb-4 max-w-md">Kelola pelayanan administrasi desa secara cepat, aman, transparan, dan terintegrasi.</p>
                     
                     <div class="hidden lg:block">
-                        <p class="text-sm font-bold text-white mb-3 italic">Fitur Unggulan</p>
-                        <div class="grid grid-cols-5 gap-2 max-w-[400px]">
+                        <p class="text-xs font-bold text-white mb-2 italic">Fitur Unggulan</p>
+                        <div class="grid grid-cols-5 gap-2 max-w-[360px]">
                             <div class="flex flex-col items-center text-center gap-2 group">
                                 <div class="w-10 h-10 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center text-white group-hover:bg-white group-hover:text-narmadaGreen transition-all duration-300 shadow-sm backdrop-blur-sm">
                                     <i class="fa-solid fa-file-signature text-lg"></i>
@@ -685,7 +685,7 @@
         </div>
         
         <!-- Form Side (Panel Kanan) -->
-        <div class="login-form-panel w-full lg:w-1/2 flex flex-col justify-between items-center p-6 lg:p-8 bg-slate-50/50 relative overflow-y-auto min-h-[50vh] lg:min-h-screen">
+        <div class="login-form-panel w-full lg:w-1/2 flex flex-col justify-between items-center p-4 lg:p-6 bg-slate-50/50 relative overflow-y-auto min-h-[50vh] lg:min-h-screen">
             <!-- Background dot pattern light -->
             <div class="absolute inset-0 z-0 opacity-[0.03] dot-grid-pattern" style="background-image: radial-gradient(circle, #000000 1px, transparent 1px);"></div>
             <div class="absolute top-0 right-0 w-96 h-96 bg-slate-50 rounded-full blur-[100px] pointer-events-none z-0"></div>
@@ -707,26 +707,26 @@
             <div class="w-full max-w-[400px] flex flex-col gap-5 relative z-10 flex-grow justify-center">
                 
                 <!-- Login Card (Solid White, Clean Shadow) -->
-                <div class="login-card-wrapper bg-white p-6 lg:p-8 rounded-[32px] shadow-[0_20px_50px_-10px_rgba(0,0,0,0.08)] border border-slate-100">
-                    <div class="text-center mb-6">
-                        <h3 class="text-2xl font-extrabold text-slate-900 mb-2">Selamat Datang</h3>
-                        <p class="text-sm font-bold text-narmadaGreen">Portal Administrator</p>
-                        <p class="text-xs text-slate-500 mt-3 leading-relaxed px-2">Silakan masuk menggunakan akun resmi administrator untuk mengakses dashboard.</p>
+                <div class="login-card-wrapper bg-white p-5 lg:p-6 rounded-[24px] shadow-[0_20px_50px_-10px_rgba(0,0,0,0.08)] border border-slate-100">
+                    <div class="text-center mb-4">
+                        <h3 class="text-xl font-extrabold text-slate-900 mb-1">Selamat Datang</h3>
+                        <p class="text-xs font-bold text-narmadaGreen">Portal Administrator</p>
+                        <p class="text-[10px] text-slate-500 mt-2 leading-relaxed px-2">Silakan masuk menggunakan akun resmi administrator untuk mengakses dashboard.</p>
                     </div>
                     
                     <form id="ev-bind-9" class="space-y-4">
                         <!-- USERNAME (tanpa ikon, sesuai referensi) -->
                         <div class="group">
-                            <label class="block text-[11px] font-bold text-slate-600 mb-1.5 uppercase tracking-wide group-focus-within:text-narmadaGreen transition-colors">Username</label>
-                            <input type="text" id="login-username" required="" placeholder="Masukkan username" class="login-input-focus w-full px-4 py-3 rounded-xl border border-slate-200 bg-white text-sm text-slate-800 transition-all outline-none">
+                            <label class="block text-[10px] font-bold text-slate-600 mb-1 uppercase tracking-wide group-focus-within:text-narmadaGreen transition-colors">Username</label>
+                            <input type="text" id="login-username" required="" placeholder="Masukkan username" class="login-input-focus w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-sm text-slate-800 transition-all outline-none">
                         </div>
                         <div class="group">
-                            <label class="block text-[11px] font-bold text-slate-600 mb-1.5 uppercase tracking-wide group-focus-within:text-narmadaGreen transition-colors">Password</label>
+                            <label class="block text-[10px] font-bold text-slate-600 mb-1 uppercase tracking-wide group-focus-within:text-narmadaGreen transition-colors">Password</label>
                             <div class="relative">
                                 <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-narmadaGreen transition-colors">
                                     <i class="fa-solid fa-lock text-sm"></i>
                                 </div>
-                                <input type="password" id="login-password" required="" placeholder="Masukkan password" class="login-input-focus w-full pl-11 pr-11 py-3 rounded-xl border border-slate-200 bg-white text-sm text-slate-800 transition-all outline-none">
+                                <input type="password" id="login-password" required="" placeholder="Masukkan password" class="login-input-focus w-full pl-11 pr-11 py-2.5 rounded-xl border border-slate-200 bg-white text-sm text-slate-800 transition-all outline-none">
                                 <button id="ev-bind-10" type="button" class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-narmadaGreen transition-colors">
                                     <i class="fa-regular fa-eye" id="eye-icon-login"></i>
                                 </button>
@@ -745,7 +745,7 @@
                             <button type="button" id="btn-show-forgot-password" class="text-xs font-semibold text-narmadaGreen hover:text-emerald-700 transition-colors">Lupa Kata Sandi?</button>
                         </div>
                         
-                        <button type="submit" id="btn-submit-login" class="login-btn-submit w-full py-3.5 mt-5 bg-[#059669] hover:bg-[#047857] text-white font-bold text-sm rounded-xl flex justify-center items-center gap-2 overflow-hidden relative group/btn">
+                        <button type="submit" id="btn-submit-login" class="login-btn-submit w-full py-3 mt-4 bg-[#059669] hover:bg-[#047857] text-white font-bold text-sm rounded-xl flex justify-center items-center gap-2 overflow-hidden relative group/btn">
                             <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover/btn:animate-[shimmer_1.5s_infinite]"></div>
                             <i class="fa-solid fa-lock text-[11px]"></i>
                             <span>Masuk ke Dashboard</span>
@@ -764,8 +764,8 @@
                         
                         <div id="forgot-step-1">
                             <div>
-                                <label class="block text-xs font-bold text-slate-600 mb-2 uppercase tracking-wide">Username / Email</label>
-                                <input type="text" id="forgot-identifier" required="" placeholder="Ketik username atau email" class="login-input-focus w-full px-4 py-3.5 rounded-xl border border-slate-200 bg-white text-sm text-slate-800 transition-all outline-none">
+                                <label class="block text-[10px] font-bold text-slate-600 mb-1 uppercase tracking-wide">Username / Email</label>
+                                <input type="text" id="forgot-identifier" required="" placeholder="Ketik username atau email" class="login-input-focus w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-sm text-slate-800 transition-all outline-none">
                             </div>
                             <div class="mt-4">
                                 <label class="block text-xs font-bold text-slate-600 mb-2 uppercase tracking-wide">Metode Pengiriman OTP</label>
@@ -786,7 +786,7 @@
                                     </label>
                                 </div>
                             </div>
-                            <button type="submit" id="btn-submit-forgot" class="login-btn-submit w-full py-4 bg-slate-800 text-white font-bold text-[15px] rounded-xl mt-6 group/btn overflow-hidden relative">
+                            <button type="submit" id="btn-submit-forgot" class="login-btn-submit w-full py-3 bg-slate-800 text-white font-bold text-sm rounded-xl mt-4 group/btn overflow-hidden relative">
                                 <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover/btn:animate-[shimmer_1.5s_infinite]"></div>
                                 <span>Kirim Kode OTP</span>
                             </button>
@@ -843,27 +843,27 @@
                 </div>
 
                 <!-- Footer Info Panel Kanan (di luar form card) -->
-                <div class="hidden lg:grid grid-cols-3 gap-3 w-full max-w-[450px] mt-6 relative z-10 mx-auto">
-                    <div class="flex flex-col items-center text-center gap-1.5">
-                        <div class="w-7 h-7 rounded-md bg-white border border-slate-200 flex items-center justify-center shadow-sm text-slate-500">
-                            <i class="fa-solid fa-window-maximize text-[11px]"></i>
+                <div class="hidden lg:grid grid-cols-3 gap-2 w-full max-w-[420px] mt-4 relative z-10 mx-auto">
+                    <div class="flex flex-col items-center text-center gap-1">
+                        <div class="w-6 h-6 rounded-md bg-white border border-slate-200 flex items-center justify-center shadow-sm text-slate-500">
+                            <i class="fa-solid fa-window-maximize text-[9px]"></i>
                         </div>
-                        <h4 class="text-[10px] font-bold text-slate-700">Browser yang Disarankan</h4>
-                        <p id="info-browser-desc" class="text-[9px] text-slate-500 leading-relaxed">Google Chrome atau Edge terbaru.</p>
+                        <h4 class="text-[9px] font-bold text-slate-700">Browser yang Disarankan</h4>
+                        <p id="info-browser-desc" class="text-[8px] text-slate-500 leading-relaxed">Google Chrome atau Edge terbaru.</p>
                     </div>
-                    <div class="flex flex-col items-center text-center gap-1.5">
-                        <div class="w-7 h-7 rounded-md bg-white border border-slate-200 flex items-center justify-center shadow-sm text-slate-500">
-                            <i class="fa-solid fa-headset text-[11px]"></i>
+                    <div class="flex flex-col items-center text-center gap-1">
+                        <div class="w-6 h-6 rounded-md bg-white border border-slate-200 flex items-center justify-center shadow-sm text-slate-500">
+                            <i class="fa-solid fa-headset text-[9px]"></i>
                         </div>
-                        <h4 class="text-[10px] font-bold text-slate-700">Mengalami Kendala?</h4>
-                        <p id="info-kendala-desc" class="text-[9px] text-slate-500 leading-relaxed">Hubungi 0812-3456-7890 (08:00 - 16:00).</p>
+                        <h4 class="text-[9px] font-bold text-slate-700">Mengalami Kendala?</h4>
+                        <p id="info-kendala-desc" class="text-[8px] text-slate-500 leading-relaxed">Hubungi 0812-3456-7890 (08:00 - 16:00).</p>
                     </div>
-                    <div class="flex flex-col items-center text-center gap-1.5">
-                        <div class="w-7 h-7 rounded-md bg-white border border-slate-200 flex items-center justify-center shadow-sm text-slate-500">
-                            <i class="fa-solid fa-shield-check text-[11px]"></i>
+                    <div class="flex flex-col items-center text-center gap-1">
+                        <div class="w-6 h-6 rounded-md bg-white border border-slate-200 flex items-center justify-center shadow-sm text-slate-500">
+                            <i class="fa-solid fa-shield-check text-[9px]"></i>
                         </div>
-                        <h4 class="text-[10px] font-bold text-slate-700">Keamanan Terjamin</h4>
-                        <p id="info-keamanan-desc" class="text-[9px] text-slate-500 leading-relaxed">Sistem menggunakan enkripsi data.</p>
+                        <h4 class="text-[9px] font-bold text-slate-700">Keamanan Terjamin</h4>
+                        <p id="info-keamanan-desc" class="text-[8px] text-slate-500 leading-relaxed">Sistem menggunakan enkripsi data.</p>
                     </div>
                 </div>
             </div>
