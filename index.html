@@ -678,32 +678,7 @@
                     </div>
                 </div>
 
-                <!-- Footer Kiri -->
-                <!-- Footer Kiri: copyright + 3 info blocks -->
                 <div class="hidden lg:block mt-5 pt-4 border-t border-white/10">
-                    <div class="grid grid-cols-3 gap-4 mb-3">
-                        <div class="flex items-start gap-2">
-                            <div class="w-6 h-6 rounded-md bg-white/10 flex items-center justify-center shrink-0 mt-0.5"><i class="fa-solid fa-window-maximize text-[10px] text-emerald-100"></i></div>
-                            <div>
-                                <h4 class="text-[10px] font-bold text-emerald-50 mb-0.5">Browser yang Disarankan</h4>
-                                <p class="text-[9px] text-emerald-100/70 leading-relaxed">Google Chrome atau Edge terbaru.</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start gap-2">
-                            <div class="w-6 h-6 rounded-md bg-white/10 flex items-center justify-center shrink-0 mt-0.5"><i class="fa-solid fa-headset text-[10px] text-emerald-100"></i></div>
-                            <div>
-                                <h4 class="text-[10px] font-bold text-emerald-50 mb-0.5">Mengalami Kendala?</h4>
-                                <p class="text-[9px] text-emerald-100/70 leading-relaxed">Hubungi 0812-3456-7890 (08:00 - 16:00).</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start gap-2">
-                            <div class="w-6 h-6 rounded-md bg-white/10 flex items-center justify-center shrink-0 mt-0.5"><i class="fa-solid fa-shield-check text-[10px] text-emerald-100"></i></div>
-                            <div>
-                                <h4 class="text-[10px] font-bold text-emerald-50 mb-0.5">Keamanan Terjamin</h4>
-                                <p class="text-[9px] text-emerald-100/70 leading-relaxed">Sistem menggunakan enkripsi data.</p>
-                            </div>
-                        </div>
-                    </div>
                     <p class="text-[10px] font-medium text-emerald-100/60">© 2026 Pemerintah Desa Narmada &nbsp;|&nbsp; Versi 2.0.0</p>
                 </div>
             </div>
@@ -866,9 +841,32 @@
                         </button>
                     </div>
                 </div>
-            </div>
 
-            <!-- Footer info telah dipindahkan ke panel kiri -->
+                <!-- Footer Info Panel Kanan (di luar form card) -->
+                <div class="hidden lg:grid grid-cols-3 gap-3 w-full max-w-[450px] mt-6 relative z-10 mx-auto">
+                    <div class="flex flex-col items-center text-center gap-1.5">
+                        <div class="w-7 h-7 rounded-md bg-white border border-slate-200 flex items-center justify-center shadow-sm text-slate-500">
+                            <i class="fa-solid fa-window-maximize text-[11px]"></i>
+                        </div>
+                        <h4 class="text-[10px] font-bold text-slate-700">Browser yang Disarankan</h4>
+                        <p id="info-browser-desc" class="text-[9px] text-slate-500 leading-relaxed">Google Chrome atau Edge terbaru.</p>
+                    </div>
+                    <div class="flex flex-col items-center text-center gap-1.5">
+                        <div class="w-7 h-7 rounded-md bg-white border border-slate-200 flex items-center justify-center shadow-sm text-slate-500">
+                            <i class="fa-solid fa-headset text-[11px]"></i>
+                        </div>
+                        <h4 class="text-[10px] font-bold text-slate-700">Mengalami Kendala?</h4>
+                        <p id="info-kendala-desc" class="text-[9px] text-slate-500 leading-relaxed">Hubungi 0812-3456-7890 (08:00 - 16:00).</p>
+                    </div>
+                    <div class="flex flex-col items-center text-center gap-1.5">
+                        <div class="w-7 h-7 rounded-md bg-white border border-slate-200 flex items-center justify-center shadow-sm text-slate-500">
+                            <i class="fa-solid fa-shield-check text-[11px]"></i>
+                        </div>
+                        <h4 class="text-[10px] font-bold text-slate-700">Keamanan Terjamin</h4>
+                        <p id="info-keamanan-desc" class="text-[9px] text-slate-500 leading-relaxed">Sistem menggunakan enkripsi data.</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 <!-- ========================================== -->
@@ -2169,6 +2167,22 @@
                                     <label class="block text-[10px] font-bold text-slate-600 mb-1">Deskripsi Panjang
                                         Banner Semi-Digital</label>
                                     <textarea id="setelan-desc-banner-semi" required="" rows="2" class="w-full px-3.5 py-2 rounded-xl bg-white border border-slate-200 text-[11px] focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors"></textarea>
+                                </div>
+                                
+                                <div class="pt-4 border-t border-slate-200 mt-4 space-y-3">
+                                    <h5 class="text-xs font-bold text-slate-800"><i class="fa-solid fa-circle-info text-narmadaGreen mr-1.5"></i> Informasi Footer Halaman Login</h5>
+                                    <div>
+                                        <label class="block text-[10px] font-bold text-slate-600 mb-1">Deskripsi "Browser yang Disarankan"</label>
+                                        <textarea id="setelan-desc-browser" required="" rows="2" class="w-full px-3.5 py-2 rounded-xl bg-white border border-slate-200 text-[11px] focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors"></textarea>
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] font-bold text-slate-600 mb-1">Deskripsi "Mengalami Kendala?"</label>
+                                        <textarea id="setelan-desc-kendala" required="" rows="2" class="w-full px-3.5 py-2 rounded-xl bg-white border border-slate-200 text-[11px] focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors"></textarea>
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] font-bold text-slate-600 mb-1">Deskripsi "Keamanan Terjamin"</label>
+                                        <textarea id="setelan-desc-keamanan" required="" rows="2" class="w-full px-3.5 py-2 rounded-xl bg-white border border-slate-200 text-[11px] focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors"></textarea>
+                                    </div>
                                 </div>
                             </div>
 

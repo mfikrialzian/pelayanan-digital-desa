@@ -14,6 +14,10 @@ export function loadAdminSettingsForm() {
                     document.getElementById('setelan-toggle-jam').checked = (res.status_jam_pelayanan === "on");
                     document.getElementById('setelan-toggle-alur').checked = (res.status_alur === "on");
                     document.getElementById('setelan-toggle-banner').checked = (res.status_banner_semi === "on");
+
+                    document.getElementById('setelan-desc-browser').value = res.login_desc_browser || "Google Chrome atau Edge terbaru.";
+                    document.getElementById('setelan-desc-kendala').value = res.login_desc_kendala || "Hubungi 0812-3456-7890 (08:00 - 16:00).";
+                    document.getElementById('setelan-desc-keamanan').value = res.login_desc_keamanan || "Sistem menggunakan enkripsi data.";
                 }).getAdminSetelan();
 
         }
@@ -35,7 +39,11 @@ export function saveAdminSettings() {
 
                 status_jam_pelayanan: document.getElementById('setelan-toggle-jam').checked ? "on" : "off",
                 status_alur: document.getElementById('setelan-toggle-alur').checked ? "on" : "off",
-                status_banner_semi: document.getElementById('setelan-toggle-banner').checked ? "on" : "off"
+                status_banner_semi: document.getElementById('setelan-toggle-banner').checked ? "on" : "off",
+
+                login_desc_browser: document.getElementById('setelan-desc-browser').value.trim(),
+                login_desc_kendala: document.getElementById('setelan-desc-kendala').value.trim(),
+                login_desc_keamanan: document.getElementById('setelan-desc-keamanan').value.trim()
             };
 
             google.script.run.withSuccessHandler(function (res) {

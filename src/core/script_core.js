@@ -149,6 +149,14 @@ window.lblSemi = document.getElementById('lbl-desc-semi-digital');
             if (lblAlur) lblAlur.innerText = settings.deskripsi_alur;
             if (lblSemi) lblSemi.innerText = settings.deskripsi_banner_semi;
 
+window.infoBrowserDesc = document.getElementById('info-browser-desc');
+window.infoKendalaDesc = document.getElementById('info-kendala-desc');
+window.infoKeamananDesc = document.getElementById('info-keamanan-desc');
+            
+            if (infoBrowserDesc && settings.login_desc_browser) infoBrowserDesc.innerText = settings.login_desc_browser;
+            if (infoKendalaDesc && settings.login_desc_kendala) infoKendalaDesc.innerText = settings.login_desc_kendala;
+            if (infoKeamananDesc && settings.login_desc_keamanan) infoKeamananDesc.innerText = settings.login_desc_keamanan;
+
 window.infoJam = document.getElementById('warga-info-jam');
 window.infoAlur = document.getElementById('warga-info-alur');
 window.infoBannerSemi = document.getElementById('warga-info-banner-semi');
