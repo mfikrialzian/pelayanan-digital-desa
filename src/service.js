@@ -438,35 +438,32 @@ var LayananService = {
  */
 var PengajuanService = {
   getStats: function() {
-    try {
-      var rawData = PengajuanRepository.getStatsRaw();
-      
-      var stats = {
-        total: rawData.length,
-        pending: 0,
-        verifikasi: 0,
-        selesai: 0,
-        uploadUlang: 0,
-        todayTotal: 0,
-        todayPending: 0,
-        todayVerifikasi: 0,
-        todaySelesai: 0,
-        todayUploadUlang: 0,
-        recent: [],
-        chartMingguan: [0, 0, 0, 0, 0, 0, 0],
-        chartBulanIni: [0, 0, 0, 0],
-        chartStatus: [0, 0, 0, 0],
-        chartLayanan: { labels: [], data: [] },
-        chartLayanan7Hari: { labels: [], data: [] },
-        chartLayanan30Hari: { labels: [], data: [] }
-      };
+    var list = PengajuanRepository.getAll();
+    var stats = {
+      total: list.length,
+      pending: 0,
+      diperiksa: 0,
+      selesai: 0,
+      perbaikan: 0,
+      todayTotal: 0,
+      todayPending: 0,
+      todayVerifikasi: 0,
+      todaySelesai: 0,
+      todayUploadUlang: 0,
+      chartMingguan: [0, 0, 0, 0, 0, 0, 0],
+      chartBulanIni: [0, 0, 0, 0],
+      chartStatus: [0, 0, 0, 0],
+      chartLayanan: { labels: [], data: [] },
+      chartLayanan7Hari: { labels: [], data: [] },
+      chartLayanan30Hari: { labels: [], data: [] }
+    };
 
-      var layananCountsAll = {};
-      var layananCounts7 = {};
-      var layananCounts30 = {};
-      var now = new Date();
+    var layananCountsAll = {};
+    var layananCounts7 = {};
+    var layananCounts30 = {};
+    var now = new Date();
       
-      rawData.forEach(function(item) {
+    list.forEach(function(item) {
         var stat = item.status;
         var tanggal = item.tanggal;
         var layanan = item.layanan;
@@ -480,7 +477,6 @@ var PengajuanService = {
             if (!isNaN(tDate.getTime())) {
                 if (tDate.getDate() === now.getDate() && tDate.getMonth() === now.getMonth() && tDate.getFullYear() === now.getFullYear()) {
                     isToday = true;
-                    stats.todayTotal++;
                 }
                 var diffTime = now.getTime() - tDate.getTime();
                 var diffDays = diffTime / (1000 * 60 * 60 * 24); 
@@ -510,12 +506,14 @@ var PengajuanService = {
                 }
             }
         }
-
+      if (isToday) stats.todayTotal++;
+      
+      if (stat) {
         if (stat === ZettConstants.STATUS_PENDING) { stats.pending++; stats.chartStatus[2]++; if(isToday) stats.todayPending++; }
-        else if (stat === ZettConstants.STATUS_DIPERIKSA) { stats.verifikasi++; stats.chartStatus[1]++; if(isToday) stats.todayVerifikasi++; }
+        else if (stat === ZettConstants.STATUS_DIPERIKSA) { stats.diperiksa++; stats.chartStatus[1]++; if(isToday) stats.todayVerifikasi++; }
         else if (stat === ZettConstants.STATUS_SELESAI) { stats.selesai++; stats.chartStatus[0]++; if(isToday) stats.todaySelesai++; }
-        else if (stat === ZettConstants.STATUS_REUPLOAD) { stats.uploadUlang++; stats.chartStatus[3]++; if(isToday) stats.todayUploadUlang++; }
-        else { stats.chartStatus[3]++; if(isToday) stats.todayUploadUlang++; }
+        else if (stat === ZettConstants.STATUS_REUPLOAD) { stats.perbaikan++; stats.chartStatus[3]++; if(isToday) stats.todayUploadUlang++; }
+      }  else { stats.chartStatus[3]++; if(isToday) stats.todayUploadUlang++; }
       });
       
       var processTopLayanan = function(countsObj, targetChartObj) {
@@ -546,9 +544,6 @@ var PengajuanService = {
       stats.recent = PengajuanRepository.getRecent(5);
       
       return stats;
-    } catch (e) {
-      return { total: 0, pending: 0, verifikasi: 0, selesai: 0, uploadUlang: 0, recent: [], error: e.toString() };
-    }
   },
   
   create: function(wargaData) {
@@ -732,12 +727,21 @@ var PengajuanService = {
       ActivityService.logActivity("UPDATE_STATUS", "Status pengajuan " + id + " diubah menjadi: " + nextStatus, "Admin");
       
       SpreadsheetApp.flush();
-      return { success: true, message: "Status registrasi " + id + " sukses diperbarui!" };
+      
+      return { success: true, message: "Status berkas diperbarui.", currentStatus: nextStatus };
     } catch (e) {
       return { success: false, message: e.toString() };
     } finally {
       lock.releaseLock();
     }
+  },
+
+  getUserDashboardData: function(nik, noReq) {
+    var all = PengajuanRepository.getAll();
+    var filtered = all.filter(function(r) {
+      return r.nik === nik && r.id === noReq;
+    });
+    return { data: filtered };
   }
 };
 
@@ -999,7 +1003,7 @@ var OTPService = {
       return { success: false, message: "OTP telah kedaluwarsa." };
     }
     
-    if (data.otp !== otp) {
+    if (data.otp !== otpInput) {
       return { success: false, message: "OTP salah." };
     }
     

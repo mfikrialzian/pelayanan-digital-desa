@@ -171,6 +171,10 @@ function resetPasswordWithOTP(identifier, newPassword) {
   return OTPService.resetPasswordWithOTP(identifier, newPassword);
 }
 
+function getUserDashboardData(nik, noReq) {
+  return PengajuanService.getUserDashboardData(nik, noReq);
+}
+
 /**
  * REST API Gateway untuk Frontend Vercel
  */
@@ -199,6 +203,8 @@ function doPost(e) {
       'getPenggunaList': getPenggunaList,
       'crudPengguna': crudPengguna,
       'updateProfilPengguna': updateProfilPengguna,
+      'updatePasswordPengguna': updatePasswordPengguna,
+      'getUserDashboardData': getUserDashboardData,
       'updateAdminSetelan': updateAdminSetelan,
       'generateSuratPDF': generateSuratPDF,
       'getActivities': getActivities,
