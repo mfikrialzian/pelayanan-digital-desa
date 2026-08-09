@@ -16,3 +16,7 @@ desktop.ini
 
 .clasp.json
 
+# Vercel & Build
+.vercel
+.env*
+dist/

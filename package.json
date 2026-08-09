@@ -1,21 +1,33 @@
 {
-  "name": "pelayanandigitaldesa",
+  "name": "pelayanan-digital-desa",
   "version": "1.0.0",
-  "description": "Sistem pelayanan administrasi desa berbasis **Google Apps Script** yang memungkinkan warga mengajukan surat dan dokumen secara digital.",
+  "description": "Sistem pelayanan administrasi desa berbasis Google Apps Script yang memungkinkan warga mengajukan surat dan dokumen secara digital.",
+  "type": "module",
   "main": "check.js",
   "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/USERNAME/pelayanan-digital-desa.git"
+    "url": "git+https://github.com/mfikrialzian/pelayanan-digital-desa.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
   "bugs": {
-    "url": "https://github.com/USERNAME/pelayanan-digital-desa/issues"
+    "url": "https://github.com/mfikrialzian/pelayanan-digital-desa/issues"
   },
-  "homepage": "https://github.com/USERNAME/pelayanan-digital-desa#readme"
+  "homepage": "https://github.com/mfikrialzian/pelayanan-digital-desa#readme",
+  "devDependencies": {
+    "acorn": "^8.18.0",
+    "autoprefixer": "^10.4.19",
+    "eslint": "^8.57.1",
+    "jsdom": "^30.0.0",
+    "postcss": "^8.4.38",
+    "tailwindcss": "^3.4.4",
+    "vite": "^5.2.11"
+  }
 }
