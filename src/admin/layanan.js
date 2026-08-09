@@ -3,27 +3,31 @@ export let blCurrentStep = 1;
 export let builderKeperluanList = []; // Array of {nama, doc}
 
 export function switchBuilderTab(step) {
-    if (step < 1 || step > 4) return;
+    if (step < 1 || step > 5) return;
     blCurrentStep = step;
     
-    // Update Tabs
-    for (let i = 1; i <= 4; i++) {
+    // Update Stepper & Content
+    for (let i = 1; i <= 5; i++) {
         let tab = document.getElementById('bl-tab-' + i);
         let content = document.getElementById('bl-step-' + i);
         if (tab && content) {
-            if (i === step) {
-                tab.className = 'bl-tab-btn active px-4 py-2 text-xs font-bold border-b-2 border-narmadaGreen text-narmadaGreen whitespace-nowrap transition-colors';
+            if (i < step) {
+                tab.className = 'stepper-node stepper-completed cursor-pointer w-full';
+                content.classList.add('hidden');
+            } else if (i === step) {
+                tab.className = 'stepper-node stepper-current cursor-pointer w-full';
                 content.classList.remove('hidden');
             } else {
-                tab.className = 'bl-tab-btn px-4 py-2 text-xs font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-700 whitespace-nowrap transition-colors';
+                tab.className = 'stepper-node stepper-upcoming cursor-pointer w-full';
                 content.classList.add('hidden');
             }
         }
     }
     
-    // Update Next/Prev Buttons
+    // Update Next/Prev Buttons & Publish Button
     let btnPrev = document.getElementById('bl-btn-prev');
     let btnNext = document.getElementById('bl-btn-next');
+    let btnPublish = document.getElementById('ev-bind-31');
     
     if (btnPrev) {
         if (step === 1) btnPrev.classList.add('hidden');
@@ -31,8 +35,20 @@ export function switchBuilderTab(step) {
     }
     
     if (btnNext) {
-        if (step === 4) btnNext.classList.add('hidden');
+        if (step === 5) btnNext.classList.add('hidden');
         else btnNext.classList.remove('hidden');
+    }
+
+    if (btnPublish) {
+        if (step === 5) btnPublish.classList.remove('hidden');
+        else btnPublish.classList.add('hidden');
+    }
+    
+    // Update Preview on Step 5
+    if (step === 5) {
+        if (typeof updatePreviewLayanan === 'function') {
+            updatePreviewLayanan();
+        }
     }
 }
 
@@ -1127,7 +1143,7 @@ export let currentRepeaterGroup = [];
 export let editingRepeaterIndex = -1;
 
 document.addEventListener('DOMContentLoaded', function() {
-    for (let i = 1; i <= 4; i++) {
+    for (let i = 1; i <= 5; i++) {
         let tab = document.getElementById('bl-tab-' + i);
         if (tab) {
             tab.addEventListener('click', () => switchBuilderTab(i));
@@ -1143,8 +1159,114 @@ document.addEventListener('DOMContentLoaded', function() {
     if (btnNext) {
         btnNext.addEventListener('click', () => switchBuilderTab(blCurrentStep + 1));
     }
-});
-window.deleteKeperluanAtIndex = deleteKeperluanAtIndex;
 
+    // Bind real-time summary updates
+    document.getElementById('builder-layanan-nama')?.addEventListener('input', updateSummaryPanel);
+    document.getElementById('builder-keperluan-select')?.addEventListener('change', updateSummaryPanel);
+});
+
+// Drawer Functions
+export function openDrawer(drawerId) {
+    document.getElementById('drawer-overlay')?.classList.add('is-open');
+    document.getElementById(drawerId)?.classList.add('is-open');
+}
+
+export function closeAllDrawers() {
+    document.getElementById('drawer-overlay')?.classList.remove('is-open');
+    document.querySelectorAll('.drawer-panel').forEach(el => el.classList.remove('is-open'));
+}
+
+// Summary Panel Logic
+export function updateSummaryPanel() {
+    let nama = document.getElementById('builder-layanan-nama')?.value || '-';
+    let summaryNamaEl = document.getElementById('summary-nama');
+    if (summaryNamaEl) summaryNamaEl.innerText = nama;
+    
+    let isNew = document.getElementById('builder-select-layanan')?.value === "[+] TAMBAH LAYANAN BARU";
+    let summaryStatus = document.getElementById('summary-status');
+    let summaryStatusDot = document.getElementById('summary-status-dot');
+    
+    if (summaryStatus && summaryStatusDot) {
+        if (isNew) {
+            summaryStatus.innerText = "Draft Baru";
+            summaryStatusDot.className = "w-1.5 h-1.5 rounded-full bg-slate-400";
+        } else {
+            summaryStatus.innerText = "Perubahan";
+            summaryStatusDot.className = "w-1.5 h-1.5 rounded-full bg-amber-500";
+        }
+    }
+    
+    // Keperluan Count
+    let selectKeperluan = document.getElementById('builder-keperluan-select');
+    let kepCount = 0;
+    if (selectKeperluan) {
+        for (let i = 0; i < selectKeperluan.options.length; i++) {
+            let val = selectKeperluan.options[i].value;
+            if (val && val !== "__ADD_NEW__") kepCount++;
+        }
+    }
+    let kepEl = document.getElementById('summary-count-keperluan');
+    if (kepEl) kepEl.innerText = kepCount;
+    
+    // Requirements Count
+    let reqCount = 0;
+    if (typeof builderReqMap !== 'undefined') {
+        Object.keys(builderReqMap).forEach(k => {
+            reqCount += builderReqMap[k].length;
+        });
+    }
+    let reqEl = document.getElementById('summary-count-syarat');
+    if (reqEl) reqEl.innerText = reqCount;
+    
+    // Questions Count
+    let qCount = (typeof builderQuestions !== 'undefined') ? builderQuestions.length : 0;
+    let qEl = document.getElementById('summary-count-tanya');
+    if (qEl) qEl.innerText = qCount;
+}
+
+// Preview Generation Logic
+export function updatePreviewLayanan() {
+    let nama = document.getElementById('builder-layanan-nama')?.value || 'Nama Layanan';
+    let previewTitle = document.getElementById('preview-title');
+    if(previewTitle) previewTitle.innerText = nama;
+    
+    let dSec = "Pilih keperluan pengurusan surat Anda.";
+    let previewDesc = document.getElementById('preview-desc');
+    if(previewDesc) previewDesc.innerText = dSec;
+    
+    // Update validations
+    let vInfo = document.getElementById('val-info');
+    let vKep = document.getElementById('val-kep');
+    let vReq = document.getElementById('val-req');
+    let vQst = document.getElementById('val-qst');
+    
+    if(vInfo) vInfo.innerHTML = nama && nama !== '-' ? '<i class="fa-solid fa-check-circle text-emerald-500 mt-0.5"></i> <span>Informasi dasar lengkap</span>' : '<i class="fa-solid fa-circle-xmark text-red-500 mt-0.5"></i> <span>Nama layanan kosong</span>';
+    
+    let selectKeperluan = document.getElementById('builder-keperluan-select');
+    let kepCount = 0;
+    if (selectKeperluan) {
+        for (let i = 0; i < selectKeperluan.options.length; i++) {
+            let val = selectKeperluan.options[i].value;
+            if (val && val !== "__ADD_NEW__") kepCount++;
+        }
+    }
+    
+    if(vKep) vKep.innerHTML = kepCount > 0 ? '<i class="fa-solid fa-check-circle text-emerald-500 mt-0.5"></i> <span>Terdapat ' + kepCount + ' keperluan</span>' : '<i class="fa-solid fa-circle-xmark text-red-500 mt-0.5"></i> <span>Belum ada keperluan</span>';
+    
+    let reqCount = 0;
+    if (typeof builderReqMap !== 'undefined') {
+        Object.keys(builderReqMap).forEach(k => reqCount += builderReqMap[k].length);
+    }
+    if(vReq) vReq.innerHTML = reqCount > 0 ? '<i class="fa-solid fa-check-circle text-emerald-500 mt-0.5"></i> <span>Persyaratan telah dikonfigurasi</span>' : '<i class="fa-solid fa-circle-exclamation text-amber-500 mt-0.5"></i> <span>Belum ada persyaratan</span>';
+    
+    let qCount = (typeof builderQuestions !== 'undefined') ? builderQuestions.length : 0;
+    if(vQst) vQst.innerHTML = qCount > 0 ? '<i class="fa-solid fa-check-circle text-emerald-500 mt-0.5"></i> <span>Pertanyaan tambahan telah diatur</span>' : '<i class="fa-solid fa-circle-exclamation text-amber-500 mt-0.5"></i> <span>Tidak ada pertanyaan tambahan</span>';
+}
+
+window.deleteKeperluanAtIndex = deleteKeperluanAtIndex;
 window.switchBuilderTab = switchBuilderTab;
 window.blCurrentStep = blCurrentStep;
+window.openDrawer = openDrawer;
+window.closeAllDrawers = closeAllDrawers;
+window.updateSummaryPanel = updateSummaryPanel;
+window.updatePreviewLayanan = updatePreviewLayanan;
