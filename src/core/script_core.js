@@ -240,3 +240,5 @@ window.targetEl = document.getElementById('view-' + viewId);
         window.switchView = switchView;
         window.checkServiceStatus = checkServiceStatus;
         window.loadCMSConfigurationAndLayanan = loadCMSConfigurationAndLayanan;
+        
+        window.dummyLayananList = [];
