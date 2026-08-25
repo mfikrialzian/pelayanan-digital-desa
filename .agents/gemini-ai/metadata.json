@@ -1,0 +1,6 @@
+{
+  "name": "gemini-ai",
+  "description": "Agent khusus Gemini AI untuk pengembangan proyek Pelayanan Digital Desa",
+  "type": "workspace-agent",
+  "version": "1.0.0"
+}

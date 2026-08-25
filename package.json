@@ -1,13 +1,26 @@
 {
   "name": "pelayanan-digital-desa",
   "version": "1.0.0",
-  "description": "Frontend Pelayanan Digital Desa",
+  "description": "Sistem pelayanan administrasi desa berbasis Google Apps Script yang memungkinkan warga mengajukan surat dan dokumen secara digital.",
   "type": "module",
+  "main": "check.js",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mfikrialzian/pelayanan-digital-desa.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mfikrialzian/pelayanan-digital-desa/issues"
+  },
+  "homepage": "https://github.com/mfikrialzian/pelayanan-digital-desa#readme",
   "devDependencies": {
     "acorn": "^8.18.0",
     "autoprefixer": "^10.4.19",
