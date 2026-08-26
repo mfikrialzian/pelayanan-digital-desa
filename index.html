@@ -1739,13 +1739,8 @@
                 </div>
             </div>
             
-            <!-- TABS -->
-            <div class="flex overflow-x-auto custom-scrollbar gap-2 pb-1">
-                <button type="button" id="bl-tab-1" onclick="switchBuilderTab(1)" class="cursor-pointer hover:scale-[1.02] active:scale-[0.98] bl-tab-btn active px-4 py-2 text-xs font-bold border-b-2 border-narmadaGreen text-narmadaGreen whitespace-nowrap transition-colors">1. Info Dasar</button>
-                <button type="button" id="bl-tab-2" onclick="switchBuilderTab(2)" class="cursor-pointer hover:scale-[1.02] active:scale-[0.98] bl-tab-btn px-4 py-2 text-xs font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-700 whitespace-nowrap transition-colors">2. Keperluan</button>
-                <button type="button" id="bl-tab-3" onclick="switchBuilderTab(3)" class="cursor-pointer hover:scale-[1.02] active:scale-[0.98] bl-tab-btn px-4 py-2 text-xs font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-700 whitespace-nowrap transition-colors">3. Berkas Wajib</button>
-                <button type="button" id="bl-tab-4" onclick="switchBuilderTab(4)" class="cursor-pointer hover:scale-[1.02] active:scale-[0.98] bl-tab-btn px-4 py-2 text-xs font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-700 whitespace-nowrap transition-colors">4. Pertanyaan</button>
-            </div>
+            
+            <!-- TABS (Removed for Single Page Layout) -->
         </div>
         
         <!-- Body -->
@@ -1753,7 +1748,7 @@
             <form id="form-builder-layanan" class="max-w-2xl mx-auto" onsubmit="event.preventDefault();">
                 
                 <!-- STEP 1: Profil -->
-                <div id="bl-step-1" class="space-y-6">
+                <div id="bl-step-1" class="space-y-6 pb-6 border-b border-slate-100">
                     <h3 class="text-sm font-bold text-slate-800 border-b border-slate-100 pb-3"><i class="fa-solid fa-info-circle text-narmadaGreen mr-1.5"></i> Informasi Dasar Layanan</h3>
                     <select id="builder-select-layanan" class="transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-narmadaGreen focus-visible:outline-none hidden"><option value="[+] TAMBAH LAYANAN BARU">[+] TAMBAH LAYANAN BARU</option></select>
                     
@@ -1783,7 +1778,7 @@
                 </div>
 
                 <!-- STEP 2: Keperluan -->
-                <div id="bl-step-2" class="space-y-6 hidden">
+                <div id="bl-step-2" class="space-y-6 pt-2 pb-6 border-b border-slate-100">
                     <h3 class="text-sm font-bold text-slate-800 border-b border-slate-100 pb-3"><i class="fa-solid fa-list-check text-narmadaGreen mr-1.5"></i> Keperluan Surat & Template Dokumen</h3>
                     <p class="text-[10px] text-slate-500">Tentukan daftar keperluan. Anda bisa menyematkan ID/Link Google Docs template (Opsional) untuk setiap keperluan yang berbeda format.</p>
                     
@@ -1815,7 +1810,7 @@
                 </div>
 
                 <!-- STEP 3: Persyaratan -->
-                <div id="bl-step-3" class="space-y-6 hidden">
+                <div id="bl-step-3" class="space-y-6 pt-2 pb-6 border-b border-slate-100">
                     <div class="space-y-4 border-b border-slate-100 pb-5 mb-2">
                                 <h3 class="text-sm font-bold text-slate-800 border-b border-slate-100 pb-3"><i class="fa-solid fa-file-invoice text-emerald-600"></i> Berkas Persyaratan (Upload Warga)</h3>
                                 
@@ -1843,7 +1838,7 @@
                 </div>
 
                 <!-- STEP 4: Pertanyaan -->
-                <div id="bl-step-4" class="space-y-6 hidden">
+                <div id="bl-step-4" class="space-y-6 pt-2">
                     <!-- PERTANYAAN CARD -->
                             <div class="space-y-4 border-b border-slate-100 pb-5 mb-2">
                                 <h3 class="text-sm font-bold text-slate-800 border-b border-slate-100 pb-3"><i class="fa-solid fa-question-circle text-blue-600"></i> Formulir Pertanyaan Tambahan</h3>
@@ -1943,13 +1938,8 @@
 
                 </div>
                 <!-- FOOTER NAV BUTTONS -->
-                <div class="mt-8 flex justify-between items-center pt-4 border-t border-slate-100">
-                    <button type="button" id="bl-btn-prev" onclick="switchBuilderTab(blCurrentStep - 1)" class="cursor-pointer hover:scale-[1.02] active:scale-[0.98] px-5 py-2.5 text-xs font-bold text-slate-600 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl transition-all hidden"><i class="fa-solid fa-arrow-left mr-1.5"></i> Kembali</button>
+                <div class="mt-8 flex justify-end gap-3 pt-4 border-t border-slate-100">
                     <button type="button" id="ev-bind-30" class="cursor-pointer hover:scale-[1.02] active:scale-[0.98] px-5 py-2.5 text-xs font-bold text-slate-600 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl transition-all">Batal</button>
-                    
-                    <div class="flex-1"></div>
-                    
-                    <button type="button" id="bl-btn-next" onclick="switchBuilderTab(blCurrentStep + 1)" class="cursor-pointer hover:scale-[1.02] active:scale-[0.98] px-5 py-2.5 text-xs font-bold text-white bg-narmadaGreen hover:bg-emerald-700 shadow-sm rounded-xl transition-all">Selanjutnya <i class="fa-solid fa-arrow-right ml-1.5"></i></button>
                     <button type="button" id="ev-bind-31" class="cursor-pointer hover:scale-[1.02] active:scale-[0.98] px-5 py-2.5 text-xs font-bold text-white bg-narmadaGreen hover:bg-emerald-700 shadow-sm rounded-xl transition-all"><i class="fa-solid fa-save mr-1.5"></i> Simpan Perubahan</button>
                 </div>
             </form>

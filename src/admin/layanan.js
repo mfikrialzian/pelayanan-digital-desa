@@ -1,56 +1,5 @@
 
-export let blCurrentStep = 1;
 export let builderKeperluanList = []; // Array of {nama, doc}
-
-export function switchBuilderTab(step) {
-    if (step < 1 || step > 5) return;
-    blCurrentStep = step;
-    
-    // Update Stepper & Content
-    for (let i = 1; i <= 5; i++) {
-        let tab = document.getElementById('bl-tab-' + i);
-        let content = document.getElementById('bl-step-' + i);
-        if (tab && content) {
-            if (i < step) {
-                tab.className = 'stepper-node stepper-completed cursor-pointer w-full';
-                content.classList.add('hidden');
-            } else if (i === step) {
-                tab.className = 'stepper-node stepper-current cursor-pointer w-full';
-                content.classList.remove('hidden');
-            } else {
-                tab.className = 'stepper-node stepper-upcoming cursor-pointer w-full';
-                content.classList.add('hidden');
-            }
-        }
-    }
-    
-    // Update Next/Prev Buttons & Publish Button
-    let btnPrev = document.getElementById('bl-btn-prev');
-    let btnNext = document.getElementById('bl-btn-next');
-    let btnPublish = document.getElementById('ev-bind-31');
-    
-    if (btnPrev) {
-        if (step === 1) btnPrev.classList.add('hidden');
-        else btnPrev.classList.remove('hidden');
-    }
-    
-    if (btnNext) {
-        if (step === 5) btnNext.classList.add('hidden');
-        else btnNext.classList.remove('hidden');
-    }
-
-    if (btnPublish) {
-        if (step === 5) btnPublish.classList.remove('hidden');
-        else btnPublish.classList.add('hidden');
-    }
-    
-    // Update Preview on Step 5
-    if (step === 5) {
-        if (typeof updatePreviewLayanan === 'function') {
-            updatePreviewLayanan();
-        }
-    }
-}
 
 export function renderBuilderKeperluanList() {
     let container = document.getElementById('builder-keperluan-list');
@@ -114,7 +63,6 @@ export function openLayananEditor(id) {
                 if(titleEl) titleEl.innerText = 'Edit Layanan: ' + id;
             }
             handleBuilderLayananLoad();
-            switchBuilderTab(1);
         }
 
 export function closeLayananEditor() {
@@ -1143,23 +1091,6 @@ export let currentRepeaterGroup = [];
 export let editingRepeaterIndex = -1;
 
 document.addEventListener('DOMContentLoaded', function() {
-    for (let i = 1; i <= 5; i++) {
-        let tab = document.getElementById('bl-tab-' + i);
-        if (tab) {
-            tab.addEventListener('click', () => switchBuilderTab(i));
-        }
-    }
-    
-    let btnPrev = document.getElementById('bl-btn-prev');
-    if (btnPrev) {
-        btnPrev.addEventListener('click', () => switchBuilderTab(blCurrentStep - 1));
-    }
-    
-    let btnNext = document.getElementById('bl-btn-next');
-    if (btnNext) {
-        btnNext.addEventListener('click', () => switchBuilderTab(blCurrentStep + 1));
-    }
-
     // Bind real-time summary updates
     document.getElementById('builder-layanan-nama')?.addEventListener('input', updateSummaryPanel);
     document.getElementById('builder-keperluan-select')?.addEventListener('change', updateSummaryPanel);
@@ -1264,8 +1195,6 @@ export function updatePreviewLayanan() {
 }
 
 window.deleteKeperluanAtIndex = deleteKeperluanAtIndex;
-window.switchBuilderTab = switchBuilderTab;
-window.blCurrentStep = blCurrentStep;
 window.openDrawer = openDrawer;
 window.closeAllDrawers = closeAllDrawers;
 window.updateSummaryPanel = updateSummaryPanel;
