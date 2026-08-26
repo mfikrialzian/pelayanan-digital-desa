@@ -272,15 +272,30 @@ export function renderDynamicCustomQuestions(fields) {
                     qContainer.innerHTML += groupHtml;
                 });
             }
+            initSearchableDropdowns();
         }
 
 export function generateFieldInputHtml(displayType, actualName, requiredAttr, optionsStr) {
             let inputHtml = "";
             if (displayType === "dropdown") {
                 let optionsList = optionsStr ? optionsStr.split(',') : [];
-                inputHtml = '<select ' + requiredAttr + ' class="w-full px-3 py-2.5 rounded-xl custom-input text-sm font-medium shadow-sm bg-white dynamic-question-field uppercase" data-question="' + actualName + '"><option value="">-- Pilih Salah Satu --</option>';
-                optionsList.forEach(function (opt) { inputHtml += '<option value="' + opt.trim() + '">' + opt.trim() + '</option>'; });
-                inputHtml += '</select>';
+                if (optionsList.length > 10) {
+                    let optionsJson = JSON.stringify(optionsList.map(function(o) { return o.trim(); }));
+                    let uniqueId = "sd_" + Math.random().toString(36).substr(2, 9);
+                    inputHtml = '<div class="sd-container" id="' + uniqueId + '" data-options=\'' + optionsJson.replace(/'/g, "&#39;") + '\'>' +
+                                '<div class="sd-input-wrapper">' +
+                                '<i class="fa-solid fa-search"></i>' +
+                                '<input type="text" class="sd-input" placeholder="KETIK UNTUK MENCARI..." autocomplete="off">' +
+                                '<i class="fa-solid fa-times btn-clear"></i>' +
+                                '</div>' +
+                                '<div class="sd-dropdown"></div>' +
+                                '<input type="hidden" ' + requiredAttr + ' class="dynamic-question-field" data-question="' + actualName + '">' +
+                                '</div>';
+                } else {
+                    inputHtml = '<select ' + requiredAttr + ' class="w-full px-3 py-2.5 rounded-xl custom-input text-sm font-medium shadow-sm bg-white dynamic-question-field uppercase" data-question="' + actualName + '"><option value="">-- Pilih Salah Satu --</option>';
+                    optionsList.forEach(function (opt) { inputHtml += '<option value="' + opt.trim() + '">' + opt.trim() + '</option>'; });
+                    inputHtml += '</select>';
+                }
             } else if (displayType === "number") {
                 let limitAttr = optionsStr ? ' oninput="if(this.value.length > ' + optionsStr + ') this.value = this.value.slice(0, ' + optionsStr + ');"' : '';
                 inputHtml = '<input type="number" ' + requiredAttr + limitAttr + ' placeholder="KETIK ANGKA" class="w-full px-3 py-2.5 rounded-xl custom-input text-sm font-medium shadow-sm dynamic-question-field uppercase" data-question="' + actualName + '">';
@@ -328,6 +343,7 @@ export function addRepeaterGroup(containerId, encodedSubFields) {
             wrapperDiv.className = "animate-fade-in mt-3";
             wrapperDiv.innerHTML = generateRepeaterBlockHtml(encodedSubFields, true);
             container.appendChild(wrapperDiv);
+            initSearchableDropdowns();
         }
 
 export function renderDynamicUploadSlots(requirements) {
@@ -932,3 +948,86 @@ document.addEventListener('change', function(e) {
                 validateCurrentWizardStep();
             }
         });
+
+export function initSearchableDropdowns() {
+    let containers = document.querySelectorAll('.sd-container:not(.sd-initialized)');
+    containers.forEach(function(container) {
+        container.classList.add('sd-initialized');
+        let input = container.querySelector('.sd-input');
+        let hiddenInput = container.querySelector('input[type="hidden"]');
+        let dropdown = container.querySelector('.sd-dropdown');
+        let btnClear = container.querySelector('.btn-clear');
+        let options = [];
+        try {
+            options = JSON.parse(container.getAttribute('data-options').replace(/&#39;/g, "'"));
+        } catch(e) { console.error("Error parsing options", e); }
+
+        function renderOptions(filterText) {
+            dropdown.innerHTML = '';
+            let filtered = options.filter(function(opt) {
+                return opt.toLowerCase().indexOf(filterText.toLowerCase()) > -1;
+            });
+
+            if (filtered.length === 0) {
+                dropdown.innerHTML = '<div class="sd-no-results">Tidak ada hasil ditemukan</div>';
+                return;
+            }
+
+            filtered.forEach(function(opt) {
+                let div = document.createElement('div');
+                div.className = 'sd-option';
+                div.innerText = opt;
+                div.addEventListener('click', function() {
+                    input.value = opt;
+                    hiddenInput.value = opt;
+                    dropdown.classList.remove('active');
+                    btnClear.style.display = 'block';
+                    input.classList.remove('text-slate-400');
+                    input.classList.add('text-slate-800');
+                    // Trigger input event to update summary
+                    hiddenInput.dispatchEvent(new Event('input', { bubbles: true }));
+                });
+                dropdown.appendChild(div);
+            });
+        }
+
+        input.addEventListener('focus', function() {
+            renderOptions(input.value);
+            dropdown.classList.add('active');
+        });
+
+        input.addEventListener('input', function() {
+            renderOptions(input.value);
+            dropdown.classList.add('active');
+            hiddenInput.value = ""; // Reset hidden value when typing
+            btnClear.style.display = input.value ? 'block' : 'none';
+            hiddenInput.dispatchEvent(new Event('input', { bubbles: true }));
+        });
+
+        btnClear.addEventListener('click', function() {
+            input.value = "";
+            hiddenInput.value = "";
+            btnClear.style.display = 'none';
+            renderOptions("");
+            input.focus();
+            hiddenInput.dispatchEvent(new Event('input', { bubbles: true }));
+        });
+
+        // If hidden input already has value (from loadWargaDraft)
+        if (hiddenInput.value) {
+            input.value = hiddenInput.value;
+            btnClear.style.display = 'block';
+        }
+
+        document.addEventListener('click', function(e) {
+            if (!container.contains(e.target)) {
+                dropdown.classList.remove('active');
+                // Force reset to hidden input value if user typed something but didn't click an option
+                if (input.value !== hiddenInput.value) {
+                    input.value = hiddenInput.value;
+                    btnClear.style.display = input.value ? 'block' : 'none';
+                }
+            }
+        });
+    });
+}

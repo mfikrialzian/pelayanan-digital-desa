@@ -492,3 +492,102 @@ body {
     max-height: calc(100vh - 3rem);
     overflow-y: auto;
 }
+
+/* Searchable Dropdown */
+.sd-container {
+    position: relative;
+    width: 100%;
+}
+
+.sd-input-wrapper {
+    position: relative;
+}
+
+.sd-input-wrapper i.fa-search {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+}
+
+.sd-input-wrapper i.fa-times {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    cursor: pointer;
+    display: none;
+}
+
+.sd-input-wrapper i.fa-times:hover {
+    color: #ef4444;
+}
+
+.sd-input {
+    width: 100%;
+    padding: 0.625rem 2.5rem;
+    border-radius: 0.75rem;
+    background: #FFFFFF;
+    border: 1px solid #D1D5DB;
+    transition: all 0.2s ease-in-out;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.sd-input:focus {
+    border-color: #059669;
+    box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.15), inset 0 2px 4px rgba(0, 0, 0, 0.02);
+    outline: none;
+}
+
+.sd-dropdown {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    max-height: 250px;
+    overflow-y: auto;
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.75rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    z-index: 50;
+    display: none;
+    animation: fadeInDown 0.2s ease-out;
+}
+
+.sd-dropdown.active {
+    display: block;
+}
+
+.sd-option {
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    color: #334155;
+    cursor: pointer;
+    transition: background-color 0.1s;
+    border-bottom: 1px solid #f1f5f9;
+    text-transform: uppercase;
+}
+
+.sd-option:last-child {
+    border-bottom: none;
+}
+
+.sd-option:hover, .sd-option.highlighted {
+    background-color: #f0fdf4;
+    color: #059669;
+    font-weight: 600;
+}
+
+.sd-no-results {
+    padding: 1rem;
+    font-size: 0.875rem;
+    color: #94a3b8;
+    text-align: center;
+    font-style: italic;
+}
