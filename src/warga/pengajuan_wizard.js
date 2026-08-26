@@ -247,8 +247,13 @@ export function renderDynamicCustomQuestions(fields) {
                     let qInputId = "dyn_q_" + f.id;
                     let meta = parseQuestionMetadata(actualName);
                     
+                    let condAttrs = "";
+                    if (f.conditionField && f.conditionValue) {
+                        condAttrs = ' data-bind-condition-field="' + f.conditionField + '" data-bind-condition-value="' + f.conditionValue + '"';
+                    }
+
                     if (displayType === "repeater") {
-                        let groupHtml = '<div class="dynamic-question-wrapper mt-3" data-bind-keperluan="' + meta.keperluan + '">';
+                        let groupHtml = '<div class="dynamic-question-wrapper mt-3" data-bind-keperluan="' + meta.keperluan + '"' + condAttrs + '>';
                         groupHtml += '<div id="' + qInputId + '_container" class="space-y-3"></div>';
                         let encodedOpts = encodeURIComponent(f.options || "[]");
                         groupHtml += '<button type="button" onclick="addRepeaterGroup(\'' + qInputId + '_container\', \'' + encodedOpts + '\')" class="mt-3 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-[10px] font-bold shadow-sm transition-all flex items-center gap-1.5"><i class="fa-solid fa-plus"></i> Tambah Jawaban Lain</button>';
@@ -260,14 +265,14 @@ export function renderDynamicCustomQuestions(fields) {
                     let isRequiredStr = f.required === "ya" ? " *" : ' <span class="text-[9px] text-slate-400 font-semibold">(Opsional)</span>';
                     let requiredAttr = f.required === "ya" ? "required" : "";
 
-                    let groupHtml = '<div class="dynamic-question-wrapper space-y-1.5 mt-3" data-bind-keperluan="' + meta.keperluan + '">';
+                    let groupHtml = '<div class="dynamic-question-wrapper space-y-1.5 mt-3" data-bind-keperluan="' + meta.keperluan + '"' + condAttrs + '>';
 
                     if (meta.judul) {
                         groupHtml += '<h4 class="text-sm font-semibold text-narmadaGreen border-b border-emerald-100 pb-1.5 mt-3 mb-2"><i class="fa-solid fa-list-check"></i> ' + meta.judul + '</h4>';
                     }
 
                     groupHtml += '<label class="block text-xs font-semibold text-slate-600">' + escapeHtml(meta.cleanName) + isRequiredStr + '</label>';
-                    groupHtml += generateFieldInputHtml(displayType, actualName, requiredAttr, f.options);
+                    groupHtml += generateFieldInputHtml(displayType, actualName, requiredAttr, f.options, f.id);
                     groupHtml += '</div>';
                     qContainer.innerHTML += groupHtml;
                 });
@@ -275,8 +280,9 @@ export function renderDynamicCustomQuestions(fields) {
             initSearchableDropdowns();
         }
 
-export function generateFieldInputHtml(displayType, actualName, requiredAttr, optionsStr) {
+export function generateFieldInputHtml(displayType, actualName, requiredAttr, optionsStr, qId) {
             let inputHtml = "";
+            let idAttr = qId ? ' data-field-id="' + qId + '"' : '';
             if (displayType === "dropdown") {
                 let optionsList = optionsStr ? optionsStr.split(',') : [];
                 if (optionsList.length > 10) {
@@ -289,20 +295,20 @@ export function generateFieldInputHtml(displayType, actualName, requiredAttr, op
                                 '<i class="fa-solid fa-times btn-clear"></i>' +
                                 '</div>' +
                                 '<div class="sd-dropdown"></div>' +
-                                '<input type="hidden" ' + requiredAttr + ' class="dynamic-question-field" data-question="' + actualName + '">' +
+                                '<input type="hidden" ' + requiredAttr + ' class="dynamic-question-field" data-question="' + actualName + '"' + idAttr + '>' +
                                 '</div>';
                 } else {
-                    inputHtml = '<select ' + requiredAttr + ' class="w-full px-3 py-2.5 rounded-xl custom-input text-sm font-medium shadow-sm bg-white dynamic-question-field uppercase" data-question="' + actualName + '"><option value="">-- Pilih Salah Satu --</option>';
+                    inputHtml = '<select ' + requiredAttr + ' class="w-full px-3 py-2.5 rounded-xl custom-input text-sm font-medium shadow-sm bg-white dynamic-question-field uppercase" data-question="' + actualName + '"' + idAttr + '><option value="">-- Pilih Salah Satu --</option>';
                     optionsList.forEach(function (opt) { inputHtml += '<option value="' + opt.trim() + '">' + opt.trim() + '</option>'; });
                     inputHtml += '</select>';
                 }
             } else if (displayType === "number") {
                 let limitAttr = optionsStr ? ' oninput="if(this.value.length > ' + optionsStr + ') this.value = this.value.slice(0, ' + optionsStr + ');"' : '';
-                inputHtml = '<input type="number" ' + requiredAttr + limitAttr + ' placeholder="KETIK ANGKA" class="w-full px-3 py-2.5 rounded-xl custom-input text-sm font-medium shadow-sm dynamic-question-field uppercase" data-question="' + actualName + '">';
+                inputHtml = '<input type="number" ' + requiredAttr + limitAttr + ' placeholder="KETIK ANGKA" class="w-full px-3 py-2.5 rounded-xl custom-input text-sm font-medium shadow-sm dynamic-question-field uppercase" data-question="' + actualName + '"' + idAttr + '>';
             } else if (displayType === "date") {
-                inputHtml = '<input type="date" ' + requiredAttr + ' class="w-full px-3 py-2.5 rounded-xl custom-input text-sm font-medium shadow-sm dynamic-question-field uppercase" data-question="' + actualName + '">';
+                inputHtml = '<input type="date" ' + requiredAttr + ' class="w-full px-3 py-2.5 rounded-xl custom-input text-sm font-medium shadow-sm dynamic-question-field uppercase" data-question="' + actualName + '"' + idAttr + '>';
             } else {
-                inputHtml = '<input type="text" ' + requiredAttr + ' placeholder="Ketik jawaban Anda" oninput="this.value = this.value.toUpperCase();" class="w-full px-3 py-2.5 rounded-xl custom-input text-sm font-medium shadow-sm dynamic-question-field uppercase" data-question="' + actualName + '">';
+                inputHtml = '<input type="text" ' + requiredAttr + ' placeholder="Ketik jawaban Anda" oninput="this.value = this.value.toUpperCase();" class="w-full px-3 py-2.5 rounded-xl custom-input text-sm font-medium shadow-sm dynamic-question-field uppercase" data-question="' + actualName + '"' + idAttr + '>';
             }
             return inputHtml;
         }
@@ -1031,3 +1037,73 @@ export function initSearchableDropdowns() {
         });
     });
 }
+
+window.runLiveConditionalLogicEvaluationForCitizen = function() {
+    let allCondWrappers = document.querySelectorAll('.dynamic-question-wrapper[data-bind-condition-field]');
+    if (!allCondWrappers.length) return;
+    
+    let hasChanges = false;
+    let maxLoops = 10;
+    let loops = 0;
+
+    // Evaluate iteratively until no visibility state changes (handles nested conditions)
+    do {
+        hasChanges = false;
+        allCondWrappers.forEach(function(wrapper) {
+            let condField = wrapper.getAttribute('data-bind-condition-field');
+            let condValue = wrapper.getAttribute('data-bind-condition-value');
+            if (!condField || !condValue) return;
+
+            let parentInput = document.querySelector('.dynamic-question-field[data-field-id="' + condField + '"]');
+            let isParentVisible = false;
+            let parentValueMatch = false;
+
+            if (parentInput) {
+                let parentWrapper = parentInput.closest('.dynamic-question-wrapper');
+                isParentVisible = !(parentWrapper && parentWrapper.classList.contains('hidden'));
+                parentValueMatch = (parentInput.value.trim() === condValue.trim());
+            }
+
+            let shouldBeVisible = isParentVisible && parentValueMatch;
+            let currentlyVisible = !wrapper.classList.contains('hidden');
+
+            if (shouldBeVisible !== currentlyVisible) {
+                if (shouldBeVisible) {
+                    wrapper.classList.remove('hidden');
+                    wrapper.classList.add('animate-fade-in');
+                } else {
+                    wrapper.classList.add('hidden');
+                    wrapper.classList.remove('animate-fade-in');
+                    // When hiding, clear inner values so nested dependencies also hide
+                    let inputs = wrapper.querySelectorAll('.dynamic-question-field');
+                    inputs.forEach(function(inp) {
+                        if (inp.value !== "") {
+                            inp.value = "";
+                            inp.dispatchEvent(new Event('input', { bubbles: true })); // trigger recursive evaluation
+                        }
+                    });
+                    
+                    let sdInputs = wrapper.querySelectorAll('.sd-input');
+                    sdInputs.forEach(function(sdi) { sdi.value = ""; });
+                    let sdClears = wrapper.querySelectorAll('.btn-clear');
+                    sdClears.forEach(function(sdc) { sdc.style.display = 'none'; });
+                }
+                hasChanges = true;
+            }
+        });
+        loops++;
+    } while (hasChanges && loops < maxLoops);
+};
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.body.addEventListener('input', function(e) {
+        if (e.target && e.target.classList && e.target.classList.contains('dynamic-question-field')) {
+            if (window.runLiveConditionalLogicEvaluationForCitizen) window.runLiveConditionalLogicEvaluationForCitizen();
+        }
+    });
+    document.body.addEventListener('change', function(e) {
+        if (e.target && e.target.classList && e.target.classList.contains('dynamic-question-field')) {
+            if (window.runLiveConditionalLogicEvaluationForCitizen) window.runLiveConditionalLogicEvaluationForCitizen();
+        }
+    });
+});

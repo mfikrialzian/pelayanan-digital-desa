@@ -1841,7 +1841,7 @@
                 <div id="bl-step-4" class="space-y-6 pt-2">
                     <!-- PERTANYAAN CARD -->
                             <div class="space-y-4 border-b border-slate-100 pb-5 mb-2">
-                                <h3 class="text-sm font-bold text-slate-800 border-b border-slate-100 pb-3"><i class="fa-solid fa-question-circle text-blue-600"></i> Formulir Pertanyaan Tambahan</h3>
+                                <h3 id="builder-q-form-title" class="text-sm font-bold text-slate-800 border-b border-slate-100 pb-3"><i class="fa-solid fa-question-circle text-blue-600"></i> Buat Pertanyaan Utama</h3>
                                 
                                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                                     <div class="sm:col-span-3 grid grid-cols-1 sm:grid-cols-2 gap-3 mb-1 border-b border-slate-200 pb-3">
@@ -1854,6 +1854,24 @@
                                         <div>
                                             <label class="block text-[10px] font-bold text-slate-600 mb-0.5">Judul Penanda (Opsional)</label>
                                             <input type="text" id="builder-q-judul" placeholder="Contoh: Data Pribadi" class="transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-narmadaGreen focus-visible:outline-none w-full px-2.5 py-1.5 rounded-lg bg-slate-50 border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors">
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Conditional Wrapper -->
+                                    <div id="wrapper-q-condition" class="sm:col-span-3 hidden mb-2 p-3 bg-indigo-50/50 border border-indigo-100 rounded-xl space-y-2">
+                                        <div class="flex items-center gap-2 text-indigo-700 font-bold text-xs border-b border-indigo-100 pb-2">
+                                            <i class="fa-solid fa-code-branch"></i> Prasyarat Kemunculan (Kondisional)
+                                        </div>
+                                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                            <div>
+                                                <label class="block text-[10px] font-bold text-slate-600 mb-0.5">Pertanyaan Induk</label>
+                                                <input type="text" id="builder-q-condition-parent-name" readonly class="w-full px-2.5 py-1.5 rounded-lg bg-indigo-100/30 border border-indigo-200 text-xs text-indigo-800 outline-none font-semibold cursor-not-allowed">
+                                                <input type="hidden" id="builder-q-condition-parent-id">
+                                            </div>
+                                            <div>
+                                                <label class="block text-[10px] font-bold text-slate-600 mb-0.5">Jawaban Pemicu (Syarat)</label>
+                                                <select id="builder-q-condition-value" class="transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-indigo-500 focus-visible:outline-none w-full px-2.5 py-1.5 rounded-lg bg-white border border-indigo-200 text-xs focus:ring-indigo-500 focus:border-indigo-500 outline-none"></select>
+                                            </div>
                                         </div>
                                     </div>
 

@@ -736,6 +736,9 @@ export function addBuilderQuestionToList() {
 
             let formattedName = "{" + keperluan + ";;" + judul + "} " + label;
 
+            let conditionParentId = document.getElementById('builder-q-condition-parent-id') ? document.getElementById('builder-q-condition-parent-id').value : "";
+            let conditionValue = document.getElementById('builder-q-condition-value') ? document.getElementById('builder-q-condition-value').value : "";
+
             let newQuestionObj = {
                 id: "FLD-" + Math.random().toString(36).substr(2, 5).toUpperCase(),
                 label: formattedName,
@@ -745,8 +748,18 @@ export function addBuilderQuestionToList() {
                 required: reqStatus
             };
 
+            if (conditionParentId && conditionValue && document.getElementById('wrapper-q-condition') && !document.getElementById('wrapper-q-condition').classList.contains('hidden')) {
+                newQuestionObj.conditionField = conditionParentId;
+                newQuestionObj.conditionValue = conditionValue;
+            }
+
             if (window.editingQuestionIndex !== -1) {
                 newQuestionObj.id = builderQuestions[window.editingQuestionIndex].id; // Pertahankan ID
+                if (builderQuestions[window.editingQuestionIndex].conditionField) {
+                    // Retain conditional logic if editing an existing conditional field
+                    newQuestionObj.conditionField = builderQuestions[window.editingQuestionIndex].conditionField;
+                    newQuestionObj.conditionValue = builderQuestions[window.editingQuestionIndex].conditionValue;
+                }
                 builderQuestions[window.editingQuestionIndex] = newQuestionObj;
                 cancelEditBuilderQuestion();
                 pushToast("Pertanyaan berhasil diupdate.", "success");
@@ -770,9 +783,53 @@ export function addBuilderQuestionToList() {
             document.getElementById('builder-q-options').value = "";
             document.getElementById('builder-q-judul').value = "";
             if (document.getElementById('builder-q-limit')) document.getElementById('builder-q-limit').value = "";
+            
+            // Reset Conditional Wrapper
+            let wrapperCond = document.getElementById('wrapper-q-condition');
+            if (wrapperCond) {
+                wrapperCond.classList.add('hidden');
+                document.getElementById('builder-q-condition-parent-id').value = "";
+                document.getElementById('builder-q-condition-parent-name').value = "";
+                document.getElementById('builder-q-condition-value').innerHTML = "";
+            }
+            let formTitle = document.getElementById('builder-q-form-title');
+            if (formTitle) formTitle.innerHTML = '<i class="fa-solid fa-question-circle text-blue-600"></i> Buat Pertanyaan Utama';
 
             renderBuilderQuestionsUIList();
         }
+
+window.openConditionalBuilder = function(index) {
+    let parentQ = builderQuestions[index];
+    if (parentQ.type !== "dropdown") {
+        pushToast("Hanya pertanyaan tipe dropdown yang dapat dicabangkan!", "error");
+        return;
+    }
+    cancelEditBuilderQuestion();
+    
+    let meta = parseQuestionMetadata(parentQ.name);
+    
+    document.getElementById('wrapper-q-condition').classList.remove('hidden');
+    document.getElementById('builder-q-condition-parent-id').value = parentQ.id;
+    document.getElementById('builder-q-condition-parent-name').value = meta.cleanName;
+    
+    let selectEl = document.getElementById('builder-q-condition-value');
+    selectEl.innerHTML = "";
+    let opts = parentQ.options.split(',').map(o => o.trim()).filter(o => o !== "");
+    opts.forEach(o => {
+        let opt = document.createElement('option');
+        opt.value = o;
+        opt.text = o;
+        selectEl.appendChild(opt);
+    });
+    
+    document.getElementById('builder-q-keperluan').value = meta.keperluan || "Wajib";
+    
+    let formTitle = document.getElementById('builder-q-form-title');
+    if (formTitle) formTitle.innerHTML = '<i class="fa-solid fa-code-branch text-indigo-600"></i> Buat Pertanyaan Lanjutan';
+    
+    document.getElementById('builder-step-2').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    pushToast("Silakan atur pertanyaan lanjutan untuk " + meta.cleanName, "success");
+}
 
 export function editBuilderQuestion(index) {
             let q = builderQuestions[index];
@@ -834,6 +891,16 @@ export function cancelEditBuilderQuestion() {
             document.getElementById('builder-q-options').value = "";
             document.getElementById('builder-q-judul').value = "";
             if (document.getElementById('builder-q-limit')) document.getElementById('builder-q-limit').value = "";
+
+            let wrapperCond = document.getElementById('wrapper-q-condition');
+            if (wrapperCond) {
+                wrapperCond.classList.add('hidden');
+                document.getElementById('builder-q-condition-parent-id').value = "";
+                document.getElementById('builder-q-condition-parent-name').value = "";
+                document.getElementById('builder-q-condition-value').innerHTML = "";
+            }
+            let formTitle = document.getElementById('builder-q-form-title');
+            if (formTitle) formTitle.innerHTML = '<i class="fa-solid fa-question-circle text-blue-600"></i> Buat Pertanyaan Utama';
 
             let btnAdd = document.getElementById('btn-add-update-question');
             btnAdd.innerHTML = '<i class="fa-solid fa-plus-circle"></i> <span>Tambahkan Pertanyaan</span>';
@@ -916,9 +983,8 @@ export function renderBuilderQuestionsUIList() {
                     '<h5 class="text-[10px] font-extrabold text-blue-600 mb-2 border-b pb-1 flex items-center gap-1.5"><i class="fa-solid fa-list-ul"></i> Keperluan: ' + kep + '</h5>' +
                     '<div class="space-y-1.5 pl-1">';
 
-                groupedQ[kep].forEach(function (item, idxInGroup) {
+                let renderItem = function(item, depth, indexNum) {
                     let baseType = item.data.type;
-
                     let detail = baseType === "dropdown" ? " (Dropdown: " + item.data.options + ")" :
                         baseType === "number" ? " (Angka" + (item.data.options ? ", Max Digit: " + item.data.options : "") + ")" :
                             baseType === "date" ? " (Tanggal)" : 
@@ -934,21 +1000,36 @@ export function renderBuilderQuestionsUIList() {
                     let reqLabel = item.data.required === "tidak" ? '<span class="ml-1 text-amber-500 font-bold">[Opsional]</span>' : '<span class="ml-1 text-emerald-500 font-bold">[Wajib]</span>';
                     let titleStr = item.meta.judul ? '<span class="block text-[8px] text-slate-400 font-extrabold uppercase mb-0.5"><i class="fa-solid fa-tag"></i> Judul: ' + item.meta.judul + '</span>' : '';
                     
-                    let numberStr = '<span class="font-bold text-slate-800 text-[10px] w-4 inline-block">' + (idxInGroup + 1) + '.</span>';
+                    let numberStr = '<span class="font-bold text-slate-800 text-[10px] w-4 shrink-0 mt-0.5 inline-block">' + indexNum + '.</span>';
+                    let highlightClass = (window.editingQuestionIndex === item.index) ? "border-amber-400 bg-amber-50" : "border-slate-100 bg-slate-50";
 
-                    let highlightClass = (window.editingQuestionIndex === item.index) ? "border-amber-400 bg-amber-50" : "border-slate-101 bg-slate-50";
+                    let marginLeft = depth > 0 ? ('ml-' + (depth * 4)) : '';
+                    let conditionLabel = item.data.conditionField ? `<div class="text-[9px] text-indigo-600 font-bold mb-1"><i class="fa-solid fa-arrow-turn-up fa-rotate-90"></i> Muncul jika menjawab: "${item.data.conditionValue}"</div>` : '';
 
-                    groupHtml += '<div class="flex items-center justify-between p-2 rounded-lg border ' + highlightClass + ' text-[10px] font-semibold text-slate-700">' +
-                        '<div class="flex items-start gap-1">' + numberStr + '<div>' + titleStr + '<span><i class="fa-solid fa-check text-emerald-500 mr-1"></i> ' + item.meta.cleanName + reqLabel + ' <span class="text-slate-400 block mt-0.5">' + detail + '</span></span></div></div>' +
-                        '<div class="flex gap-1 shrink-0 flex-wrap justify-end max-w-[120px]">' +
-                        '<button onclick="moveBuilderQuestionUp(' + item.index + ')" class="text-slate-500 hover:text-slate-700 px-1.5 py-1 bg-white border border-slate-200 rounded shadow-sm transition-all" title="Naik"><i class="fa-solid fa-arrow-up"></i></button>' +
+                    groupHtml += '<div class="flex items-center justify-between p-2 rounded-lg border ' + highlightClass + ' text-[10px] font-semibold text-slate-700 ' + marginLeft + '">' +
+                        '<div class="flex items-start gap-1">' + numberStr + '<div>' + conditionLabel + titleStr + '<span><i class="fa-solid fa-check text-emerald-500 mr-1"></i> ' + item.meta.cleanName + reqLabel + ' <span class="text-slate-400 block mt-0.5">' + detail + '</span></span></div></div>' +
+                        '<div class="flex gap-1 shrink-0 flex-wrap justify-end max-w-[160px]">';
+                        
+                    if (baseType === "dropdown") {
+                        groupHtml += '<button onclick="openConditionalBuilder(' + item.index + ')" class="text-emerald-500 hover:text-emerald-700 px-1.5 py-1 bg-white border border-slate-200 rounded shadow-sm transition-all" title="Buat Pertanyaan Lanjutan"><i class="fa-solid fa-code-branch"></i></button>';
+                    }
+                        
+                    groupHtml += '<button onclick="moveBuilderQuestionUp(' + item.index + ')" class="text-slate-500 hover:text-slate-700 px-1.5 py-1 bg-white border border-slate-200 rounded shadow-sm transition-all" title="Naik"><i class="fa-solid fa-arrow-up"></i></button>' +
                         '<button onclick="moveBuilderQuestionDown(' + item.index + ')" class="text-slate-500 hover:text-slate-700 px-1.5 py-1 bg-white border border-slate-200 rounded shadow-sm transition-all" title="Turun"><i class="fa-solid fa-arrow-down"></i></button>' +
                         '<button onclick="duplicateBuilderQuestion(' + item.index + ')" class="text-indigo-500 hover:text-indigo-700 px-1.5 py-1 bg-white border border-slate-200 rounded shadow-sm transition-all" title="Duplikat"><i class="fa-solid fa-copy"></i></button>' +
                         '<button onclick="editBuilderQuestion(' + item.index + ')" class="text-blue-500 hover:text-blue-700 px-1.5 py-1 bg-white border border-slate-200 rounded shadow-sm transition-all" title="Edit"><i class="fa-solid fa-edit"></i></button>' +
                         '<button onclick="removeBuilderQuestion(' + item.index + ')" class="text-red-500 hover:text-red-700 px-1.5 py-1 bg-white border border-slate-200 rounded shadow-sm transition-all" title="Hapus"><i class="fa-solid fa-trash"></i></button>' +
                         '</div>' +
                         '</div>';
-                });
+
+                    // Find children
+                    let children = groupedQ[kep].filter(child => child.data.conditionField === item.data.id);
+                    children.forEach((child, cIdx) => renderItem(child, depth + 1, indexNum + "." + (cIdx + 1)));
+                };
+
+                let roots = groupedQ[kep].filter(item => !item.data.conditionField);
+                roots.forEach((item, rIdx) => renderItem(item, 0, (rIdx + 1).toString()));
+
                 groupHtml += '</div></div>';
                 container.innerHTML += groupHtml;
             });
