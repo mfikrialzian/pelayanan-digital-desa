@@ -962,8 +962,10 @@ export function submitBuilderDataToServer() {
             let bidangChecked = [];
             document.querySelectorAll('input[name="builder-bidang"]:checked').forEach(cb => bidangChecked.push(cb.value));
             let bidangStr = bidangChecked.join(',');
-            let templateDocId = document.getElementById('builder-template-doc-id').value.trim();
-            let templatePratinjau = document.getElementById('builder-template-pratinjau').value.trim();
+            let templateDocIdEl = document.getElementById('builder-template-doc-id');
+            let templateDocId = templateDocIdEl ? templateDocIdEl.value.trim() : "";
+            let templatePratinjauEl = document.getElementById('builder-template-pratinjau');
+            let templatePratinjau = templatePratinjauEl ? templatePratinjauEl.value.trim() : "";
 
             let selectKeperluan = document.getElementById('builder-keperluan-select');
             let keperluanOpts = [];
@@ -1049,9 +1051,12 @@ export function resetBuilderFormState() {
             let titleEl = document.getElementById('unified-editor-title');
             if(titleEl) titleEl.innerHTML = '<i class="fa-solid fa-layer-group text-narmadaGreen mr-2"></i> Buat Layanan Baru';
             document.querySelectorAll('input[name="builder-bidang"]').forEach(cb => cb.checked = false);
-            document.getElementById('builder-template-doc-id').value = "";
-            document.getElementById('builder-template-pratinjau').value = "";
-            document.getElementById('wrapper-builder-nama').classList.remove('hidden');
+            let docIdEl = document.getElementById('builder-template-doc-id');
+            if (docIdEl) docIdEl.value = "";
+            let pratinjauEl = document.getElementById('builder-template-pratinjau');
+            if (pratinjauEl) pratinjauEl.value = "";
+            let wrapperNamaEl = document.getElementById('wrapper-builder-nama');
+            if (wrapperNamaEl) wrapperNamaEl.classList.remove('hidden');
 
             let selectKeperluan = document.getElementById('builder-keperluan-select');
             if (selectKeperluan) {
