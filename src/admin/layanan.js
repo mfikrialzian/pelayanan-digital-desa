@@ -569,149 +569,177 @@ export function toggleBuilderOptionInput() {
             }
         }
 
-export function populateBuilderRepeaterSelect() {
-            let selRep = document.getElementById('builder-repeater-select');
-            let repKeperluan = document.getElementById('builder-repeater-keperluan') ? document.getElementById('builder-repeater-keperluan').value : "Wajib";
-            if (selRep) {
-                selRep.innerHTML = '<option value="">-- Pilih Pertanyaan Tunggal --</option>';
-                builderQuestions.forEach(function (q, idx) {
-                    if (q.type === "repeater") return;
-                    let meta = parseQuestionMetadata(q.name);
-                    let k = meta.keperluan || "Wajib";
-                    if (k === repKeperluan) {
-                        let optHtml = '<option value="' + idx + '">[' + k + '] ' + meta.cleanName + '</option>';
-                        selRep.innerHTML += optHtml;
+window.openRepeaterModal = function(editIndex = -1) {
+    let modal = document.getElementById('modal-repeater-group');
+    if (!modal) return;
+    
+    let selectKeperluan = document.getElementById('modal-repeater-keperluan');
+    selectKeperluan.innerHTML = '<option value="Wajib">Wajib (Berlaku Semua Keperluan)</option>';
+    let builderKepSelect = document.getElementById('builder-keperluan-select');
+    if (builderKepSelect) {
+        for (let i = 0; i < builderKepSelect.options.length; i++) {
+            let val = builderKepSelect.options[i].value;
+            if (val && val !== "__ADD_NEW__") {
+                selectKeperluan.innerHTML += `<option value="${val}">${val}</option>`;
+            }
+        }
+    }
+    
+    window.editingRepeaterIndex = editIndex;
+    window.editingRepeaterId = null;
+    let selectedIds = [];
+    
+    if (editIndex !== -1) {
+        let q = builderQuestions[editIndex];
+        window.editingRepeaterId = q.id;
+        let meta = parseQuestionMetadata(q.name);
+        selectKeperluan.value = meta.keperluan || "Wajib";
+        try {
+            let items = JSON.parse(q.options || "[]");
+            selectedIds = items.map(item => item.id);
+        } catch(e) {}
+    }
+    
+    window.repeaterSelectedIdsForModal = selectedIds;
+    window.renderRepeaterModalCheckboxes();
+    
+    modal.classList.remove('hidden');
+    setTimeout(() => { modal.classList.remove('opacity-0'); modal.querySelector('.transform').classList.remove('scale-95'); }, 10);
+}
+
+window.closeRepeaterModal = function() {
+    let modal = document.getElementById('modal-repeater-group');
+    if (!modal) return;
+    modal.classList.add('opacity-0');
+    modal.querySelector('.transform').classList.add('scale-95');
+    setTimeout(() => { modal.classList.add('hidden'); }, 300);
+}
+
+window.renderRepeaterModalCheckboxes = function() {
+    let container = document.getElementById('modal-repeater-checkboxes');
+    let keperluan = document.getElementById('modal-repeater-keperluan').value;
+    
+    if (!container) return;
+    container.innerHTML = "";
+    
+    let availableQuestions = builderQuestions.filter(q => {
+        let meta = parseQuestionMetadata(q.name);
+        return q.type !== "repeater" && !q.options?.startsWith("CONDITION_CHILD:") && (meta.keperluan === keperluan || meta.keperluan === "Wajib");
+    });
+    
+    if (window.editingRepeaterIndex !== -1) {
+        let editingGroup = builderQuestions.find(q => q.id === window.editingRepeaterId);
+        if (editingGroup) {
+            try {
+                let innerItems = JSON.parse(editingGroup.options || "[]");
+                innerItems.forEach(innerQ => {
+                    let meta = parseQuestionMetadata(innerQ.name);
+                    if (meta.keperluan === keperluan || meta.keperluan === "Wajib") {
+                        if (!availableQuestions.some(aq => aq.id === innerQ.id)) {
+                            availableQuestions.push(innerQ);
+                        }
                     }
                 });
-            }
+            } catch(e){}
         }
+    }
+    
+    if (availableQuestions.length === 0) {
+        container.innerHTML = '<div class="text-center text-[10px] text-slate-400 italic py-4">Tidak ada pertanyaan yang tersedia untuk keperluan ini.</div>';
+        return;
+    }
+    
+    availableQuestions.forEach(q => {
+        let meta = parseQuestionMetadata(q.name);
+        let isChecked = window.repeaterSelectedIdsForModal.includes(q.id) ? "checked" : "";
+        let escapedJson = JSON.stringify(q).replace(/'/g, "&#39;").replace(/"/g, "&quot;");
+        let html = `
+            <label class="flex items-start gap-3 p-2 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 cursor-pointer transition-colors">
+                <input type="checkbox" value="${q.id}" data-qstr="${escapedJson}" class="repeater-cbx mt-1 text-indigo-600 focus:ring-indigo-500 rounded border-slate-300" ${isChecked}>
+                <div class="flex-grow">
+                    <div class="text-xs font-bold text-slate-700">[${meta.keperluan}] ${meta.cleanName}</div>
+                    <div class="text-[10px] text-slate-500">Tipe: ${q.type}</div>
+                </div>
+            </label>
+        `;
+        container.innerHTML += html;
+    });
+}
 
-export function addQuestionToRepeaterTempList() {
-            let sel = document.getElementById('builder-repeater-select');
-            let val = sel.value;
-            if (val === "") {
-                pushToast("Silakan pilih pertanyaan terlebih dahulu!", "error");
-                return;
-            }
-            let idx = parseInt(val);
-            let q = builderQuestions[idx];
-            
-            if (currentRepeaterGroup.some(item => item.id === q.id)) {
-                pushToast("Pertanyaan ini sudah ada di dalam grup!", "error");
-                return;
-            }
-            
-            currentRepeaterGroup.push(q);
-            renderRepeaterTempList();
+window.saveRepeaterFromModal = function() {
+    let keperluan = document.getElementById('modal-repeater-keperluan').value;
+    let checkboxes = document.querySelectorAll('.repeater-cbx');
+    
+    let groupedQuestions = [];
+    let selectedIds = [];
+    
+    checkboxes.forEach(cb => {
+        if (cb.checked) {
+            selectedIds.push(cb.value);
+            groupedQuestions.push(JSON.parse(cb.getAttribute('data-qstr').replace(/&quot;/g, '"')));
         }
-
-export function renderRepeaterTempList() {
-            let container = document.getElementById('builder-repeater-temp-list');
-            if (!container) return;
-            
-            if (currentRepeaterGroup.length === 0) {
-                container.innerHTML = '<div class="text-center text-[10px] text-slate-400 italic py-2">Belum ada pertanyaan dipilih.</div>';
-                return;
-            }
-            
-            let html = '';
-            currentRepeaterGroup.forEach(function(q, i) {
-                let meta = parseQuestionMetadata(q.name);
-                html += '<div class="flex items-center justify-between p-2 rounded-lg border border-slate-200 bg-slate-50 text-[10px] font-semibold text-slate-700">' +
-                    '<div class="flex gap-2 items-center">' +
-                        '<span class="text-indigo-500 font-extrabold w-4">' + (i + 1) + '.</span>' +
-                        '<span>[' + meta.keperluan + '] ' + meta.cleanName + '</span>' +
-                    '</div>' +
-                    '<div class="flex gap-1">' +
-                        '<button type="button" onclick="moveRepeaterTempItem(' + i + ', -1)" class="px-2 py-1 bg-white hover:bg-slate-100 border rounded text-slate-500 shadow-sm"><i class="fa-solid fa-arrow-up"></i></button>' +
-                        '<button type="button" onclick="moveRepeaterTempItem(' + i + ', 1)" class="px-2 py-1 bg-white hover:bg-slate-100 border rounded text-slate-500 shadow-sm"><i class="fa-solid fa-arrow-down"></i></button>' +
-                        '<button type="button" onclick="removeRepeaterTempItem(' + i + ')" class="px-2 py-1 bg-red-50 hover:bg-red-100 border border-red-200 rounded text-red-500 ml-2 shadow-sm"><i class="fa-solid fa-trash"></i></button>' +
-                    '</div>' +
-                '</div>';
-            });
-            container.innerHTML = html;
-        }
-
-export function moveRepeaterTempItem(index, dir) {
-            if (dir === -1 && index > 0) {
-                let temp = currentRepeaterGroup[index];
-                currentRepeaterGroup[index] = currentRepeaterGroup[index - 1];
-                currentRepeaterGroup[index - 1] = temp;
-                renderRepeaterTempList();
-            } else if (dir === 1 && index < currentRepeaterGroup.length - 1) {
-                let temp = currentRepeaterGroup[index];
-                currentRepeaterGroup[index] = currentRepeaterGroup[index + 1];
-                currentRepeaterGroup[index + 1] = temp;
-                renderRepeaterTempList();
+    });
+    
+    if (groupedQuestions.length === 0) {
+        pushToast("Pilih minimal satu pertanyaan untuk dimasukkan ke grup!", "error");
+        return;
+    }
+    
+    let metaFirst = parseQuestionMetadata(groupedQuestions[0].name);
+    let judul = "Grup Berulang: " + metaFirst.cleanName + (groupedQuestions.length > 1 ? " dll" : "");
+    let formattedName = "{" + keperluan + ";;} " + judul;
+    
+    let newRepeaterObj = {
+        id: "FLD-" + Math.random().toString(36).substr(2, 5).toUpperCase(),
+        label: formattedName,
+        name: formattedName,
+        type: "repeater",
+        options: JSON.stringify(groupedQuestions),
+        required: "ya"
+    };
+    
+    // Clean up builderQuestions: Remove selected ones so they don't duplicate
+    builderQuestions = builderQuestions.filter(bq => !selectedIds.includes(bq.id));
+    
+    // Re-add unchecked ones back to flat array
+    checkboxes.forEach(cb => {
+        if (!cb.checked) {
+            let q = JSON.parse(cb.getAttribute('data-qstr').replace(/&quot;/g, '"'));
+            if (!builderQuestions.some(bq => bq.id === q.id)) {
+                builderQuestions.push(q);
             }
         }
-
-export function removeRepeaterTempItem(index) {
-            currentRepeaterGroup.splice(index, 1);
-            renderRepeaterTempList();
+    });
+    
+    if (window.editingRepeaterIndex !== -1 && window.editingRepeaterId) {
+        let idx = builderQuestions.findIndex(bq => bq.id === window.editingRepeaterId);
+        if (idx !== -1) {
+            newRepeaterObj.id = builderQuestions[idx].id;
+            builderQuestions[idx] = newRepeaterObj;
+        } else {
+             builderQuestions.push(newRepeaterObj);
         }
-
-export function saveRepeaterGroup() {
-            if (currentRepeaterGroup.length === 0) {
-                pushToast("Grup masih kosong! Pilih minimal satu pertanyaan.", "error");
-                return;
-            }
-            
-            let keperluan = document.getElementById('builder-repeater-keperluan').value || "Wajib";
-            
-            // Auto generate judul based on first question
-            let metaFirst = parseQuestionMetadata(currentRepeaterGroup[0].name);
-            let judul = "Grup Berulang: " + metaFirst.cleanName + (currentRepeaterGroup.length > 1 ? " dll" : "");
-            
-            let formattedName = "{" + keperluan + ";;} " + judul;
-            
-            let newQuestionObj = {
-                id: "FLD-" + Math.random().toString(36).substr(2, 5).toUpperCase(),
-                label: formattedName,
-                name: formattedName,
-                type: "repeater",
-                options: JSON.stringify(currentRepeaterGroup),
-                required: "ya"
-            };
-            
-            if (editingRepeaterIndex !== -1) {
-                newQuestionObj.id = builderQuestions[editingRepeaterIndex].id;
-                builderQuestions[editingRepeaterIndex] = newQuestionObj;
-                pushToast("Grup pertanyaan berhasil diupdate.", "success");
-            } else {
-                builderQuestions.push(newQuestionObj);
-                pushToast("Grup pertanyaan berhasil ditambahkan.", "success");
-            }
-            
-            builderQuestions.sort(function (a, b) {
-                let metaA = parseQuestionMetadata(a.name);
-                let metaB = parseQuestionMetadata(b.name);
-                if (metaA.keperluan === "Wajib" && metaB.keperluan !== "Wajib") return -1;
-                if (metaB.keperluan === "Wajib" && metaA.keperluan !== "Wajib") return 1;
-                if (metaA.keperluan < metaB.keperluan) return -1;
-                if (metaA.keperluan > metaB.keperluan) return 1;
-                
-                // Ensure repeater group marker stays AFTER its constituent elements
-                if (a.type === "repeater" && b.type !== "repeater") return 1;
-                if (b.type === "repeater" && a.type !== "repeater") return -1;
-                return 0;
-            });
-            
-            cancelEditRepeaterGroup();
-            renderBuilderQuestionsUIList();
-        }
-
-export function cancelEditRepeaterGroup() {
-            editingRepeaterIndex = -1;
-            currentRepeaterGroup = [];
-            document.getElementById('builder-repeater-select').value = "";
-            renderRepeaterTempList();
-            
-            let btnAdd = document.getElementById('btn-add-update-repeater');
-            btnAdd.innerHTML = '<i class="fa-solid fa-save"></i> <span>Tambahkan Grup</span>';
-            btnAdd.className = "px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 shadow-md";
-            document.getElementById('btn-cancel-update-repeater').classList.add('hidden');
-        }
+        pushToast("Grup pertanyaan berhasil diupdate.", "success");
+    } else {
+        builderQuestions.push(newRepeaterObj);
+        pushToast("Grup pertanyaan berhasil ditambahkan.", "success");
+    }
+    
+    builderQuestions.sort(function (a, b) {
+        let metaA = parseQuestionMetadata(a.name);
+        let metaB = parseQuestionMetadata(b.name);
+        if (metaA.keperluan === "Wajib" && metaB.keperluan !== "Wajib") return -1;
+        if (metaB.keperluan === "Wajib" && metaA.keperluan !== "Wajib") return 1;
+        if (metaA.keperluan < metaB.keperluan) return -1;
+        if (metaA.keperluan > metaB.keperluan) return 1;
+        if (a.type === "repeater" && b.type !== "repeater") return 1;
+        if (b.type === "repeater" && a.type !== "repeater") return -1;
+        return 0;
+    });
+    
+    window.closeRepeaterModal();
+    renderBuilderQuestionsUIList();
+}
 
 export function addBuilderQuestionToList() {
             let keperluan = document.getElementById('builder-q-keperluan').value || "Wajib";
@@ -838,25 +866,10 @@ export function editBuilderQuestion(index) {
 
             if (baseType === "repeater") {
                 cancelEditBuilderQuestion(); // Reset form standard
-                editingRepeaterIndex = index;
-                
-                document.getElementById('builder-repeater-keperluan').value = meta.keperluan || "Wajib";
-                
-                currentRepeaterGroup = JSON.parse(q.options || "[]");
-                
-                renderRepeaterTempList();
-                populateBuilderRepeaterSelect();
-                
-                let btnAdd = document.getElementById('btn-add-update-repeater');
-                btnAdd.innerHTML = '<i class="fa-solid fa-save"></i> <span>Update Grup</span>';
-                btnAdd.className = "px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 shadow-md";
-                document.getElementById('btn-cancel-update-repeater').classList.remove('hidden');
-                
-                document.getElementById('builder-repeater-select').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                window.openRepeaterModal(index);
                 return;
             }
 
-            cancelEditRepeaterGroup(); // Reset form repeater
             window.editingQuestionIndex = index;
 
             // Populate Input Form
