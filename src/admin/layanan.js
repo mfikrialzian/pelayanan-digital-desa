@@ -1166,15 +1166,45 @@ export function updateSummaryPanel() {
     if (summaryNamaEl) summaryNamaEl.innerText = nama;
     
     let isNew = document.getElementById('builder-select-layanan')?.value === "[+] TAMBAH LAYANAN BARU";
-    if (!isNew && name !== "") {
-        builderLayananEditId = name;
-        if (window.loadedLayananList) {
-            let found = window.loadedLayananList.find(l => l.nama === builderLayananEditId);
-            if (found) {
-                populateBuilderLayananToEdit(found.id);
-            }
+    let summaryStatus = document.getElementById('summary-status');
+    let summaryStatusDot = document.getElementById('summary-status-dot');
+    
+    if (summaryStatus && summaryStatusDot) {
+        if (isNew) {
+            summaryStatus.innerText = "Draft Baru";
+            summaryStatusDot.className = "w-1.5 h-1.5 rounded-full bg-slate-400";
+        } else {
+            summaryStatus.innerText = "Perubahan";
+            summaryStatusDot.className = "w-1.5 h-1.5 rounded-full bg-amber-500";
         }
     }
+    
+    // Keperluan Count
+    let selectKeperluan = document.getElementById('builder-keperluan-select');
+    let kepCount = 0;
+    if (selectKeperluan) {
+        for (let i = 0; i < selectKeperluan.options.length; i++) {
+            let val = selectKeperluan.options[i].value;
+            if (val && val !== "__ADD_NEW__") kepCount++;
+        }
+    }
+    let kepEl = document.getElementById('summary-count-keperluan');
+    if (kepEl) kepEl.innerText = kepCount;
+    
+    // Requirements Count
+    let reqCount = 0;
+    if (typeof builderReqMap !== 'undefined') {
+        Object.keys(builderReqMap).forEach(k => {
+            reqCount += builderReqMap[k].length;
+        });
+    }
+    let reqEl = document.getElementById('summary-count-syarat');
+    if (reqEl) reqEl.innerText = reqCount;
+    
+    // Questions Count
+    let qCount = (typeof builderQuestions !== 'undefined') ? builderQuestions.length : 0;
+    let qEl = document.getElementById('summary-count-tanya');
+    if (qEl) qEl.innerText = qCount;
 }
 
 // === KEBAB MENU & DRAG AND DROP GLOBALS === //
@@ -1239,46 +1269,6 @@ window.handleDrop = function(e, targetIndex) {
 
 window.handleDragEnd = function(e) {
     e.target.classList.remove('opacity-40');
-}
-let summaryStatus = document.getElementById('summary-status');
-    let summaryStatusDot = document.getElementById('summary-status-dot');
-    
-    if (summaryStatus && summaryStatusDot) {
-        if (isNew) {
-            summaryStatus.innerText = "Draft Baru";
-            summaryStatusDot.className = "w-1.5 h-1.5 rounded-full bg-slate-400";
-        } else {
-            summaryStatus.innerText = "Perubahan";
-            summaryStatusDot.className = "w-1.5 h-1.5 rounded-full bg-amber-500";
-        }
-    }
-    
-    // Keperluan Count
-    let selectKeperluan = document.getElementById('builder-keperluan-select');
-    let kepCount = 0;
-    if (selectKeperluan) {
-        for (let i = 0; i < selectKeperluan.options.length; i++) {
-            let val = selectKeperluan.options[i].value;
-            if (val && val !== "__ADD_NEW__") kepCount++;
-        }
-    }
-    let kepEl = document.getElementById('summary-count-keperluan');
-    if (kepEl) kepEl.innerText = kepCount;
-    
-    // Requirements Count
-    let reqCount = 0;
-    if (typeof builderReqMap !== 'undefined') {
-        Object.keys(builderReqMap).forEach(k => {
-            reqCount += builderReqMap[k].length;
-        });
-    }
-    let reqEl = document.getElementById('summary-count-syarat');
-    if (reqEl) reqEl.innerText = reqCount;
-    
-    // Questions Count
-    let qCount = (typeof builderQuestions !== 'undefined') ? builderQuestions.length : 0;
-    let qEl = document.getElementById('summary-count-tanya');
-    if (qEl) qEl.innerText = qCount;
 }
 
 // Preview Generation Logic
