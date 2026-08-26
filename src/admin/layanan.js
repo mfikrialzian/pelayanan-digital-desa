@@ -1151,6 +1151,7 @@ export function resetBuilderFormState() {
             builderQuestions = [];
             builderReqMap = {};
 
+            cancelEditBuilderQuestion();
             renderBuilderQuestionsUIList();
             initStep2RequirementsBuilder();
             initStep3QuestionsBuilder();
