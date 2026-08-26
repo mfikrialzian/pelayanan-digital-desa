@@ -1,3 +1,5 @@
+import { dtsenData } from './dtsen_data.js';
+
 window.AppState = {
             activeView: 'beranda',
             activeAdminTab: 'dashboard',
@@ -241,4 +243,4 @@ window.targetEl = document.getElementById('view-' + viewId);
         window.checkServiceStatus = checkServiceStatus;
         window.loadCMSConfigurationAndLayanan = loadCMSConfigurationAndLayanan;
         
-        window.dummyLayananList = [];
+        window.dummyLayananList = [dtsenData];
