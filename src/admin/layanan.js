@@ -914,43 +914,6 @@ export function removeBuilderQuestion(index) {
             renderBuilderQuestionsUIList();
         }
 
-export function moveBuilderQuestionUp(index) {
-            let currentQ = builderQuestions[index];
-            let currentMeta = parseQuestionMetadata(currentQ.name);
-            let prevIndex = -1;
-            for (let i = index - 1; i >= 0; i--) {
-                let meta = parseQuestionMetadata(builderQuestions[i].name);
-                if (meta.keperluan === currentMeta.keperluan) {
-                    prevIndex = i;
-                    break;
-                }
-            }
-            if (prevIndex !== -1) {
-                let temp = builderQuestions[prevIndex];
-                builderQuestions[prevIndex] = builderQuestions[index];
-                builderQuestions[index] = temp;
-                renderBuilderQuestionsUIList();
-            }
-        }
-
-export function moveBuilderQuestionDown(index) {
-            let currentQ = builderQuestions[index];
-            let currentMeta = parseQuestionMetadata(currentQ.name);
-            let nextIndex = -1;
-            for (let i = index + 1; i < builderQuestions.length; i++) {
-                let meta = parseQuestionMetadata(builderQuestions[i].name);
-                if (meta.keperluan === currentMeta.keperluan) {
-                    nextIndex = i;
-                    break;
-                }
-            }
-            if (nextIndex !== -1) {
-                let temp = builderQuestions[nextIndex];
-                builderQuestions[nextIndex] = builderQuestions[index];
-                builderQuestions[index] = temp;
-                renderBuilderQuestionsUIList();
-            }
-        }
 
 export function duplicateBuilderQuestion(index) {
             let q = JSON.parse(JSON.stringify(builderQuestions[index]));
@@ -1006,19 +969,21 @@ export function renderBuilderQuestionsUIList() {
                     let marginLeft = depth > 0 ? ('ml-' + (depth * 4)) : '';
                     let conditionLabel = item.data.conditionField ? `<div class="text-[9px] text-indigo-600 font-bold mb-1"><i class="fa-solid fa-arrow-turn-up fa-rotate-90"></i> Muncul jika menjawab: "${item.data.conditionValue}"</div>` : '';
 
-                    groupHtml += '<div class="flex items-center justify-between p-2 rounded-lg border ' + highlightClass + ' text-[10px] font-semibold text-slate-700 ' + marginLeft + '">' +
-                        '<div class="flex items-start gap-1">' + numberStr + '<div>' + conditionLabel + titleStr + '<span><i class="fa-solid fa-check text-emerald-500 mr-1"></i> ' + item.meta.cleanName + reqLabel + ' <span class="text-slate-400 block mt-0.5">' + detail + '</span></span></div></div>' +
-                        '<div class="flex gap-1 shrink-0 flex-wrap justify-end max-w-[160px]">';
-                        
-                    if (baseType === "dropdown") {
-                        groupHtml += '<button onclick="openConditionalBuilder(' + item.index + ')" class="text-emerald-500 hover:text-emerald-700 px-1.5 py-1 bg-white border border-slate-200 rounded shadow-sm transition-all" title="Buat Pertanyaan Lanjutan"><i class="fa-solid fa-code-branch"></i></button>';
-                    }
-                        
-                    groupHtml += '<button onclick="moveBuilderQuestionUp(' + item.index + ')" class="text-slate-500 hover:text-slate-700 px-1.5 py-1 bg-white border border-slate-200 rounded shadow-sm transition-all" title="Naik"><i class="fa-solid fa-arrow-up"></i></button>' +
-                        '<button onclick="moveBuilderQuestionDown(' + item.index + ')" class="text-slate-500 hover:text-slate-700 px-1.5 py-1 bg-white border border-slate-200 rounded shadow-sm transition-all" title="Turun"><i class="fa-solid fa-arrow-down"></i></button>' +
-                        '<button onclick="duplicateBuilderQuestion(' + item.index + ')" class="text-indigo-500 hover:text-indigo-700 px-1.5 py-1 bg-white border border-slate-200 rounded shadow-sm transition-all" title="Duplikat"><i class="fa-solid fa-copy"></i></button>' +
-                        '<button onclick="editBuilderQuestion(' + item.index + ')" class="text-blue-500 hover:text-blue-700 px-1.5 py-1 bg-white border border-slate-200 rounded shadow-sm transition-all" title="Edit"><i class="fa-solid fa-edit"></i></button>' +
-                        '<button onclick="removeBuilderQuestion(' + item.index + ')" class="text-red-500 hover:text-red-700 px-1.5 py-1 bg-white border border-slate-200 rounded shadow-sm transition-all" title="Hapus"><i class="fa-solid fa-trash"></i></button>' +
+                    groupHtml += '<div class="builder-q-row flex items-center justify-between p-2 rounded-lg border ' + highlightClass + ' text-[10px] font-semibold text-slate-700 ' + marginLeft + ' transition-all" ' +
+                        'draggable="true" ondragstart="handleDragStart(event, ' + item.index + ')" ondragover="handleDragOver(event)" ondrop="handleDrop(event, ' + item.index + ')" ondragend="handleDragEnd(event)">' +
+                        '<div class="flex items-start gap-1">' +
+                        '<div class="cursor-grab hover:text-slate-600 text-slate-300 py-1 pr-1" title="Drag to reorder"><i class="fa-solid fa-grip-dots-vertical"></i></div>' +
+                        numberStr + 
+                        '<div>' + conditionLabel + titleStr + '<span><i class="fa-solid fa-check text-emerald-500 mr-1"></i> ' + item.meta.cleanName + reqLabel + ' <span class="text-slate-400 block mt-0.5">' + detail + '</span></span></div></div>' +
+                        '<div class="relative shrink-0 ml-2">' +
+                        '<button type="button" onclick="toggleKebabMenu(event, \'kebab-menu-' + item.index + '\')" class="text-slate-400 hover:bg-slate-100 hover:text-slate-700 px-2.5 py-1.5 rounded-lg transition-colors"><i class="fa-solid fa-ellipsis-vertical"></i></button>' +
+                        '<div id="kebab-menu-' + item.index + '" class="kebab-dropdown hidden absolute right-0 top-full mt-1 w-44 bg-white rounded-xl shadow-lg border border-slate-100 py-1 z-50 text-left overflow-hidden">' +
+                            (baseType === "dropdown" ? '<button type="button" onclick="openConditionalBuilder(' + item.index + ')" class="w-full text-left px-4 py-2 hover:bg-indigo-50 text-indigo-600 text-[10px] font-bold border-b border-slate-50"><i class="fa-solid fa-code-branch w-4"></i> Buat Lanjutan</button>' : '') +
+                            '<button type="button" onclick="duplicateBuilderQuestion(' + item.index + ')" class="w-full text-left px-4 py-2 hover:bg-slate-50 text-slate-700 text-[10px] font-bold"><i class="fa-solid fa-copy w-4"></i> Duplikat</button>' +
+                            '<button type="button" onclick="editBuilderQuestion(' + item.index + ')" class="w-full text-left px-4 py-2 hover:bg-slate-50 text-slate-700 text-[10px] font-bold"><i class="fa-solid fa-edit w-4"></i> Edit</button>' +
+                            '<div class="border-t border-slate-100 my-1"></div>' +
+                            '<button type="button" onclick="removeBuilderQuestion(' + item.index + ')" class="w-full text-left px-4 py-2 hover:bg-red-50 text-red-600 text-[10px] font-bold"><i class="fa-solid fa-trash w-4"></i> Hapus</button>' +
+                        '</div>' +
                         '</div>' +
                         '</div>';
 
@@ -1201,7 +1166,81 @@ export function updateSummaryPanel() {
     if (summaryNamaEl) summaryNamaEl.innerText = nama;
     
     let isNew = document.getElementById('builder-select-layanan')?.value === "[+] TAMBAH LAYANAN BARU";
-    let summaryStatus = document.getElementById('summary-status');
+    if (!isNew && name !== "") {
+        builderLayananEditId = name;
+        if (window.loadedLayananList) {
+            let found = window.loadedLayananList.find(l => l.nama === builderLayananEditId);
+            if (found) {
+                populateBuilderLayananToEdit(found.id);
+            }
+        }
+    }
+}
+
+// === KEBAB MENU & DRAG AND DROP GLOBALS === //
+
+window.toggleKebabMenu = function(e, id) {
+    e.stopPropagation();
+    let menu = document.getElementById(id);
+    let isHidden = menu.classList.contains('hidden');
+    // Hide all menus first
+    document.querySelectorAll('.kebab-dropdown').forEach(d => d.classList.add('hidden'));
+    if (isHidden) {
+        menu.classList.remove('hidden');
+    }
+}
+
+document.addEventListener('click', function() {
+    document.querySelectorAll('.kebab-dropdown').forEach(d => d.classList.add('hidden'));
+});
+
+let draggedItemIndex = null;
+
+window.handleDragStart = function(e, index) {
+    draggedItemIndex = index;
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', index);
+    setTimeout(() => { e.target.classList.add('opacity-40'); }, 0);
+}
+
+window.handleDragOver = function(e) {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    return false;
+}
+
+window.handleDrop = function(e, targetIndex) {
+    e.stopPropagation();
+    e.preventDefault();
+    
+    document.querySelectorAll('.builder-q-row').forEach(row => row.classList.remove('opacity-40'));
+
+    if (draggedItemIndex !== null && draggedItemIndex !== targetIndex) {
+        let draggedMeta = parseQuestionMetadata(builderQuestions[draggedItemIndex].name);
+        let targetMeta = parseQuestionMetadata(builderQuestions[targetIndex].name);
+        
+        if (draggedMeta.keperluan !== targetMeta.keperluan) {
+            pushToast("Hanya dapat menggeser dalam Keperluan yang sama!", "error");
+            return false;
+        }
+
+        let item = builderQuestions.splice(draggedItemIndex, 1)[0];
+        
+        if (draggedItemIndex < targetIndex) {
+            targetIndex--;
+        }
+        
+        builderQuestions.splice(targetIndex, 0, item);
+        renderBuilderQuestionsUIList();
+    }
+    draggedItemIndex = null;
+    return false;
+}
+
+window.handleDragEnd = function(e) {
+    e.target.classList.remove('opacity-40');
+}
+let summaryStatus = document.getElementById('summary-status');
     let summaryStatusDot = document.getElementById('summary-status-dot');
     
     if (summaryStatus && summaryStatusDot) {
