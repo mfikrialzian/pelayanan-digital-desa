@@ -1759,7 +1759,16 @@
         <!-- Body -->
         <div class="p-5 md:p-8">
             <form id="form-builder-layanan" class="max-w-2xl mx-auto" onsubmit="event.preventDefault();">
-                
+                <details class="group bg-white border border-slate-200 rounded-2xl mb-5 shadow-sm overflow-hidden" open>
+                    <summary class="cursor-pointer bg-slate-50/80 hover:bg-slate-50 p-4 sm:px-6 font-bold text-slate-800 flex justify-between items-center select-none group-open:border-b group-open:border-slate-200 transition-colors">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-narmadaGreen/10 text-narmadaGreen flex items-center justify-center shadow-inner"><i class="fa-solid fa-info-circle"></i></div>
+                            <span>1. Informasi Layanan</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-down text-slate-400 transition-transform duration-300 group-open:rotate-180"></i>
+                    </summary>
+                    <div class="p-5 sm:p-6 space-y-6">
+                        
                 <!-- STEP 1: Profil -->
                 <div id="bl-step-1" class="space-y-6 pb-6 border-b border-slate-100">
                     <h3 class="text-sm font-bold text-slate-800 border-b border-slate-100 pb-3"><i class="fa-solid fa-info-circle text-narmadaGreen mr-1.5"></i> Informasi Dasar Layanan</h3>
@@ -1849,7 +1858,19 @@
                                 </div>
                             </div>
                 </div>
+                    </div>
+                </details>
 
+                <details class="group bg-white border border-slate-200 rounded-2xl mb-5 shadow-sm overflow-hidden">
+                    <summary class="cursor-pointer bg-slate-50/80 hover:bg-slate-50 p-4 sm:px-6 font-bold text-slate-800 flex justify-between items-center select-none group-open:border-b group-open:border-slate-200 transition-colors">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center shadow-inner"><i class="fa-solid fa-list-check"></i></div>
+                            <span>2. Formulir Layanan</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-down text-slate-400 transition-transform duration-300 group-open:rotate-180"></i>
+                    </summary>
+                    <div class="p-5 sm:p-6 space-y-6">
+                        
                 <!-- STEP 4: Pertanyaan -->
                 <div id="bl-step-4" class="space-y-6 pt-2">
                     <!-- PERTANYAAN CARD -->
@@ -1937,6 +1958,8 @@
 
                 </div>
                 </div>
+                    </div>
+                </details>
                 <!-- FOOTER NAV BUTTONS -->
                 <div class="mt-8 flex justify-end gap-3 pt-4 border-t border-slate-100">
                     <button type="button" id="ev-bind-30" class="cursor-pointer hover:scale-[1.02] active:scale-[0.98] px-5 py-2.5 text-xs font-bold text-slate-600 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl transition-all">Batal</button>
