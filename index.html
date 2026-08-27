@@ -39,6 +39,28 @@
                         }
                         
                         return function(...args) {
+                            // MOCK UNTUK LOCALHOST KARENA BACKEND BELUM TERHUBUNG
+                            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                                console.warn("MOCK API CALL:", prop, args);
+                                setTimeout(() => {
+                                    if (prop === 'checkAdminLogin') {
+                                        if (successHandler) successHandler({ success: true, token: 'mock-token-123', role: 'Super Admin', name: 'Admin Lokal' });
+                                        return;
+                                    }
+                                    if (prop === 'logoutAdmin') {
+                                        if (successHandler) successHandler({ success: true });
+                                        return;
+                                    }
+                                    if (prop === 'getAdminSettings') {
+                                        if (successHandler) successHandler({ success: true, data: {} });
+                                        return;
+                                    }
+                                    // Mock fallback
+                                    if (successHandler) successHandler({ success: true, data: [] });
+                                }, 1000);
+                                return;
+                            }
+
                             fetch("/api/proxy", {
                                 method: "POST",
                                 body: JSON.stringify({ action: prop, params: args }),

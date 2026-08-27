@@ -1084,8 +1084,24 @@ export function submitBuilderDataToServer() {
 
             let action = payload.id ? "update" : "create";
 
+            let saveBtn = document.getElementById('ev-bind-31');
+            let originalText = "";
+            if (saveBtn) {
+                originalText = saveBtn.innerHTML;
+                saveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1.5"></i> Menyimpan...';
+                saveBtn.disabled = true;
+                saveBtn.classList.add('opacity-70', 'cursor-not-allowed');
+                saveBtn.classList.remove('cursor-pointer', 'hover:scale-[1.02]', 'active:scale-[0.98]');
+            }
+
             google.script.run
                     .withSuccessHandler(function (res) {
+                        if (saveBtn) {
+                            saveBtn.innerHTML = originalText;
+                            saveBtn.disabled = false;
+                            saveBtn.classList.remove('opacity-70', 'cursor-not-allowed');
+                            saveBtn.classList.add('cursor-pointer', 'hover:scale-[1.02]', 'active:scale-[0.98]');
+                        }
                         if (res && res.authError) { pushToast(res.message, "error"); handleAdminLogout(); return; }
                         if (res.success) {
                             pushToast("Layanan '" + name + "' sukses dipublikasikan ke warga!", "success");
@@ -1096,6 +1112,15 @@ export function submitBuilderDataToServer() {
                         } else {
                             pushToast("Gagal menyimpan: " + res.message, "error");
                         }
+                    })
+                    .withFailureHandler(function (err) {
+                        if (saveBtn) {
+                            saveBtn.innerHTML = originalText;
+                            saveBtn.disabled = false;
+                            saveBtn.classList.remove('opacity-70', 'cursor-not-allowed');
+                            saveBtn.classList.add('cursor-pointer', 'hover:scale-[1.02]', 'active:scale-[0.98]');
+                        }
+                        pushToast("Terjadi kesalahan jaringan atau server.", "error");
                     })
                     .crudLayanan(localStorage.getItem('adminToken_Narmada'), action, payload);
 
