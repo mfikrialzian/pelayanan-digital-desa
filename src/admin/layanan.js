@@ -1055,6 +1055,7 @@ export function submitBuilderDataToServer() {
             });
 
             let oldName = "";
+            let payload_id = "";
             if (!isNew && window.loadedLayananList) {
                 let found = window.loadedLayananList.find(l => l.nama === selectVal);
                 if (found) {
