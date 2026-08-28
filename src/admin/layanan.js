@@ -834,7 +834,7 @@ export function addBuilderQuestionToList() {
                 document.getElementById('builder-q-condition-value').innerHTML = "";
             }
             let formTitle = document.getElementById('builder-q-form-title');
-            if (formTitle) formTitle.innerHTML = '<i class="fa-solid fa-question-circle text-blue-600"></i> Buat Pertanyaan Utama';
+            if (formTitle) formTitle.innerHTML = '<i class="fa-solid fa-question-circle text-blue-500 text-sm"></i> Buat Pertanyaan';
 
             renderBuilderQuestionsUIList();
         }
@@ -866,7 +866,7 @@ window.openConditionalBuilder = function(index) {
     document.getElementById('builder-q-keperluan').value = meta.keperluan || "Wajib";
     
     let formTitle = document.getElementById('builder-q-form-title');
-    if (formTitle) formTitle.innerHTML = '<i class="fa-solid fa-code-branch text-indigo-600"></i> Buat Pertanyaan Lanjutan';
+    if (formTitle) formTitle.innerHTML = '<i class="fa-solid fa-code-branch text-indigo-500 text-sm"></i> Pertanyaan Lanjutan';
     
     document.getElementById('builder-step-2').scrollIntoView({ behavior: 'smooth', block: 'start' });
     pushToast("Silakan atur pertanyaan lanjutan untuk " + meta.cleanName, "success");
@@ -926,7 +926,7 @@ export function cancelEditBuilderQuestion() {
                 document.getElementById('builder-q-condition-value').innerHTML = "";
             }
             let formTitle = document.getElementById('builder-q-form-title');
-            if (formTitle) formTitle.innerHTML = '<i class="fa-solid fa-question-circle text-blue-600"></i> Buat Pertanyaan Utama';
+            if (formTitle) formTitle.innerHTML = '<i class="fa-solid fa-question-circle text-blue-500 text-sm"></i> Buat Pertanyaan';
 
             let btnAdd = document.getElementById('btn-add-update-question');
             btnAdd.innerHTML = '<i class="fa-solid fa-plus-circle"></i> <span>Tambahkan Pertanyaan</span>';
@@ -956,7 +956,7 @@ export function renderBuilderQuestionsUIList() {
             container.innerHTML = "";
 
             if (builderQuestions.length === 0) {
-                container.innerHTML = '<p class="text-[10px] text-slate-400 italic font-semibold">Belum ada pertanyaan kustom ditambahkan.</p>';
+                container.innerHTML = '<p class="text-[10px] text-slate-400 italic py-1">Belum ada pertanyaan ditambahkan.</p>';
                 return;
             }
 
@@ -968,47 +968,62 @@ export function renderBuilderQuestionsUIList() {
             });
 
             Object.keys(groupedQ).forEach(function (kep) {
-                let groupHtml = '<div class="bg-white border border-slate-200 rounded-xl p-3 shadow-sm text-left mb-2">' +
-                    '<h5 class="text-[10px] font-extrabold text-blue-600 mb-2 border-b pb-1 flex items-center gap-1.5"><i class="fa-solid fa-list-ul"></i> Keperluan: ' + kep + '</h5>' +
-                    '<div class="space-y-1.5 pl-1">';
+                let groupHtml = '<div class="mb-3 last:mb-0 animate-fade-in">' +
+                    '<div class="flex items-center gap-1.5 mb-1.5">' +
+                    '<i class="fa-solid fa-list-ul text-[10px] text-blue-500"></i>' +
+                    '<span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">' + kep + '</span>' +
+                    '<span class="text-[9px] text-slate-400 font-semibold">(' + groupedQ[kep].filter(i => !i.data.conditionField).length + ')</span>' +
+                    '</div>' +
+                    '<div class="space-y-1 pl-2 border-l-2 border-slate-100">';
 
                 let renderItem = function(item, depth, indexNum) {
                     let baseType = item.data.type;
-                    let detail = baseType === "dropdown" ? " (Dropdown: " + item.data.options + ")" :
-                        baseType === "number" ? " (Angka" + (item.data.options ? ", Max Digit: " + item.data.options : "") + ")" :
-                            baseType === "date" ? " (Tanggal)" : 
-                                baseType === "repeater" ? (() => {
-                                    try { 
-                                        let subs = JSON.parse(item.data.options || "[]"); 
-                                        return " (Grup Berulang: " + subs.length + " pertanyaan)";
-                                    } catch(e) { return " (Grup Berulang)"; }
-                                })() : " (Teks)";
-
-                    if (baseType === "repeater") detail += " <span class='text-indigo-500 font-bold'>[Grup Repeater]</span>";
-
-                    let reqLabel = item.data.required === "tidak" ? '<span class="ml-1 text-amber-500 font-bold">[Opsional]</span>' : '<span class="ml-1 text-emerald-500 font-bold">[Wajib]</span>';
-                    let titleStr = item.meta.judul ? '<span class="block text-[8px] text-slate-400 font-extrabold uppercase mb-0.5"><i class="fa-solid fa-tag"></i> Judul: ' + item.meta.judul + '</span>' : '';
                     
-                    let numberStr = '<span class="font-bold text-slate-800 text-[10px] w-4 shrink-0 mt-0.5 inline-block">' + indexNum + '.</span>';
-                    let highlightClass = (window.editingQuestionIndex === item.index) ? "border-amber-400 bg-amber-50" : "border-slate-100 bg-slate-50";
+                    // Type badge with color
+                    let typeBadge = '';
+                    if (baseType === 'dropdown') {
+                        let optCount = item.data.options ? item.data.options.split(',').length : 0;
+                        typeBadge = '<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold bg-blue-50 text-blue-600 border border-blue-100">Dropdown · ' + optCount + '</span>';
+                    } else if (baseType === 'number') {
+                        typeBadge = '<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold bg-amber-50 text-amber-600 border border-amber-100">Angka</span>';
+                    } else if (baseType === 'date') {
+                        typeBadge = '<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold bg-purple-50 text-purple-600 border border-purple-100">Tanggal</span>';
+                    } else if (baseType === 'repeater') {
+                        let subCount = 0;
+                        try { subCount = JSON.parse(item.data.options || "[]").length; } catch(e) {}
+                        typeBadge = '<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold bg-indigo-50 text-indigo-600 border border-indigo-100"><i class="fa-solid fa-layer-group mr-0.5 text-[8px]"></i> Grup · ' + subCount + '</span>';
+                    } else {
+                        typeBadge = '<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold bg-slate-50 text-slate-500 border border-slate-200">Teks</span>';
+                    }
 
-                    let marginLeft = depth > 0 ? ('ml-' + (depth * 4)) : '';
-                    let conditionLabel = item.data.conditionField ? `<div class="text-[9px] text-indigo-600 font-bold mb-1"><i class="fa-solid fa-arrow-turn-up fa-rotate-90"></i> Muncul jika menjawab: "${item.data.conditionValue}"</div>` : '';
+                    let reqBadge = item.data.required === "tidak" ? '<span class="text-[9px] text-amber-500 font-bold">opsional</span>' : '';
+                    let titleTag = item.meta.judul ? '<span class="text-[8px] text-slate-400 font-bold uppercase"><i class="fa-solid fa-tag text-[7px]"></i> ' + item.meta.judul + '</span> ' : '';
+                    
+                    let highlightClass = (window.editingQuestionIndex === item.index) ? "border-amber-300 bg-amber-50/50" : "border-transparent hover:bg-slate-50/80";
+                    let indentClass = depth > 0 ? 'ml-4' : '';
+                    let conditionTag = item.data.conditionField ? '<span class="text-[8px] text-indigo-500 font-bold"><i class="fa-solid fa-arrow-turn-up fa-rotate-90 text-[7px]"></i> jika: "' + item.data.conditionValue + '"</span> ' : '';
 
-                    groupHtml += '<div class="builder-q-row flex items-center justify-between p-2 rounded-lg border ' + highlightClass + ' text-[10px] font-semibold text-slate-700 ' + marginLeft + ' transition-all" ' +
+                    groupHtml += '<div class="builder-q-row flex items-center justify-between px-2 py-1.5 rounded-md border ' + highlightClass + ' text-[10px] text-slate-700 ' + indentClass + ' transition-all group/row" ' +
                         'draggable="true" ondragstart="handleDragStart(event, ' + item.index + ')" ondragover="handleDragOver(event)" ondrop="handleDrop(event, ' + item.index + ')" ondragend="handleDragEnd(event)">' +
-                        '<div class="flex items-start gap-1">' +
-                        '<div class="cursor-grab hover:text-slate-600 text-slate-300 py-1 pr-1" title="Drag to reorder"><i class="fa-solid fa-grip-dots-vertical"></i></div>' +
-                        numberStr + 
-                        '<div>' + conditionLabel + titleStr + '<span><i class="fa-solid fa-check text-emerald-500 mr-1"></i> ' + item.meta.cleanName + reqLabel + ' <span class="text-slate-400 block mt-0.5">' + detail + '</span></span></div></div>' +
-                        '<div class="relative shrink-0 ml-2">' +
-                        '<button type="button" onclick="toggleKebabMenu(event, \'kebab-menu-' + item.index + '\')" class="text-slate-400 hover:bg-slate-100 hover:text-slate-700 px-2.5 py-1.5 rounded-lg transition-colors"><i class="fa-solid fa-ellipsis-vertical"></i></button>' +
-                        '<div id="kebab-menu-' + item.index + '" class="kebab-dropdown hidden absolute right-0 top-full mt-1 w-44 bg-white rounded-xl shadow-lg border border-slate-100 py-1 z-50 text-left overflow-hidden">' +
-                            (baseType === "dropdown" ? '<button type="button" onclick="openConditionalBuilder(' + item.index + ')" class="w-full text-left px-4 py-2 hover:bg-indigo-50 text-indigo-600 text-[10px] font-bold border-b border-slate-50"><i class="fa-solid fa-code-branch w-4"></i> Buat Lanjutan</button>' : '') +
-                            '<button type="button" onclick="duplicateBuilderQuestion(' + item.index + ')" class="w-full text-left px-4 py-2 hover:bg-slate-50 text-slate-700 text-[10px] font-bold"><i class="fa-solid fa-copy w-4"></i> Duplikat</button>' +
-                            '<button type="button" onclick="editBuilderQuestion(' + item.index + ')" class="w-full text-left px-4 py-2 hover:bg-slate-50 text-slate-700 text-[10px] font-bold"><i class="fa-solid fa-edit w-4"></i> Edit</button>' +
-                            '<div class="border-t border-slate-100 my-1"></div>' +
-                            '<button type="button" onclick="removeBuilderQuestion(' + item.index + ')" class="w-full text-left px-4 py-2 hover:bg-red-50 text-red-600 text-[10px] font-bold"><i class="fa-solid fa-trash w-4"></i> Hapus</button>' +
+                        '<div class="flex items-center gap-1.5 min-w-0 flex-1">' +
+                        '<div class="cursor-grab text-slate-300 hover:text-slate-500 shrink-0 opacity-0 group-hover/row:opacity-100 transition-opacity" title="Drag"><i class="fa-solid fa-grip-dots-vertical text-[10px]"></i></div>' +
+                        '<span class="text-[10px] font-bold text-slate-400 shrink-0 w-5">' + indexNum + '</span>' +
+                        '<div class="min-w-0 flex-1">' +
+                        '<div class="flex items-center gap-1.5 flex-wrap">' +
+                        conditionTag + titleTag +
+                        '<span class="font-semibold text-slate-700 truncate">' + item.meta.cleanName + '</span>' +
+                        typeBadge + reqBadge +
+                        '</div>' +
+                        '</div>' +
+                        '</div>' +
+                        '<div class="relative shrink-0 ml-1">' +
+                        '<button type="button" onclick="toggleKebabMenu(event, \'kebab-menu-' + item.index + '\')" class="text-slate-300 hover:text-slate-600 hover:bg-slate-100 w-6 h-6 rounded flex items-center justify-center transition-colors opacity-0 group-hover/row:opacity-100"><i class="fa-solid fa-ellipsis-vertical text-[11px]"></i></button>' +
+                        '<div id="kebab-menu-' + item.index + '" class="kebab-dropdown hidden absolute right-0 top-full mt-1 w-40 bg-white rounded-lg shadow-lg border border-slate-100 py-0.5 z-50 text-left overflow-hidden">' +
+                            (baseType === "dropdown" ? '<button type="button" onclick="openConditionalBuilder(' + item.index + ')" class="w-full text-left px-3 py-1.5 hover:bg-indigo-50 text-indigo-600 text-[10px] font-bold"><i class="fa-solid fa-code-branch w-3.5"></i> Lanjutan</button>' : '') +
+                            '<button type="button" onclick="duplicateBuilderQuestion(' + item.index + ')" class="w-full text-left px-3 py-1.5 hover:bg-slate-50 text-slate-700 text-[10px] font-bold"><i class="fa-solid fa-copy w-3.5"></i> Duplikat</button>' +
+                            '<button type="button" onclick="editBuilderQuestion(' + item.index + ')" class="w-full text-left px-3 py-1.5 hover:bg-slate-50 text-slate-700 text-[10px] font-bold"><i class="fa-solid fa-edit w-3.5"></i> Edit</button>' +
+                            '<div class="border-t border-slate-100 my-0.5"></div>' +
+                            '<button type="button" onclick="removeBuilderQuestion(' + item.index + ')" class="w-full text-left px-3 py-1.5 hover:bg-red-50 text-red-600 text-[10px] font-bold"><i class="fa-solid fa-trash w-3.5"></i> Hapus</button>' +
                         '</div>' +
                         '</div>' +
                         '</div>';

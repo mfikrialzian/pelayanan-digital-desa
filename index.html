@@ -1864,92 +1864,101 @@
                         </div>
                         <i class="fa-solid fa-chevron-down text-slate-400 transition-transform duration-300 group-open:rotate-180"></i>
                     </summary>
-                    <div class="p-5 sm:p-6 space-y-6">
-                        
-                <!-- STEP 4: Pertanyaan -->
-                <div id="bl-step-4" class="space-y-6 pt-2">
-                    <!-- PERTANYAAN CARD -->
-                            <div class="space-y-4 border-b border-slate-100 pb-5 mb-2">
-                                <h3 id="builder-q-form-title" class="text-sm font-bold text-slate-800 border-b border-slate-100 pb-3"><i class="fa-solid fa-question-circle text-blue-600"></i> Buat Pertanyaan Utama</h3>
-                                
-                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                                    <div class="sm:col-span-3 grid grid-cols-1 sm:grid-cols-2 gap-3 mb-1 border-b border-slate-200 pb-3">
-                                        <div>
-                                            <label class="block text-[10px] font-bold text-slate-600 mb-0.5">Keperluan Surat (Opsional)</label>
-                                            <select id="builder-q-keperluan" class="transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-narmadaGreen focus-visible:outline-none w-full px-2.5 py-1.5 rounded-lg bg-slate-50 border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors">
-                                                <option value="Wajib">Wajib (Berlaku Semua Keperluan)</option>
-                                            </select>
-                                        </div>
-                                        <div>
-                                            <label class="block text-[10px] font-bold text-slate-600 mb-0.5">Judul Penanda (Opsional)</label>
-                                            <input type="text" id="builder-q-judul" placeholder="Contoh: Data Pribadi" class="transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-narmadaGreen focus-visible:outline-none w-full px-2.5 py-1.5 rounded-lg bg-slate-50 border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors">
-                                        </div>
-                                    </div>
-                                    
-                                    <!-- Conditional Wrapper -->
-                                    <div id="wrapper-q-condition" class="sm:col-span-3 hidden mb-2 p-3 bg-indigo-50/50 border border-indigo-100 rounded-xl space-y-2">
-                                        <div class="flex items-center gap-2 text-indigo-700 font-bold text-xs border-b border-indigo-100 pb-2">
-                                            <i class="fa-solid fa-code-branch"></i> Prasyarat Kemunculan (Kondisional)
-                                        </div>
-                                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                            <div>
-                                                <label class="block text-[10px] font-bold text-slate-600 mb-0.5">Pertanyaan Induk</label>
-                                                <input type="text" id="builder-q-condition-parent-name" readonly class="w-full px-2.5 py-1.5 rounded-lg bg-indigo-100/30 border border-indigo-200 text-xs text-indigo-800 outline-none font-semibold cursor-not-allowed">
-                                                <input type="hidden" id="builder-q-condition-parent-id">
-                                            </div>
-                                            <div>
-                                                <label class="block text-[10px] font-bold text-slate-600 mb-0.5">Jawaban Pemicu (Syarat)</label>
-                                                <select id="builder-q-condition-value" class="transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-indigo-500 focus-visible:outline-none w-full px-2.5 py-1.5 rounded-lg bg-white border border-indigo-200 text-xs focus:ring-indigo-500 focus:border-indigo-500 outline-none"></select>
-                                            </div>
-                                        </div>
-                                    </div>
+                    <div class="p-5 sm:p-6 space-y-4">
 
-                                    <div class="sm:col-span-2 mt-1">
-                                        <label class="block text-[10px] font-bold text-slate-600 mb-0.5">Nama Pertanyaan / Label</label>
-                                        <input type="text" id="builder-q-label" placeholder="Contoh: Bidang Usaha" class="transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-narmadaGreen focus-visible:outline-none w-full px-2.5 py-1.5 rounded-lg bg-slate-50 border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors">
-                                    </div>
-                                    <div class="mt-1">
-                                        <label class="block text-[10px] font-bold text-slate-600 mb-0.5">Wajib Diisi?</label>
-                                        <select id="builder-q-required" class="transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-narmadaGreen focus-visible:outline-none w-full px-2.5 py-1.5 rounded-lg bg-slate-50 border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors">
-                                            <option value="ya">Ya (Wajib)</option>
-                                            <option value="tidak">Tidak (Opsional)</option>
-                                        </select>
-                                    </div>
-                                    <div class="mt-1">
-                                        <label class="block text-[10px] font-bold text-slate-600 mb-0.5">Tipe Input</label>
-                                        <select id="builder-q-type" class="transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-narmadaGreen focus-visible:outline-none w-full px-2.5 py-1.5 rounded-lg bg-slate-50 border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors">
-                                            <option value="text">Input Teks</option>
-                                            <option value="dropdown">Dropdown (Pilihan)</option>
-                                            <option value="number">Angka (Number)</option>
-                                            <option value="date">Tanggal (Date)</option>
-                                        </select>
-                                    </div>
+                <!-- Compact Question Builder Form -->
+                <div id="bl-step-4" class="space-y-4">
+                    
+                    <!-- Form Title (changes dynamically via JS) -->
+                    <h3 id="builder-q-form-title" class="text-xs font-bold text-slate-700 flex items-center gap-2"><i class="fa-solid fa-question-circle text-blue-500 text-sm"></i> Buat Pertanyaan</h3>
 
-                                    <div id="wrapper-q-options" class="hidden sm:col-span-3">
-                                        <label class="block text-[10px] font-bold text-slate-600 mb-0.5">Opsi Pilihan (Pisahkan dengan koma)</label>
-                                        <input type="text" id="builder-q-options" placeholder="Contoh: Pertanian, Perdagangan, Jasa" class="transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-narmadaGreen focus-visible:outline-none w-full px-2.5 py-1.5 rounded-lg bg-white border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors">
-                                    </div>
-                                    <div id="wrapper-q-limit" class="hidden sm:col-span-3">
-                                        <label class="block text-[10px] font-bold text-slate-600 mb-0.5">Batas Maksimal Digit (Opsional)</label>
-                                        <input type="number" id="builder-q-limit" placeholder="Contoh: 16 untuk NIK" class="transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-narmadaGreen focus-visible:outline-none w-full px-2.5 py-1.5 rounded-lg bg-white border border-slate-200 text-xs focus:ring-narmadaGreen focus:border-narmadaGreen outline-none transition-colors">
-                                    </div>
-                                    <div class="sm:col-span-3 flex justify-end gap-2">
-                                        <button id="btn-cancel-update-question" class="cursor-pointer hover:scale-[1.02] active:scale-[0.98] hidden px-4 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 rounded-lg text-xs font-bold transition-colors">Batal</button>
-                                        <button type="button" id="btn-open-repeater-modal" onclick="openRepeaterModal()" class="cursor-pointer hover:scale-[1.02] active:scale-[0.98] px-4 py-2 bg-indigo-50 border border-indigo-200 hover:bg-indigo-100 text-indigo-700 rounded-lg text-xs font-bold transition-colors flex items-center gap-2.5 shadow-sm">
-                                            <i class="fa-solid fa-layer-group"></i> <span>Buat Grup Berulang</span>
-                                        </button>
-                                        <button id="btn-add-update-question" class="cursor-pointer hover:scale-[1.02] active:scale-[0.98] px-4 py-2 bg-narmadaGreen hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition-colors flex items-center gap-2.5 shadow-sm">
-                                            <i class="fa-solid fa-plus"></i> <span>Tambahkan Pertanyaan</span>
-                                        </button>
-                                    </div>
-                                </div>
+                    <!-- Conditional Wrapper (hidden by default, shown via JS) -->
+                    <div id="wrapper-q-condition" class="hidden p-2.5 bg-indigo-50/60 border border-indigo-100 rounded-lg space-y-2">
+                        <div class="flex items-center gap-1.5 text-indigo-600 font-bold text-[10px]">
+                            <i class="fa-solid fa-code-branch text-[10px]"></i> Kondisional — Muncul berdasarkan jawaban
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-[9px] font-bold text-slate-500 mb-0.5">Pertanyaan Induk</label>
+                                <input type="text" id="builder-q-condition-parent-name" readonly class="w-full px-2.5 py-1.5 rounded-md bg-indigo-100/30 border border-indigo-200 text-[11px] text-indigo-800 outline-none font-semibold cursor-not-allowed">
+                                <input type="hidden" id="builder-q-condition-parent-id">
+                            </div>
+                            <div>
+                                <label class="block text-[9px] font-bold text-slate-500 mb-0.5">Jawaban Pemicu</label>
+                                <select id="builder-q-condition-value" class="transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-indigo-400/40 focus-visible:outline-none w-full px-2.5 py-1.5 rounded-md bg-white border border-indigo-200 text-[11px] focus:border-indigo-400 outline-none"></select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Main Input Row: Label (wide) + Type + Required -->
+                    <div class="grid grid-cols-1 sm:grid-cols-6 gap-2 items-end">
+                        <div class="sm:col-span-3">
+                            <label class="block text-[10px] font-bold text-slate-500 mb-1">Nama Pertanyaan *</label>
+                            <input type="text" id="builder-q-label" placeholder="Contoh: Bidang Usaha" class="transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-narmadaGreen/40 focus-visible:outline-none w-full bg-white border border-slate-200 text-slate-800 text-xs rounded-lg focus:border-narmadaGreen px-3 py-2 outline-none placeholder-slate-400">
+                        </div>
+                        <div class="sm:col-span-2">
+                            <label class="block text-[10px] font-bold text-slate-500 mb-1">Tipe</label>
+                            <select id="builder-q-type" class="transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-narmadaGreen/40 focus-visible:outline-none w-full px-2.5 py-2 rounded-lg bg-white border border-slate-200 text-xs focus:border-narmadaGreen outline-none">
+                                <option value="text">Teks</option>
+                                <option value="dropdown">Dropdown</option>
+                                <option value="number">Angka</option>
+                                <option value="date">Tanggal</option>
+                            </select>
+                        </div>
+                        <div class="sm:col-span-1">
+                            <label class="block text-[10px] font-bold text-slate-500 mb-1">Wajib?</label>
+                            <select id="builder-q-required" class="transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-narmadaGreen/40 focus-visible:outline-none w-full px-2 py-2 rounded-lg bg-white border border-slate-200 text-xs focus:border-narmadaGreen outline-none">
+                                <option value="ya">Ya</option>
+                                <option value="tidak">Tidak</option>
+                            </select>
+                        </div>
+                    </div>
 
-                                <div class="space-y-2 mt-4 mb-4">
-                                    <h4 class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Daftar Pertanyaan Yang Dibuat:</h4>
-                                    <div id="builder-q-list" class="space-y-2 pr-2"></div>
-                                </div>
+                    <!-- Conditional fields: Dropdown options / Number limit -->
+                    <div id="wrapper-q-options" class="hidden">
+                        <label class="block text-[10px] font-bold text-slate-500 mb-1">Opsi Pilihan (pisahkan koma)</label>
+                        <input type="text" id="builder-q-options" placeholder="Pertanian, Perdagangan, Jasa" class="transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-narmadaGreen/40 focus-visible:outline-none w-full bg-white border border-slate-200 text-xs rounded-lg focus:border-narmadaGreen px-3 py-2 outline-none placeholder-slate-400">
+                    </div>
+                    <div id="wrapper-q-limit" class="hidden">
+                        <label class="block text-[10px] font-bold text-slate-500 mb-1">Batas Digit (opsional)</label>
+                        <input type="number" id="builder-q-limit" placeholder="Contoh: 16 untuk NIK" class="transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-narmadaGreen/40 focus-visible:outline-none w-full bg-white border border-slate-200 text-xs rounded-lg focus:border-narmadaGreen px-3 py-2 outline-none placeholder-slate-400">
+                    </div>
 
+                    <!-- Optional: Keperluan & Judul (collapsible) -->
+                    <details class="group">
+                        <summary class="cursor-pointer flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider hover:text-slate-600 transition-colors select-none py-0.5">
+                            <i class="fa-solid fa-chevron-right text-[8px] transition-transform duration-200 group-open:rotate-90"></i>
+                            <i class="fa-solid fa-sliders"></i> Opsi Lanjutan (Keperluan & Judul)
+                        </summary>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
+                            <div>
+                                <label class="block text-[9px] font-bold text-slate-500 mb-0.5">Keperluan Surat</label>
+                                <select id="builder-q-keperluan" class="transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-narmadaGreen/40 focus-visible:outline-none w-full px-2.5 py-1.5 rounded-md bg-white border border-slate-200 text-[11px] focus:border-narmadaGreen outline-none">
+                                    <option value="Wajib">Wajib (Semua Keperluan)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-[9px] font-bold text-slate-500 mb-0.5">Judul Penanda</label>
+                                <input type="text" id="builder-q-judul" placeholder="Contoh: Data Pribadi" class="transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-narmadaGreen/40 focus-visible:outline-none w-full px-2.5 py-1.5 rounded-md bg-white border border-slate-200 text-[11px] focus:border-narmadaGreen outline-none placeholder-slate-400">
+                            </div>
+                        </div>
+                    </details>
 
+                    <!-- Action Buttons (compact inline) -->
+                    <div class="flex justify-end gap-2 pt-1 border-t border-slate-100">
+                        <button id="btn-cancel-update-question" class="cursor-pointer hover:scale-[1.02] active:scale-[0.98] hidden px-3 py-1.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 rounded-lg text-[11px] font-bold transition-colors">Batal</button>
+                        <button type="button" id="btn-open-repeater-modal" onclick="openRepeaterModal()" class="cursor-pointer hover:scale-[1.02] active:scale-[0.98] px-3 py-1.5 bg-indigo-50 border border-indigo-200 hover:bg-indigo-100 text-indigo-700 rounded-lg text-[11px] font-bold transition-colors flex items-center gap-1.5">
+                            <i class="fa-solid fa-layer-group text-[10px]"></i> Grup Berulang
+                        </button>
+                        <button id="btn-add-update-question" class="cursor-pointer hover:scale-[1.02] active:scale-[0.98] px-3 py-1.5 bg-narmadaGreen hover:bg-emerald-700 text-white rounded-lg text-[11px] font-bold transition-colors flex items-center gap-1.5 shadow-sm">
+                            <i class="fa-solid fa-plus text-[10px]"></i> Tambah
+                        </button>
+                    </div>
+
+                    <!-- Questions List Output -->
+                    <div class="pt-2">
+                        <div id="builder-q-list" class="space-y-1.5"></div>
+                    </div>
 
                 </div>
                 </div>
