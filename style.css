@@ -591,3 +591,43 @@ body {
     text-align: center;
     font-style: italic;
 }
+
+/* === Service Builder: Pill Toggle & Chip Styles === */
+
+.bidang-pill input:checked + span {
+    background-color: #ecfdf5;
+    border-color: #059669;
+    color: #059669;
+    box-shadow: 0 0 0 1px rgba(5, 150, 105, 0.1);
+}
+
+.bidang-pill input:checked + span i {
+    opacity: 1;
+    color: #059669;
+}
+
+.keperluan-chip,
+.req-chip {
+    animation: chipSlideIn 0.2s ease-out;
+}
+
+@keyframes chipSlideIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9) translateY(-2px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.keperluan-chip:hover {
+    border-color: #a7f3d0;
+    box-shadow: 0 1px 3px rgba(5, 150, 105, 0.08);
+}
+
+.req-chip:hover {
+    border-color: #cbd5e1;
+    background-color: #f8fafc;
+}

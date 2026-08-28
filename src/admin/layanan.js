@@ -5,30 +5,33 @@ export function renderBuilderKeperluanList() {
     let container = document.getElementById('builder-keperluan-list');
     let select = document.getElementById('builder-keperluan-select');
     
-    container.innerHTML = "";
-    select.innerHTML = '<option value="">-- Pilih / Edit Keperluan --</option>';
+    if (container) container.innerHTML = "";
+    if (select) select.innerHTML = '<option value="">-- Pilih / Edit Keperluan --</option>';
     
     if (builderKeperluanList.length === 0) {
-        container.innerHTML = '<p class="text-[10px] text-slate-400 italic">Belum ada keperluan yang ditambahkan.</p>';
+        if (container) container.innerHTML = '<p class="text-[10px] text-slate-400 italic py-1">Belum ada keperluan ditambahkan.</p>';
         return;
     }
     
     builderKeperluanList.forEach((item, index) => {
-        // Add to UI list
-        let html = `<div class="bg-white border border-slate-200 rounded-xl p-3 shadow-sm text-left mb-2 flex justify-between items-center gap-2 animate-fade-in">
-            <div class="flex-1 min-w-0">
-                <h5 class="text-xs font-extrabold text-slate-800 truncate">${item.nama}</h5>
-                <p class="text-[10px] text-slate-500 truncate mt-0.5"><i class="fa-solid fa-link"></i> ${item.doc ? item.doc : 'Tidak ada template / Default'}</p>
-            </div>
-            <button type="button" onclick="deleteKeperluanAtIndex(${index})" class="px-3 py-2 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-lg text-xs font-bold transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] cursor-pointer shadow-sm shrink-0" title="Hapus"><i class="fa-solid fa-trash"></i></button>
-        </div>`;
-        container.innerHTML += html;
+        // Render as compact inline chip tag
+        let docTooltip = item.doc ? item.doc : 'Tanpa template';
+        let docIcon = item.doc ? '<i class="fa-solid fa-link text-[7px] text-narmadaGreen opacity-60"></i>' : '';
+        let html = `<span class="keperluan-chip inline-flex items-center gap-1.5 pl-3 pr-1.5 py-1.5 rounded-lg border border-emerald-200 bg-emerald-50 text-[11px] font-semibold text-emerald-800 animate-fade-in group" title="${docTooltip}">
+            ${docIcon}<span class="max-w-[180px] truncate">${item.nama}</span>
+            <button type="button" onclick="deleteKeperluanAtIndex(${index})" class="w-5 h-5 rounded-md flex items-center justify-center text-emerald-400 hover:text-red-500 hover:bg-red-50 transition-all duration-150 cursor-pointer ml-0.5" title="Hapus">
+                <i class="fa-solid fa-xmark text-[10px]"></i>
+            </button>
+        </span>`;
+        if (container) container.innerHTML += html;
         
         // Add to hidden select for compatibility with other scripts (req mapping, etc)
-        let opt = document.createElement('option');
-        opt.value = item.nama;
-        opt.text = item.nama;
-        select.add(opt);
+        if (select) {
+            let opt = document.createElement('option');
+            opt.value = item.nama;
+            opt.text = item.nama;
+            select.add(opt);
+        }
     });
 }
 
@@ -153,24 +156,30 @@ export function removeRequirementFromKeperluan(keperluan, index) {
 
 export function renderRequirementsMappingList() {
             let container = document.getElementById('builder-req-mapping-list');
+            if (!container) return;
             container.innerHTML = "";
 
             let keys = Object.keys(builderReqMap);
             if (keys.length === 0) {
-                container.innerHTML = '<p class="text-[10px] text-slate-400 italic">Belum ada persyaratan yang ditambahkan.</p>';
+                container.innerHTML = '<p class="text-[10px] text-slate-400 italic py-1">Belum ada persyaratan ditambahkan.</p>';
                 return;
             }
 
             keys.forEach(function (kep) {
-                let html = '<div class="bg-white border border-slate-200 rounded-xl p-3 shadow-sm text-left mb-2 animate-fade-in">' +
-                    '<h5 class="text-[10px] font-extrabold text-narmadaGreen mb-2 border-b pb-1 flex items-center gap-1.5"><i class="fa-solid fa-folder-open"></i> Keperluan: ' + kep + '</h5>' +
-                    '<div class="space-y-1.5 pl-1">';
+                let html = '<div class="mb-3 last:mb-0 animate-fade-in">' +
+                    '<div class="flex items-center gap-1.5 mb-1.5">' +
+                    '<i class="fa-solid fa-folder text-[10px] text-narmadaGreen"></i>' +
+                    '<span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">' + kep + '</span>' +
+                    '</div>' +
+                    '<div class="flex flex-wrap gap-1.5 pl-4">';
 
                 builderReqMap[kep].forEach(function (req, idx) {
-                    html += '<div class="flex justify-between items-center bg-slate-50 p-2 rounded-lg border border-slate-101 text-[10px] font-semibold text-slate-700">' +
-                        '<span><i class="fa-solid fa-check text-emerald-500 mr-1"></i> ' + req + '</span>' +
-                        '<button onclick="removeRequirementFromKeperluan(\'' + kep + '\', ' + idx + ')" class="text-red-500 hover:text-red-700 p-2 bg-white border border-slate-200 rounded shadow-sm transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] cursor-pointer"><i class="fa-solid fa-xmark"></i></button>' +
-                        '</div>';
+                    html += '<span class="req-chip inline-flex items-center gap-1 pl-2.5 pr-1 py-1 rounded-md border border-slate-200 bg-white text-[10px] font-semibold text-slate-700 group">' +
+                        '<i class="fa-solid fa-file-circle-check text-[8px] text-emerald-500"></i> ' +
+                        '<span class="max-w-[160px] truncate">' + req + '</span>' +
+                        '<button onclick="removeRequirementFromKeperluan(\'' + kep + '\', ' + idx + ')" class="w-4 h-4 rounded flex items-center justify-center text-slate-300 hover:text-red-500 hover:bg-red-50 transition-all duration-150 cursor-pointer ml-0.5" title="Hapus">' +
+                        '<i class="fa-solid fa-xmark text-[9px]"></i></button>' +
+                        '</span>';
                 });
 
                 html += '</div></div>';
@@ -279,10 +288,11 @@ export function handleBuilderLayananLoad() {
 export function handleKeperluanSelectChange() {
             let select = document.getElementById('builder-keperluan-select');
             let wrapper = document.getElementById('wrapper-new-keperluan');
-            if (select.value === "__ADD_NEW__") {
+            if (select && select.value === "__ADD_NEW__" && wrapper) {
                 wrapper.classList.remove('hidden');
-                document.getElementById('builder-keperluan-new-input').focus();
-            } else {
+                let inputEl = document.getElementById('builder-keperluan-new-input');
+                if (inputEl) inputEl.focus();
+            } else if (wrapper) {
                 wrapper.classList.add('hidden');
             }
         }
@@ -314,9 +324,12 @@ export function saveNewKeperluanOption() {
         }
 
 export function cancelNewKeperluanOption() {
-            document.getElementById('builder-keperluan-new-input').value = "";
-            document.getElementById('wrapper-new-keperluan').classList.add('hidden');
-            document.getElementById('builder-keperluan-select').value = "";
+            let inputEl = document.getElementById('builder-keperluan-new-input');
+            if (inputEl) inputEl.value = "";
+            let wrapperEl = document.getElementById('wrapper-new-keperluan');
+            if (wrapperEl) wrapperEl.classList.add('hidden');
+            let selectEl = document.getElementById('builder-keperluan-select');
+            if (selectEl) selectEl.value = "";
         }
 
 export function deleteSelectedKeperluanOption() {
