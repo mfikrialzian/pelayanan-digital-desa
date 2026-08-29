@@ -646,11 +646,11 @@ export function populateBuilderLayananToEdit(id) {
                 console.error("Error parsing requirements for builder", err);
             }
 
-            renderBuilderQuestionsUIList();
-            renderRequirementsMappingList();
+            try { renderBuilderQuestionsUIList(); } catch(e) { console.error("renderBuilderQuestionsUIList crashed", e); }
+            try { renderRequirementsMappingList(); } catch(e) { console.error("renderRequirementsMappingList crashed", e); }
             pushToast("Konfigurasi '" + found.nama + "' berhasil dimuat.", "info");
-            initStep2RequirementsBuilder();
-            initStep3QuestionsBuilder();
+            try { initStep2RequirementsBuilder(); } catch(e) { console.error("initStep2RequirementsBuilder crashed", e); }
+            try { initStep3QuestionsBuilder(); } catch(e) { console.error("initStep3QuestionsBuilder crashed", e); }
         }
 
 export function toggleBuilderOptionInput() {
@@ -1068,8 +1068,8 @@ export function renderBuilderQuestionsUIList() {
                     // Type badge with color
                     let typeBadge = '';
                     if (baseType === 'dropdown') {
-                        let optCount = item.data.options ? item.data.options.split(',').length : 0;
-                        typeBadge = '<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold bg-blue-50 text-blue-600 border border-blue-100">Dropdown · ' + optCount + '</span>';
+                        let optCount = item.data.options ? String(item.data.options).split(',').length : 0;
+                        typeBadge = '<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold bg-blue-50 text-blue-600 border border-blue-100">Dropdown • ' + optCount + '</span>';
                     } else if (baseType === 'number') {
                         typeBadge = '<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold bg-amber-50 text-amber-600 border border-amber-100">Angka</span>';
                     } else if (baseType === 'date') {
