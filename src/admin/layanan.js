@@ -493,7 +493,7 @@ export function populateBuilderLayananToEdit(id) {
             if (!found) return;
 
             document.getElementById('builder-select-layanan').value = found.nama;
-            document.getElementById('wrapper-builder-nama').classList.add('hidden');
+            document.getElementById('wrapper-builder-nama').classList.remove('hidden');
             document.getElementById('builder-layanan-nama').value = found.nama;
 
             let titleEl = document.getElementById('unified-editor-title');
@@ -523,9 +523,11 @@ export function populateBuilderLayananToEdit(id) {
                         o.value = cleanOpt;
                         o.text = cleanOpt;
                         selectKeperluan.add(o, selectKeperluan.options[selectKeperluan.options.length - 1]);
+                        builderKeperluanList.push({ nama: cleanOpt, doc: "" });
                     }
                 });
             }
+            renderBuilderKeperluanList();
 
             builderQuestions = [];
             (found.fields || []).forEach(function (f) {
@@ -562,6 +564,7 @@ export function populateBuilderLayananToEdit(id) {
             });
 
             renderBuilderQuestionsUIList();
+            renderRequirementsMappingList();
             pushToast("Konfigurasi '" + found.nama + "' berhasil dimuat.", "info");
             initStep2RequirementsBuilder();
             initStep3QuestionsBuilder();
@@ -1003,22 +1006,22 @@ export function renderBuilderQuestionsUIList() {
                     let indentClass = depth > 0 ? 'ml-4' : '';
                     let conditionTag = item.data.conditionField ? '<span class="text-[8px] text-indigo-500 font-bold"><i class="fa-solid fa-arrow-turn-up fa-rotate-90 text-[7px]"></i> jika: "' + item.data.conditionValue + '"</span> ' : '';
 
-                    groupHtml += '<div class="builder-q-row flex items-center justify-between px-2 py-1.5 rounded-md border ' + highlightClass + ' text-[10px] text-slate-700 ' + indentClass + ' transition-all group/row" ' +
-                        'draggable="true" ondragstart="handleDragStart(event, ' + item.index + ')" ondragover="handleDragOver(event)" ondrop="handleDrop(event, ' + item.index + ')" ondragend="handleDragEnd(event)">' +
-                        '<div class="flex items-center gap-1.5 min-w-0 flex-1">' +
-                        '<div class="cursor-grab text-slate-300 hover:text-slate-500 shrink-0 opacity-0 group-hover/row:opacity-100 transition-opacity" title="Drag"><i class="fa-solid fa-grip-dots-vertical text-[10px]"></i></div>' +
-                        '<span class="text-[10px] font-bold text-slate-400 shrink-0 w-5">' + indexNum + '</span>' +
-                        '<div class="min-w-0 flex-1">' +
-                        '<div class="flex items-center gap-1.5 flex-wrap">' +
-                        conditionTag + titleTag +
-                        '<span class="font-semibold text-slate-700 truncate">' + item.meta.cleanName + '</span>' +
-                        typeBadge + reqBadge +
-                        '</div>' +
-                        '</div>' +
-                        '</div>' +
-                        '<div class="relative shrink-0 ml-1">' +
-                        '<button type="button" onclick="toggleKebabMenu(event, \'kebab-menu-' + item.index + '\')" class="text-slate-300 hover:text-slate-600 hover:bg-slate-100 w-6 h-6 rounded flex items-center justify-center transition-colors opacity-0 group-hover/row:opacity-100"><i class="fa-solid fa-ellipsis-vertical text-[11px]"></i></button>' +
-                        '<div id="kebab-menu-' + item.index + '" class="kebab-dropdown hidden absolute right-0 top-full mt-1 w-40 bg-white rounded-lg shadow-lg border border-slate-100 py-0.5 z-50 text-left overflow-hidden">' +
+                      groupHtml += '<div class="builder-q-row flex items-center justify-between px-2 py-1.5 rounded-md border ' + highlightClass + ' text-[10px] text-slate-700 ' + indentClass + ' transition-all group/row" ' +
+                          'draggable="true" ondragstart="handleDragStart(event, ' + item.index + ')" ondragover="handleDragOver(event)" ondrop="handleDrop(event, ' + item.index + ')" ondragend="handleDragEnd(event)">' +
+                          '<div class="flex items-center gap-1.5 min-w-0 flex-1">' +
+                          '<div class="cursor-grab text-slate-400 hover:text-slate-600 shrink-0 transition-opacity" title="Drag"><i class="fa-solid fa-grip-dots-vertical text-[10px]"></i></div>' +
+                          '<span class="text-[10px] font-bold text-slate-400 shrink-0 w-5">' + indexNum + '</span>' +
+                          '<div class="min-w-0 flex-1">' +
+                          '<div class="flex items-center gap-1.5 flex-wrap">' +
+                          conditionTag + titleTag +
+                          '<span class="font-semibold text-slate-700 truncate">' + item.meta.cleanName + '</span>' +
+                          typeBadge + reqBadge +
+                          '</div>' +
+                          '</div>' +
+                          '</div>' +
+                          '<div class="relative shrink-0 ml-1">' +
+                          '<button type="button" onclick="toggleKebabMenu(event, \'kebab-menu-' + item.index + '\')" class="text-slate-400 hover:text-slate-700 hover:bg-slate-100 w-6 h-6 rounded flex items-center justify-center transition-colors"><i class="fa-solid fa-ellipsis-vertical text-[11px]"></i></button>' +
+                          '<div id="kebab-menu-' + item.index + '" class="kebab-dropdown hidden absolute right-0 top-full mt-1 w-40 bg-white rounded-lg shadow-lg border border-slate-100 py-0.5 z-50 text-left overflow-hidden">' +
                             (baseType === "dropdown" ? '<button type="button" onclick="openConditionalBuilder(' + item.index + ')" class="w-full text-left px-3 py-1.5 hover:bg-indigo-50 text-indigo-600 text-[10px] font-bold"><i class="fa-solid fa-code-branch w-3.5"></i> Lanjutan</button>' : '') +
                             '<button type="button" onclick="duplicateBuilderQuestion(' + item.index + ')" class="w-full text-left px-3 py-1.5 hover:bg-slate-50 text-slate-700 text-[10px] font-bold"><i class="fa-solid fa-copy w-3.5"></i> Duplikat</button>' +
                             '<button type="button" onclick="editBuilderQuestion(' + item.index + ')" class="w-full text-left px-3 py-1.5 hover:bg-slate-50 text-slate-700 text-[10px] font-bold"><i class="fa-solid fa-edit w-3.5"></i> Edit</button>' +
