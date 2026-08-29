@@ -1228,13 +1228,14 @@ export function submitBuilderDataToServer() {
                         }
                     })
                     .withFailureHandler(function (err) {
+                        console.error("Server Error in crudLayanan:", err);
                         if (saveBtn) {
                             saveBtn.innerHTML = originalText;
                             saveBtn.disabled = false;
                             saveBtn.classList.remove('opacity-70', 'cursor-not-allowed');
                             saveBtn.classList.add('cursor-pointer', 'hover:scale-[1.02]', 'active:scale-[0.98]');
                         }
-                        pushToast("Terjadi kesalahan jaringan atau server.", "error");
+                        pushToast("Terjadi kesalahan: " + (err.message || err), "error");
                     })
                     .crudLayanan(localStorage.getItem('adminToken_Narmada'), action, payload);
 
