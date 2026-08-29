@@ -574,53 +574,64 @@ export function populateBuilderLayananToEdit(id) {
             }
 
             builderReqMap = {};
-            let savedSyarat = found.syarat || found.persyaratan || "";
-            if (savedSyarat) {
-                let isJson = false;
-                try {
-                    let parsed = JSON.parse(savedSyarat);
-                    if (typeof parsed === 'object' && !Array.isArray(parsed)) {
-                        isJson = true;
-                        Object.keys(parsed).forEach(function(kep) {
-                            parsed[kep].forEach(function(reqName) {
+            try {
+                let savedSyarat = found.syarat || found.persyaratan || "";
+                if (savedSyarat) {
+                    let isJson = false;
+                    try {
+                        let parsed = JSON.parse(savedSyarat);
+                        if (typeof parsed === 'object' && !Array.isArray(parsed)) {
+                            isJson = true;
+                            Object.keys(parsed).forEach(function(kep) {
+                                parsed[kep].forEach(function(reqName) {
+                                    if (!builderReqMap[kep]) builderReqMap[kep] = [];
+                                    builderReqMap[kep].push(reqName);
+                                });
+                            });
+                        }
+                    } catch(e) {}
+                    
+                    if (!isJson) {
+                        let syArr = savedSyarat.split(";;;");
+                        syArr.forEach(function (sStr) {
+                            let s = sStr.trim();
+                            if (!s) return;
+                            let match = s.match(/^\[(.*?)\]\s*(.*)$/);
+                            if (match) {
+                                let kep = match[1];
+                                let reqName = match[2];
                                 if (!builderReqMap[kep]) builderReqMap[kep] = [];
                                 builderReqMap[kep].push(reqName);
-                            });
+                            } else {
+                                if (!builderReqMap["Wajib"]) builderReqMap["Wajib"] = [];
+                                builderReqMap["Wajib"].push(s);
+                            }
                         });
                     }
-                } catch(e) {}
-                
-                if (!isJson) {
-                    let syArr = savedSyarat.split(";;;");
-                    syArr.forEach(function (sStr) {
-                        let s = sStr.trim();
-                        if (!s) return;
-                        let match = s.match(/^\[(.*?)\]\s*(.*)$/);
+                } else if (found.requirements) {
+                    let reqs = found.requirements;
+                    if (typeof reqs === 'string') {
+                        try { reqs = JSON.parse(reqs); } catch(e) { reqs = []; }
+                    }
+                    if (!Array.isArray(reqs)) reqs = [];
+                    
+                    reqs.forEach(function (req) {
+                        let reqName = typeof req === 'string' ? req : (req.name || "");
+                        if (!reqName) return;
+                        let match = reqName.match(/^\[(.*?)\]\s*(.*)$/);
                         if (match) {
                             let kep = match[1];
-                            let reqName = match[2];
+                            let reqNameInner = match[2];
                             if (!builderReqMap[kep]) builderReqMap[kep] = [];
-                            builderReqMap[kep].push(reqName);
+                            builderReqMap[kep].push(reqNameInner);
                         } else {
                             if (!builderReqMap["Wajib"]) builderReqMap["Wajib"] = [];
-                            builderReqMap["Wajib"].push(s);
+                            builderReqMap["Wajib"].push(reqName);
                         }
                     });
                 }
-            } else if (found.requirements) {
-                // Fallback backward compatibility
-                (found.requirements || []).forEach(function (req) {
-                    let match = req.name.match(/^\[(.*?)\]\s*(.*)$/);
-                    if (match) {
-                        let kep = match[1];
-                        let reqName = match[2];
-                        if (!builderReqMap[kep]) builderReqMap[kep] = [];
-                        builderReqMap[kep].push(reqName);
-                    } else {
-                        if (!builderReqMap["Wajib"]) builderReqMap["Wajib"] = [];
-                        builderReqMap["Wajib"].push(req.name);
-                    }
-                });
+            } catch (err) {
+                console.error("Error parsing requirements for builder", err);
             }
 
             renderBuilderQuestionsUIList();
