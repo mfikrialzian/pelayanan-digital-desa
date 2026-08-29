@@ -576,21 +576,37 @@ export function populateBuilderLayananToEdit(id) {
             builderReqMap = {};
             let savedSyarat = found.syarat || found.persyaratan || "";
             if (savedSyarat) {
-                let syArr = savedSyarat.split(";;;");
-                syArr.forEach(function (sStr) {
-                    let s = sStr.trim();
-                    if (!s) return;
-                    let match = s.match(/^\[(.*?)\]\s*(.*)$/);
-                    if (match) {
-                        let kep = match[1];
-                        let reqName = match[2];
-                        if (!builderReqMap[kep]) builderReqMap[kep] = [];
-                        builderReqMap[kep].push(reqName);
-                    } else {
-                        if (!builderReqMap["Wajib"]) builderReqMap["Wajib"] = [];
-                        builderReqMap["Wajib"].push(s);
+                let isJson = false;
+                try {
+                    let parsed = JSON.parse(savedSyarat);
+                    if (typeof parsed === 'object' && !Array.isArray(parsed)) {
+                        isJson = true;
+                        Object.keys(parsed).forEach(function(kep) {
+                            parsed[kep].forEach(function(reqName) {
+                                if (!builderReqMap[kep]) builderReqMap[kep] = [];
+                                builderReqMap[kep].push(reqName);
+                            });
+                        });
                     }
-                });
+                } catch(e) {}
+                
+                if (!isJson) {
+                    let syArr = savedSyarat.split(";;;");
+                    syArr.forEach(function (sStr) {
+                        let s = sStr.trim();
+                        if (!s) return;
+                        let match = s.match(/^\[(.*?)\]\s*(.*)$/);
+                        if (match) {
+                            let kep = match[1];
+                            let reqName = match[2];
+                            if (!builderReqMap[kep]) builderReqMap[kep] = [];
+                            builderReqMap[kep].push(reqName);
+                        } else {
+                            if (!builderReqMap["Wajib"]) builderReqMap["Wajib"] = [];
+                            builderReqMap["Wajib"].push(s);
+                        }
+                    });
+                }
             } else if (found.requirements) {
                 // Fallback backward compatibility
                 (found.requirements || []).forEach(function (req) {
