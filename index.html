@@ -51,12 +51,20 @@
                                         if (successHandler) successHandler({ success: true });
                                         return;
                                     }
-                                    if (prop === 'getAdminSettings') {
-                                        if (successHandler) successHandler({ success: true, data: {} });
+                                    if (prop === 'getAdminSetelan' || prop === 'getAdminSettings') {
+                                        if (successHandler) successHandler({});
+                                        return;
+                                    }
+                                    if (prop === 'getLayananList' || prop === 'getLayananDataWarga') {
+                                        if (successHandler) successHandler(window.dummyLayananList || []);
+                                        return;
+                                    }
+                                    if (prop === 'getDashboardStats') {
+                                        if (successHandler) successHandler({ pengajuanBaru: 0, diproses: 0, selesai: 0, ditolak: 0 });
                                         return;
                                     }
                                     // Mock fallback
-                                    if (successHandler) successHandler({ success: true, data: [] });
+                                    if (successHandler) successHandler([]);
                                 }, 1000);
                                 return;
                             }
