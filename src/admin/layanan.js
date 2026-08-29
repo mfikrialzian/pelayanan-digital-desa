@@ -117,7 +117,6 @@ export function initStep3QuestionsBuilder() {
                     if (repKeperluan) repKeperluan.innerHTML += '<option value="' + val + '">' + val + '</option>';
                 }
             }
-            populateBuilderRepeaterSelect();
         }
 
 export function addRequirementToKeperluan() {
@@ -1125,7 +1124,7 @@ export function renderBuilderQuestionsUIList() {
                 groupHtml += '</div></div>';
                 container.innerHTML += groupHtml;
             });
-            populateBuilderRepeaterSelect();
+        // Modal rendering handled separately
         }
 
 export function submitBuilderDataToServer() {
