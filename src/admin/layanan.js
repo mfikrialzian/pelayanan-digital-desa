@@ -553,24 +553,36 @@ export function populateBuilderLayananToEdit(id) {
                 });
             } else if (found.fields) {
                 // Fallback backward compatibility
-                (found.fields || []).forEach(function (f) {
-                    let displayType = f.type;
-                    let actualName = f.name;
-                    let typeMatch = actualName.match(/(.*)\s*\|\|(number|date)\|\|$/);
-                    if (typeMatch) {
-                        displayType = typeMatch[2];
-                        actualName = typeMatch[1].trim();
+                try {
+                    let fieldsArr = Array.isArray(found.fields) ? found.fields : [];
+                    if (typeof found.fields === 'string') {
+                        try { fieldsArr = JSON.parse(found.fields); } catch(e) { fieldsArr = []; }
                     }
-
-                    builderQuestions.push({
-                        id: f.id || ("FLD-" + Math.random().toString(36).substr(2, 5).toUpperCase()),
-                        label: f.label || actualName,
-                        name: actualName,
-                        type: displayType,
-                        options: f.options || "",
-                        required: f.required || "ya"
+                    if (!Array.isArray(fieldsArr)) fieldsArr = [];
+                    
+                    fieldsArr.forEach(function (f) {
+                        let actualName = typeof f === 'string' ? f : (f.name || f.label || "");
+                        if (!actualName) return;
+                        
+                        let displayType = (f && f.type) ? f.type : "text";
+                        let typeMatch = actualName.match(/(.*)\s*\|\|(number|date)\|\|$/);
+                        if (typeMatch) {
+                            displayType = typeMatch[2];
+                            actualName = typeMatch[1].trim();
+                        }
+    
+                        builderQuestions.push({
+                            id: (f && f.id) ? f.id : ("FLD-" + Math.random().toString(36).substr(2, 5).toUpperCase()),
+                            label: (f && f.label) ? f.label : actualName,
+                            name: actualName,
+                            type: displayType,
+                            options: (f && f.options) ? f.options : "",
+                            required: (f && f.required) ? f.required : "ya"
+                        });
                     });
-                });
+                } catch(err) {
+                    console.error("Error parsing fields for builder", err);
+                }
             }
 
             builderReqMap = {};
