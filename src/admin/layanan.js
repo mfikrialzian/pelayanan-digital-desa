@@ -530,38 +530,82 @@ export function populateBuilderLayananToEdit(id) {
             renderBuilderKeperluanList();
 
             builderQuestions = [];
-            (found.fields || []).forEach(function (f) {
-                let displayType = f.type;
-                let actualName = f.name;
-                let typeMatch = actualName.match(/(.*)\s*\|\|(number|date)\|\|$/);
-                if (typeMatch) {
-                    displayType = typeMatch[2];
-                    actualName = typeMatch[1].trim();
-                }
-
-                builderQuestions.push({
-                    id: f.id,
-                    label: f.label || actualName,
-                    name: actualName,
-                    type: displayType,
-                    options: f.options || "",
-                    required: f.required || "ya"
+            let savedPertanyaan = found.pertanyaan || "";
+            if (savedPertanyaan) {
+                let pArr = savedPertanyaan.split(";;;");
+                pArr.forEach(function (pStr) {
+                    try {
+                        if(!pStr.trim()) return;
+                        let pObj = JSON.parse(pStr);
+                        let pKeperluan = pObj.keperluan || "Wajib";
+                        let pName = "{" + pKeperluan + ";;" + pObj.label + "} " + pObj.label;
+                        
+                        let bq = {
+                            id: pObj.id || ("FLD-" + Math.random().toString(36).substr(2, 5).toUpperCase()),
+                            label: pObj.label,
+                            name: pName,
+                            type: pObj.type || "text",
+                            options: pObj.options || "",
+                            required: pObj.required ? "ya" : "tidak"
+                        };
+                        builderQuestions.push(bq);
+                    } catch(e) {}
                 });
-            });
+            } else if (found.fields) {
+                // Fallback backward compatibility
+                (found.fields || []).forEach(function (f) {
+                    let displayType = f.type;
+                    let actualName = f.name;
+                    let typeMatch = actualName.match(/(.*)\s*\|\|(number|date)\|\|$/);
+                    if (typeMatch) {
+                        displayType = typeMatch[2];
+                        actualName = typeMatch[1].trim();
+                    }
+
+                    builderQuestions.push({
+                        id: f.id || ("FLD-" + Math.random().toString(36).substr(2, 5).toUpperCase()),
+                        label: f.label || actualName,
+                        name: actualName,
+                        type: displayType,
+                        options: f.options || "",
+                        required: f.required || "ya"
+                    });
+                });
+            }
 
             builderReqMap = {};
-            (found.requirements || []).forEach(function (req) {
-                let match = req.name.match(/^\[(.*?)\]\s*(.*)$/);
-                if (match) {
-                    let kep = match[1];
-                    let reqName = match[2];
-                    if (!builderReqMap[kep]) builderReqMap[kep] = [];
-                    builderReqMap[kep].push(reqName);
-                } else {
-                    if (!builderReqMap["Wajib"]) builderReqMap["Wajib"] = [];
-                    builderReqMap["Wajib"].push(req.name);
-                }
-            });
+            let savedSyarat = found.syarat || found.persyaratan || "";
+            if (savedSyarat) {
+                let syArr = savedSyarat.split(";;;");
+                syArr.forEach(function (sStr) {
+                    let s = sStr.trim();
+                    if (!s) return;
+                    let match = s.match(/^\[(.*?)\]\s*(.*)$/);
+                    if (match) {
+                        let kep = match[1];
+                        let reqName = match[2];
+                        if (!builderReqMap[kep]) builderReqMap[kep] = [];
+                        builderReqMap[kep].push(reqName);
+                    } else {
+                        if (!builderReqMap["Wajib"]) builderReqMap["Wajib"] = [];
+                        builderReqMap["Wajib"].push(s);
+                    }
+                });
+            } else if (found.requirements) {
+                // Fallback backward compatibility
+                (found.requirements || []).forEach(function (req) {
+                    let match = req.name.match(/^\[(.*?)\]\s*(.*)$/);
+                    if (match) {
+                        let kep = match[1];
+                        let reqName = match[2];
+                        if (!builderReqMap[kep]) builderReqMap[kep] = [];
+                        builderReqMap[kep].push(reqName);
+                    } else {
+                        if (!builderReqMap["Wajib"]) builderReqMap["Wajib"] = [];
+                        builderReqMap["Wajib"].push(req.name);
+                    }
+                });
+            }
 
             renderBuilderQuestionsUIList();
             renderRequirementsMappingList();
