@@ -55,6 +55,11 @@ export function deleteKeperluanAtIndex(index) {
                 builderKeperluanList.splice(index, 1);
                 renderBuilderKeperluanList();
                 
+                // Jika ada dokumen persyaratan yang terhapus, render ulang UI
+                if (hasReq && typeof renderRequirementsMappingList === 'function') {
+                    renderRequirementsMappingList();
+                }
+
                 // Jika ada pertanyaan yang terhapus, render ulang UI daftar pertanyaan
                 if (hasQuestions && typeof renderBuilderQuestionsUIList === 'function') {
                     renderBuilderQuestionsUIList();
