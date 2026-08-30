@@ -233,6 +233,7 @@ export function renderDynamicCustomQuestions(fields) {
             }
 
             if (fields && fields.length > 0) {
+                let lastJudul = "";
                 fields.forEach(function (f) {
                     let displayType = f.type;
 
@@ -267,8 +268,9 @@ export function renderDynamicCustomQuestions(fields) {
 
                     let groupHtml = '<div class="dynamic-question-wrapper space-y-1.5 mt-3" data-bind-keperluan="' + meta.keperluan + '"' + condAttrs + '>';
 
-                    if (meta.judul) {
+                    if (meta.judul && meta.judul !== "-" && meta.judul !== lastJudul) {
                         groupHtml += '<h4 class="text-sm font-semibold text-narmadaGreen border-b border-emerald-100 pb-1.5 mt-3 mb-2"><i class="fa-solid fa-list-check"></i> ' + meta.judul + '</h4>';
+                        lastJudul = meta.judul;
                     }
 
                     groupHtml += '<label class="block text-xs font-semibold text-slate-600">' + escapeHtml(meta.cleanName) + isRequiredStr + '</label>';

@@ -130,20 +130,8 @@ export function initStep2RequirementsBuilder() {
         }
 
 export function initStep3QuestionsBuilder() {
-            let selKeperluan = document.getElementById('builder-q-keperluan');
-            let repKeperluan = document.getElementById('builder-repeater-keperluan');
-            selKeperluan.innerHTML = '<option value="Wajib">Wajib (Berlaku Semua Keperluan)</option>';
-            if (repKeperluan) repKeperluan.innerHTML = '<option value="Wajib">Wajib (Berlaku Semua Keperluan)</option>';
-            let mainSelect = document.getElementById('builder-keperluan-select');
-
-            for (let i = 0; i < mainSelect.options.length; i++) {
-                let val = mainSelect.options[i].value;
-                if (val && val !== "__ADD_NEW__") {
-                    selKeperluan.innerHTML += '<option value="' + val + '">' + val + '</option>';
-                    if (repKeperluan) repKeperluan.innerHTML += '<option value="' + val + '">' + val + '</option>';
-                }
-            }
-        }
+    renderBuilderQuestionsUIList();
+}
 
 export function addRequirementToKeperluan() {
             let keperluan = document.getElementById('builder-req-keperluan').value;
@@ -830,301 +818,276 @@ window.saveRepeaterFromModal = function() {
     renderBuilderQuestionsUIList();
 }
 
-export function addBuilderQuestionToList() {
-            let defaultKeperluan = document.getElementById('builder-layanan-nama').value.trim() || "Wajib";
-            let keperluanEl = document.getElementById('builder-q-keperluan');
-            let keperluan = keperluanEl ? (keperluanEl.value || defaultKeperluan) : defaultKeperluan;
-            
-            let halamanEl = document.getElementById('builder-q-halaman');
-            let halaman = halamanEl ? (halamanEl.value || "1") : "1";
-            
-            let judulEl = document.getElementById('builder-q-judul');
-            let judul = judulEl ? judulEl.value.trim() : "";
-            
-            let label = document.getElementById('builder-q-label').value.trim();
-            let type = document.getElementById('builder-q-type').value;
-            let reqStatus = document.getElementById('builder-q-required') ? document.getElementById('builder-q-required').value : "ya";
-
-            let finalOptions = "";
-            if (type === "dropdown") {
-                finalOptions = document.getElementById('builder-q-options').value.trim();
-                if (!finalOptions) { pushToast("Tulis opsi dropdown dipisahkan tanda koma!", "error"); return; }
-            } else if (type === "number") {
-                let limEl = document.getElementById('builder-q-limit');
-                if (limEl) finalOptions = limEl.value.trim();
-            }
-
-            if (!label) {
-                pushToast("Label pertanyaan wajib ditulis!", "error");
-                return;
-            }
-
-            // Pola Baru: {Keperluan;;Halaman;;Judul Halaman} Label
-            let formattedName = "{" + keperluan + ";;" + halaman + ";;" + judul + "} " + label;
-
-            let conditionParentId = document.getElementById('builder-q-condition-parent-id') ? document.getElementById('builder-q-condition-parent-id').value : "";
-            let conditionValue = document.getElementById('builder-q-condition-value') ? document.getElementById('builder-q-condition-value').value : "";
-
-            let newQuestionObj = {
-                id: "FLD-" + Math.random().toString(36).substr(2, 5).toUpperCase(),
-                label: formattedName,
-                name: formattedName,
-                type: type,
-                options: finalOptions,
-                required: reqStatus
-            };
-
-            if (conditionParentId && conditionValue && document.getElementById('wrapper-q-condition') && !document.getElementById('wrapper-q-condition').classList.contains('hidden')) {
-                newQuestionObj.conditionField = conditionParentId;
-                newQuestionObj.conditionValue = conditionValue;
-            }
-
-            if (window.editingQuestionIndex !== -1) {
-                newQuestionObj.id = builderQuestions[window.editingQuestionIndex].id; // Pertahankan ID
-                if (builderQuestions[window.editingQuestionIndex].conditionField) {
-                    newQuestionObj.conditionField = builderQuestions[window.editingQuestionIndex].conditionField;
-                    newQuestionObj.conditionValue = builderQuestions[window.editingQuestionIndex].conditionValue;
-                }
-                builderQuestions[window.editingQuestionIndex] = newQuestionObj;
-                cancelEditBuilderQuestion();
-                pushToast("Pertanyaan berhasil diupdate.", "success");
-            } else {
-                builderQuestions.push(newQuestionObj);
-                pushToast("Pertanyaan berhasil ditambahkan.", "success");
-            }
-
-            // Sort / Urutkan Berdasarkan Keperluan, lalu Halaman
-            builderQuestions.sort(function (a, b) {
-                let metaA = parseQuestionMetadata(a.name);
-                let metaB = parseQuestionMetadata(b.name);
-                if (metaA.keperluan === "Wajib" && metaB.keperluan !== "Wajib") return -1;
-                if (metaB.keperluan === "Wajib" && metaA.keperluan !== "Wajib") return 1;
-                if (metaA.keperluan < metaB.keperluan) return -1;
-                if (metaA.keperluan > metaB.keperluan) return 1;
-                // Urutkan berdasarkan Halaman (numerik)
-                let halA = parseInt(metaA.halaman) || 1;
-                let halB = parseInt(metaB.halaman) || 1;
-                if (halA < halB) return -1;
-                if (halA > halB) return 1;
-                return 0;
-            });
-
-            // Kosongkan HANYA label & opsi, biarkan Keperluan, Halaman, & Judul (mempermudah input beruntun)
-            document.getElementById('builder-q-label').value = "";
-            document.getElementById('builder-q-options').value = "";
-            if (document.getElementById('builder-q-limit')) document.getElementById('builder-q-limit').value = "";
-            
-            // Reset Conditional Wrapper
-            let wrapperCond = document.getElementById('wrapper-q-condition');
-            if (wrapperCond) {
-                wrapperCond.classList.add('hidden');
-                document.getElementById('builder-q-condition-parent-id').value = "";
-                document.getElementById('builder-q-condition-parent-name').value = "";
-                document.getElementById('builder-q-condition-value').innerHTML = "";
-            }
-            
-            renderBuilderQuestionsUIList();
-        }
-
-export function resetBuilderQuestionForm() {
-    let defaultKeperluan = document.getElementById('builder-layanan-nama').value.trim() || "Wajib";
-    if (document.getElementById('builder-q-keperluan')) document.getElementById('builder-q-keperluan').value = defaultKeperluan;
-    if (document.getElementById('builder-q-halaman')) document.getElementById('builder-q-halaman').value = "1";
-    if (document.getElementById('builder-q-judul')) document.getElementById('builder-q-judul').value = "";
-    document.getElementById('builder-q-label').value = "";
-    document.getElementById('builder-q-options').value = "";
-    if (document.getElementById('builder-q-limit')) document.getElementById('builder-q-limit').value = "";
-    if (document.getElementById('builder-q-type')) document.getElementById('builder-q-type').value = "text";
-    
-    cancelEditBuilderQuestion();
-}
-
-window.openConditionalBuilder = function(index) {
-    let parentQ = builderQuestions[index];
-    if (parentQ.type !== "dropdown") {
-        pushToast("Hanya pertanyaan tipe dropdown yang dapat dicabangkan!", "error");
-        return;
-    }
-    cancelEditBuilderQuestion();
-    
-    let meta = parseQuestionMetadata(parentQ.name);
-    
-    document.getElementById('wrapper-q-condition').classList.remove('hidden');
-    document.getElementById('builder-q-condition-parent-id').value = parentQ.id;
-    document.getElementById('builder-q-condition-parent-name').value = meta.cleanName;
-    
-    let selectEl = document.getElementById('builder-q-condition-value');
-    selectEl.innerHTML = "";
-    let opts = parentQ.options.split(',').map(o => o.trim()).filter(o => o !== "");
-    opts.forEach(o => {
-        let opt = document.createElement('option');
-        opt.value = o;
-        opt.text = o;
-        selectEl.appendChild(opt);
-    });
-    
-    document.getElementById('builder-q-keperluan').value = meta.keperluan || "Wajib";
-    
-    let formTitle = document.getElementById('builder-q-form-title');
-    if (formTitle) formTitle.innerHTML = '<i class="fa-solid fa-code-branch text-indigo-500 text-sm"></i> Pertanyaan Lanjutan';
-    
-    document.getElementById('builder-step-2').scrollIntoView({ behavior: 'smooth', block: 'start' });
-    pushToast("Silakan atur pertanyaan lanjutan untuk " + meta.cleanName, "success");
-}
-
-export function editBuilderQuestion(index) {
-            let q = builderQuestions[index];
-            let meta = parseQuestionMetadata(q.name);
-            let baseType = q.type;
-
-            if (baseType === "repeater") {
-                cancelEditBuilderQuestion(); // Reset form standard
-                window.openRepeaterModal(index);
-                return;
-            }
-
-            window.editingQuestionIndex = index;
-
-            // Populate Input Form
-            document.getElementById('builder-q-keperluan').value = meta.keperluan || "Wajib";
-            if (document.getElementById('builder-q-halaman')) document.getElementById('builder-q-halaman').value = meta.halaman || "1";
-            document.getElementById('builder-q-judul').value = meta.judul;
-            document.getElementById('builder-q-label').value = meta.cleanName;
-            document.getElementById('builder-q-type').value = baseType;
-            document.getElementById('builder-q-required').value = q.required;
-
-            toggleBuilderOptionInput();
-
-            if (baseType === "dropdown") {
-                document.getElementById('builder-q-options').value = q.options;
-            } else if (baseType === "number") {
-                document.getElementById('builder-q-limit').value = q.options;
-            }
-
-            // Update UI Buttons
-            let btnAdd = document.getElementById('btn-add-update-question');
-            btnAdd.innerHTML = 'Update';
-            btnAdd.className = "cursor-pointer hover:scale-[1.02] active:scale-[0.98] px-4 py-1.5 bg-amber-500 hover:bg-amber-600 text-white rounded-lg text-[11px] font-bold transition-all shadow-sm";
-            document.getElementById('btn-cancel-update-question').classList.remove('hidden');
-            
-            // Sembunyikan tombol reset saat mode edit
-            let btnReset = document.getElementById('btn-reset-question');
-            if (btnReset) btnReset.classList.add('hidden');
-
-            // Auto Scroll to form
-            document.getElementById('builder-step-2').scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-
-export function cancelEditBuilderQuestion() {
-            window.editingQuestionIndex = -1;
-
-            let btnAdd = document.getElementById('btn-add-update-question');
-            if (btnAdd) {
-                btnAdd.innerHTML = 'Tambah';
-                btnAdd.className = "cursor-pointer hover:scale-[1.02] active:scale-[0.98] px-4 py-1.5 bg-narmadaGreen hover:bg-emerald-700 text-white rounded-lg text-[11px] font-bold transition-all shadow-sm";
-            }
-            let btnCancel = document.getElementById('btn-cancel-update-question');
-            if (btnCancel) btnCancel.classList.add('hidden');
-            
-            let btnReset = document.getElementById('btn-reset-question');
-            if (btnReset) btnReset.classList.remove('hidden');
-        }
-
-export function removeBuilderQuestion(index) {
-            builderQuestions.splice(index, 1);
-            if (window.editingQuestionIndex === index) cancelEditBuilderQuestion();
-            renderBuilderQuestionsUIList();
-        }
-
-
-export function duplicateBuilderQuestion(index) {
-            let q = JSON.parse(JSON.stringify(builderQuestions[index]));
-            let meta = parseQuestionMetadata(q.name);
-            let newCleanName = meta.cleanName + " (Copy)";
-            q.name = "{" + meta.keperluan + ";;" + meta.halaman + ";;" + meta.judul + "} " + newCleanName;
-            builderQuestions.splice(index + 1, 0, q);
-            renderBuilderQuestionsUIList();
-        }
+window.builderKeperluanActive = "";
 
 export function renderBuilderQuestionsUIList() {
-    let container = document.getElementById('builder-q-list');
-    if (!container) return;
-    container.innerHTML = "";
+    let container = document.getElementById('builder-workspace');
+    let tabsContainer = document.getElementById('builder-keperluan-tabs');
+    if (!container || !tabsContainer) return;
 
-    if (builderQuestions.length === 0) {
-        container.innerHTML = '<tr><td colspan="5" class="py-4 text-center text-[10px] text-slate-400 italic">Belum ada pertanyaan ditambahkan.</td></tr>';
+    let availableKeperluan = builderKeperluanList.map(k => k.nama);
+    if(availableKeperluan.length === 0) {
+        container.innerHTML = '<div class="text-center py-8 text-slate-400 text-xs italic">Silakan tambahkan keperluan terlebih dahulu di Langkah 3.</div>';
+        tabsContainer.innerHTML = '';
         return;
     }
 
-    let html = "";
-    
-    builderQuestions.forEach(function(q, index) {
-        let meta = parseQuestionMetadata(q.name);
-        let baseType = q.type;
-        
-        let typeBadge = '';
-        if (baseType === 'dropdown') {
-            typeBadge = '<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold bg-blue-50 text-blue-600 border border-blue-100">Dropdown</span>';
-        } else if (baseType === 'number') {
-            typeBadge = '<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold bg-amber-50 text-amber-600 border border-amber-100">Angka</span>';
-        } else if (baseType === 'date') {
-            typeBadge = '<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold bg-purple-50 text-purple-600 border border-purple-100">Tanggal</span>';
-        } else if (baseType === 'repeater') {
-            typeBadge = '<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold bg-indigo-50 text-indigo-600 border border-indigo-100"><i class="fa-solid fa-layer-group mr-0.5 text-[8px]"></i> Grup</span>';
-        } else {
-            typeBadge = '<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold bg-slate-50 text-slate-500 border border-slate-200">Teks</span>';
-        }
-        
-        let reqBadge = q.required === "tidak" ? '<span class="text-[9px] text-amber-500 font-bold ml-1">(opsional)</span>' : '<span class="text-[9px] text-slate-400 font-bold ml-1">(wajib)</span>';
-        
-        let conditionTag = q.conditionField ? '<div class="text-[9px] text-indigo-500 font-bold mt-1"><i class="fa-solid fa-arrow-turn-up fa-rotate-90 text-[8px]"></i> Lanjutan jika: "' + q.conditionValue + '"</div>' : '';
+    if (!window.builderKeperluanActive || !availableKeperluan.includes(window.builderKeperluanActive)) {
+        window.builderKeperluanActive = availableKeperluan[0];
+    }
 
-        let highlightClass = (window.editingQuestionIndex === index) ? "bg-amber-50/60" : "hover:bg-slate-50";
-        
-        html += '<tr class="border-b border-slate-100 last:border-none group/row transition-colors ' + highlightClass + '" ' +
-            'draggable="true" ondragstart="handleDragStart(event, ' + index + ')" ondragover="handleDragOver(event)" ondrop="handleDrop(event, ' + index + ')" ondragend="handleDragEnd(event)">' +
-            
-            // Keperluan + Drag Handle
-            '<td class="py-2.5 px-3 font-semibold text-slate-700 align-top">' + 
-                '<div class="flex items-start gap-2">' + 
-                    '<div class="cursor-grab text-slate-300 hover:text-slate-500 transition-opacity mt-0.5" title="Geser untuk mengurutkan"><i class="fa-solid fa-grip-dots-vertical"></i></div>' +
-                    '<span class="truncate max-w-[120px]" title="' + meta.keperluan + '">' + meta.keperluan + '</span>' +
-                '</div>' + 
-            '</td>' +
-            
-            // Halaman
-            '<td class="py-2.5 px-3 text-center align-top"><span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-slate-100 border border-slate-200 text-[10px] font-bold text-slate-600">' + (meta.halaman || "1") + '</span></td>' +
-            
-            // Judul
-            '<td class="py-2.5 px-3 align-top"><span class="font-bold text-slate-600 truncate max-w-[150px] block" title="' + meta.judul + '">' + (meta.judul || "-") + '</span></td>' +
-            
-            // Formulir (Label & Tipe & Wajib)
-            '<td class="py-2.5 px-3 align-top">' +
-                '<div class="font-bold text-slate-800 text-xs">' + meta.cleanName + '</div>' +
-                '<div class="flex items-center flex-wrap gap-1 mt-1">' + typeBadge + reqBadge + '</div>' +
-                conditionTag + 
-            '</td>' +
-            
-            // Aksi (Titik Tiga)
-            '<td class="py-2.5 px-3 text-center align-top sticky right-0 bg-white shadow-[-4px_0_6px_-2px_rgba(0,0,0,0.02)] group-hover/row:bg-slate-50 transition-colors">' +
-                '<button type="button" onclick="toggleActionMenu(event, \'q-menu-' + index + '\')" class="w-7 h-7 rounded hover:bg-slate-200 text-slate-400 hover:text-slate-700 flex items-center justify-center mx-auto transition-colors focus:outline-none">' +
-                    '<i class="fa-solid fa-ellipsis-vertical"></i>' +
-                '</button>' +
-                
-                // Dropdown Menu (Hidden by default, positioned via JS)
-                '<div id="q-menu-' + index + '" class="action-menu-dropdown hidden absolute w-36 bg-white rounded-lg shadow-lg border border-slate-100 py-1 z-50 text-left overflow-hidden">' +
-                    (baseType === "dropdown" ? '<button type="button" onclick="openConditionalBuilder(' + index + ')" class="w-full text-left px-4 py-2.5 hover:bg-indigo-50 text-indigo-700 text-[11px] font-bold flex items-center gap-2"><i class="fa-solid fa-code-branch w-3.5"></i> Lanjutan</button>' : '') +
-                    '<button type="button" onclick="editBuilderQuestion(' + index + ')" class="w-full text-left px-4 py-2.5 hover:bg-slate-50 text-slate-700 text-[11px] font-bold flex items-center gap-2"><i class="fa-solid fa-pencil text-amber-500 w-3.5"></i> Edit</button>' +
-                    '<button type="button" onclick="duplicateBuilderQuestion(' + index + ')" class="w-full text-left px-4 py-2.5 hover:bg-slate-50 text-slate-700 text-[11px] font-bold flex items-center gap-2"><i class="fa-solid fa-copy text-blue-500 w-3.5"></i> Duplikat</button>' +
-                    '<div class="border-t border-slate-100 my-0.5"></div>' +
-                    '<button type="button" onclick="removeBuilderQuestion(' + index + ')" class="w-full text-left px-4 py-2.5 hover:bg-red-50 text-red-600 text-[11px] font-bold flex items-center gap-2"><i class="fa-solid fa-trash w-3.5"></i> Hapus</button>' +
-                '</div>' +
-            '</td>' +
-        '</tr>';
+    let tabsHtml = '';
+    availableKeperluan.forEach(kep => {
+        let activeCls = (kep === window.builderKeperluanActive) 
+            ? 'bg-narmadaGreen text-white shadow-sm border-narmadaGreen' 
+            : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50';
+        tabsHtml += `<button type="button" onclick="window.builderKeperluanActive='${kep}'; window.renderBuilderQuestionsUIList();" class="px-4 py-2 rounded-full border text-[11px] font-bold whitespace-nowrap transition-colors ${activeCls}">${kep}</button>`;
+    });
+    tabsContainer.innerHTML = tabsHtml;
+
+    let activeQuestions = window.builderQuestions.filter(q => {
+        let meta = parseQuestionMetadata(q.name);
+        return meta.keperluan === window.builderKeperluanActive;
     });
 
-    container.innerHTML = html;
+    let pages = [];
+    activeQuestions.forEach((q, idx) => {
+        let meta = parseQuestionMetadata(q.name);
+        let pNo = parseInt(meta.halaman) || 1;
+        let pJudul = meta.judul || "-";
+        
+        let lastPage = pages.length > 0 ? pages[pages.length - 1] : null;
+        if (!lastPage || lastPage.pageNo !== pNo || lastPage.judul !== pJudul) {
+            pages.push({ pageNo: pNo, judul: pJudul, questions: [], startIndex: window.builderQuestions.indexOf(q) });
+            lastPage = pages[pages.length - 1];
+        }
+        lastPage.questions.push({ q: q, globalIndex: window.builderQuestions.indexOf(q) });
+    });
+
+    if (pages.length === 0) {
+        container.innerHTML = `
+            <div class="text-center py-8 text-slate-400 text-xs italic">Belum ada halaman/pertanyaan untuk keperluan ini.</div>
+            <div class="flex justify-center mt-2">
+                <button type="button" onclick="addBuilderPage()" class="cursor-pointer px-4 py-2 bg-emerald-50 text-narmadaGreen hover:bg-emerald-100 border border-emerald-200 rounded-lg text-[11px] font-bold shadow-sm transition-all flex items-center gap-2"><i class="fa-solid fa-folder-plus"></i> Tambah Halaman Pertama</button>
+            </div>
+        `;
+    } else {
+        let html = '';
+        pages.forEach((page, pIdx) => {
+            html += `<div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden mb-4 relative">`;
+            
+            html += `<div class="bg-slate-50 px-4 py-3 border-b border-slate-100 flex justify-between items-center">
+                        <div class="flex items-center gap-3">
+                            <span class="w-6 h-6 flex items-center justify-center rounded-full bg-narmadaGreen text-white text-[10px] font-bold">${page.pageNo}</span>
+                            <div>
+                                <h4 class="text-xs font-bold text-slate-800">${page.judul === "-" ? "Tanpa Judul" : page.judul}</h4>
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <button type="button" onclick="editPageTitle(${page.pageNo}, '${page.judul}')" class="text-amber-500 hover:text-amber-600 p-1 bg-white rounded shadow-sm border border-slate-200" title="Edit Judul Halaman"><i class="fa-solid fa-pen text-[10px]"></i></button>
+                        </div>
+                     </div>`;
+                     
+            html += `<div class="p-3 space-y-2">`;
+            page.questions.forEach((item, localIdx) => {
+                let baseType = item.q.type;
+                let reqBadge = item.q.required === "tidak" ? '<span class="text-[9px] text-amber-500 font-bold ml-1">(opsional)</span>' : '<span class="text-[9px] text-slate-400 font-bold ml-1">(wajib)</span>';
+                let conditionTag = item.q.conditionField ? `<div class="text-[9px] text-indigo-500 font-bold mt-1"><i class="fa-solid fa-arrow-turn-up fa-rotate-90 text-[8px]"></i> Lanjutan jika: "${item.q.conditionValue}"</div>` : '';
+                
+                html += `<div class="flex justify-between items-center p-2.5 rounded-lg border border-slate-100 hover:border-emerald-200 hover:bg-emerald-50/30 transition-colors group">
+                            <div>
+                                <div class="text-[11px] font-bold text-slate-700">${item.q.label} ${reqBadge}</div>
+                                <div class="text-[10px] text-slate-500 flex gap-2 mt-0.5">
+                                    <span class="capitalize border border-slate-200 bg-white rounded px-1">${baseType}</span>
+                                </div>
+                                ${conditionTag}
+                            </div>
+                            <div class="opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
+                                <button type="button" onclick="openFieldEditorModal(${item.globalIndex})" class="w-6 h-6 rounded bg-white border border-slate-200 shadow-sm hover:bg-amber-50 text-amber-600 flex items-center justify-center text-[10px]"><i class="fa-solid fa-pen"></i></button>
+                                <button type="button" onclick="removeBuilderQuestion(${item.globalIndex})" class="w-6 h-6 rounded bg-white border border-slate-200 shadow-sm hover:bg-red-50 text-red-600 flex items-center justify-center text-[10px]"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                         </div>`;
+            });
+            html += `</div>`;
+            
+            html += `<div class="px-4 py-2 bg-slate-50/50 border-t border-slate-100 text-center">
+                        <button type="button" onclick="openFieldEditorModal(-1, ${page.pageNo}, '${page.judul}')" class="text-[10px] font-bold text-narmadaGreen hover:text-emerald-700 hover:bg-emerald-50 px-3 py-1.5 rounded-lg transition-colors border border-transparent hover:border-emerald-200"><i class="fa-solid fa-plus mr-1"></i> Tambah Pertanyaan di Halaman Ini</button>
+                     </div>`;
+                     
+            html += `</div>`;
+        });
+        
+        html += `<div class="flex justify-center mt-4">
+                    <button type="button" onclick="addBuilderPage()" class="cursor-pointer px-4 py-2 bg-emerald-50 text-narmadaGreen hover:bg-emerald-100 border border-emerald-200 rounded-lg text-[11px] font-bold shadow-sm transition-all flex items-center gap-2"><i class="fa-solid fa-folder-plus"></i> Tambah Halaman Baru</button>
+                </div>`;
+                
+        container.innerHTML = html;
+    }
 }
+
+window.renderBuilderQuestionsUIList = renderBuilderQuestionsUIList;
+
+window.addBuilderPage = function() {
+    if(!window.builderKeperluanActive) return Swal.fire("Peringatan", "Pilih keperluan terlebih dahulu.", "warning");
+    
+    let activeQuestions = window.builderQuestions.filter(q => parseQuestionMetadata(q.name).keperluan === window.builderKeperluanActive);
+    let maxPage = 0;
+    activeQuestions.forEach(q => {
+        let pNo = parseInt(parseQuestionMetadata(q.name).halaman) || 1;
+        if(pNo > maxPage) maxPage = pNo;
+    });
+    
+    let nextPage = maxPage + 1;
+    
+    Swal.fire({
+        title: 'Tambah Halaman ' + nextPage,
+        input: 'text',
+        inputLabel: 'Judul Halaman (contoh: Data Usaha)',
+        inputPlaceholder: 'Boleh dikosongkan...',
+        showCancelButton: true,
+        confirmButtonText: 'Lanjut Tambah Pertanyaan',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            let judul = result.value.trim() || "-";
+            openFieldEditorModal(-1, nextPage, judul);
+        }
+    });
+}
+
+window.editPageTitle = function(pNo, oldJudul) {
+    Swal.fire({
+        title: 'Edit Judul Halaman ' + pNo,
+        input: 'text',
+        inputValue: oldJudul === "-" ? "" : oldJudul,
+        inputPlaceholder: 'Judul Halaman...',
+        showCancelButton: true,
+        confirmButtonText: 'Simpan',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            let newJudul = result.value.trim() || "-";
+            window.builderQuestions.forEach(q => {
+                let meta = parseQuestionMetadata(q.name);
+                if(meta.keperluan === window.builderKeperluanActive && parseInt(meta.halaman) === pNo && (meta.judul === oldJudul)) {
+                    q.name = "{" + meta.keperluan + ";;" + meta.halaman + ";;" + newJudul + "} " + meta.cleanName;
+                }
+            });
+            renderBuilderQuestionsUIList();
+        }
+    });
+}
+
+window.openFieldEditorModal = function(globalIndex = -1, targetPageNo = 1, targetJudul = "-") {
+    let modal = document.getElementById('modal-field-editor');
+    if(!modal) return;
+    
+    let isEdit = globalIndex >= 0;
+    document.getElementById('modal-field-q-id').value = isEdit ? globalIndex : "";
+    document.getElementById('modal-field-editor-title').innerHTML = isEdit ? '<i class="fa-solid fa-pen text-amber-500 mr-2"></i> Edit Pertanyaan' : '<i class="fa-solid fa-plus text-narmadaGreen mr-2"></i> Tambah Pertanyaan';
+    
+    document.getElementById('modal-field-q-type').onchange = function() {
+        let t = this.value;
+        document.getElementById('wrapper-modal-q-options').classList.toggle('hidden', t !== 'dropdown');
+        document.getElementById('wrapper-modal-q-limit').classList.toggle('hidden', t !== 'number');
+    };
+    
+    if(isEdit) {
+        let q = window.builderQuestions[globalIndex];
+        let meta = parseQuestionMetadata(q.name);
+        document.getElementById('modal-field-q-keperluan').value = meta.keperluan;
+        document.getElementById('modal-field-q-page-index').value = meta.halaman + ":::" + meta.judul;
+        
+        document.getElementById('modal-field-q-label').value = meta.cleanName;
+        document.getElementById('modal-field-q-type').value = q.type;
+        document.getElementById('modal-field-q-required').value = q.required;
+        document.getElementById('modal-field-q-options').value = q.options || "";
+        
+        document.getElementById('modal-field-q-type').dispatchEvent(new Event('change'));
+    } else {
+        document.getElementById('modal-field-q-keperluan').value = window.builderKeperluanActive;
+        document.getElementById('modal-field-q-page-index').value = targetPageNo + ":::" + targetJudul;
+        
+        document.getElementById('modal-field-q-label').value = "";
+        document.getElementById('modal-field-q-type').value = "text";
+        document.getElementById('modal-field-q-required').value = "ya";
+        document.getElementById('modal-field-q-options').value = "";
+        document.getElementById('modal-field-q-type').dispatchEvent(new Event('change'));
+    }
+    
+    modal.classList.remove('hidden');
+}
+
+window.closeFieldEditorModal = function() {
+    document.getElementById('modal-field-editor').classList.add('hidden');
+}
+
+window.saveFieldFromModal = function() {
+    let globalIndex = document.getElementById('modal-field-q-id').value;
+    let keperluan = document.getElementById('modal-field-q-keperluan').value;
+    let pageInfo = document.getElementById('modal-field-q-page-index').value.split(":::");
+    let halaman = pageInfo[0];
+    let judul = pageInfo[1];
+    
+    let label = document.getElementById('modal-field-q-label').value.trim();
+    let type = document.getElementById('modal-field-q-type').value;
+    let required = document.getElementById('modal-field-q-required').value;
+    let options = document.getElementById('modal-field-q-options').value.trim();
+    
+    if(!label) {
+        return Swal.fire('Error', 'Label pertanyaan wajib diisi.', 'error');
+    }
+    
+    let combinedName = "{" + keperluan + ";;" + halaman + ";;" + judul + "} " + label;
+    
+    let newQ = {
+        id: "FLD-" + Math.random().toString(36).substr(2, 5).toUpperCase(),
+        name: combinedName,
+        label: label,
+        type: type,
+        required: required,
+        options: type === 'dropdown' ? options : ""
+    };
+    
+    if(globalIndex !== "") {
+        let orig = window.builderQuestions[parseInt(globalIndex)];
+        newQ.id = orig.id;
+        window.builderQuestions[parseInt(globalIndex)] = newQ;
+    } else {
+        window.builderQuestions.push(newQ);
+    }
+    
+    window.builderQuestions.sort((a,b) => {
+        let ma = parseQuestionMetadata(a.name);
+        let mb = parseQuestionMetadata(b.name);
+        if(ma.keperluan !== mb.keperluan) return ma.keperluan.localeCompare(mb.keperluan);
+        let ha = parseInt(ma.halaman) || 1;
+        let hb = parseInt(mb.halaman) || 1;
+        return ha - hb;
+    });
+    
+    closeFieldEditorModal();
+    if(typeof renderBuilderQuestionsUIList === 'function') renderBuilderQuestionsUIList();
+}
+
+window.removeBuilderQuestion = function(index) {
+    Swal.fire({
+        title: 'Hapus Pertanyaan',
+        text: "Anda yakin ingin menghapus pertanyaan ini?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Ya, hapus!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.builderQuestions.splice(index, 1);
+            renderBuilderQuestionsUIList();
+        }
+    });
+}
+
 
 export function submitBuilderDataToServer() {
             let selectVal = document.getElementById('builder-select-layanan').value;
