@@ -1902,74 +1902,86 @@
                         </div>
                     </div>
                     
-                    <!-- Main Input Row: Label (wide) + Type + Required -->
-                    <div class="grid grid-cols-1 sm:grid-cols-6 gap-2 items-end">
-                        <div class="sm:col-span-3">
-                            <label class="block text-[10px] font-bold text-slate-500 mb-1">Nama Pertanyaan *</label>
-                            <input type="text" id="builder-q-label" placeholder="Contoh: Bidang Usaha" class="transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-narmadaGreen/40 focus-visible:outline-none w-full bg-white border border-slate-200 text-slate-800 text-xs rounded-lg focus:border-narmadaGreen px-3 py-2 outline-none placeholder-slate-400">
-                        </div>
-                        <div class="sm:col-span-2">
-                            <label class="block text-[10px] font-bold text-slate-500 mb-1">Tipe</label>
-                            <select id="builder-q-type" class="transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-narmadaGreen/40 focus-visible:outline-none w-full px-2.5 py-2 rounded-lg bg-white border border-slate-200 text-xs focus:border-narmadaGreen outline-none">
-                                <option value="text">Teks</option>
-                                <option value="dropdown">Dropdown</option>
-                                <option value="number">Angka</option>
-                                <option value="date">Tanggal</option>
-                            </select>
-                        </div>
-                        <div class="sm:col-span-1">
-                            <label class="block text-[10px] font-bold text-slate-500 mb-1">Wajib?</label>
-                            <select id="builder-q-required" class="transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-narmadaGreen/40 focus-visible:outline-none w-full px-2 py-2 rounded-lg bg-white border border-slate-200 text-xs focus:border-narmadaGreen outline-none">
-                                <option value="ya">Ya</option>
-                                <option value="tidak">Tidak</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <!-- Conditional fields: Dropdown options / Number limit -->
-                    <div id="wrapper-q-options" class="hidden">
-                        <label class="block text-[10px] font-bold text-slate-500 mb-1">Opsi Pilihan (pisahkan koma)</label>
-                        <input type="text" id="builder-q-options" placeholder="Pertanian, Perdagangan, Jasa" class="transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-narmadaGreen/40 focus-visible:outline-none w-full bg-white border border-slate-200 text-xs rounded-lg focus:border-narmadaGreen px-3 py-2 outline-none placeholder-slate-400">
-                    </div>
-                    <div id="wrapper-q-limit" class="hidden">
-                        <label class="block text-[10px] font-bold text-slate-500 mb-1">Batas Digit (opsional)</label>
-                        <input type="number" id="builder-q-limit" placeholder="Contoh: 16 untuk NIK" class="transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-narmadaGreen/40 focus-visible:outline-none w-full bg-white border border-slate-200 text-xs rounded-lg focus:border-narmadaGreen px-3 py-2 outline-none placeholder-slate-400">
-                    </div>
-
-                    <!-- Optional: Keperluan & Judul (collapsible) -->
-                    <details class="group">
-                        <summary class="cursor-pointer flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider hover:text-slate-600 transition-colors select-none py-0.5">
-                            <i class="fa-solid fa-chevron-right text-[8px] transition-transform duration-200 group-open:rotate-90"></i>
-                            <i class="fa-solid fa-sliders"></i> Opsi Lanjutan (Keperluan & Judul)
-                        </summary>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
-                            <div>
-                                <label class="block text-[9px] font-bold text-slate-500 mb-0.5">Keperluan Surat</label>
+                    <!-- Main Input Grid -->
+                    <div class="space-y-2 mt-4 bg-slate-50/50 p-3 rounded-lg border border-slate-100">
+                        <div class="grid grid-cols-1 sm:grid-cols-6 gap-2 items-end">
+                            <div class="sm:col-span-2">
+                                <label class="block text-[10px] font-bold text-slate-500 mb-1">Keperluan</label>
                                 <select id="builder-q-keperluan" class="transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-narmadaGreen/40 focus-visible:outline-none w-full px-2.5 py-1.5 rounded-md bg-white border border-slate-200 text-[11px] focus:border-narmadaGreen outline-none">
-                                    <option value="Wajib">Wajib (Semua Keperluan)</option>
                                 </select>
                             </div>
-                            <div>
-                                <label class="block text-[9px] font-bold text-slate-500 mb-0.5">Judul Penanda</label>
-                                <input type="text" id="builder-q-judul" placeholder="Contoh: Data Pribadi" class="transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-narmadaGreen/40 focus-visible:outline-none w-full px-2.5 py-1.5 rounded-md bg-white border border-slate-200 text-[11px] focus:border-narmadaGreen outline-none placeholder-slate-400">
+                            <div class="sm:col-span-1">
+                                <label class="block text-[10px] font-bold text-slate-500 mb-1">Halaman</label>
+                                <input type="number" id="builder-q-halaman" placeholder="1" value="1" min="1" class="transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-narmadaGreen/40 focus-visible:outline-none w-full bg-white border border-slate-200 text-[11px] rounded-md focus:border-narmadaGreen px-2.5 py-1.5 outline-none placeholder-slate-400">
+                            </div>
+                            <div class="sm:col-span-3">
+                                <label class="block text-[10px] font-bold text-slate-500 mb-1">Judul</label>
+                                <input type="text" id="builder-q-judul" placeholder="Contoh: Data Pribadi" class="transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-narmadaGreen/40 focus-visible:outline-none w-full bg-white border border-slate-200 text-[11px] rounded-md focus:border-narmadaGreen px-2.5 py-1.5 outline-none placeholder-slate-400">
                             </div>
                         </div>
-                    </details>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-6 gap-2 items-end">
+                            <div class="sm:col-span-3">
+                                <label class="block text-[10px] font-bold text-slate-500 mb-1">Label</label>
+                                <input type="text" id="builder-q-label" placeholder="Contoh: NIK" class="transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-narmadaGreen/40 focus-visible:outline-none w-full bg-white border border-slate-200 text-[11px] rounded-md focus:border-narmadaGreen px-2.5 py-1.5 outline-none placeholder-slate-400">
+                            </div>
+                            <div class="sm:col-span-2">
+                                <label class="block text-[10px] font-bold text-slate-500 mb-1">Tipe</label>
+                                <select id="builder-q-type" class="transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-narmadaGreen/40 focus-visible:outline-none w-full px-2.5 py-1.5 rounded-md bg-white border border-slate-200 text-[11px] focus:border-narmadaGreen outline-none">
+                                    <option value="text">Teks</option>
+                                    <option value="dropdown">Dropdown</option>
+                                    <option value="number">Angka</option>
+                                    <option value="date">Tanggal</option>
+                                </select>
+                            </div>
+                            <div class="sm:col-span-1">
+                                <label class="block text-[10px] font-bold text-slate-500 mb-1">Wajib?</label>
+                                <select id="builder-q-required" class="transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-narmadaGreen/40 focus-visible:outline-none w-full px-2 py-1.5 rounded-md bg-white border border-slate-200 text-[11px] focus:border-narmadaGreen outline-none">
+                                    <option value="ya">Ya</option>
+                                    <option value="tidak">Tidak</option>
+                                </select>
+                            </div>
+                        </div>
 
-                    <!-- Action Buttons (compact inline) -->
-                    <div class="flex justify-end gap-2 pt-1 border-t border-slate-100">
-                        <button id="btn-cancel-update-question" class="cursor-pointer hover:scale-[1.02] active:scale-[0.98] hidden px-3 py-1.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 rounded-lg text-[11px] font-bold transition-colors">Batal</button>
-                        <button type="button" id="btn-open-repeater-modal" onclick="openRepeaterModal()" class="cursor-pointer hover:scale-[1.02] active:scale-[0.98] px-3 py-1.5 bg-indigo-50 border border-indigo-200 hover:bg-indigo-100 text-indigo-700 rounded-lg text-[11px] font-bold transition-colors flex items-center gap-1.5">
-                            <i class="fa-solid fa-layer-group text-[10px]"></i> Grup Berulang
-                        </button>
-                        <button id="btn-add-update-question" class="cursor-pointer hover:scale-[1.02] active:scale-[0.98] px-3 py-1.5 bg-narmadaGreen hover:bg-emerald-700 text-white rounded-lg text-[11px] font-bold transition-colors flex items-center gap-1.5 shadow-sm">
-                            <i class="fa-solid fa-plus text-[10px]"></i> Tambah
-                        </button>
+                        <!-- Conditional fields: Dropdown options / Number limit -->
+                        <div id="wrapper-q-options" class="hidden mt-2">
+                            <label class="block text-[10px] font-bold text-slate-500 mb-1">Opsi Pilihan (pisahkan koma)</label>
+                            <input type="text" id="builder-q-options" placeholder="Pertanian, Perdagangan, Jasa" class="transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-narmadaGreen/40 focus-visible:outline-none w-full bg-white border border-slate-200 text-[11px] rounded-md focus:border-narmadaGreen px-2.5 py-1.5 outline-none placeholder-slate-400">
+                        </div>
+                        <div id="wrapper-q-limit" class="hidden mt-2">
+                            <label class="block text-[10px] font-bold text-slate-500 mb-1">Batas Digit (opsional)</label>
+                            <input type="number" id="builder-q-limit" placeholder="Contoh: 16 untuk NIK" class="transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-narmadaGreen/40 focus-visible:outline-none w-full bg-white border border-slate-200 text-[11px] rounded-md focus:border-narmadaGreen px-2.5 py-1.5 outline-none placeholder-slate-400">
+                        </div>
+                        
+                        <!-- Action Buttons (compact inline) -->
+                        <div class="flex justify-end gap-2 pt-3 mt-2 border-t border-slate-200/60">
+                            <button type="button" id="btn-reset-question" onclick="resetBuilderQuestionForm()" class="cursor-pointer hover:scale-[1.02] active:scale-[0.98] px-3 py-1.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 rounded-lg text-[11px] font-bold transition-colors">Reset</button>
+                            <button id="btn-cancel-update-question" class="cursor-pointer hover:scale-[1.02] active:scale-[0.98] hidden px-3 py-1.5 bg-amber-50 border border-amber-200 hover:bg-amber-100 text-amber-700 rounded-lg text-[11px] font-bold transition-colors">Batal Edit</button>
+                            <button type="button" id="btn-open-repeater-modal" onclick="openRepeaterModal()" class="cursor-pointer hover:scale-[1.02] active:scale-[0.98] px-3 py-1.5 bg-indigo-50 border border-indigo-200 hover:bg-indigo-100 text-indigo-700 rounded-lg text-[11px] font-bold transition-colors flex items-center gap-1.5">
+                                <i class="fa-solid fa-layer-group text-[10px]"></i> Grup Berulang
+                            </button>
+                            <button id="btn-add-update-question" class="cursor-pointer hover:scale-[1.02] active:scale-[0.98] px-3 py-1.5 bg-narmadaGreen hover:bg-emerald-700 text-white rounded-lg text-[11px] font-bold transition-colors flex items-center shadow-sm">
+                                Tambah
+                            </button>
+                        </div>
                     </div>
 
-                    <!-- Questions List Output -->
-                    <div class="pt-2">
-                        <div id="builder-q-list" class="space-y-1.5"></div>
+                    <!-- Questions List Output (Table) -->
+                    <div class="pt-4 overflow-x-auto relative">
+                        <table class="w-full text-left text-[11px] text-slate-600 border-collapse">
+                            <thead class="bg-slate-50 text-[10px] uppercase text-slate-500 font-bold border-y border-slate-200">
+                                <tr>
+                                    <th class="py-2.5 px-3 min-w-[120px]">Keperluan</th>
+                                    <th class="py-2.5 px-3 w-16 text-center">Hal</th>
+                                    <th class="py-2.5 px-3 min-w-[120px]">Judul</th>
+                                    <th class="py-2.5 px-3 w-full">Formulir</th>
+                                    <th class="py-2.5 px-3 text-center w-12 sticky right-0 bg-slate-50 shadow-[-4px_0_6px_-2px_rgba(0,0,0,0.05)]">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="builder-q-list" class="divide-y divide-slate-100">
+                                <!-- Data rendered by JS -->
+                            </tbody>
+                        </table>
                     </div>
 
                 </div>

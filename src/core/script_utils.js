@@ -51,15 +51,39 @@ window.parseLinkDokumen = function(fileUrl) {
 
 
 window.parseQuestionMetadata = function(rawName) {
-            let match = rawName.match(/^{(.*?);;(.*?)}\s*(.*)$/);
-            if (match) {
+            let match3 = rawName.match(/^{(.*?);;(.*?);;(.*?)}\s*(.*)$/);
+            if (match3) {
                 return {
-                    keperluan: match[1] || "Wajib",
-                    judul: match[2] || "",
-                    cleanName: match[3]
+                    keperluan: match3[1] || "Wajib",
+                    halaman: parseInt(match3[2]) || 1,
+                    judul: match3[3] || "",
+                    cleanName: match3[4]
                 };
             }
-            return { keperluan: "Wajib", judul: "", cleanName: rawName };
+            let match2 = rawName.match(/^{(.*?);;(.*?)}\s*(.*)$/);
+            if (match2) {
+                return {
+                    keperluan: match2[1] || "Wajib",
+                    halaman: 1, // Default page
+                    judul: match2[2] || "",
+                    cleanName: match2[3]
+                };
+            }
+            let match1 = rawName.match(/^{(.*?)}\s*(.*)$/);
+            if (match1) {
+                return {
+                    keperluan: match1[1] || "Wajib",
+                    halaman: 1,
+                    judul: "",
+                    cleanName: match1[2]
+                };
+            }
+            return {
+                keperluan: "Wajib",
+                halaman: 1,
+                judul: "",
+                cleanName: rawName
+            };
         }
 
 
