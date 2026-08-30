@@ -14,50 +14,29 @@ export function renderBuilderKeperluanList() {
         }
     } else {
         builderKeperluanList.forEach((item, index) => {
-            let isEditing = item._isEditing;
+            let html = `
+            <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-sm relative group transition-all hover:border-narmadaGreen hover:shadow-md mb-3">
+                <div class="flex justify-between items-start mb-2">
+                    <h4 class="font-bold text-sm text-slate-800">${item.nama}</h4>
+                    <div class="flex gap-2">
+                        <button type="button" onclick="window.openKeperluanModal(${index})" class="w-7 h-7 rounded-lg bg-slate-50 text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-colors flex items-center justify-center border border-slate-100" title="Edit">
+                            <i class="fa-solid fa-pen text-[10px]"></i>
+                        </button>
+                        <button type="button" onclick="deleteKeperluanAtIndex(${index})" class="w-7 h-7 rounded-lg bg-slate-50 text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors flex items-center justify-center border border-slate-100" title="Hapus">
+                            <i class="fa-solid fa-trash text-[10px]"></i>
+                        </button>
+                    </div>
+                </div>
+                ${item.templatePratinjau ? `
+                <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-100 mt-2 relative overflow-hidden flex items-center gap-2">
+                    <div class="absolute top-0 left-0 w-1 h-full bg-narmadaGreen/50"></div>
+                    <i class="fa-solid fa-link text-slate-400 text-xs ml-1"></i>
+                    <a href="${item.templatePratinjau}" target="_blank" class="text-xs font-semibold text-blue-600 hover:underline line-clamp-1 truncate w-full" title="${item.templatePratinjau}">${item.templatePratinjau}</a>
+                </div>` : ''}
+            </div>`;
+            if (container) container.innerHTML += html;
             
-            if(isEditing) {
-                let html = `
-                <div class="bg-white border-2 border-narmadaGreen rounded-xl p-4 shadow-sm relative space-y-4 mb-3">
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Nama Keperluan *</label>
-                        <input type="text" id="edit-kep-nama-${index}" value="${item.nama}" placeholder="Contoh: Pembuatan KK Baru" class="w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-lg focus:border-narmadaGreen px-3 py-2 outline-none font-semibold">
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Template Surat (Pratinjau)</label>
-                        <textarea id="edit-kep-template-${index}" rows="3" placeholder="Gunakan {variabel} untuk data dinamis..." class="w-full bg-slate-50 border border-slate-200 text-slate-800 text-xs rounded-lg focus:border-narmadaGreen px-3 py-2 outline-none font-mono resize-y custom-scrollbar">${item.templatePratinjau || ''}</textarea>
-                    </div>
-                    <div class="flex justify-end gap-2 pt-2">
-                        <button type="button" onclick="cancelEditKeperluan(${index})" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg text-xs font-bold transition-all">Batal</button>
-                        <button type="button" onclick="saveEditKeperluan(${index})" class="px-4 py-2 bg-narmadaGreen hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition-all shadow-sm">Simpan</button>
-                    </div>
-                </div>`;
-                if(container) container.innerHTML += html;
-            } else {
-                let html = `
-                <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-sm relative group transition-all hover:border-narmadaGreen hover:shadow-md mb-3">
-                    <div class="flex justify-between items-start mb-2">
-                        <h4 class="font-bold text-sm text-slate-800">${item.nama}</h4>
-                        <div class="flex gap-2">
-                            <button type="button" onclick="editKeperluanAtIndex(${index})" class="w-7 h-7 rounded-lg bg-slate-50 text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-colors flex items-center justify-center border border-slate-100" title="Edit">
-                                <i class="fa-solid fa-pen text-[10px]"></i>
-                            </button>
-                            <button type="button" onclick="deleteKeperluanAtIndex(${index})" class="w-7 h-7 rounded-lg bg-slate-50 text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors flex items-center justify-center border border-slate-100" title="Hapus">
-                                <i class="fa-solid fa-trash text-[10px]"></i>
-                            </button>
-                        </div>
-                    </div>
-                    ${item.templatePratinjau ? `
-                    <div class="bg-slate-50 p-3 rounded-lg border border-slate-100 mt-3 relative overflow-hidden">
-                        <div class="absolute top-0 left-0 w-1 h-full bg-narmadaGreen/50"></div>
-                        <p class="text-[9px] font-bold text-slate-400 mb-1 uppercase tracking-wider">Template Pratinjau:</p>
-                        <p class="text-xs text-slate-600 whitespace-pre-wrap font-mono leading-relaxed line-clamp-2 group-hover:line-clamp-none transition-all">${item.templatePratinjau}</p>
-                    </div>` : ''}
-                </div>`;
-                if (container) container.innerHTML += html;
-            }
-            
-            if (hiddenSelect && !isEditing) {
+            if (hiddenSelect) {
                 let opt = document.createElement('option');
                 opt.value = item.nama;
                 opt.text = item.nama;
@@ -77,72 +56,93 @@ export function renderBuilderKeperluanList() {
     if (typeof renderBuilderPersyaratanTabs === 'function') renderBuilderPersyaratanTabs();
 }
 
-window.addNewKeperluanCard = function() {
-    builderKeperluanList.push({ nama: '', templatePratinjau: '', _isEditing: true });
-    renderBuilderKeperluanList();
-};
-
-window.editKeperluanAtIndex = function(index) {
-    if(builderKeperluanList[index]) {
-        builderKeperluanList[index]._isEditing = true;
-        renderBuilderKeperluanList();
+window.openKeperluanModal = function(index) {
+    let modal = document.getElementById('modal-keperluan-editor');
+    if(!modal) return;
+    
+    let idxInput = document.getElementById('modal-keperluan-index');
+    let namaInput = document.getElementById('modal-keperluan-nama');
+    let templateInput = document.getElementById('modal-keperluan-template');
+    let titleEl = document.getElementById('modal-keperluan-title');
+    
+    idxInput.value = index;
+    if(index >= 0 && builderKeperluanList[index]) {
+        titleEl.innerHTML = '<i class="fa-solid fa-list-check text-narmadaGreen mr-2"></i> Edit Keperluan';
+        namaInput.value = builderKeperluanList[index].nama || '';
+        templateInput.value = builderKeperluanList[index].templatePratinjau || '';
+    } else {
+        titleEl.innerHTML = '<i class="fa-solid fa-list-check text-narmadaGreen mr-2"></i> Tambah Keperluan';
+        namaInput.value = '';
+        templateInput.value = '';
     }
+    
+    modal.classList.remove('hidden');
+    setTimeout(() => { namaInput.focus(); }, 100);
 };
 
-window.cancelEditKeperluan = function(index) {
-    if(builderKeperluanList[index]) {
-        if(!builderKeperluanList[index].nama) {
-            builderKeperluanList.splice(index, 1);
-        } else {
-            builderKeperluanList[index]._isEditing = false;
-        }
-        renderBuilderKeperluanList();
+window.closeKeperluanModal = function() {
+    let modal = document.getElementById('modal-keperluan-editor');
+    if(modal) modal.classList.add('hidden');
+};
+
+window.saveKeperluanFromModal = function() {
+    let idx = parseInt(document.getElementById('modal-keperluan-index').value, 10);
+    let namaInput = document.getElementById('modal-keperluan-nama');
+    let templateInput = document.getElementById('modal-keperluan-template');
+    
+    let namaVal = (namaInput.value || '').trim();
+    let tmplVal = (templateInput.value || '').trim();
+    
+    if(!namaVal) {
+        pushToast('Nama keperluan wajib diisi!', 'warning');
+        namaInput.focus();
+        return;
     }
-};
-
-window.saveEditKeperluan = function(index) {
-    if(builderKeperluanList[index]) {
-        let inputNama = document.getElementById('edit-kep-nama-' + index);
-        let inputTmpl = document.getElementById('edit-kep-template-' + index);
+    
+    // Check for duplicates
+    let duplicate = builderKeperluanList.find((k, i) => i !== idx && k.nama.toLowerCase() === namaVal.toLowerCase());
+    if(duplicate) {
+        pushToast('Keperluan sudah ada!', 'error');
+        namaInput.focus();
+        return;
+    }
+    
+    if(idx >= 0 && builderKeperluanList[idx]) {
+        let oldName = builderKeperluanList[idx].nama;
+        builderKeperluanList[idx].nama = namaVal;
+        builderKeperluanList[idx].templatePratinjau = tmplVal;
         
-        let newNama = inputNama ? inputNama.value.trim() : '';
-        let newTmpl = inputTmpl ? inputTmpl.value.trim() : '';
-        
-        if(!newNama) {
-            pushToast('Nama keperluan wajib diisi!', 'error');
-            return;
-        }
-        
-        let duplicate = builderKeperluanList.find((k, i) => i !== index && k.nama.toLowerCase() === newNama.toLowerCase());
-        if(duplicate) {
-            pushToast('Keperluan sudah ada!', 'error');
-            return;
-        }
-        
-        let oldNama = builderKeperluanList[index].nama;
-        if(oldNama && oldNama !== newNama) {
-            if(window.builderReqMap && window.builderReqMap[oldNama]) {
-                window.builderReqMap[newNama] = window.builderReqMap[oldNama];
-                delete window.builderReqMap[oldNama];
+        if(oldName && oldName !== namaVal) {
+            // Sync persyaratan map if name changed
+            if(window.builderReqMap && window.builderReqMap[oldName]) {
+                window.builderReqMap[namaVal] = window.builderReqMap[oldName];
+                delete window.builderReqMap[oldName];
             }
+            // Sync questions
             if(window.builderQuestions) {
                 window.builderQuestions.forEach(q => {
                     let meta = parseQuestionMetadata(q.name);
-                    if(meta.keperluan === oldNama) {
-                        q.name = `{${newNama};;${meta.halaman}}` + meta.asli;
+                    if(meta.keperluan === oldName) {
+                        q.name = `{${namaVal};;${meta.halaman}}` + meta.asli;
                     }
                 });
             }
         }
-        
-        builderKeperluanList[index].nama = newNama;
-        builderKeperluanList[index].templatePratinjau = newTmpl;
-        builderKeperluanList[index]._isEditing = false;
-        renderBuilderKeperluanList();
-        
-        if (typeof renderBuilderQuestionsUIList === 'function') renderBuilderQuestionsUIList();
         pushToast('Keperluan berhasil disimpan', 'success');
+    } else {
+        builderKeperluanList.push({
+            nama: namaVal,
+            templatePratinjau: tmplVal
+        });
+        if(window.builderReqMap) {
+            window.builderReqMap[namaVal] = [];
+        }
+        pushToast('Keperluan berhasil ditambahkan', 'success');
     }
+    
+    closeKeperluanModal();
+    renderBuilderKeperluanList();
+    if (typeof renderBuilderQuestionsUIList === 'function') renderBuilderQuestionsUIList();
 };
 
 export function deleteKeperluanAtIndex(index) {
@@ -366,6 +366,52 @@ export function renderRequirementsMappingList() {
         renderBuilderPersyaratanTabs();
     }
 }
+
+window.openPersyaratanModal = function() {
+    let modal = document.getElementById('modal-persyaratan-editor');
+    if(!modal) return;
+    
+    let namaInput = document.getElementById('modal-persyaratan-nama');
+    if (namaInput) namaInput.value = '';
+    
+    if (!currentPersyaratanTab) {
+        pushToast('Pilih tab keperluan terlebih dahulu', 'warning');
+        return;
+    }
+    
+    modal.classList.remove('hidden');
+    setTimeout(() => { if (namaInput) namaInput.focus(); }, 100);
+};
+
+window.closePersyaratanModal = function() {
+    let modal = document.getElementById('modal-persyaratan-editor');
+    if(modal) modal.classList.add('hidden');
+};
+
+window.savePersyaratanFromModal = function() {
+    let namaInput = document.getElementById('modal-persyaratan-nama');
+    let val = namaInput ? namaInput.value.trim() : '';
+    
+    if (!val) {
+        pushToast('Nama persyaratan wajib diisi!', 'warning');
+        if (namaInput) namaInput.focus();
+        return;
+    }
+    
+    if (!window.builderReqMap) window.builderReqMap = {};
+    if (!window.builderReqMap[currentPersyaratanTab]) window.builderReqMap[currentPersyaratanTab] = [];
+    
+    if (window.builderReqMap[currentPersyaratanTab].includes(val)) {
+        pushToast('Persyaratan sudah ada di tab ini!', 'error');
+        if (namaInput) namaInput.focus();
+        return;
+    }
+    
+    window.builderReqMap[currentPersyaratanTab].push(val);
+    closePersyaratanModal();
+    renderRequirementsMappingList();
+    renderBuilderPersyaratanTabs(); // update badges
+};
 
 export function loadBuilderLayananList() {
             let dropdownEditor = document.getElementById('builder-select-layanan');
@@ -1502,12 +1548,8 @@ window.lockStep1 = function() {
         pushToast('Nama layanan wajib diisi!', 'error');
         return;
     }
-    if(step1Card) {
-        step1Card.classList.remove('border-t-narmadaGreen');
-        step1Card.classList.add('border-t-slate-400', 'bg-slate-50/50');
-    }
     if(nameInput) {
-        nameInput.classList.add('pointer-events-none', 'text-slate-500');
+        nameInput.classList.add('pointer-events-none');
     }
     document.querySelectorAll('.bidang-pill input').forEach(el => el.disabled = true);
     
@@ -1525,12 +1567,8 @@ window.unlockStep1 = function() {
     let btnSave = document.getElementById('ev-bind-save-info');
     let step1Card = document.getElementById('bl-step-1');
     
-    if(step1Card) {
-        step1Card.classList.add('border-t-narmadaGreen');
-        step1Card.classList.remove('border-t-slate-400', 'bg-slate-50/50');
-    }
     if(nameInput) {
-        nameInput.classList.remove('pointer-events-none', 'text-slate-500');
+        nameInput.classList.remove('pointer-events-none');
     }
     document.querySelectorAll('.bidang-pill input').forEach(el => el.disabled = false);
     
