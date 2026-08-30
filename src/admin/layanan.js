@@ -391,48 +391,11 @@ export function renderLayananTable(list) {
                         ? '<div class="flex flex-wrap gap-1">' + keperluanList.map(k => '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-bold bg-blue-50 text-blue-600 border border-blue-100">' + k + '</span>').join('') + '</div>'
                         : '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-bold bg-slate-100 text-slate-500 border border-slate-200">Wajib (Tanpa Pilihan)</span>';
 
-                    let reqMap = {};
-                    (row.requirements || []).forEach(function (r) {
-                        let cleanName = r.name || "";
-                        let kep = "Wajib";
-                        let match = cleanName.match(/^\[(.*?)\]\s*(.*)$/);
-                        if (match) { kep = match[1]; cleanName = match[2]; }
-                        if (!reqMap[kep]) reqMap[kep] = [];
-                        reqMap[kep].push(cleanName);
-                    });
-                    let docHtml = "";
-                    Object.keys(reqMap).forEach(k => {
-                        docHtml += '<div class="mb-2 last:mb-0">';
-                        docHtml += '<p class="text-[9px] font-bold text-slate-700 uppercase mb-1 flex items-center gap-1"><i class="fa-solid fa-file-contract text-slate-400"></i> ' + (k === "Wajib" ? "DOKUMEN WAJIB" : k) + '</p>';
-                        docHtml += '<ul class="list-none space-y-1">';
-                        reqMap[k].forEach(item => {
-                            docHtml += '<li class="text-[10px] text-slate-600 flex items-start gap-1.5"><i class="fa-solid fa-check text-emerald-500 mt-[2px] text-[8px]"></i> <span>' + item + '</span></li>';
-                        });
-                        docHtml += '</ul></div>';
-                    });
-                    if (docHtml === "") docHtml = '<span class="text-slate-400 italic text-[10px]">Tanpa lampiran</span>';
-
-                    let qMap = {};
-                    (row.fields || []).forEach(function (f) {
-                        if(!f || !f.name) return;
-                        let meta = parseQuestionMetadata(f.name);
-                        if (!qMap[meta.keperluan]) qMap[meta.keperluan] = [];
-                        let typeStr = f.type === 'dropdown' ? ' <span class="text-slate-400">(Dropdown)</span>' :
-                            f.type === 'number' ? ' <span class="text-slate-400">(Angka)</span>' :
-                                f.type === 'date' ? ' <span class="text-slate-400">(Tanggal)</span>' : ' <span class="text-slate-400">(Teks)</span>';
-                        qMap[meta.keperluan].push(meta.cleanName + typeStr);
-                    });
-                    let qHtml = "";
-                    Object.keys(qMap).forEach(k => {
-                        qHtml += '<div class="mb-2 last:mb-0">';
-                        qHtml += '<p class="text-[9px] font-bold text-slate-700 uppercase mb-1 flex items-center gap-1"><i class="fa-solid fa-clipboard-list text-slate-400"></i> ' + (k === "Wajib" ? "ISIAN UMUM" : k) + '</p>';
-                        qHtml += '<ul class="list-none space-y-1">';
-                        qMap[k].forEach(item => {
-                            qHtml += '<li class="text-[10px] text-slate-600 flex items-start gap-1.5"><i class="fa-solid fa-minus text-slate-300 mt-[2px] text-[8px]"></i> <span>' + item + '</span></li>';
-                        });
-                        qHtml += '</ul></div>';
-                    });
-                    if (qHtml === "") qHtml = '<span class="text-slate-400 italic text-[10px]">Tanpa pertanyaan</span>';
+                    let bidangStr = row.bidang || "-";
+                    let bidangList = bidangStr.split(',').map(b => b.trim()).filter(b => b && b !== "-");
+                    let bidangHtml = bidangList.length > 0
+                        ? '<div class="flex flex-wrap gap-1">' + bidangList.map(b => '<span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-indigo-50 text-indigo-600 border border-indigo-100">' + b + '</span>').join('') + '</div>'
+                        : '<span class="text-slate-400 italic text-[10px]">-</span>';
 
                     let tr = '<tr class="border-b border-slate-50 hover:bg-slate-50/50 transition-colors group">' +
                         '<td class="py-4 px-2 text-center font-bold text-slate-400 text-xs">' + (index + 1) + '</td>' +
@@ -440,17 +403,17 @@ export function renderLayananTable(list) {
                         '<div class="font-bold text-slate-800 text-sm mb-0.5">' + (row.nama || "-") + '</div>' +
                         '<div class="text-[10px] text-slate-500 max-w-xs leading-relaxed">' + (row.deskripsi || "-") + '</div>' +
                         '</td>' +
+                        '<td class="py-4 px-4 align-top">' + bidangHtml + '</td>' +
                         '<td class="py-4 px-4 align-top">' + kepHtml + '</td>' +
-                        '<td class="py-4 px-4 align-top">' + docHtml + '</td>' +
-                        '<td class="py-4 px-4 align-top">' + qHtml + '</td>' +
-                        '<td class="py-4 px-4 text-center align-middle">' +
-                        '<div class="flex flex-col gap-2 items-center justify-center">' +
-                        '<button onclick="switchAdminTab(\'layanan\'); populateBuilderLayananToEdit(\'' + row.id + '\')" class="w-20 py-1.5 rounded-lg bg-amber-50 hover:bg-amber-100 hover:-translate-y-0.5 text-amber-700 font-bold text-[10px] transition-all flex items-center justify-center gap-1.5 shadow-sm border border-amber-200/50">' +
-                        '<i class="fa-solid fa-pencil"></i> Edit' +
+                        '<td class="py-4 px-4 text-center align-middle relative">' +
+                        '<button onclick="toggleActionMenu(event, \'menu-aksi-' + index + '\')" class="w-8 h-8 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-600 flex items-center justify-center transition-colors focus:outline-none ml-auto mr-auto">' +
+                        '<i class="fa-solid fa-ellipsis-vertical"></i>' +
                         '</button>' +
-                        '<button onclick="deleteBuilderMasterLayanan(\'' + row.nama + '\')" class="w-20 py-1.5 rounded-lg bg-red-50 hover:bg-red-100 hover:-translate-y-0.5 text-red-700 font-bold text-[10px] transition-all flex items-center justify-center gap-1.5 shadow-sm border border-red-200/50">' +
-                        '<i class="fa-solid fa-trash"></i> Hapus' +
-                        '</button>' +
+                        '<div id="menu-aksi-' + index + '" class="hidden action-dropdown-menu w-36 bg-white rounded-xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] border border-slate-100 py-1.5 z-[100] text-left overflow-hidden">' +
+                        '<button onclick="switchAdminTab(\'layanan\'); populateBuilderLayananToEdit(\'' + row.id + '\')" class="w-full text-left px-4 py-2.5 text-[11px] font-bold text-slate-700 hover:bg-slate-50 flex items-center gap-2"><i class="fa-solid fa-pencil text-amber-500 w-3"></i> Edit</button>' +
+                        '<button onclick="duplicateBuilderMasterLayanan(\'' + row.id + '\')" class="w-full text-left px-4 py-2.5 text-[11px] font-bold text-slate-700 hover:bg-slate-50 flex items-center gap-2"><i class="fa-solid fa-copy text-blue-500 w-3"></i> Duplikat</button>' +
+                        '<div class="border-t border-slate-100 my-1"></div>' +
+                        '<button onclick="deleteBuilderMasterLayanan(\'' + row.nama + '\')" class="w-full text-left px-4 py-2.5 text-[11px] font-bold text-red-600 hover:bg-red-50 flex items-center gap-2"><i class="fa-solid fa-trash w-3"></i> Hapus</button>' +
                         '</div>' +
                         '</td>' +
                         '</tr>';
@@ -1290,6 +1253,76 @@ export function deleteBuilderMasterLayanan(nama) {
 
             });
         }
+
+export function duplicateBuilderMasterLayanan(id) {
+            let list = window.loadedLayananList || dummyLayananList;
+            let found = list.find(l => l.id === id);
+            if (!found) return;
+
+            askConfirmation("Duplikat Layanan", "Apakah Anda yakin ingin membuat salinan layanan ini?", function () {
+                let dupName = found.nama + " (Salinan)";
+                let payload = {
+                    id: "",
+                    nama: dupName,
+                    namaOld: "",
+                    syarat: found.syarat || found.persyaratan || "",
+                    pertanyaan: found.pertanyaan || found.fields || "",
+                    judulSectionIsian: found.judulSectionIsian || "",
+                    deskripsiSectionIsian: found.deskripsiSectionIsian || "",
+                    logikaKondisional: found.logikaKondisional || "[]",
+                    bidang: found.bidang || "",
+                    templateDocId: found.templateDocId || "",
+                    templatePratinjau: found.templatePratinjau || ""
+                };
+
+                google.script.run
+                    .withSuccessHandler(function (res) {
+                        if (res && res.authError) { pushToast(res.message, "error"); handleAdminLogout(); return; }
+                        if (res.success) {
+                            pushToast("Layanan berhasil diduplikat.", "success");
+                            loadBuilderLayananList();
+                        } else {
+                            pushToast("Gagal duplikat: " + res.message, "error");
+                        }
+                    })
+                    .crudLayanan(localStorage.getItem('adminToken_Narmada'), "create", payload);
+            });
+        }
+
+window.toggleActionMenu = function(event, menuId) {
+            event.stopPropagation();
+            let menu = document.getElementById(menuId);
+            let isHidden = menu.classList.contains('hidden');
+            
+            // Tutup semua menu aksi lainnya
+            document.querySelectorAll('.action-dropdown-menu').forEach(m => m.classList.add('hidden'));
+            
+            if (isHidden) {
+                menu.classList.remove('hidden');
+                
+                // Kalkulasi posisi fixed agar tidak terpotong oleh overflow-hidden pada tabel
+                let btn = event.currentTarget;
+                let rect = btn.getBoundingClientRect();
+                
+                menu.style.position = 'fixed';
+                menu.style.top = (rect.bottom + 4) + 'px';
+                
+                // w-36 pada tailwind sama dengan 144px. 
+                // Kita posisikan agar sejajar dengan kanan tombol.
+                let menuWidth = 144;
+                let leftPos = rect.right - menuWidth;
+                
+                // Pastikan tidak keluar layar sebelah kiri
+                if (leftPos < 10) leftPos = 10;
+                
+                menu.style.left = leftPos + 'px';
+            }
+        };
+
+        // Tutup menu saat klik di luar
+document.addEventListener('click', function() {
+            document.querySelectorAll('.action-dropdown-menu').forEach(m => m.classList.add('hidden'));
+        });
 
 export let currentRepeaterGroup = [];
 
