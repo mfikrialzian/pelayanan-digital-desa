@@ -38,13 +38,29 @@ export function renderBuilderKeperluanList() {
 export function deleteKeperluanAtIndex(index) {
     if (index >= 0 && index < builderKeperluanList.length) {
         let name = builderKeperluanList[index].nama;
-        // Check if there are requirements mapped to this keperluan
-        if (window.builderReqMap && window.builderReqMap[name]) {
-            askConfirmation("Hapus Keperluan", `Keperluan '${name}' memiliki persyaratan terkait. Tetap hapus?`, function() {
-                delete window.builderReqMap[name];
+        
+        // Check if there are requirements or questions mapped to this keperluan
+        let hasReq = window.builderReqMap && window.builderReqMap[name];
+        let hasQuestions = window.builderQuestions && window.builderQuestions.some(q => parseQuestionMetadata(q.name).keperluan === name);
+        
+        if (hasReq || hasQuestions) {
+            askConfirmation("Hapus Keperluan", `Keperluan '${name}' memiliki persyaratan dokumen atau pertanyaan isian terkait. Tetap hapus semua konfigurasi tersebut?`, function() {
+                if (window.builderReqMap) {
+                    delete window.builderReqMap[name];
+                }
+                if (window.builderQuestions) {
+                    window.builderQuestions = window.builderQuestions.filter(q => parseQuestionMetadata(q.name).keperluan !== name);
+                }
+                
                 builderKeperluanList.splice(index, 1);
                 renderBuilderKeperluanList();
-                pushToast("Keperluan telah dihapus.", "success");
+                
+                // Jika ada pertanyaan yang terhapus, render ulang UI daftar pertanyaan
+                if (hasQuestions && typeof renderBuilderQuestionsUIList === 'function') {
+                    renderBuilderQuestionsUIList();
+                }
+                
+                pushToast("Keperluan beserta konfigurasinya telah dihapus.", "success");
             });
         } else {
             builderKeperluanList.splice(index, 1);
