@@ -1,45 +1,160 @@
 
-export let builderKeperluanList = []; // Array of {nama, doc}
+export let builderKeperluanList = []; // Array of {nama, templatePratinjau, _isEditing}
 
 export function renderBuilderKeperluanList() {
-    let container = document.getElementById('builder-keperluan-list');
-    let select = document.getElementById('builder-keperluan-select');
+    let container = document.getElementById('builder-keperluan-workspace');
+    let hiddenSelect = document.getElementById('builder-keperluan-select');
     
     if (container) container.innerHTML = "";
-    if (select) select.innerHTML = '<option value="">-- Pilih / Edit Keperluan --</option>';
+    if (hiddenSelect) hiddenSelect.innerHTML = '<option value="">-- Pilih / Edit Keperluan --</option>';
     
     if (builderKeperluanList.length === 0) {
-        if (container) container.innerHTML = '<p class="text-[10px] text-slate-400 italic py-1">Belum ada keperluan ditambahkan.</p>';
-        return;
+        if (container) {
+            container.innerHTML = '<div class="text-center py-8 text-slate-400 text-xs italic bg-slate-50 rounded-xl border border-dashed border-slate-200">Belum ada keperluan ditambahkan. Klik tombol di bawah untuk menambah.</div>';
+        }
+    } else {
+        builderKeperluanList.forEach((item, index) => {
+            let isEditing = item._isEditing;
+            
+            if(isEditing) {
+                let html = `
+                <div class="bg-white border-2 border-narmadaGreen rounded-xl p-4 shadow-sm relative space-y-4 mb-3">
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Nama Keperluan *</label>
+                        <input type="text" id="edit-kep-nama-${index}" value="${item.nama}" placeholder="Contoh: Pembuatan KK Baru" class="w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-lg focus:border-narmadaGreen px-3 py-2 outline-none font-semibold">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Template Surat (Pratinjau)</label>
+                        <textarea id="edit-kep-template-${index}" rows="3" placeholder="Gunakan {variabel} untuk data dinamis..." class="w-full bg-slate-50 border border-slate-200 text-slate-800 text-xs rounded-lg focus:border-narmadaGreen px-3 py-2 outline-none font-mono resize-y custom-scrollbar">${item.templatePratinjau || ''}</textarea>
+                    </div>
+                    <div class="flex justify-end gap-2 pt-2">
+                        <button type="button" onclick="cancelEditKeperluan(${index})" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg text-xs font-bold transition-all">Batal</button>
+                        <button type="button" onclick="saveEditKeperluan(${index})" class="px-4 py-2 bg-narmadaGreen hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition-all shadow-sm">Simpan</button>
+                    </div>
+                </div>`;
+                if(container) container.innerHTML += html;
+            } else {
+                let html = `
+                <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-sm relative group transition-all hover:border-narmadaGreen hover:shadow-md mb-3">
+                    <div class="flex justify-between items-start mb-2">
+                        <h4 class="font-bold text-sm text-slate-800">${item.nama}</h4>
+                        <div class="flex gap-2">
+                            <button type="button" onclick="editKeperluanAtIndex(${index})" class="w-7 h-7 rounded-lg bg-slate-50 text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-colors flex items-center justify-center border border-slate-100" title="Edit">
+                                <i class="fa-solid fa-pen text-[10px]"></i>
+                            </button>
+                            <button type="button" onclick="deleteKeperluanAtIndex(${index})" class="w-7 h-7 rounded-lg bg-slate-50 text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors flex items-center justify-center border border-slate-100" title="Hapus">
+                                <i class="fa-solid fa-trash text-[10px]"></i>
+                            </button>
+                        </div>
+                    </div>
+                    ${item.templatePratinjau ? `
+                    <div class="bg-slate-50 p-3 rounded-lg border border-slate-100 mt-3 relative overflow-hidden">
+                        <div class="absolute top-0 left-0 w-1 h-full bg-narmadaGreen/50"></div>
+                        <p class="text-[9px] font-bold text-slate-400 mb-1 uppercase tracking-wider">Template Pratinjau:</p>
+                        <p class="text-xs text-slate-600 whitespace-pre-wrap font-mono leading-relaxed line-clamp-2 group-hover:line-clamp-none transition-all">${item.templatePratinjau}</p>
+                    </div>` : ''}
+                </div>`;
+                if (container) container.innerHTML += html;
+            }
+            
+            if (hiddenSelect && !isEditing) {
+                let opt = document.createElement('option');
+                opt.value = item.nama;
+                opt.text = item.nama;
+                hiddenSelect.add(opt);
+            }
+        });
     }
     
-    builderKeperluanList.forEach((item, index) => {
-        // Render as compact inline chip tag
-        let docTooltip = item.doc ? item.doc : 'Tanpa template';
-        let docIcon = item.doc ? '<i class="fa-solid fa-link text-[7px] text-narmadaGreen opacity-60"></i>' : '';
-        let html = `<span class="keperluan-chip inline-flex items-center gap-1.5 pl-3 pr-1.5 py-1.5 rounded-lg border border-emerald-200 bg-emerald-50 text-[11px] font-semibold text-emerald-800 animate-fade-in group" title="${docTooltip}">
-            ${docIcon}<span class="max-w-[180px] truncate">${item.nama}</span>
-            <button type="button" onclick="deleteKeperluanAtIndex(${index})" class="w-5 h-5 rounded-md flex items-center justify-center text-emerald-400 hover:text-red-500 hover:bg-red-50 transition-all duration-150 cursor-pointer ml-0.5" title="Hapus">
-                <i class="fa-solid fa-xmark text-[10px]"></i>
-            </button>
-        </span>`;
-        if (container) container.innerHTML += html;
-        
-        // Add to hidden select for compatibility with other scripts (req mapping, etc)
-        if (select) {
-            let opt = document.createElement('option');
-            opt.value = item.nama;
-            opt.text = item.nama;
-            select.add(opt);
-        }
-    });
+    let globalTemplate = document.getElementById('builder-template-pratinjau');
+    if(globalTemplate) {
+        let tmplMap = {};
+        builderKeperluanList.forEach(k => { if(k.templatePratinjau) tmplMap[k.nama] = k.templatePratinjau; });
+        globalTemplate.value = JSON.stringify(tmplMap);
+    }
+    
+    if (typeof initStep2RequirementsBuilder === 'function') initStep2RequirementsBuilder();
+    if (typeof renderBuilderPersyaratanTabs === 'function') renderBuilderPersyaratanTabs();
 }
+
+window.addNewKeperluanCard = function() {
+    builderKeperluanList.push({ nama: '', templatePratinjau: '', _isEditing: true });
+    renderBuilderKeperluanList();
+};
+
+window.editKeperluanAtIndex = function(index) {
+    if(builderKeperluanList[index]) {
+        builderKeperluanList[index]._isEditing = true;
+        renderBuilderKeperluanList();
+    }
+};
+
+window.cancelEditKeperluan = function(index) {
+    if(builderKeperluanList[index]) {
+        if(!builderKeperluanList[index].nama) {
+            builderKeperluanList.splice(index, 1);
+        } else {
+            builderKeperluanList[index]._isEditing = false;
+        }
+        renderBuilderKeperluanList();
+    }
+};
+
+window.saveEditKeperluan = function(index) {
+    if(builderKeperluanList[index]) {
+        let inputNama = document.getElementById('edit-kep-nama-' + index);
+        let inputTmpl = document.getElementById('edit-kep-template-' + index);
+        
+        let newNama = inputNama ? inputNama.value.trim() : '';
+        let newTmpl = inputTmpl ? inputTmpl.value.trim() : '';
+        
+        if(!newNama) {
+            pushToast('Nama keperluan wajib diisi!', 'error');
+            return;
+        }
+        
+        let duplicate = builderKeperluanList.find((k, i) => i !== index && k.nama.toLowerCase() === newNama.toLowerCase());
+        if(duplicate) {
+            pushToast('Keperluan sudah ada!', 'error');
+            return;
+        }
+        
+        let oldNama = builderKeperluanList[index].nama;
+        if(oldNama && oldNama !== newNama) {
+            if(window.builderReqMap && window.builderReqMap[oldNama]) {
+                window.builderReqMap[newNama] = window.builderReqMap[oldNama];
+                delete window.builderReqMap[oldNama];
+            }
+            if(window.builderQuestions) {
+                window.builderQuestions.forEach(q => {
+                    let meta = parseQuestionMetadata(q.name);
+                    if(meta.keperluan === oldNama) {
+                        q.name = `{${newNama};;${meta.halaman}}` + meta.asli;
+                    }
+                });
+            }
+        }
+        
+        builderKeperluanList[index].nama = newNama;
+        builderKeperluanList[index].templatePratinjau = newTmpl;
+        builderKeperluanList[index]._isEditing = false;
+        renderBuilderKeperluanList();
+        
+        if (typeof renderBuilderQuestionsUIList === 'function') renderBuilderQuestionsUIList();
+        pushToast('Keperluan berhasil disimpan', 'success');
+    }
+};
 
 export function deleteKeperluanAtIndex(index) {
     if (index >= 0 && index < builderKeperluanList.length) {
         let name = builderKeperluanList[index].nama;
         
-        // Check if there are requirements or questions mapped to this keperluan
+        if (!name) {
+            builderKeperluanList.splice(index, 1);
+            renderBuilderKeperluanList();
+            return;
+        }
+        
         let hasReq = window.builderReqMap && window.builderReqMap[name];
         let hasQuestions = window.builderQuestions && window.builderQuestions.some(q => parseQuestionMetadata(q.name).keperluan === name);
         
@@ -55,11 +170,8 @@ export function deleteKeperluanAtIndex(index) {
                 builderKeperluanList.splice(index, 1);
                 renderBuilderKeperluanList();
                 
-                // Unconditionally render UI lists to ensure stale data is removed
                 if (typeof renderRequirementsMappingList === 'function') renderRequirementsMappingList();
                 if (typeof renderBuilderQuestionsUIList === 'function') renderBuilderQuestionsUIList();
-                
-                // Update dropdowns
                 if (typeof initStep2RequirementsBuilder === 'function') initStep2RequirementsBuilder();
                 if (typeof initStep3QuestionsBuilder === 'function') initStep3QuestionsBuilder();
                 
@@ -69,7 +181,6 @@ export function deleteKeperluanAtIndex(index) {
             builderKeperluanList.splice(index, 1);
             renderBuilderKeperluanList();
             
-            // Update dropdowns and UI lists
             if (typeof renderRequirementsMappingList === 'function') renderRequirementsMappingList();
             if (typeof renderBuilderQuestionsUIList === 'function') renderBuilderQuestionsUIList();
             if (typeof initStep2RequirementsBuilder === 'function') initStep2RequirementsBuilder();
@@ -167,38 +278,94 @@ export function removeRequirementFromKeperluan(keperluan, index) {
             }
         }
 
+export let currentPersyaratanTab = 'Wajib';
+
+window.switchPersyaratanTab = function(tabName) {
+    currentPersyaratanTab = tabName;
+    renderBuilderPersyaratanTabs();
+};
+
+export function renderBuilderPersyaratanTabs() {
+    let tabsContainer = document.getElementById('builder-persyaratan-tabs');
+    let selKeperluan = document.getElementById('builder-req-keperluan');
+    if(!tabsContainer) return;
+    
+    let kepNames = builderKeperluanList.map(k => k.nama).filter(n => n);
+    kepNames.unshift('Wajib');
+    
+    if(!kepNames.includes(currentPersyaratanTab)) {
+        currentPersyaratanTab = kepNames[0];
+    }
+    
+    tabsContainer.innerHTML = '';
+    kepNames.forEach(kep => {
+        let active = (kep === currentPersyaratanTab);
+        let badgeCount = window.builderReqMap && window.builderReqMap[kep] ? window.builderReqMap[kep].length : 0;
+        
+        let activeClasses = active ? 'bg-emerald-50 text-narmadaGreen border-narmadaGreen' : 'bg-white text-slate-500 border-slate-200 hover:bg-slate-50';
+        let badgeClasses = active ? 'bg-narmadaGreen text-white' : 'bg-slate-200 text-slate-500';
+        
+        let html = `
+        <button type="button" onclick="window.switchPersyaratanTab('${kep}')" class="shrink-0 flex items-center gap-2 px-4 py-2 border rounded-full text-xs font-bold transition-all ${activeClasses}">
+            ${kep}
+            <span class="inline-flex items-center justify-center w-5 h-5 rounded-full text-[9px] ${badgeClasses}">${badgeCount}</span>
+        </button>`;
+        tabsContainer.innerHTML += html;
+    });
+    
+    if(selKeperluan) {
+        selKeperluan.innerHTML = '';
+        kepNames.forEach(kep => {
+            let opt = document.createElement('option');
+            opt.value = kep;
+            opt.text = kep;
+            if(kep === currentPersyaratanTab) opt.selected = true;
+            selKeperluan.add(opt);
+        });
+    }
+    
+    renderRequirementsMappingList();
+}
+
 export function renderRequirementsMappingList() {
-            let container = document.getElementById('builder-req-mapping-list');
-            if (!container) return;
-            container.innerHTML = "";
-
-            let keys = Object.keys(builderReqMap);
-            if (keys.length === 0) {
-                container.innerHTML = '<p class="text-[10px] text-slate-400 italic py-1">Belum ada persyaratan ditambahkan.</p>';
-                return;
-            }
-
-            keys.forEach(function (kep) {
-                let html = '<div class="mb-3 last:mb-0 animate-fade-in">' +
-                    '<div class="flex items-center gap-1.5 mb-1.5">' +
-                    '<i class="fa-solid fa-folder text-[10px] text-narmadaGreen"></i>' +
-                    '<span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">' + kep + '</span>' +
-                    '</div>' +
-                    '<div class="flex flex-wrap gap-1.5 pl-4">';
-
-                builderReqMap[kep].forEach(function (req, idx) {
-                    html += '<span class="req-chip inline-flex items-center gap-1 pl-2.5 pr-1 py-1 rounded-md border border-slate-200 bg-white text-[10px] font-semibold text-slate-700 group">' +
-                        '<i class="fa-solid fa-file-circle-check text-[8px] text-emerald-500"></i> ' +
-                        '<span class="max-w-[160px] truncate">' + req + '</span>' +
-                        '<button onclick="removeRequirementFromKeperluan(\'' + kep + '\', ' + idx + ')" class="w-4 h-4 rounded flex items-center justify-center text-slate-300 hover:text-red-500 hover:bg-red-50 transition-all duration-150 cursor-pointer ml-0.5" title="Hapus">' +
-                        '<i class="fa-solid fa-xmark text-[9px]"></i></button>' +
-                        '</span>';
-                });
-
-                html += '</div></div>';
-                container.innerHTML += html;
-            });
-        }
+    let container = document.getElementById('builder-persyaratan-workspace');
+    if (!container) {
+        // Fallback backward compat if not updated HTML
+        container = document.getElementById('builder-req-mapping-list'); 
+        if(!container) return;
+    }
+    container.innerHTML = "";
+    
+    if (!window.builderReqMap) window.builderReqMap = {};
+    let reqs = window.builderReqMap[currentPersyaratanTab] || [];
+    
+    if (reqs.length === 0) {
+        container.innerHTML = '<div class="text-center py-8 text-slate-400 text-xs italic">Belum ada persyaratan dokumen untuk keperluan ini.</div>';
+        return;
+    }
+    
+    reqs.forEach(function(req, idx) {
+        let html = `
+        <div class="bg-white p-3 rounded-lg border border-slate-200 shadow-sm flex items-center justify-between group animate-fade-in mb-2">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded bg-emerald-50 text-narmadaGreen flex items-center justify-center shrink-0">
+                    <i class="fa-solid fa-file-circle-check text-xs"></i>
+                </div>
+                <span class="text-sm font-semibold text-slate-700">${req}</span>
+            </div>
+            <button type="button" onclick="removeRequirementFromKeperluan('${currentPersyaratanTab}', ${idx})" class="w-8 h-8 rounded text-slate-400 hover:text-red-500 hover:bg-red-50 transition-colors flex items-center justify-center border border-transparent hover:border-red-100" title="Hapus">
+                <i class="fa-solid fa-trash text-xs"></i>
+            </button>
+        </div>`;
+        container.innerHTML += html;
+    });
+    
+    // Update badge on tab if called independently
+    let selKeperluan = document.getElementById('builder-req-keperluan');
+    if(selKeperluan && selKeperluan.value !== currentPersyaratanTab) {
+        renderBuilderPersyaratanTabs();
+    }
+}
 
 export function loadBuilderLayananList() {
             let dropdownEditor = document.getElementById('builder-select-layanan');
@@ -896,7 +1063,7 @@ export function renderBuilderQuestionsUIList() {
                 
                 html += `<div class="flex justify-between items-center p-2.5 rounded-lg border border-slate-100 hover:border-emerald-200 hover:bg-emerald-50/30 transition-colors group">
                             <div>
-                                <div class="text-[11px] font-bold text-slate-700">${item.q.label} ${reqBadge}</div>
+                                <div class="text-[11px] font-bold text-slate-700">${(item.q.label || '').replace(/\{.*?\}/, '').trim()} ${reqBadge}</div>
                                 <div class="text-[10px] text-slate-500 flex gap-2 mt-0.5">
                                     <span class="capitalize border border-slate-200 bg-white rounded px-1">${baseType}</span>
                                 </div>
@@ -1327,10 +1494,65 @@ export let currentRepeaterGroup = [];
 
 export let editingRepeaterIndex = -1;
 
+window.lockStep1 = function() {
+    let nameInput = document.getElementById('builder-layanan-nama');
+    let btnSave = document.getElementById('ev-bind-save-info');
+    let step1Card = document.getElementById('bl-step-1');
+    if(nameInput && nameInput.value.trim() === '') {
+        pushToast('Nama layanan wajib diisi!', 'error');
+        return;
+    }
+    if(step1Card) {
+        step1Card.classList.remove('border-t-narmadaGreen');
+        step1Card.classList.add('border-t-slate-400', 'bg-slate-50/50');
+    }
+    if(nameInput) {
+        nameInput.classList.add('pointer-events-none', 'text-slate-500');
+    }
+    document.querySelectorAll('.bidang-pill input').forEach(el => el.disabled = true);
+    
+    if(btnSave) {
+        btnSave.innerHTML = '<i class="fa-solid fa-pen"></i> Edit Informasi';
+        btnSave.classList.remove('bg-narmadaGreen', 'hover:bg-emerald-700');
+        btnSave.classList.add('bg-slate-200', 'text-slate-600', 'hover:bg-slate-300');
+        btnSave.onclick = window.unlockStep1;
+    }
+    pushToast('Informasi Layanan tersimpan sementara', 'success');
+};
+
+window.unlockStep1 = function() {
+    let nameInput = document.getElementById('builder-layanan-nama');
+    let btnSave = document.getElementById('ev-bind-save-info');
+    let step1Card = document.getElementById('bl-step-1');
+    
+    if(step1Card) {
+        step1Card.classList.add('border-t-narmadaGreen');
+        step1Card.classList.remove('border-t-slate-400', 'bg-slate-50/50');
+    }
+    if(nameInput) {
+        nameInput.classList.remove('pointer-events-none', 'text-slate-500');
+    }
+    document.querySelectorAll('.bidang-pill input').forEach(el => el.disabled = false);
+    
+    if(btnSave) {
+        btnSave.innerHTML = '<i class="fa-solid fa-check"></i> Simpan Informasi';
+        btnSave.classList.add('bg-narmadaGreen', 'hover:bg-emerald-700');
+        btnSave.classList.remove('bg-slate-200', 'text-slate-600', 'hover:bg-slate-300');
+        btnSave.onclick = window.lockStep1;
+    }
+};
+
 document.addEventListener('DOMContentLoaded', function() {
     // Bind real-time summary updates
     document.getElementById('builder-layanan-nama')?.addEventListener('input', updateSummaryPanel);
     document.getElementById('builder-keperluan-select')?.addEventListener('change', updateSummaryPanel);
+    
+    // Bind new UI buttons
+    let btnSaveInfo = document.getElementById('ev-bind-save-info');
+    if(btnSaveInfo) btnSaveInfo.onclick = window.lockStep1;
+    
+    let btnAddKeperluan = document.getElementById('btn-add-keperluan');
+    if(btnAddKeperluan) btnAddKeperluan.onclick = window.addNewKeperluanCard;
 });
 
 // Drawer Functions

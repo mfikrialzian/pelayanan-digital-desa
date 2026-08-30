@@ -1781,19 +1781,20 @@
                     </summary>
                     <div class="p-5 sm:p-6 space-y-5">
                         
-                <!-- STEP 1: Informasi Dasar (2-Column: Nama + Bidang Pill) -->
-                <div id="bl-step-1" class="pb-5 border-b border-slate-100">
+                <!-- STEP 1: Informasi Dasar (Header Card) -->
+                <div id="bl-step-1" class="bg-white border-t-4 border-t-narmadaGreen border-x border-b border-slate-200 rounded-xl shadow-sm p-5 sm:p-6 relative mb-6">
                     <select id="builder-select-layanan" class="hidden"><option value="[+] TAMBAH LAYANAN BARU">[+] TAMBAH LAYANAN BARU</option></select>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-5 gap-4 items-start" id="wrapper-builder-nama">
-                        <div class="md:col-span-3">
-                            <label class="block text-[10px] font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Nama Layanan *</label>
-                            <input type="text" id="builder-layanan-nama" list="saran-nama-layanan" placeholder="Contoh: Surat Pengantar Nikah" class="transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-narmadaGreen/40 focus-visible:outline-none w-full bg-white border border-slate-200 text-slate-800 text-sm rounded-lg focus:border-narmadaGreen px-3.5 py-2.5 outline-none placeholder-slate-400">
+                    <div class="space-y-4" id="wrapper-builder-nama">
+                        <div>
+                            <label class="block text-xl font-black text-slate-800 mb-1">Nama Layanan *</label>
+                            <input type="text" id="builder-layanan-nama" list="saran-nama-layanan" placeholder="Judul Formulir Layanan (contoh: Surat Keterangan Usaha)" class="w-full bg-transparent border-b-2 border-slate-200 focus:border-narmadaGreen text-slate-800 text-lg px-0 py-2 outline-none transition-colors placeholder-slate-400 font-semibold">
                             <datalist id="saran-nama-layanan"></datalist>
                         </div>
-                        <div id="wrapper-builder-bidang" class="md:col-span-2">
-                            <label class="block text-[10px] font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Bidang Terkait</label>
-                            <div class="flex flex-wrap gap-1.5">
+                        
+                        <div id="wrapper-builder-bidang" class="pt-2">
+                            <label class="block text-xs font-bold text-slate-500 mb-2 uppercase tracking-wider">Bidang Terkait</label>
+                            <div class="flex flex-wrap gap-2">
                                 <label class="bidang-pill cursor-pointer">
                                     <input type="checkbox" name="builder-bidang" value="Kasi Pelayanan" class="hidden peer">
                                     <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-[11px] font-semibold text-slate-600 peer-checked:bg-emerald-50 peer-checked:border-narmadaGreen peer-checked:text-narmadaGreen transition-all duration-200 hover:border-slate-300 select-none">
@@ -1814,56 +1815,62 @@
                                 </label>
                             </div>
                         </div>
+
+                        <div class="pt-4 flex justify-end">
+                            <button type="button" id="ev-bind-save-info" class="bg-narmadaGreen hover:bg-emerald-700 text-white px-5 py-2 rounded-lg text-xs font-bold transition-all shadow-sm flex items-center gap-2"><i class="fa-solid fa-check"></i> Simpan Informasi</button>
+                        </div>
                     </div>
                 </div>
 
-                <!-- STEP 2: Keperluan Surat (Inline Input + Chips) -->
-                <div id="bl-step-2" class="pb-5 border-b border-slate-100 space-y-3">
-                    <div class="flex items-center justify-between">
+                <!-- STEP 2: Keperluan Surat (Google Form Style) -->
+                <div id="bl-step-2" class="space-y-4 mb-8">
+                    <div class="flex items-center justify-between px-1 border-b border-slate-100 pb-2">
                         <h3 class="text-xs font-bold text-slate-700 flex items-center gap-2"><i class="fa-solid fa-list-check text-narmadaGreen text-sm"></i> Keperluan Surat</h3>
                     </div>
                     
-                    <!-- Inline Input Row -->
-                    <div class="flex flex-col sm:flex-row gap-2">
-                        <input type="text" id="builder-keperluan-new-input" placeholder="Nama keperluan..." class="transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-narmadaGreen/40 focus-visible:outline-none flex-1 bg-white border border-slate-200 text-slate-800 text-xs rounded-lg focus:border-narmadaGreen px-3 py-2 outline-none placeholder-slate-400">
-                        <input type="text" id="builder-keperluan-new-doc" placeholder="Link Docs (opsional)" class="transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-narmadaGreen/40 focus-visible:outline-none flex-1 bg-white border border-slate-200 text-slate-800 text-xs rounded-lg focus:border-narmadaGreen px-3 py-2 outline-none placeholder-slate-400">
-                        <button id="ev-bind-33" type="button" class="cursor-pointer hover:scale-[1.02] active:scale-[0.98] px-4 py-2 bg-narmadaGreen hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition-all shadow-sm shrink-0 flex items-center gap-1.5"><i class="fa-solid fa-plus"></i> <span class="sm:hidden">Tambah</span></button>
+                    <div id="builder-keperluan-workspace" class="space-y-4">
+                        <!-- Cards Keperluan akan dirender di sini via JS -->
                     </div>
 
-                    <!-- Chip Tags Output -->
-                    <div id="builder-keperluan-list" class="flex flex-wrap gap-2 min-h-[28px]"></div>
-                    <select id="builder-keperluan-select" class="hidden"></select>
-                    <button id="ev-bind-32" type="button" class="hidden"></button>
-
-                    <!-- Template Pratinjau (Collapsible) -->
-                    <details id="wrapper-builder-template-pratinjau" class="group mt-2">
-                        <summary class="cursor-pointer flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider hover:text-slate-600 transition-colors select-none py-1">
-                            <i class="fa-solid fa-chevron-right text-[8px] transition-transform duration-200 group-open:rotate-90"></i>
-                            <i class="fa-solid fa-file-lines"></i> Template Pratinjau Surat (Opsional)
-                        </summary>
-                        <div class="mt-2">
-                            <textarea id="builder-template-pratinjau" rows="3" placeholder="Ketik format surat default, gunakan {variabel} untuk isian dinamis..." class="transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-narmadaGreen/40 focus-visible:outline-none w-full bg-white border border-slate-200 text-slate-800 text-xs rounded-lg focus:border-narmadaGreen px-3 py-2.5 outline-none placeholder-slate-400 resize-y custom-scrollbar"></textarea>
-                        </div>
-                    </details>
+                    <button type="button" id="btn-add-keperluan" class="w-full py-3 border-2 border-dashed border-slate-300 bg-slate-50 text-slate-500 rounded-xl hover:border-narmadaGreen hover:text-narmadaGreen hover:bg-emerald-50 transition-colors text-sm font-bold flex justify-center items-center gap-2">
+                        <i class="fa-solid fa-plus"></i> Tambah Keperluan
+                    </button>
+                    <!-- Komponen lama yang disembunyikan agar script existing tidak error saat inisialisasi -->
+                    <div class="hidden">
+                        <input type="text" id="builder-keperluan-new-input">
+                        <input type="text" id="builder-keperluan-new-doc">
+                        <button id="ev-bind-33" type="button"></button>
+                        <div id="builder-keperluan-list"></div>
+                        <select id="builder-keperluan-select"></select>
+                        <button id="ev-bind-32" type="button"></button>
+                        <textarea id="builder-template-pratinjau"></textarea>
+                    </div>
                 </div>
 
-                <!-- STEP 3: Persyaratan Dokumen (Inline Input + Grouped Chips) -->
-                <div id="bl-step-3" class="pb-5 border-b border-slate-100 space-y-3">
-                    <h3 class="text-xs font-bold text-slate-700 flex items-center gap-2"><i class="fa-solid fa-file-invoice text-emerald-600 text-sm"></i> Persyaratan Dokumen</h3>
-                    
-                    <!-- Inline Input Row -->
-                    <div class="flex flex-col sm:flex-row gap-2">
-                        <select id="builder-req-keperluan" class="transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-narmadaGreen/40 focus-visible:outline-none sm:w-44 shrink-0 px-3 py-2 rounded-lg bg-white border border-slate-200 text-xs focus:border-narmadaGreen outline-none"></select>
-                        <div class="flex gap-2 flex-1">
-                            <input type="text" id="builder-req-input" list="saran-persyaratan-list" placeholder="Nama persyaratan dokumen..." class="transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-narmadaGreen/40 focus-visible:outline-none flex-1 px-3 py-2 rounded-lg bg-white border border-slate-200 text-xs focus:border-narmadaGreen outline-none placeholder-slate-400">
-                            <datalist id="saran-persyaratan-list"></datalist>
-                            <button id="ev-bind-35" type="button" class="cursor-pointer hover:scale-[1.02] active:scale-[0.98] w-9 h-9 bg-slate-800 text-white rounded-lg text-xs font-bold hover:bg-slate-900 shadow-sm transition-all flex items-center justify-center shrink-0"><i class="fa-solid fa-plus"></i></button>
-                        </div>
+                <!-- STEP 3: Persyaratan Dokumen (Google Form Style) -->
+                <div id="bl-step-3" class="space-y-4 mb-6">
+                    <div class="flex items-center justify-between px-1 border-b border-slate-100 pb-2">
+                        <h3 class="text-xs font-bold text-slate-700 flex items-center gap-2"><i class="fa-solid fa-file-invoice text-emerald-600 text-sm"></i> Persyaratan Dokumen</h3>
                     </div>
-                    <div id="builder-req-suggestions" class="flex flex-wrap gap-1.5"></div>
+                    
+                    <!-- Tabs Keperluan -->
+                    <div class="flex items-center gap-2 overflow-x-auto pb-2 custom-scrollbar" id="builder-persyaratan-tabs">
+                        <!-- Tabs akan dirender di sini via JS -->
+                    </div>
 
-                    <!-- Grouped Chips Display -->
-                    <div id="builder-req-mapping-list" class="space-y-2 max-h-[280px] overflow-y-auto pr-1"></div>
+                    <div id="builder-persyaratan-workspace" class="bg-slate-50 p-4 rounded-xl border border-slate-200 min-h-[150px] space-y-4">
+                        <div class="text-center py-8 text-slate-400 text-xs italic">Silakan tambahkan keperluan terlebih dahulu di Langkah 2.</div>
+                    </div>
+                    
+                    <!-- Komponen lama yang disembunyikan agar script existing tidak error -->
+                    <div class="hidden">
+                        <select id="builder-req-keperluan"></select>
+                        <input type="text" id="builder-req-input" list="saran-persyaratan-list">
+                        <datalist id="saran-persyaratan-list"></datalist>
+                        <button id="ev-bind-35" type="button"></button>
+                        <div id="builder-req-suggestions"></div>
+                        <div id="builder-req-mapping-list"></div>
+                    </div>
                 </div>
                     </div>
                 </details>
