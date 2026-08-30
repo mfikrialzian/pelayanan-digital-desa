@@ -528,7 +528,7 @@ export function populateBuilderLayananToEdit(id) {
             }
             renderBuilderKeperluanList();
 
-            builderQuestions = [];
+            window.builderQuestions = [];
             let savedPertanyaan = found.pertanyaan || "";
             if (savedPertanyaan) {
                 let pArr = savedPertanyaan.split(";;;");
@@ -584,7 +584,7 @@ export function populateBuilderLayananToEdit(id) {
                 }
             }
 
-            builderReqMap = {};
+            window.builderReqMap = {};
             try {
                 let savedSyarat = found.syarat || found.persyaratan || "";
                 if (savedSyarat) {
@@ -1266,8 +1266,8 @@ export function resetBuilderFormState() {
             let wrapperNew = document.getElementById('wrapper-new-keperluan');
             if (wrapperNew) wrapperNew.classList.add('hidden');
 
-            builderQuestions = [];
-            builderReqMap = {};
+            window.builderQuestions = [];
+            window.builderReqMap = {};
 
             cancelEditBuilderQuestion();
             renderBuilderQuestionsUIList();
