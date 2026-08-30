@@ -502,6 +502,8 @@ export function populateBuilderLayananToEdit(id) {
                 '<option value="__ADD_NEW__" class="font-extrabold text-emerald-600">[+] TAMBAH KEPERLUAN BARU...</option>';
 
             let optionsStr = found.judulSectionIsian || "";
+            builderKeperluanList = [];
+            
             if (optionsStr) {
                 let optionsArray = optionsStr.split(",");
                 optionsArray.forEach(function (opt) {
