@@ -402,13 +402,13 @@ export function renderLayananTable(list) {
                 try {
                     let keperluanList = row.judulSectionIsian ? row.judulSectionIsian.split(',').map(s => s.trim()).filter(s => s) : [];
                     let kepHtml = keperluanList.length > 0
-                        ? '<div class="flex flex-wrap gap-1">' + keperluanList.map(k => '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-bold bg-blue-50 text-blue-600 border border-blue-100">' + k + '</span>').join('') + '</div>'
-                        : '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-bold bg-slate-100 text-slate-500 border border-slate-200">Wajib (Tanpa Pilihan)</span>';
+                        ? '<div class="flex flex-wrap gap-1.5 items-start">' + keperluanList.map(k => '<span class="inline-block px-2 py-1 rounded-md text-[10px] font-bold bg-blue-50 text-blue-600 border border-blue-100 text-center leading-tight shadow-sm">' + k + '</span>').join('') + '</div>'
+                        : '<span class="inline-block px-2 py-1 rounded-md text-[10px] font-bold bg-slate-100 text-slate-500 border border-slate-200 text-center leading-tight shadow-sm">Wajib (Tanpa Pilihan)</span>';
 
                     let bidangStr = row.bidang || "-";
                     let bidangList = bidangStr.split(',').map(b => b.trim()).filter(b => b && b !== "-");
                     let bidangHtml = bidangList.length > 0
-                        ? '<div class="flex flex-wrap gap-1">' + bidangList.map(b => '<span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-indigo-50 text-indigo-600 border border-indigo-100">' + b + '</span>').join('') + '</div>'
+                        ? '<div class="flex flex-wrap gap-1.5 items-start">' + bidangList.map(b => '<span class="inline-block px-2 py-1 rounded-md text-[10px] font-bold bg-indigo-50 text-indigo-600 border border-indigo-100 text-center leading-tight shadow-sm">' + b + '</span>').join('') + '</div>'
                         : '<span class="text-slate-400 italic text-[10px]">-</span>';
 
                     let tr = '<tr class="border-b border-slate-50 hover:bg-slate-50/50 transition-colors group">' +
