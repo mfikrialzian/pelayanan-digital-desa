@@ -310,6 +310,7 @@ export function renderDynamicCustomQuestions(fields) {
             }
 
             updateStep3PaginationUI();
+            initDynamicMaps();
             initSearchableDropdowns();
         }
 
@@ -340,6 +341,14 @@ export function generateFieldInputHtml(displayType, actualName, requiredAttr, op
                 inputHtml = '<input type="number" ' + requiredAttr + limitAttr + ' placeholder="KETIK ANGKA" class="w-full px-3 py-2.5 rounded-xl custom-input text-sm font-medium shadow-sm dynamic-question-field uppercase" data-question="' + actualName + '"' + idAttr + '>';
             } else if (displayType === "date") {
                 inputHtml = '<input type="date" ' + requiredAttr + ' class="w-full px-3 py-2.5 rounded-xl custom-input text-sm font-medium shadow-sm dynamic-question-field uppercase" data-question="' + actualName + '"' + idAttr + '>';
+            } else if (displayType === "maps") {
+                let uniqueMapId = "map_" + Math.random().toString(36).substr(2, 9);
+                let uniqueInputId = "input_" + uniqueMapId;
+                inputHtml = '<div class="space-y-2">' +
+                            '<div id="' + uniqueMapId + '" class="dynamic-map-container w-full h-48 rounded-xl border border-slate-200 shadow-inner z-0" style="z-index: 0;" data-input-id="' + uniqueInputId + '"></div>' +
+                            '<button type="button" onclick="getCurrentLocationForMap(\'' + uniqueMapId + '\', \'' + uniqueInputId + '\')" class="w-full px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] font-bold rounded-lg transition-all flex items-center justify-center gap-1.5 shadow-sm tap-squish"><i class="fa-solid fa-location-crosshairs text-narmadaGreen"></i> Gunakan Lokasi Saya Saat Ini</button>' +
+                            '<input type="text" id="' + uniqueInputId + '" ' + requiredAttr + ' placeholder="Ketuk Peta, Gunakan GPS, atau Ketik Manual" class="w-full px-3 py-2.5 rounded-xl custom-input text-sm font-medium shadow-sm dynamic-question-field uppercase" data-question="' + actualName + '"' + idAttr + '>' +
+                            '</div>';
             } else {
                 inputHtml = '<input type="text" ' + requiredAttr + ' placeholder="Ketik jawaban Anda" oninput="this.value = this.value.toUpperCase();" class="w-full px-3 py-2.5 rounded-xl custom-input text-sm font-medium shadow-sm dynamic-question-field uppercase" data-question="' + actualName + '"' + idAttr + '>';
             }
@@ -1034,6 +1043,19 @@ export function switchStep3Page(pageIdx) {
                 if (pIdx === pageIdx) {
                     el.classList.remove('hidden');
                     el.classList.add('animate-fade-in');
+                    
+                    // Invalidate Leaflet maps inside this page so they render correctly
+                    setTimeout(function() {
+                        if (window.leafletMaps) {
+                            let mapsInPage = el.querySelectorAll('.dynamic-map-container');
+                            mapsInPage.forEach(function(mapContainer) {
+                                let mId = mapContainer.id;
+                                if (window.leafletMaps[mId]) {
+                                    window.leafletMaps[mId].map.invalidateSize();
+                                }
+                            });
+                        }
+                    }, 300);
                 } else {
                     el.classList.add('hidden');
                     el.classList.remove('animate-fade-in');
@@ -1126,6 +1148,77 @@ export function updateStep3PaginationUI() {
                 // Not last page: show "Selanjutnya", hide "Lanjut ke Unggah Berkas"
                 if (nextBtn) nextBtn.classList.remove('hidden');
                 if (wrapperBtnNext) wrapperBtnNext.classList.add('hidden');
+            }
+        }
+
+export function initDynamicMaps() {
+            let mapsContainers = document.querySelectorAll('.dynamic-map-container');
+            if (!window.leafletMaps) window.leafletMaps = {};
+
+            mapsContainers.forEach(container => {
+                let mapId = container.id;
+                let inputId = container.getAttribute('data-input-id');
+                let inputEl = document.getElementById(inputId);
+                
+                if (window.leafletMaps[mapId]) return; // Already initialized
+
+                // Default location: Narmada, Lombok Barat
+                let defaultLatLng = [-8.5714, 116.2086];
+                
+                let map = L.map(mapId).setView(defaultLatLng, 13);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; OpenStreetMap contributors'
+                }).addTo(map);
+
+                let marker = L.marker(defaultLatLng, {draggable: true}).addTo(map);
+
+                marker.on('dragend', function (e) {
+                    let latlng = marker.getLatLng();
+                    inputEl.value = latlng.lat.toFixed(6) + ', ' + latlng.lng.toFixed(6);
+                    inputEl.dispatchEvent(new Event('input', { bubbles: true }));
+                });
+                
+                map.on('click', function(e) {
+                    let latlng = e.latlng;
+                    marker.setLatLng(latlng);
+                    inputEl.value = latlng.lat.toFixed(6) + ', ' + latlng.lng.toFixed(6);
+                    inputEl.dispatchEvent(new Event('input', { bubbles: true }));
+                });
+
+                // Invalidate size in case it renders inside hidden elements
+                setTimeout(() => { map.invalidateSize(); }, 500);
+
+                window.leafletMaps[mapId] = { map: map, marker: marker };
+            });
+        }
+
+export function getCurrentLocationForMap(mapId, inputId) {
+            if (navigator.geolocation) {
+                pushToast("Sedang mencari lokasi Anda...", "info");
+                navigator.geolocation.getCurrentPosition(
+                    function(position) {
+                        let lat = position.coords.latitude;
+                        let lng = position.coords.longitude;
+                        let inputEl = document.getElementById(inputId);
+                        
+                        inputEl.value = lat.toFixed(6) + ', ' + lng.toFixed(6);
+                        inputEl.dispatchEvent(new Event('input', { bubbles: true }));
+
+                        if (window.leafletMaps && window.leafletMaps[mapId]) {
+                            let mapObj = window.leafletMaps[mapId];
+                            let newLatLng = new L.LatLng(lat, lng);
+                            mapObj.map.setView(newLatLng, 16);
+                            mapObj.marker.setLatLng(newLatLng);
+                        }
+                        pushToast("Lokasi berhasil ditemukan!", "success");
+                    },
+                    function(error) {
+                        pushToast("Gagal mendapatkan lokasi. Pastikan GPS aktif dan izin browser diberikan.", "error");
+                    },
+                    { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+                );
+            } else {
+                pushToast("Browser Anda tidak mendukung fitur lokasi (Geolocation).", "error");
             }
         }
 
