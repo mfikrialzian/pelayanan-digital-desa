@@ -1125,6 +1125,7 @@ export function renderBuilderQuestionsUIList() {
                         <div class="hidden absolute right-0 top-full mt-1 w-36 bg-white border border-slate-200 rounded-lg shadow-[0_10px_40px_rgba(0,0,0,0.15)] flex flex-col overflow-hidden kebab-dropdown" style="z-index: 9999;">
                             ${baseType === "dropdown" ? `<button type="button" onclick="openConditionalBuilder(${item.globalIndex})" class="text-left px-3 py-2 text-[10px] font-bold text-slate-600 hover:bg-slate-50 hover:text-narmadaGreen border-b border-slate-100"><i class="fa-solid fa-code-branch w-4"></i> Cabang</button>` : ''}
                             <button type="button" onclick="openFieldEditorModal(${item.globalIndex})" class="text-left px-3 py-2 text-[10px] font-bold text-slate-600 hover:bg-slate-50 hover:text-amber-600 border-b border-slate-100"><i class="fa-solid fa-pen w-4"></i> Edit</button>
+                            <button type="button" onclick="duplicateBuilderQuestion(${item.globalIndex})" class="text-left px-3 py-2 text-[10px] font-bold text-slate-600 hover:bg-slate-50 hover:text-indigo-600 border-b border-slate-100"><i class="fa-solid fa-copy w-4"></i> Duplikat</button>
                             <button type="button" onclick="removeBuilderQuestion(${item.globalIndex})" class="text-left px-3 py-2 text-[10px] font-bold text-slate-600 hover:bg-slate-50 hover:text-red-600"><i class="fa-solid fa-trash w-4"></i> Hapus</button>
                         </div>
                     </div>
