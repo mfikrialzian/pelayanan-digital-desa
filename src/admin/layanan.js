@@ -225,12 +225,7 @@ export function initStep2RequirementsBuilder() {
             }
 
             if (!hasOptions) {
-                selKeperluan.innerHTML = '<option value="Wajib">Wajib (Berlaku untuk Semua Keperluan)</option>';
-            } else {
-                let o = document.createElement('option');
-                o.value = "Wajib";
-                o.text = "Wajib (Berlaku untuk Semua Keperluan)";
-                selKeperluan.add(o, selKeperluan.options[0]);
+                selKeperluan.innerHTML = '<option value="" disabled selected>Belum ada keperluan ditambahkan</option>';
             }
 
             // Persyaratan sekarang menggunakan input teks dinamis dengan datalist
@@ -291,13 +286,21 @@ export function renderBuilderPersyaratanTabs() {
     if(!tabsContainer) return;
     
     let kepNames = builderKeperluanList.map(k => k.nama).filter(n => n);
-    kepNames.unshift('Wajib');
     
-    if(!kepNames.includes(currentPersyaratanTab)) {
-        currentPersyaratanTab = kepNames[0];
+    if(!currentPersyaratanTab || !kepNames.includes(currentPersyaratanTab)) {
+        currentPersyaratanTab = kepNames.length > 0 ? kepNames[0] : '';
     }
     
     tabsContainer.innerHTML = '';
+    if (kepNames.length === 0) {
+        tabsContainer.innerHTML = '<div class="text-[10px] text-slate-400 italic">Belum ada keperluan. Tambahkan di Langkah 3.</div>';
+        if(selKeperluan) {
+            selKeperluan.innerHTML = '<option value="" disabled selected>Belum ada keperluan ditambahkan</option>';
+        }
+        renderRequirementsMappingList();
+        return;
+    }
+
     kepNames.forEach(kep => {
         let active = (kep === currentPersyaratanTab);
         let badgeCount = window.builderReqMap && window.builderReqMap[kep] ? window.builderReqMap[kep].length : 0;
@@ -864,7 +867,7 @@ window.openRepeaterModal = function(editIndex = -1) {
     if (!modal) return;
     
     let selectKeperluan = document.getElementById('modal-repeater-keperluan');
-    selectKeperluan.innerHTML = '<option value="Wajib">Wajib (Berlaku Semua Keperluan)</option>';
+    selectKeperluan.innerHTML = '';
     let builderKepSelect = document.getElementById('builder-keperluan-select');
     if (builderKepSelect) {
         for (let i = 0; i < builderKepSelect.options.length; i++) {
@@ -883,7 +886,11 @@ window.openRepeaterModal = function(editIndex = -1) {
         let q = builderQuestions[editIndex];
         window.editingRepeaterId = q.id;
         let meta = parseQuestionMetadata(q.name);
-        selectKeperluan.value = meta.keperluan || "Wajib";
+        if (meta.keperluan && meta.keperluan !== "Wajib") {
+            selectKeperluan.value = meta.keperluan;
+        } else if (selectKeperluan.options.length > 0) {
+            selectKeperluan.value = selectKeperluan.options[0].value;
+        }
         try {
             let items = JSON.parse(q.options || "[]");
             selectedIds = items.map(item => item.id);
@@ -914,7 +921,7 @@ window.renderRepeaterModalCheckboxes = function() {
     
     let availableQuestions = builderQuestions.filter(q => {
         let meta = parseQuestionMetadata(q.name);
-        return q.type !== "repeater" && !q.options?.startsWith("CONDITION_CHILD:") && (meta.keperluan === keperluan || meta.keperluan === "Wajib");
+        return q.type !== "repeater" && !q.options?.startsWith("CONDITION_CHILD:") && (meta.keperluan === keperluan);
     });
     
     if (window.editingRepeaterIndex !== -1) {
@@ -924,7 +931,7 @@ window.renderRepeaterModalCheckboxes = function() {
                 let innerItems = JSON.parse(editingGroup.options || "[]");
                 innerItems.forEach(innerQ => {
                     let meta = parseQuestionMetadata(innerQ.name);
-                    if (meta.keperluan === keperluan || meta.keperluan === "Wajib") {
+                    if (meta.keperluan === keperluan) {
                         if (!availableQuestions.some(aq => aq.id === innerQ.id)) {
                             availableQuestions.push(innerQ);
                         }
@@ -1018,8 +1025,7 @@ window.saveRepeaterFromModal = function() {
     builderQuestions.sort(function (a, b) {
         let metaA = parseQuestionMetadata(a.name);
         let metaB = parseQuestionMetadata(b.name);
-        if (metaA.keperluan === "Wajib" && metaB.keperluan !== "Wajib") return -1;
-        if (metaB.keperluan === "Wajib" && metaA.keperluan !== "Wajib") return 1;
+        // No Wajib check needed anymore
         if (metaA.keperluan < metaB.keperluan) return -1;
         if (metaA.keperluan > metaB.keperluan) return 1;
         if (a.type === "repeater" && b.type !== "repeater") return 1;
@@ -1230,7 +1236,7 @@ if(selectEl) {
 }
 
 let kepEl = document.getElementById('builder-q-keperluan');
-if(kepEl) kepEl.value = meta.keperluan || "Wajib";
+if(kepEl) kepEl.value = meta.keperluan || (kepEl.options.length > 0 ? kepEl.options[0].value : '');
 
 let formTitle = document.getElementById('builder-q-form-title');
 if (formTitle) formTitle.innerHTML = '<i class="fa-solid fa-code-branch text-indigo-600"></i> Buat Pertanyaan Lanjutan';
