@@ -1142,9 +1142,9 @@ export function renderBuilderQuestionsUIList() {
                                 </div>
                                 <i class="fa-solid fa-grip-vertical cursor-move text-slate-300 hover:text-slate-500 mr-3 mt-1 builder-drag-handle"></i>
                                 <div>
-                                    <div class="text-[11px] font-bold text-slate-700 flex items-center flex-wrap gap-2">
-                                        <span>${(item.q.label || '').replace(/\\{.*?\\}/, '').trim()} ${reqBadge}</span>
-                                        <span class="capitalize border border-slate-200 bg-slate-50 text-[9px] text-slate-500 font-normal rounded px-1.5 py-0.5">${baseType}</span>
+                                    <div class="text-[11px] font-bold text-slate-700 leading-tight">
+                                        ${(item.q.label || '').replace(/\\{.*?\\}/, '').trim()} ${reqBadge}
+                                        <span class="inline-block align-middle capitalize border border-slate-200 bg-slate-50 text-[9px] text-slate-500 font-normal rounded px-1.5 py-0.5 ml-1 -mt-0.5">${baseType}</span>
                                     </div>
                                     ${conditionTag}
                                 </div>
@@ -2039,7 +2039,7 @@ window.deleteBuilderPage = function(pageNo) {
                     let pNo = parseInt(meta.halaman);
                     if (pNo > pageNo) {
                         meta.halaman = (pNo - 1).toString();
-                        q.name = JSON.stringify(meta);
+                        q.name = "{" + meta.keperluan + ";;" + meta.halaman + ";;" + meta.judul + "} " + meta.cleanName;
                     }
                 }
             });
@@ -2062,7 +2062,7 @@ window.duplicateBuilderQuestion = function(index) {
     // Modify metadata to indicate copy
     let meta = parseQuestionMetadata(newQ.name);
     meta.cleanName = meta.cleanName + " (Salinan)";
-    newQ.name = JSON.stringify(meta);
+    newQ.name = "{" + meta.keperluan + ";;" + meta.halaman + ";;" + meta.judul + "} " + meta.cleanName;
     
     // If it's a repeater, we need to assign new IDs to all its internal questions too
     if (newQ.type === 'repeater' && newQ.options) {

@@ -296,7 +296,8 @@ export function renderDynamicCustomQuestions(fields) {
                         }
 
                         groupHtml += '<label class="block text-xs font-semibold text-slate-600">' + escapeHtml(meta.cleanName) + isRequiredStr + '</label>';
-                        groupHtml += generateFieldInputHtml(displayType, actualName, requiredAttr, f.options, f.id);
+                        let safeActualName = actualName.replace(/"/g, '&quot;');
+                        groupHtml += generateFieldInputHtml(displayType, safeActualName, requiredAttr, f.options, f.id);
                         groupHtml += '</div>';
                         pageHtml += groupHtml;
                     });
