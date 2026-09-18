@@ -765,14 +765,27 @@ export function populateBuilderLayananToEdit(id) {
                             actualName = typeMatch[1].trim();
                         }
     
-                        builderQuestions.push({
+                        let newQ = {
                             id: (f && f.id) ? f.id : ("FLD-" + Math.random().toString(36).substr(2, 5).toUpperCase()),
                             label: (f && f.label) ? f.label : actualName,
                             name: actualName,
                             type: displayType,
                             options: (f && f.options) ? f.options : "",
                             required: (f && f.required) ? f.required : "ya"
-                        });
+                        };
+
+                        try {
+                            if (found.logikaKondisional && found.logikaKondisional !== "[]") {
+                                let parsedLogic = JSON.parse(found.logikaKondisional);
+                                let logicData = parsedLogic.find(lg => lg.id === newQ.id);
+                                if (logicData) {
+                                    newQ.conditionField = logicData.conditionField;
+                                    newQ.conditionValue = logicData.conditionValue;
+                                }
+                            }
+                        } catch(e) {}
+
+                        builderQuestions.push(newQ);
                     });
                 } catch(err) {
                     console.error("Error parsing fields for builder", err);
@@ -1519,6 +1532,19 @@ export function submitBuilderDataToServer() {
                 payload_id = "";
             }
 
+            let logicArray = [];
+            if (window.builderQuestions) {
+                window.builderQuestions.forEach(q => {
+                    if (q.conditionField) {
+                        logicArray.push({
+                            id: q.id,
+                            conditionField: q.conditionField,
+                            conditionValue: q.conditionValue
+                        });
+                    }
+                });
+            }
+
             let payload = {
                 id: payload_id,
                 nama: name,
@@ -1527,7 +1553,7 @@ export function submitBuilderDataToServer() {
                 pertanyaan: mappedFieldsTextArray.join(";;;"),
                 judulSectionIsian: jSec,
                 deskripsiSectionIsian: dSec,
-                logikaKondisional: "[]",
+                logikaKondisional: JSON.stringify(logicArray),
                 bidang: bidangStr,
                 templateDocId: templateDocId,
                 templatePratinjau: templatePratinjau

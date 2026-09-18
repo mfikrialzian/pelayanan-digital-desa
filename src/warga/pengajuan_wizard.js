@@ -436,6 +436,7 @@ export function renderDynamicUploadSlots(requirements) {
         }
 
 export function runLiveConditionalLogicEvaluationForCitizen() {
+            if (window.evaluateBranchingQuestionsCitizen) window.evaluateBranchingQuestionsCitizen();
             if (!selectedLayananGlobal) return;
 
             let activeKeperluan = "";
@@ -468,6 +469,7 @@ export function runLiveConditionalLogicEvaluationForCitizen() {
                 }
             });
         }
+        window.runLiveConditionalLogicEvaluationForCitizen = runLiveConditionalLogicEvaluationForCitizen;
 
 export function toggleWizardStep1State() {
             let isChecked = document.getElementById('warga-syarat-checkbox').checked;
@@ -1321,7 +1323,7 @@ export function initSearchableDropdowns() {
     });
 }
 
-window.runLiveConditionalLogicEvaluationForCitizen = function() {
+window.evaluateBranchingQuestionsCitizen = function() {
     let allCondWrappers = document.querySelectorAll('.dynamic-question-wrapper[data-bind-condition-field]');
     if (!allCondWrappers.length) return;
     
