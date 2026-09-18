@@ -1136,13 +1136,13 @@ export function renderBuilderQuestionsUIList() {
                                 </div>
                                 <i class="fa-solid fa-grip-vertical cursor-move text-slate-300 hover:text-slate-500 mr-3 mt-1 builder-drag-handle"></i>
                                 <div>
-                            <div class="text-[11px] font-bold text-slate-700">${(item.q.label || '').replace(/\\{.*?\\}/, '').trim()} ${reqBadge}</div>
-                            <div class="text-[10px] text-slate-500 flex gap-2 mt-0.5">
-                                <span class="capitalize border border-slate-200 bg-white rounded px-1">${baseType}</span>
+                                    <div class="text-[11px] font-bold text-slate-700 flex items-center flex-wrap gap-2">
+                                        <span>${(item.q.label || '').replace(/\\{.*?\\}/, '').trim()} ${reqBadge}</span>
+                                        <span class="capitalize border border-slate-200 bg-slate-50 text-[9px] text-slate-500 font-normal rounded px-1.5 py-0.5">${baseType}</span>
+                                    </div>
+                                    ${conditionTag}
+                                </div>
                             </div>
-                            ${conditionTag}
-                        </div>
-                    </div>
                     <div class="relative kebab-container">
                         <button type="button" onclick="toggleKebabMenu(this)" class="w-6 h-6 rounded hover:bg-slate-100 text-slate-400 focus:text-slate-800 flex items-center justify-center text-[12px] kebab-btn"><i class="fa-solid fa-ellipsis-vertical pointer-events-none"></i></button>
                         <div class="hidden absolute right-0 top-full mt-1 w-36 bg-white border border-slate-200 rounded-lg shadow-[0_10px_40px_rgba(0,0,0,0.15)] flex flex-col overflow-hidden kebab-dropdown" style="z-index: 9999;">
@@ -1783,19 +1783,33 @@ export function updateSummaryPanel() {
 
 // === KEBAB MENU & DRAG AND DROP GLOBALS === //
 
-window.toggleKebabMenu = function(e, id) {
-    e.stopPropagation();
-    let menu = document.getElementById(id);
-    let isHidden = menu.classList.contains('hidden');
-    // Hide all menus first
-    document.querySelectorAll('.kebab-dropdown').forEach(d => d.classList.add('hidden'));
-    if (isHidden) {
-        menu.classList.remove('hidden');
-    }
-}
+window.toggleKebabMenu = function(btn) {
+    // Prevent triggering global click
+    setTimeout(() => {
+        // Close other dropdowns
+        document.querySelectorAll('.kebab-dropdown').forEach(el => {
+            if (el !== btn.nextElementSibling) el.classList.add('hidden');
+        });
+        // Reset all z-indexes
+        document.querySelectorAll('.builder-question-item').forEach(el => el.style.zIndex = '1');
+        
+        // Toggle current menu
+        let menu = btn.nextElementSibling;
+        menu.classList.toggle('hidden');
+        
+        // Bring row to front to prevent it from being hidden behind next items
+        if (!menu.classList.contains('hidden')) {
+            let row = btn.closest('.builder-question-item') || btn.closest('.kebab-container').parentNode;
+            if (row && row.style) row.style.zIndex = '50';
+        }
+    }, 10);
+};
 
-document.addEventListener('click', function() {
-    document.querySelectorAll('.kebab-dropdown').forEach(d => d.classList.add('hidden'));
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('.kebab-container')) {
+        document.querySelectorAll('.kebab-dropdown').forEach(d => d.classList.add('hidden'));
+        document.querySelectorAll('.builder-question-item').forEach(el => el.style.zIndex = '1');
+    }
 });
 
 let draggedItemIndex = null;
