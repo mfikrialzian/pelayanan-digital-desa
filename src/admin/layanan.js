@@ -1105,7 +1105,7 @@ export function renderBuilderQuestionsUIList() {
             
             let renderItem = function(item, depth, indexNum) {
                 let baseType = item.q.type;
-                let reqBadge = item.q.required === "tidak" ? '<span class="text-[9px] text-amber-500 font-bold ml-1">(opsional)</span>' : '<span class="text-[9px] text-slate-400 font-bold ml-1">(wajib)</span>';
+                let reqBadge = item.q.required === "tidak" ? '<span class="text-[9px] text-amber-500 font-bold ml-1">(opsional)</span>' : '<span class="text-red-500 font-bold ml-1">*</span>';
                 let conditionTag = item.q.conditionField ? `<div class="text-[9px] text-indigo-500 font-bold mt-1"><i class="fa-solid fa-arrow-turn-up fa-rotate-90 text-[8px]"></i> Lanjutan jika: "${item.q.conditionValue}"</div>` : '';
                 let marginLeft = depth > 0 ? ('ml-' + (depth * 4)) : '';
                 
@@ -1120,9 +1120,9 @@ export function renderBuilderQuestionsUIList() {
                             ${conditionTag}
                         </div>
                     </div>
-                    <div class="relative group/kebab">
-                        <button type="button" class="w-6 h-6 rounded hover:bg-slate-100 text-slate-400 flex items-center justify-center text-[12px]"><i class="fa-solid fa-ellipsis-vertical"></i></button>
-                        <div class="absolute right-0 top-full mt-1 w-36 bg-white border border-slate-200 rounded-lg shadow-lg opacity-0 invisible group-hover/kebab:opacity-100 group-hover/kebab:visible transition-all z-10 flex flex-col overflow-hidden">
+                    <div class="relative">
+                        <button type="button" onclick="this.nextElementSibling.classList.toggle('hidden')" class="w-6 h-6 rounded hover:bg-slate-100 text-slate-400 flex items-center justify-center text-[12px]"><i class="fa-solid fa-ellipsis-vertical pointer-events-none"></i></button>
+                        <div class="hidden absolute right-0 top-full mt-1 w-36 bg-white border border-slate-200 rounded-lg shadow-xl z-50 flex flex-col overflow-hidden">
                             ${baseType === "dropdown" ? `<button type="button" onclick="openConditionalBuilder(${item.globalIndex})" class="text-left px-3 py-2 text-[10px] font-bold text-slate-600 hover:bg-slate-50 hover:text-narmadaGreen border-b border-slate-100"><i class="fa-solid fa-code-branch w-4"></i> Cabang</button>` : ''}
                             <button type="button" onclick="openFieldEditorModal(${item.globalIndex})" class="text-left px-3 py-2 text-[10px] font-bold text-slate-600 hover:bg-slate-50 hover:text-amber-600 border-b border-slate-100"><i class="fa-solid fa-pen w-4"></i> Edit</button>
                             <button type="button" onclick="removeBuilderQuestion(${item.globalIndex})" class="text-left px-3 py-2 text-[10px] font-bold text-slate-600 hover:bg-slate-50 hover:text-red-600"><i class="fa-solid fa-trash w-4"></i> Hapus</button>
