@@ -1120,9 +1120,9 @@ export function renderBuilderQuestionsUIList() {
                             ${conditionTag}
                         </div>
                     </div>
-                    <div class="relative">
-                        <button type="button" onclick="this.nextElementSibling.classList.toggle('hidden')" class="w-6 h-6 rounded hover:bg-slate-100 text-slate-400 flex items-center justify-center text-[12px]"><i class="fa-solid fa-ellipsis-vertical pointer-events-none"></i></button>
-                        <div class="hidden absolute right-0 top-full mt-1 w-36 bg-white border border-slate-200 rounded-lg shadow-xl z-50 flex flex-col overflow-hidden">
+                    <div class="relative kebab-container">
+                        <button type="button" onclick="toggleKebabMenu(this)" class="w-6 h-6 rounded hover:bg-slate-100 text-slate-400 focus:text-slate-800 flex items-center justify-center text-[12px] kebab-btn"><i class="fa-solid fa-ellipsis-vertical pointer-events-none"></i></button>
+                        <div class="hidden absolute right-0 top-full mt-1 w-36 bg-white border border-slate-200 rounded-lg shadow-[0_10px_40px_rgba(0,0,0,0.15)] flex flex-col overflow-hidden kebab-dropdown" style="z-index: 9999;">
                             ${baseType === "dropdown" ? `<button type="button" onclick="openConditionalBuilder(${item.globalIndex})" class="text-left px-3 py-2 text-[10px] font-bold text-slate-600 hover:bg-slate-50 hover:text-narmadaGreen border-b border-slate-100"><i class="fa-solid fa-code-branch w-4"></i> Cabang</button>` : ''}
                             <button type="button" onclick="openFieldEditorModal(${item.globalIndex})" class="text-left px-3 py-2 text-[10px] font-bold text-slate-600 hover:bg-slate-50 hover:text-amber-600 border-b border-slate-100"><i class="fa-solid fa-pen w-4"></i> Edit</button>
                             <button type="button" onclick="removeBuilderQuestion(${item.globalIndex})" class="text-left px-3 py-2 text-[10px] font-bold text-slate-600 hover:bg-slate-50 hover:text-red-600"><i class="fa-solid fa-trash w-4"></i> Hapus</button>
@@ -1205,6 +1205,33 @@ if (formTitle) formTitle.innerHTML = '<i class="fa-solid fa-code-branch text-ind
 document.getElementById('builder-step-2').scrollIntoView({ behavior: 'smooth', block: 'start' });
 pushToast("Silakan atur pertanyaan lanjutan untuk " + meta.cleanName, "success");
 }
+
+window.toggleKebabMenu = function(btn) {
+    // Close other dropdowns
+    document.querySelectorAll('.kebab-dropdown').forEach(el => {
+        if (el !== btn.nextElementSibling) el.classList.add('hidden');
+    });
+    // Reset all z-indexes
+    document.querySelectorAll('.builder-question-item').forEach(el => el.style.zIndex = '1');
+    
+    // Toggle current menu
+    let menu = btn.nextElementSibling;
+    menu.classList.toggle('hidden');
+    
+    // Bring row to front to prevent it from being hidden behind next items
+    if (!menu.classList.contains('hidden')) {
+        let row = btn.closest('.builder-question-item');
+        if (row) row.style.zIndex = '50';
+    }
+};
+
+// Global click handler to close menu when clicking outside
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('.kebab-container')) {
+        document.querySelectorAll('.kebab-dropdown').forEach(el => el.classList.add('hidden'));
+        document.querySelectorAll('.builder-question-item').forEach(el => el.style.zIndex = '1');
+    }
+});
 
 window.openConditionalBuilder = openConditionalBuilder;
 window.renderBuilderQuestionsUIList = renderBuilderQuestionsUIList;
