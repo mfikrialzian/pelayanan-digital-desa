@@ -100,11 +100,14 @@ export function renderLayananListWarga(list) {
 
             let htmlBuffer = "";
             list.forEach(function (row) {
+                if (row.nama) row.nama = row.nama.trim(); // Bersihkan spasi berlebih atau enter (newline) dari backend
+                let safeNamaForJS = row.nama ? row.nama.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '&quot;') : '';
+
                 let keperluanText = (row.judulSectionIsian && row.judulSectionIsian.trim() !== "") 
                     ? row.judulSectionIsian.split(',').join(', ') 
                     : "Layanan Digital Terintegrasi";
                     
-                let itemHtml = '<div onclick="openFormPengajuan(\'' + row.nama + '\')" class="light-glass-card p-3.5 md:p-4 rounded-2xl transition-all duration-300 shadow-md hover:shadow-xl cursor-pointer group bg-white border border-slate-100 hover:border-emerald-200 flex items-center justify-between tap-squish">' +
+                let itemHtml = '<div onclick="openFormPengajuan(\'' + safeNamaForJS + '\')" class="light-glass-card p-3.5 md:p-4 rounded-2xl transition-all duration-300 shadow-md hover:shadow-xl cursor-pointer group bg-white border border-slate-100 hover:border-emerald-200 flex items-center justify-between tap-squish">' +
                     '<div class="flex items-center space-x-3.5 flex-1 min-w-0 pr-2">' +
                     '<div class="w-10 h-10 md:w-11 md:h-11 bg-gradient-to-br from-emerald-50 to-teal-50 text-emerald-600 rounded-xl flex items-center justify-center shrink-0 border border-emerald-100/50 group-hover:bg-gradient-to-br group-hover:from-narmadaGreen group-hover:to-narmadaGreen-dark group-hover:text-white transition-all duration-500 shadow-sm">' +
                     '<i class="fa-solid fa-file-signature text-lg md:text-xl drop-shadow-sm group-hover:scale-110 transition-transform"></i>' +
