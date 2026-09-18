@@ -263,7 +263,7 @@ export function renderDynamicCustomQuestions(fields) {
 
                     fieldsInPage.forEach(function (f) {
                         let displayType = f.type;
-                        let actualName = f.name;
+                        let actualName = String(f.name || "");
                         let typeMatch = actualName.match(/(.*)\s*\|\|(number|date)\|\|$/);
                         if (typeMatch) {
                             displayType = typeMatch[2];
@@ -365,7 +365,7 @@ export function generateRepeaterBlockHtml(encodedSubFields, isRemovable) {
             
             subFields.forEach(function(f) {
                 let dType = f.type;
-                let aName = f.name;
+                let aName = String(f.name || "");
                 let tMatch = aName.match(/(.*)\s*\|\|(number|date)\|\|$/);
                 if (tMatch) {
                     dType = tMatch[2];
@@ -593,7 +593,7 @@ export function goToStep5() {
 
                 if (wrapperCard && !wrapperCard.classList.contains('hidden')) {
                     if (!uploadDataStore[slotId]) {
-                        let cleanName = requirements[i].name;
+                        let cleanName = String(requirements[i].name || "");
                         let match = cleanName.match(/^\[(.*?)\]\s*(.*)$/);
                         if (match) cleanName = match[2];
 
@@ -666,7 +666,7 @@ export function goToStep5() {
                 let wrapperCard = document.getElementById('wrapper-slot-card-' + slotId);
 
                 if (wrapperCard && !wrapperCard.classList.contains('hidden') && base64) {
-                    let cleanName = req.name;
+                    let cleanName = String(req.name || "");
                     let match = cleanName.match(/^\[(.*?)\]\s*(.*)$/);
                     if (match) cleanName = match[2];
 
@@ -794,7 +794,7 @@ export function handleWargaSubmit() {
                 let slotId = "slot_" + requirements[i].id;
                 let wrapperCard = document.getElementById('wrapper-slot-card-' + slotId);
                 if (wrapperCard && !wrapperCard.classList.contains('hidden') && uploadDataStore[slotId]) {
-                    let cleanName = requirements[i].name;
+                    let cleanName = String(requirements[i].name || "");
                     let match = cleanName.match(/^\[(.*?)\]\s*(.*)$/);
                     if (match) cleanName = match[2];
 
