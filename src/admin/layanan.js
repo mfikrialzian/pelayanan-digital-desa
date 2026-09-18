@@ -1607,7 +1607,7 @@ export function resetBuilderFormState() {
             window.builderQuestions = [];
             window.builderReqMap = {};
 
-            cancelEditBuilderQuestion();
+            if (typeof window.closeFieldEditorModal === 'function') window.closeFieldEditorModal();
             renderBuilderQuestionsUIList();
             initStep2RequirementsBuilder();
             initStep3QuestionsBuilder();
