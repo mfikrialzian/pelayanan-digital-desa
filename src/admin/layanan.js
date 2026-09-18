@@ -1170,6 +1170,7 @@ sortableLists.forEach(list => {
         }
     });
 });
+    }
 }
 
 export function openConditionalBuilder(index) {
