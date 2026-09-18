@@ -1205,36 +1205,35 @@ sortableLists.forEach(list => {
 }
 
 export function openConditionalBuilder(index) {
-let q = window.builderQuestions[index];
-let meta = parseQuestionMetadata(q.name);
+    let q = window.builderQuestions[index];
+    let meta = parseQuestionMetadata(q.name);
 
-document.getElementById('builder-q-condition-parent-id').value = q.id;
-document.getElementById('builder-q-condition-parent-name').value = meta.cleanName;
-
-let wrapperCond = document.getElementById('wrapper-q-condition');
-if(wrapperCond) wrapperCond.classList.remove('hidden');
-
-let selectEl = document.getElementById('builder-q-condition-value');
-if(selectEl) {
-    selectEl.innerHTML = "";
-    let options = q.options ? q.options.split(',') : [];
-    options.forEach(o => {
-        o = o.trim();
-        let opt = document.createElement('option');
-        opt.value = o;
-        opt.text = o;
-        selectEl.appendChild(opt);
-    });
-}
-
-let kepEl = document.getElementById('builder-q-keperluan');
-if(kepEl) kepEl.value = meta.keperluan || (kepEl.options.length > 0 ? kepEl.options[0].value : '');
-
-let formTitle = document.getElementById('builder-q-form-title');
-if (formTitle) formTitle.innerHTML = '<i class="fa-solid fa-code-branch text-indigo-600"></i> Buat Pertanyaan Lanjutan';
-
-document.getElementById('bl-step-4').scrollIntoView({ behavior: 'smooth', block: 'start' });
-pushToast("Silakan atur pertanyaan lanjutan untuk " + meta.cleanName, "success");
+    window.openFieldEditorModal(-1, meta.halaman, meta.judul);
+    
+    let titleEl = document.getElementById('modal-field-editor-title');
+    if (titleEl) titleEl.innerHTML = '<i class="fa-solid fa-code-branch text-indigo-600 mr-2"></i> Tambah Cabang: ' + meta.cleanName;
+    
+    let wrapperCond = document.getElementById('wrapper-modal-q-condition');
+    if (wrapperCond) wrapperCond.classList.remove('hidden');
+    
+    let parentIdEl = document.getElementById('modal-field-q-condition-parent-id');
+    if (parentIdEl) parentIdEl.value = q.id;
+    
+    let parentNameEl = document.getElementById('modal-field-q-condition-parent-name');
+    if (parentNameEl) parentNameEl.value = meta.cleanName;
+    
+    let selectEl = document.getElementById('modal-field-q-condition-value');
+    if (selectEl) {
+        selectEl.innerHTML = "";
+        let options = q.options ? q.options.split(',') : [];
+        options.forEach(o => {
+            o = o.trim();
+            let opt = document.createElement('option');
+            opt.value = o;
+            opt.text = o;
+            selectEl.appendChild(opt);
+        });
+    }
 }
 
 window.toggleKebabMenu = function(btn) {
@@ -1332,6 +1331,15 @@ window.openFieldEditorModal = function(globalIndex = -1, targetPageNo = 1, targe
         document.getElementById('wrapper-modal-q-limit').classList.toggle('hidden', t !== 'number');
     };
     
+    let wrapperCond = document.getElementById('wrapper-modal-q-condition');
+    if (wrapperCond) wrapperCond.classList.add('hidden');
+    let parentIdEl = document.getElementById('modal-field-q-condition-parent-id');
+    if (parentIdEl) parentIdEl.value = "";
+    let parentNameEl = document.getElementById('modal-field-q-condition-parent-name');
+    if (parentNameEl) parentNameEl.value = "";
+    let selectCondVal = document.getElementById('modal-field-q-condition-value');
+    if (selectCondVal) selectCondVal.innerHTML = "";
+    
     if(isEdit) {
         let q = window.builderQuestions[globalIndex];
         let meta = parseQuestionMetadata(q.name);
@@ -1342,6 +1350,27 @@ window.openFieldEditorModal = function(globalIndex = -1, targetPageNo = 1, targe
         document.getElementById('modal-field-q-type').value = q.type;
         document.getElementById('modal-field-q-required').value = q.required;
         document.getElementById('modal-field-q-options').value = q.options || "";
+        
+        if (q.conditionField) {
+            let parentQ = window.builderQuestions.find(pq => pq.id === q.conditionField);
+            if (parentQ) {
+                if (wrapperCond) wrapperCond.classList.remove('hidden');
+                if (parentIdEl) parentIdEl.value = q.conditionField;
+                if (parentNameEl) parentNameEl.value = parseQuestionMetadata(parentQ.name).cleanName;
+                if (selectCondVal) {
+                    selectCondVal.innerHTML = "";
+                    let pOpts = parentQ.options ? parentQ.options.split(',') : [];
+                    pOpts.forEach(o => {
+                        o = o.trim();
+                        let opt = document.createElement('option');
+                        opt.value = o;
+                        opt.text = o;
+                        if (o === q.conditionValue) opt.selected = true;
+                        selectCondVal.appendChild(opt);
+                    });
+                }
+            }
+        }
         
         document.getElementById('modal-field-q-type').dispatchEvent(new Event('change'));
     } else {
@@ -1389,11 +1418,16 @@ window.saveFieldFromModal = function() {
         options: type === 'dropdown' ? options : ""
     };
     
+    let condParentId = document.getElementById('modal-field-q-condition-parent-id').value;
+    let condValue = document.getElementById('modal-field-q-condition-value').value;
+    if (condParentId) {
+        newQ.conditionField = condParentId;
+        newQ.conditionValue = condValue;
+    }
+    
     if(globalIndex !== "") {
         let orig = window.builderQuestions[parseInt(globalIndex)];
         newQ.id = orig.id;
-        if (orig.conditionField !== undefined) newQ.conditionField = orig.conditionField;
-        if (orig.conditionValue !== undefined) newQ.conditionValue = orig.conditionValue;
         window.builderQuestions[parseInt(globalIndex)] = newQ;
     } else {
         window.builderQuestions.push(newQ);
