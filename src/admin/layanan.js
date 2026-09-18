@@ -1241,7 +1241,7 @@ if(kepEl) kepEl.value = meta.keperluan || (kepEl.options.length > 0 ? kepEl.opti
 let formTitle = document.getElementById('builder-q-form-title');
 if (formTitle) formTitle.innerHTML = '<i class="fa-solid fa-code-branch text-indigo-600"></i> Buat Pertanyaan Lanjutan';
 
-document.getElementById('builder-step-2').scrollIntoView({ behavior: 'smooth', block: 'start' });
+document.getElementById('bl-step-4').scrollIntoView({ behavior: 'smooth', block: 'start' });
 pushToast("Silakan atur pertanyaan lanjutan untuk " + meta.cleanName, "success");
 }
 
@@ -2049,6 +2049,57 @@ window.deleteBuilderPage = function(pageNo) {
             pushToast('Halaman berhasil dihapus', 'success');
         }
     });
+};
+
+window.duplicateBuilderQuestion = function(index) {
+    let q = window.builderQuestions[index];
+    if (!q) return;
+    
+    // Create deep copy
+    let newQ = JSON.parse(JSON.stringify(q));
+    newQ.id = "Q" + new Date().getTime() + Math.floor(Math.random() * 1000);
+    
+    // Modify metadata to indicate copy
+    let meta = parseQuestionMetadata(newQ.name);
+    meta.cleanName = meta.cleanName + " (Salinan)";
+    newQ.name = JSON.stringify(meta);
+    
+    // If it's a repeater, we need to assign new IDs to all its internal questions too
+    if (newQ.type === 'repeater' && newQ.options) {
+        try {
+            let inner = JSON.parse(newQ.options);
+            inner = inner.map(iq => {
+                iq.id = "Q" + new Date().getTime() + Math.floor(Math.random() * 1000);
+                return iq;
+            });
+            newQ.options = JSON.stringify(inner);
+        } catch(e) {}
+    }
+    
+    // Insert right after the original
+    window.builderQuestions.splice(index + 1, 0, newQ);
+    window.renderBuilderQuestionsUIList();
+    pushToast("Pertanyaan berhasil diduplikat.", "success");
+};
+
+window.updateBulkActionBar = function() {
+    let bar = document.getElementById('bulk-action-bar');
+    let countEl = document.getElementById('bulk-selected-count');
+    if (!bar || !countEl) return;
+    
+    let count = window.selectedQuestions ? window.selectedQuestions.size : 0;
+    countEl.innerText = count + " dipilih";
+    
+    if (count > 0) {
+        bar.classList.remove('hidden', 'translate-y-full', 'opacity-0');
+    } else {
+        bar.classList.add('translate-y-full', 'opacity-0');
+        setTimeout(() => {
+            if (window.selectedQuestions && window.selectedQuestions.size === 0) {
+                bar.classList.add('hidden');
+            }
+        }, 300);
+    }
 };
 
 window.deleteKeperluanAtIndex = deleteKeperluanAtIndex;
