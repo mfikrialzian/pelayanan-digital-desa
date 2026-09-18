@@ -475,7 +475,20 @@
 
                         <div id="container-pertanyaan-tambahan" class="space-y-3 pt-2"></div>
 
-                        <div class="flex justify-end pt-2">
+                        <!-- Step 3 Sub-Page Navigation (hidden when single page) -->
+                        <div id="step3-pagination" class="hidden">
+                            <div class="flex items-center justify-between pt-3 border-t border-slate-200/60">
+                                <button type="button" id="btn-step3-prev-page" class="px-4 py-2 bg-slate-100 text-slate-400 font-bold text-xs rounded-xl shadow-sm transition-all flex items-center gap-1.5 cursor-not-allowed tap-squish" disabled="">
+                                    <i class="fa-solid fa-arrow-left text-[10px]"></i> Sebelumnya
+                                </button>
+                                <span id="step3-page-indicator" class="text-[10px] font-extrabold text-slate-500 bg-slate-100 px-3 py-1 rounded-full">Halaman 1 dari 1</span>
+                                <button type="button" id="btn-step3-next-page" class="px-4 py-2 bg-narmadaGreen hover:bg-narmadaGreen-dark text-white font-bold text-xs rounded-xl shadow-md transition-all flex items-center gap-1.5 tap-squish">
+                                    Selanjutnya <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="wrapper-btn-next-step-3" class="flex justify-end pt-2">
                             <button type="button" id="btn-next-step-3" disabled="" class="px-5 py-2.5 bg-slate-300 text-slate-500 font-bold text-xs rounded-xl shadow-md transition-all flex items-center gap-1.5 cursor-not-allowed tap-squish">
                                 Lanjut ke Unggah Berkas <i class="fa-solid fa-arrow-right text-[10px]"></i>
                             </button>

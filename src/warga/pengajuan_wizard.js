@@ -233,52 +233,83 @@ export function renderDynamicCustomQuestions(fields) {
             }
 
             if (fields && fields.length > 0) {
-                let lastJudul = "";
+                // Group fields by halaman (page number) from admin metadata
+                let pageGroups = {};
                 fields.forEach(function (f) {
-                    let displayType = f.type;
-
-
                     let actualName = f.name;
                     let typeMatch = actualName.match(/(.*)\s*\|\|(number|date)\|\|$/);
-                    if (typeMatch) {
-                        displayType = typeMatch[2];
-                        actualName = typeMatch[1].trim();
-                    }
-
-                    let qInputId = "dyn_q_" + f.id;
+                    if (typeMatch) actualName = typeMatch[1].trim();
                     let meta = parseQuestionMetadata(actualName);
-                    
-                    let condAttrs = "";
-                    if (f.conditionField && f.conditionValue) {
-                        condAttrs = ' data-bind-condition-field="' + f.conditionField + '" data-bind-condition-value="' + f.conditionValue + '"';
-                    }
-
-                    if (displayType === "repeater") {
-                        let groupHtml = '<div class="dynamic-question-wrapper mt-3" data-bind-keperluan="' + meta.keperluan + '"' + condAttrs + '>';
-                        groupHtml += '<div id="' + qInputId + '_container" class="space-y-3"></div>';
-                        let encodedOpts = encodeURIComponent(f.options || "[]");
-                        groupHtml += '<button type="button" onclick="addRepeaterGroup(\'' + qInputId + '_container\', \'' + encodedOpts + '\')" class="mt-3 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-[10px] font-bold shadow-sm transition-all flex items-center gap-1.5"><i class="fa-solid fa-plus"></i> Tambah Jawaban Lain</button>';
-                        groupHtml += '</div>';
-                        qContainer.innerHTML += groupHtml;
-                        return;
-                    }
-
-                    let isRequiredStr = f.required === "ya" ? " *" : ' <span class="text-[9px] text-slate-400 font-semibold">(Opsional)</span>';
-                    let requiredAttr = f.required === "ya" ? "required" : "";
-
-                    let groupHtml = '<div class="dynamic-question-wrapper space-y-1.5 mt-3" data-bind-keperluan="' + meta.keperluan + '"' + condAttrs + '>';
-
-                    if (meta.judul && meta.judul !== "-" && meta.judul !== lastJudul) {
-                        groupHtml += '<h4 class="text-sm font-semibold text-narmadaGreen border-b border-emerald-100 pb-1.5 mt-3 mb-2"><i class="fa-solid fa-list-check"></i> ' + meta.judul + '</h4>';
-                        lastJudul = meta.judul;
-                    }
-
-                    groupHtml += '<label class="block text-xs font-semibold text-slate-600">' + escapeHtml(meta.cleanName) + isRequiredStr + '</label>';
-                    groupHtml += generateFieldInputHtml(displayType, actualName, requiredAttr, f.options, f.id);
-                    groupHtml += '</div>';
-                    qContainer.innerHTML += groupHtml;
+                    let pageNum = meta.halaman || 1;
+                    if (!pageGroups[pageNum]) pageGroups[pageNum] = [];
+                    pageGroups[pageNum].push(f);
                 });
+
+                let sortedPageNums = Object.keys(pageGroups).map(Number).sort(function(a, b) { return a - b; });
+                window.step3TotalPages = sortedPageNums.length;
+                window.step3CurrentPage = 1;
+
+                sortedPageNums.forEach(function (pageNum, idx) {
+                    let pageIndex = idx + 1;
+                    let isHidden = pageIndex > 1;
+                    let fieldsInPage = pageGroups[pageNum];
+
+                    let pageHtml = '<div class="step3-page' + (isHidden ? ' hidden' : '') + '" data-step3-page="' + pageIndex + '">';
+
+                    let lastJudul = "";
+
+                    fieldsInPage.forEach(function (f) {
+                        let displayType = f.type;
+                        let actualName = f.name;
+                        let typeMatch = actualName.match(/(.*)\s*\|\|(number|date)\|\|$/);
+                        if (typeMatch) {
+                            displayType = typeMatch[2];
+                            actualName = typeMatch[1].trim();
+                        }
+
+                        let qInputId = "dyn_q_" + f.id;
+                        let meta = parseQuestionMetadata(actualName);
+                        
+                        let condAttrs = "";
+                        if (f.conditionField && f.conditionValue) {
+                            condAttrs = ' data-bind-condition-field="' + f.conditionField + '" data-bind-condition-value="' + f.conditionValue + '"';
+                        }
+
+                        if (displayType === "repeater") {
+                            let groupHtml = '<div class="dynamic-question-wrapper mt-3" data-bind-keperluan="' + meta.keperluan + '"' + condAttrs + '>';
+                            groupHtml += '<div id="' + qInputId + '_container" class="space-y-3"></div>';
+                            let encodedOpts = encodeURIComponent(f.options || "[]");
+                            groupHtml += '<button type="button" onclick="addRepeaterGroup(\'' + qInputId + '_container\', \'' + encodedOpts + '\')" class="mt-3 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-[10px] font-bold shadow-sm transition-all flex items-center gap-1.5"><i class="fa-solid fa-plus"></i> Tambah Jawaban Lain</button>';
+                            groupHtml += '</div>';
+                            pageHtml += groupHtml;
+                            return;
+                        }
+
+                        let isRequiredStr = f.required === "ya" ? " *" : ' <span class="text-[9px] text-slate-400 font-semibold">(Opsional)</span>';
+                        let requiredAttr = f.required === "ya" ? "required" : "";
+
+                        let groupHtml = '<div class="dynamic-question-wrapper space-y-1.5 mt-3" data-bind-keperluan="' + meta.keperluan + '"' + condAttrs + '>';
+
+                        if (meta.judul && meta.judul !== "-" && meta.judul !== lastJudul) {
+                            groupHtml += '<h4 class="text-sm font-semibold text-narmadaGreen border-b border-emerald-100 pb-1.5 mt-3 mb-2"><i class="fa-solid fa-list-check"></i> ' + meta.judul + '</h4>';
+                            lastJudul = meta.judul;
+                        }
+
+                        groupHtml += '<label class="block text-xs font-semibold text-slate-600">' + escapeHtml(meta.cleanName) + isRequiredStr + '</label>';
+                        groupHtml += generateFieldInputHtml(displayType, actualName, requiredAttr, f.options, f.id);
+                        groupHtml += '</div>';
+                        pageHtml += groupHtml;
+                    });
+
+                    pageHtml += '</div>';
+                    qContainer.innerHTML += pageHtml;
+                });
+            } else {
+                window.step3TotalPages = 1;
+                window.step3CurrentPage = 1;
             }
+
+            updateStep3PaginationUI();
             initSearchableDropdowns();
         }
 
@@ -459,6 +490,23 @@ export function switchWizardSection(stepNum) {
                 targetStep.classList.remove('hidden');
                 targetStep.classList.add('animate-fade-in');
             }
+
+            // Reset step 3 sub-page to first page when entering step 3
+            if (stepNum === 3) {
+                window.step3CurrentPage = 1;
+                let allPages = document.querySelectorAll('.step3-page');
+                allPages.forEach(function(el) {
+                    let pIdx = parseInt(el.getAttribute('data-step3-page'));
+                    if (pIdx === 1) {
+                        el.classList.remove('hidden');
+                    } else {
+                        el.classList.add('hidden');
+                        el.classList.remove('animate-fade-in');
+                    }
+                });
+                updateStep3PaginationUI();
+            }
+
             validateCurrentWizardStep();
         }
 
@@ -894,31 +942,44 @@ export function validateCurrentWizardStep() {
                     btn.className = "px-5 py-2.5 bg-slate-300 text-slate-500 font-bold text-xs rounded-xl shadow-md transition-all flex items-center gap-1.5 cursor-not-allowed tap-squish";
                 }
             } else if (currentWizardStep === 3) {
+                // Validate "Lanjut ke Unggah Berkas" button (checks ALL fields across ALL pages)
                 let btn = document.getElementById('btn-next-step-3');
-                if (!btn) return;
-                let reqKeperluan = document.getElementById('warga-keperluan-surat');
-                if (reqKeperluan && !reqKeperluan.value.trim()) {
-                    btn.disabled = true;
-                    btn.className = "px-5 py-2.5 bg-slate-300 text-slate-500 font-bold text-xs rounded-xl shadow-md transition-all flex items-center gap-1.5 cursor-not-allowed tap-squish";
-                    return;
-                }
-                let isValid = true;
-                let qWrappers = document.querySelectorAll('.dynamic-question-wrapper');
-                for (let i = 0; i < qWrappers.length; i++) {
-                    if (!qWrappers[i].classList.contains('hidden')) {
-                        let inputField = qWrappers[i].querySelector('.dynamic-question-field');
-                        if (inputField && inputField.hasAttribute('required') && !inputField.value.trim()) {
-                            isValid = false;
-                            break;
+                if (btn) {
+                    let reqKeperluan = document.getElementById('warga-keperluan-surat');
+                    let keperluanOk = !reqKeperluan || reqKeperluan.value.trim();
+                    let isAllValid = keperluanOk;
+                    if (keperluanOk) {
+                        let qWrappers = document.querySelectorAll('.dynamic-question-wrapper');
+                        for (let i = 0; i < qWrappers.length; i++) {
+                            if (!qWrappers[i].classList.contains('hidden')) {
+                                let inputField = qWrappers[i].querySelector('.dynamic-question-field');
+                                if (inputField && inputField.hasAttribute('required') && !inputField.value.trim()) {
+                                    isAllValid = false;
+                                    break;
+                                }
+                            }
                         }
                     }
+                    if (isAllValid) {
+                        btn.disabled = false;
+                        btn.className = "px-5 py-2.5 bg-narmadaGreen hover:bg-narmadaGreen-dark text-white font-bold text-xs rounded-xl shadow-md transition-all flex items-center gap-1.5 tap-squish";
+                    } else {
+                        btn.disabled = true;
+                        btn.className = "px-5 py-2.5 bg-slate-300 text-slate-500 font-bold text-xs rounded-xl shadow-md transition-all flex items-center gap-1.5 cursor-not-allowed tap-squish";
+                    }
                 }
-                if (isValid) {
-                    btn.disabled = false;
-                    btn.className = "px-5 py-2.5 bg-narmadaGreen hover:bg-narmadaGreen-dark text-white font-bold text-xs rounded-xl shadow-md transition-all flex items-center gap-1.5 tap-squish";
-                } else {
-                    btn.disabled = true;
-                    btn.className = "px-5 py-2.5 bg-slate-300 text-slate-500 font-bold text-xs rounded-xl shadow-md transition-all flex items-center gap-1.5 cursor-not-allowed tap-squish";
+
+                // Also validate current page for "Selanjutnya" button
+                let nextPageBtn = document.getElementById('btn-step3-next-page');
+                if (nextPageBtn && window.step3TotalPages > 1 && window.step3CurrentPage < window.step3TotalPages) {
+                    let isPageValid = validateStep3CurrentPageFields();
+                    if (isPageValid) {
+                        nextPageBtn.disabled = false;
+                        nextPageBtn.className = "px-4 py-2 bg-narmadaGreen hover:bg-narmadaGreen-dark text-white font-bold text-xs rounded-xl shadow-md transition-all flex items-center gap-1.5 tap-squish";
+                    } else {
+                        nextPageBtn.disabled = true;
+                        nextPageBtn.className = "px-4 py-2 bg-slate-300 text-slate-400 font-bold text-xs rounded-xl shadow-sm transition-all flex items-center gap-1.5 cursor-not-allowed tap-squish";
+                    }
                 }
             } else if (currentWizardStep === 4) {
                 let btn = document.getElementById('btn-next-step-4');
@@ -942,6 +1003,129 @@ export function validateCurrentWizardStep() {
                     btn.disabled = true;
                     btn.className = "px-5 py-2.5 bg-slate-300 text-slate-500 text-xs font-bold rounded-xl shadow-md transition-all flex items-center gap-1.5 cursor-not-allowed tap-squish";
                 }
+            }
+        }
+
+export function validateStep3CurrentPageFields() {
+            let reqKeperluan = document.getElementById('warga-keperluan-surat');
+            if (reqKeperluan && !reqKeperluan.value.trim()) return false;
+
+            let currentPageEl = document.querySelector('.step3-page[data-step3-page="' + window.step3CurrentPage + '"]');
+            if (!currentPageEl) return true;
+
+            let qWrappers = currentPageEl.querySelectorAll('.dynamic-question-wrapper');
+            for (let i = 0; i < qWrappers.length; i++) {
+                if (!qWrappers[i].classList.contains('hidden')) {
+                    let inputField = qWrappers[i].querySelector('.dynamic-question-field');
+                    if (inputField && inputField.hasAttribute('required') && !inputField.value.trim()) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+export function switchStep3Page(pageIdx) {
+            window.step3CurrentPage = pageIdx;
+
+            let allPages = document.querySelectorAll('.step3-page');
+            allPages.forEach(function(el) {
+                let pIdx = parseInt(el.getAttribute('data-step3-page'));
+                if (pIdx === pageIdx) {
+                    el.classList.remove('hidden');
+                    el.classList.add('animate-fade-in');
+                } else {
+                    el.classList.add('hidden');
+                    el.classList.remove('animate-fade-in');
+                }
+            });
+
+            updateStep3PaginationUI();
+            validateCurrentWizardStep();
+
+            // Scroll to top of form
+            let formWrapper = document.getElementById('container-pertanyaan-tambahan');
+            if (formWrapper) formWrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+export function goToNextStep3Page() {
+            // Validate keperluan
+            let reqKeperluan = document.getElementById('warga-keperluan-surat');
+            if (reqKeperluan && !reqKeperluan.value.trim()) {
+                pushToast("Mohon pilih Keperluan Surat terlebih dahulu!", "error");
+                return;
+            }
+
+            // Validate current page fields
+            let currentPageEl = document.querySelector('.step3-page[data-step3-page="' + window.step3CurrentPage + '"]');
+            if (currentPageEl) {
+                let qWrappers = currentPageEl.querySelectorAll('.dynamic-question-wrapper');
+                for (let i = 0; i < qWrappers.length; i++) {
+                    if (!qWrappers[i].classList.contains('hidden')) {
+                        let inputField = qWrappers[i].querySelector('.dynamic-question-field');
+                        if (inputField && inputField.hasAttribute('required') && !inputField.value.trim()) {
+                            let label = parseQuestionMetadata(inputField.getAttribute('data-question')).cleanName;
+                            pushToast("Mohon lengkapi isian wajib: " + label, "error");
+                            return;
+                        }
+                    }
+                }
+            }
+
+            if (window.step3CurrentPage < window.step3TotalPages) {
+                if (typeof saveWargaDraft === 'function') saveWargaDraft();
+                switchStep3Page(window.step3CurrentPage + 1);
+            }
+        }
+
+export function goToPrevStep3Page() {
+            if (window.step3CurrentPage > 1) {
+                switchStep3Page(window.step3CurrentPage - 1);
+            }
+        }
+
+export function updateStep3PaginationUI() {
+            let paginationEl = document.getElementById('step3-pagination');
+            let wrapperBtnNext = document.getElementById('wrapper-btn-next-step-3');
+
+            if (!paginationEl) return;
+
+            if (!window.step3TotalPages || window.step3TotalPages <= 1) {
+                // Single page: hide pagination, show next step button
+                paginationEl.classList.add('hidden');
+                if (wrapperBtnNext) wrapperBtnNext.classList.remove('hidden');
+                return;
+            }
+
+            // Multi-page: show pagination
+            paginationEl.classList.remove('hidden');
+
+            let prevBtn = document.getElementById('btn-step3-prev-page');
+            let nextBtn = document.getElementById('btn-step3-next-page');
+            let indicator = document.getElementById('step3-page-indicator');
+
+            if (indicator) indicator.innerText = 'Halaman ' + window.step3CurrentPage + ' dari ' + window.step3TotalPages;
+
+            // Prev button state
+            if (prevBtn) {
+                if (window.step3CurrentPage <= 1) {
+                    prevBtn.disabled = true;
+                    prevBtn.className = "px-4 py-2 bg-slate-100 text-slate-400 font-bold text-xs rounded-xl shadow-sm transition-all flex items-center gap-1.5 cursor-not-allowed tap-squish";
+                } else {
+                    prevBtn.disabled = false;
+                    prevBtn.className = "px-4 py-2 bg-white border border-slate-200 text-slate-600 font-bold text-xs rounded-xl shadow-sm transition-all flex items-center gap-1.5 hover:bg-slate-50 tap-squish";
+                }
+            }
+
+            // Next button & "Lanjut ke Unggah Berkas" visibility
+            if (window.step3CurrentPage >= window.step3TotalPages) {
+                // Last page: hide "Selanjutnya", show "Lanjut ke Unggah Berkas"
+                if (nextBtn) nextBtn.classList.add('hidden');
+                if (wrapperBtnNext) wrapperBtnNext.classList.remove('hidden');
+            } else {
+                // Not last page: show "Selanjutnya", hide "Lanjut ke Unggah Berkas"
+                if (nextBtn) nextBtn.classList.remove('hidden');
+                if (wrapperBtnNext) wrapperBtnNext.classList.add('hidden');
             }
         }
 

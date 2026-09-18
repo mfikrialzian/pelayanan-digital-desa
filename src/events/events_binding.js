@@ -12,7 +12,8 @@ const {
     closeManageStatusModal, saveAdminSettings, switchManajemenPenggunaTab, backToManajemenPengguna, 
     openModalTambahPengguna, saveRoleAccess, fetchActivities, closeModalEditPengguna, simpanEditPengguna, 
     closeModalTambahPengguna, simpanPenggunaBaru, closeLightbox, toggleUserDropdown, saveProfileData,
-    handlePengajuanSubmission, deleteProfilePhoto
+    handlePengajuanSubmission, deleteProfilePhoto,
+    goToNextStep3Page, goToPrevStep3Page
 } = window;
 
 // Extracted from div #ev-bind-1
@@ -122,6 +123,22 @@ if (el_btn_next_step_3) {
     });
 } else {
     console.warn("Element #btn-next-step-3 not found for event binding.");
+}
+
+// Extracted from button #btn-step3-next-page
+const el_btn_step3_next_page = document.getElementById('btn-step3-next-page');
+if (el_btn_step3_next_page) {
+    el_btn_step3_next_page.addEventListener('click', function(event) {
+        goToNextStep3Page();
+    });
+}
+
+// Extracted from button #btn-step3-prev-page
+const el_btn_step3_prev_page = document.getElementById('btn-step3-prev-page');
+if (el_btn_step3_prev_page) {
+    el_btn_step3_prev_page.addEventListener('click', function(event) {
+        goToPrevStep3Page();
+    });
 }
 
 
