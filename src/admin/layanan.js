@@ -1176,18 +1176,10 @@ export function renderBuilderQuestionsUIList() {
     html += `</div>`;
 });
 
-html += `<div class="flex justify-center mt-4">
+    html += `<div class="flex justify-center mt-4 mb-10">
             <button type="button" onclick="addBuilderPage()" class="cursor-pointer px-4 py-2 bg-emerald-50 text-narmadaGreen hover:bg-emerald-100 border border-emerald-200 rounded-lg text-[11px] font-bold shadow-sm transition-all flex items-center gap-2"><i class="fa-solid fa-folder-plus"></i> Tambah Halaman Baru</button>
         </div>`;
         
-// Add Bulk Action Bar Container
-html += `<div id="bulk-action-bar" class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 bg-slate-800 text-white px-5 py-3 rounded-xl shadow-2xl z-50 flex items-center gap-5 transition-transform transform translate-y-full opacity-0 duration-300">
-            <span id="bulk-selected-count" class="text-[11px] font-bold">0 dipilih</span>
-            <div class="h-5 w-px bg-slate-600"></div>
-            <button type="button" onclick="bulkDeleteQuestions()" class="text-[11px] font-bold text-red-400 hover:text-red-300 transition-colors"><i class="fa-solid fa-trash mr-1.5"></i> Hapus</button>
-            <button type="button" onclick="clearSelection()" class="text-[11px] font-bold text-slate-300 hover:text-white transition-colors"><i class="fa-solid fa-times mr-1.5"></i> Batal</button>
-         </div>`;
-
 container.innerHTML = html;
 updateBulkActionBar();
 
@@ -1400,6 +1392,8 @@ window.saveFieldFromModal = function() {
     if(globalIndex !== "") {
         let orig = window.builderQuestions[parseInt(globalIndex)];
         newQ.id = orig.id;
+        if (orig.conditionField !== undefined) newQ.conditionField = orig.conditionField;
+        if (orig.conditionValue !== undefined) newQ.conditionValue = orig.conditionValue;
         window.builderQuestions[parseInt(globalIndex)] = newQ;
     } else {
         window.builderQuestions.push(newQ);
@@ -1941,7 +1935,19 @@ window.toggleSelectPage = function(pageNo, isChecked) {
 
 window.updateBulkActionBar = function() {
     let bar = document.getElementById('bulk-action-bar');
-    if (!bar) return;
+    if (!bar) {
+        bar = document.createElement('div');
+        bar.id = 'bulk-action-bar';
+        bar.className = 'hidden fixed bottom-6 left-1/2 -translate-x-1/2 bg-slate-800 text-white px-5 py-3 rounded-xl shadow-2xl z-50 flex items-center gap-5 transition-transform transform translate-y-full opacity-0 duration-300';
+        bar.innerHTML = `
+            <span id="bulk-selected-count" class="text-[11px] font-bold">0 dipilih</span>
+            <div class="h-5 w-px bg-slate-600"></div>
+            <button type="button" onclick="bulkDeleteQuestions()" class="text-[11px] font-bold text-red-400 hover:text-red-300 transition-colors"><i class="fa-solid fa-trash mr-1.5"></i> Hapus</button>
+            <button type="button" onclick="bulkDuplicateQuestions()" class="text-[11px] font-bold text-indigo-400 hover:text-indigo-300 transition-colors"><i class="fa-solid fa-copy mr-1.5"></i> Duplikat</button>
+            <button type="button" onclick="clearSelection()" class="text-[11px] font-bold text-slate-300 hover:text-white transition-colors"><i class="fa-solid fa-times mr-1.5"></i> Batal</button>
+        `;
+        document.body.appendChild(bar);
+    }
     
     let count = window.selectedQuestions ? window.selectedQuestions.size : 0;
     let countSpan = document.getElementById('bulk-selected-count');
@@ -2010,6 +2016,40 @@ window.bulkDeleteQuestions = function() {
             pushToast('Pertanyaan terpilih berhasil dihapus', 'success');
         }
     });
+};
+
+window.bulkDuplicateQuestions = function() {
+    if (!window.selectedQuestions || window.selectedQuestions.size === 0) return;
+    
+    let toDuplicate = Array.from(window.selectedQuestions).sort((a,b) => b - a); // descending to avoid index shifting problems
+    toDuplicate.forEach(idx => {
+        if (idx >= 0 && idx < window.builderQuestions.length) {
+            let q = window.builderQuestions[idx];
+            let newQ = JSON.parse(JSON.stringify(q));
+            newQ.id = "Q" + new Date().getTime() + Math.floor(Math.random() * 1000);
+            
+            let meta = parseQuestionMetadata(newQ.name);
+            meta.cleanName = meta.cleanName + " (Salinan)";
+            newQ.name = "{" + meta.keperluan + ";;" + meta.halaman + ";;" + meta.judul + "} " + meta.cleanName;
+            
+            if (newQ.type === 'repeater' && newQ.options) {
+                try {
+                    let inner = JSON.parse(newQ.options);
+                    inner = inner.map(iq => {
+                        iq.id = "Q" + new Date().getTime() + Math.floor(Math.random() * 1000);
+                        return iq;
+                    });
+                    newQ.options = JSON.stringify(inner);
+                } catch(e) {}
+            }
+            
+            window.builderQuestions.splice(idx + 1, 0, newQ);
+        }
+    });
+    
+    window.selectedQuestions.clear();
+    window.renderBuilderQuestionsUIList();
+    pushToast('Pertanyaan terpilih berhasil diduplikat', 'success');
 };
 
 window.deleteBuilderPage = function(pageNo) {
@@ -2082,25 +2122,7 @@ window.duplicateBuilderQuestion = function(index) {
     pushToast("Pertanyaan berhasil diduplikat.", "success");
 };
 
-window.updateBulkActionBar = function() {
-    let bar = document.getElementById('bulk-action-bar');
-    let countEl = document.getElementById('bulk-selected-count');
-    if (!bar || !countEl) return;
-    
-    let count = window.selectedQuestions ? window.selectedQuestions.size : 0;
-    countEl.innerText = count + " dipilih";
-    
-    if (count > 0) {
-        bar.classList.remove('hidden', 'translate-y-full', 'opacity-0');
-    } else {
-        bar.classList.add('translate-y-full', 'opacity-0');
-        setTimeout(() => {
-            if (window.selectedQuestions && window.selectedQuestions.size === 0) {
-                bar.classList.add('hidden');
-            }
-        }, 300);
-    }
-};
+// updateBulkActionBar has been moved above
 
 window.deleteKeperluanAtIndex = deleteKeperluanAtIndex;
 window.openDrawer = openDrawer;
