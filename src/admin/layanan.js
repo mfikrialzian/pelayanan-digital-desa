@@ -1101,53 +1101,121 @@ export function renderBuilderQuestionsUIList() {
                         </div>
                      </div>`;
                      
-            html += `<div class="p-3 space-y-2">`;
-            page.questions.forEach((item, localIdx) => {
+            html += `<div class="p-3 space-y-2 builder-sortable-list">`;
+            
+            let renderItem = function(item, depth, indexNum) {
                 let baseType = item.q.type;
                 let reqBadge = item.q.required === "tidak" ? '<span class="text-[9px] text-amber-500 font-bold ml-1">(opsional)</span>' : '<span class="text-[9px] text-slate-400 font-bold ml-1">(wajib)</span>';
                 let conditionTag = item.q.conditionField ? `<div class="text-[9px] text-indigo-500 font-bold mt-1"><i class="fa-solid fa-arrow-turn-up fa-rotate-90 text-[8px]"></i> Lanjutan jika: "${item.q.conditionValue}"</div>` : '';
+                let marginLeft = depth > 0 ? ('ml-' + (depth * 4)) : '';
                 
-                html += `<div class="flex justify-between items-center p-2.5 rounded-lg border border-slate-100 hover:border-emerald-200 hover:bg-emerald-50/30 transition-colors group">
-                            <div>
-                                <div class="text-[11px] font-bold text-slate-700">${(item.q.label || '').replace(/\{.*?\}/, '').trim()} ${reqBadge}</div>
-                                <div class="text-[10px] text-slate-500 flex gap-2 mt-0.5">
-                                    <span class="capitalize border border-slate-200 bg-white rounded px-1">${baseType}</span>
-                                </div>
-                                ${conditionTag}
+                html += `<div class="flex justify-between items-center p-2.5 rounded-lg border border-slate-100 hover:border-emerald-200 hover:bg-emerald-50/30 transition-colors bg-white builder-question-item ${marginLeft}" data-global-index="${item.globalIndex}">
+                            <div class="flex items-start">
+                                <i class="fa-solid fa-grip-vertical cursor-move text-slate-300 hover:text-slate-500 mr-3 mt-1 builder-drag-handle"></i>
+                                <div>
+                            <div class="text-[11px] font-bold text-slate-700">${(item.q.label || '').replace(/\\{.*?\\}/, '').trim()} ${reqBadge}</div>
+                            <div class="text-[10px] text-slate-500 flex gap-2 mt-0.5">
+                                <span class="capitalize border border-slate-200 bg-white rounded px-1">${baseType}</span>
                             </div>
-                            <div class="flex gap-2">
-                                <button type="button" onclick="openFieldEditorModal(${item.globalIndex})" class="w-6 h-6 rounded bg-white border border-slate-200 shadow-sm hover:bg-amber-50 text-amber-600 flex items-center justify-center text-[10px]"><i class="fa-solid fa-pen"></i></button>
-                                <button type="button" onclick="removeBuilderQuestion(${item.globalIndex})" class="w-6 h-6 rounded bg-white border border-slate-200 shadow-sm hover:bg-red-50 text-red-600 flex items-center justify-center text-[10px]"><i class="fa-solid fa-trash"></i></button>
-                            </div>
-                         </div>`;
-            });
-            html += `</div>`;
-            
-            html += `<div class="px-4 py-2 bg-slate-50/50 border-t border-slate-100 text-center">
-                        <button type="button" onclick="openFieldEditorModal(-1, ${page.pageNo}, '${page.judul}')" class="text-[10px] font-bold text-narmadaGreen hover:text-emerald-700 hover:bg-emerald-50 px-3 py-1.5 rounded-lg transition-colors border border-transparent hover:border-emerald-200"><i class="fa-solid fa-plus mr-1"></i> Tambah Pertanyaan di Halaman Ini</button>
-                     </div>`;
-                     
-            html += `</div>`;
-        });
+                            ${conditionTag}
+                        </div>
+                    </div>
+                    <div class="relative group/kebab">
+                        <button type="button" class="w-6 h-6 rounded hover:bg-slate-100 text-slate-400 flex items-center justify-center text-[12px]"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                        <div class="absolute right-0 top-full mt-1 w-36 bg-white border border-slate-200 rounded-lg shadow-lg opacity-0 invisible group-hover/kebab:opacity-100 group-hover/kebab:visible transition-all z-10 flex flex-col overflow-hidden">
+                            ${baseType === "dropdown" ? `<button type="button" onclick="openConditionalBuilder(${item.globalIndex})" class="text-left px-3 py-2 text-[10px] font-bold text-slate-600 hover:bg-slate-50 hover:text-narmadaGreen border-b border-slate-100"><i class="fa-solid fa-code-branch w-4"></i> Cabang</button>` : ''}
+                            <button type="button" onclick="openFieldEditorModal(${item.globalIndex})" class="text-left px-3 py-2 text-[10px] font-bold text-slate-600 hover:bg-slate-50 hover:text-amber-600 border-b border-slate-100"><i class="fa-solid fa-pen w-4"></i> Edit</button>
+                            <button type="button" onclick="removeBuilderQuestion(${item.globalIndex})" class="text-left px-3 py-2 text-[10px] font-bold text-slate-600 hover:bg-slate-50 hover:text-red-600"><i class="fa-solid fa-trash w-4"></i> Hapus</button>
+                        </div>
+                    </div>
+                 </div>`;
+                 
+        let children = page.questions.filter(child => child.q.conditionField === item.q.id);
+        children.forEach((child, cIdx) => renderItem(child, depth + 1, indexNum + "." + (cIdx + 1)));
+    };
+
+    let roots = page.questions.filter(item => !item.q.conditionField);
+    roots.forEach((item, rIdx) => renderItem(item, 0, (rIdx + 1).toString()));
+
+    html += `</div>`;
+    
+    html += `<div class="px-4 py-2 bg-slate-50/50 border-t border-slate-100 text-center">
+                <button type="button" onclick="openFieldEditorModal(-1, ${page.pageNo}, '${page.judul}')" class="text-[10px] font-bold text-narmadaGreen hover:text-emerald-700 hover:bg-emerald-50 px-3 py-1.5 rounded-lg transition-colors border border-transparent hover:border-emerald-200"><i class="fa-solid fa-plus mr-1"></i> Tambah Pertanyaan di Halaman Ini</button>
+             </div>`;
+             
+    html += `</div>`;
+});
+
+html += `<div class="flex justify-center mt-4">
+            <button type="button" onclick="addBuilderPage()" class="cursor-pointer px-4 py-2 bg-emerald-50 text-narmadaGreen hover:bg-emerald-100 border border-emerald-200 rounded-lg text-[11px] font-bold shadow-sm transition-all flex items-center gap-2"><i class="fa-solid fa-folder-plus"></i> Tambah Halaman Baru</button>
+        </div>`;
         
-        html += `<div class="flex justify-center mt-4">
-                    <button type="button" onclick="addBuilderPage()" class="cursor-pointer px-4 py-2 bg-emerald-50 text-narmadaGreen hover:bg-emerald-100 border border-emerald-200 rounded-lg text-[11px] font-bold shadow-sm transition-all flex items-center gap-2"><i class="fa-solid fa-folder-plus"></i> Tambah Halaman Baru</button>
-                </div>`;
-                
-        container.innerHTML = html;
-    }
+container.innerHTML = html;
+
+// Initialize SortableJS for drag and drop
+let sortableLists = document.querySelectorAll('.builder-sortable-list');
+sortableLists.forEach(list => {
+    Sortable.create(list, {
+        handle: '.builder-drag-handle',
+        animation: 150,
+        ghostClass: 'bg-emerald-50',
+        onEnd: function (evt) {
+            let newOrder = Array.from(evt.to.children).map(el => parseInt(el.getAttribute('data-global-index')));
+            let originalIndices = [...newOrder].sort((a, b) => a - b);
+            let newObjects = newOrder.map(idx => window.builderQuestions[idx]);
+            originalIndices.forEach((globalSlot, i) => {
+                window.builderQuestions[globalSlot] = newObjects[i];
+            });
+            window.renderBuilderQuestionsUIList();
+        }
+    });
+});
 }
 
+export function openConditionalBuilder(index) {
+let q = window.builderQuestions[index];
+let meta = parseQuestionMetadata(q.name);
+
+document.getElementById('builder-q-condition-parent-id').value = q.id;
+document.getElementById('builder-q-condition-parent-name').value = meta.cleanName;
+
+let wrapperCond = document.getElementById('wrapper-q-condition');
+if(wrapperCond) wrapperCond.classList.remove('hidden');
+
+let selectEl = document.getElementById('builder-q-condition-value');
+if(selectEl) {
+    selectEl.innerHTML = "";
+    let options = q.options ? q.options.split(',') : [];
+    options.forEach(o => {
+        o = o.trim();
+        let opt = document.createElement('option');
+        opt.value = o;
+        opt.text = o;
+        selectEl.appendChild(opt);
+    });
+}
+
+let kepEl = document.getElementById('builder-q-keperluan');
+if(kepEl) kepEl.value = meta.keperluan || "Wajib";
+
+let formTitle = document.getElementById('builder-q-form-title');
+if (formTitle) formTitle.innerHTML = '<i class="fa-solid fa-code-branch text-indigo-600"></i> Buat Pertanyaan Lanjutan';
+
+document.getElementById('builder-step-2').scrollIntoView({ behavior: 'smooth', block: 'start' });
+pushToast("Silakan atur pertanyaan lanjutan untuk " + meta.cleanName, "success");
+}
+
+window.openConditionalBuilder = openConditionalBuilder;
 window.renderBuilderQuestionsUIList = renderBuilderQuestionsUIList;
 
 window.addBuilderPage = function() {
-    if(!window.builderKeperluanActive) return Swal.fire("Peringatan", "Pilih keperluan terlebih dahulu.", "warning");
-    
-    let activeQuestions = window.builderQuestions.filter(q => parseQuestionMetadata(q.name).keperluan === window.builderKeperluanActive);
-    let maxPage = 0;
-    activeQuestions.forEach(q => {
-        let pNo = parseInt(parseQuestionMetadata(q.name).halaman) || 1;
-        if(pNo > maxPage) maxPage = pNo;
+if(!window.builderKeperluanActive) return Swal.fire("Peringatan", "Pilih keperluan terlebih dahulu.", "warning");
+
+let activeQuestions = window.builderQuestions.filter(q => parseQuestionMetadata(q.name).keperluan === window.builderKeperluanActive);
+let maxPage = 0;
+activeQuestions.forEach(q => {
+let pNo = parseInt(parseQuestionMetadata(q.name).halaman) || 1;
+if(pNo > maxPage) maxPage = pNo;
     });
     
     let nextPage = maxPage + 1;
