@@ -100,7 +100,7 @@ export function renderLayananListWarga(list) {
 
             let htmlBuffer = "";
             list.forEach(function (row) {
-                if (row.nama) row.nama = row.nama.trim(); // Bersihkan spasi berlebih atau enter (newline) dari backend
+                if (row.nama) row.nama = row.nama.replace(/[\n\r]+/g, ' ').trim(); // Bersihkan spasi berlebih atau enter (newline) dari backend
                 let safeNamaForJS = row.nama ? row.nama.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '&quot;') : '';
 
                 let keperluanText = (row.judulSectionIsian && row.judulSectionIsian.trim() !== "") 
