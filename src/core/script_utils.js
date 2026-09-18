@@ -51,6 +51,7 @@ window.parseLinkDokumen = function(fileUrl) {
 
 
 window.parseQuestionMetadata = function(rawName) {
+            rawName = String(rawName || "");
             // Graceful fallback for corrupted JSON names
             if (rawName && rawName.trim().startsWith('{') && rawName.trim().endsWith('}')) {
                 try {

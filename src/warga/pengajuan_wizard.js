@@ -150,7 +150,7 @@ export function openFormPengajuan(nama) {
             } else {
                 let groupedReqs = {};
                 reqs.forEach(function (req) {
-                    let cleanName = req.name;
+                    let cleanName = String(req.name || "");
                     let keperluan = "Wajib";
                     let match = cleanName.match(/^\[(.*?)\]\s*(.*)$/);
                     if (match) {
@@ -239,7 +239,7 @@ export function renderDynamicCustomQuestions(fields) {
                 // Group fields by halaman (page number) from admin metadata
                 let pageGroups = {};
                 fields.forEach(function (f) {
-                    let actualName = f.name;
+                    let actualName = String(f.name || "");
                     let typeMatch = actualName.match(/(.*)\s*\|\|(number|date)\|\|$/);
                     if (typeMatch) actualName = typeMatch[1].trim();
                     let meta = parseQuestionMetadata(actualName);
@@ -404,7 +404,7 @@ export function renderDynamicUploadSlots(requirements) {
 
             if (requirements && requirements.length > 0) {
                 requirements.forEach(function (req) {
-                    let cleanName = req.name;
+                    let cleanName = String(req.name || "");
                     let match = cleanName.match(/^\[(.*?)\]\s*(.*)$/);
                     let boundKeperluan = "Wajib";
                     if (match) {
