@@ -1115,7 +1115,7 @@ export function renderBuilderQuestionsUIList() {
                                 </div>
                                 ${conditionTag}
                             </div>
-                            <div class="opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
+                            <div class="flex gap-2">
                                 <button type="button" onclick="openFieldEditorModal(${item.globalIndex})" class="w-6 h-6 rounded bg-white border border-slate-200 shadow-sm hover:bg-amber-50 text-amber-600 flex items-center justify-center text-[10px]"><i class="fa-solid fa-pen"></i></button>
                                 <button type="button" onclick="removeBuilderQuestion(${item.globalIndex})" class="w-6 h-6 rounded bg-white border border-slate-200 shadow-sm hover:bg-red-50 text-red-600 flex items-center justify-center text-[10px]"><i class="fa-solid fa-trash"></i></button>
                             </div>
