@@ -1077,6 +1077,8 @@ export function renderBuilderQuestionsUIList() {
         lastPage.questions.push({ q: q, globalIndex: window.builderQuestions.indexOf(q) });
     });
 
+    window.selectedQuestions = window.selectedQuestions || new Set();
+
     if (pages.length === 0) {
         container.innerHTML = `
             <div class="text-center py-8 text-slate-400 text-xs italic">Belum ada halaman/pertanyaan untuk keperluan ini.</div>
@@ -1084,6 +1086,8 @@ export function renderBuilderQuestionsUIList() {
                 <button type="button" onclick="addBuilderPage()" class="cursor-pointer px-4 py-2 bg-emerald-50 text-narmadaGreen hover:bg-emerald-100 border border-emerald-200 rounded-lg text-[11px] font-bold shadow-sm transition-all flex items-center gap-2"><i class="fa-solid fa-folder-plus"></i> Tambah Halaman Pertama</button>
             </div>
         `;
+        window.selectedQuestions.clear();
+        updateBulkActionBar();
     } else {
         let html = '';
         pages.forEach((page, pIdx) => {
@@ -1091,6 +1095,7 @@ export function renderBuilderQuestionsUIList() {
             
             html += `<div class="bg-slate-50 px-4 py-3 border-b border-slate-100 flex justify-between items-center">
                         <div class="flex items-center gap-3">
+                            <input type="checkbox" onchange="toggleSelectPage(${page.pageNo}, this.checked)" class="rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer" title="Pilih Semua di Halaman Ini">
                             <span class="w-6 h-6 flex items-center justify-center rounded-full bg-narmadaGreen text-white text-[10px] font-bold">${page.pageNo}</span>
                             <div>
                                 <h4 class="text-xs font-bold text-slate-800">${page.judul === "-" ? "Tanpa Judul" : page.judul}</h4>
@@ -1098,6 +1103,7 @@ export function renderBuilderQuestionsUIList() {
                         </div>
                         <div class="flex gap-2">
                             <button type="button" onclick="editPageTitle(${page.pageNo}, '${page.judul}')" class="text-amber-500 hover:text-amber-600 p-1 bg-white rounded shadow-sm border border-slate-200" title="Edit Judul Halaman"><i class="fa-solid fa-pen text-[10px]"></i></button>
+                            <button type="button" onclick="deleteBuilderPage(${page.pageNo})" class="text-red-500 hover:text-red-600 p-1 bg-white rounded shadow-sm border border-slate-200" title="Hapus Halaman"><i class="fa-solid fa-trash text-[10px]"></i></button>
                         </div>
                      </div>`;
                      
@@ -1111,6 +1117,7 @@ export function renderBuilderQuestionsUIList() {
                 
                 html += `<div class="flex justify-between items-center p-2.5 rounded-lg border border-slate-100 hover:border-emerald-200 hover:bg-emerald-50/30 transition-colors bg-white builder-question-item ${marginLeft}" data-global-index="${item.globalIndex}">
                             <div class="flex items-start">
+                                <input type="checkbox" class="question-checkbox mr-3 mt-1 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer" value="${item.globalIndex}" onchange="handleQuestionSelection(this)" data-page="${page.pageNo}" ${window.selectedQuestions.has(item.globalIndex) ? 'checked' : ''}>
                                 <i class="fa-solid fa-grip-vertical cursor-move text-slate-300 hover:text-slate-500 mr-3 mt-1 builder-drag-handle"></i>
                                 <div>
                             <div class="text-[11px] font-bold text-slate-700">${(item.q.label || '').replace(/\\{.*?\\}/, '').trim()} ${reqBadge}</div>
@@ -1151,7 +1158,16 @@ html += `<div class="flex justify-center mt-4">
             <button type="button" onclick="addBuilderPage()" class="cursor-pointer px-4 py-2 bg-emerald-50 text-narmadaGreen hover:bg-emerald-100 border border-emerald-200 rounded-lg text-[11px] font-bold shadow-sm transition-all flex items-center gap-2"><i class="fa-solid fa-folder-plus"></i> Tambah Halaman Baru</button>
         </div>`;
         
+// Add Bulk Action Bar Container
+html += `<div id="bulk-action-bar" class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 bg-slate-800 text-white px-5 py-3 rounded-xl shadow-2xl z-50 flex items-center gap-5 transition-transform transform translate-y-full opacity-0 duration-300">
+            <span id="bulk-selected-count" class="text-[11px] font-bold">0 dipilih</span>
+            <div class="h-5 w-px bg-slate-600"></div>
+            <button type="button" onclick="bulkDeleteQuestions()" class="text-[11px] font-bold text-red-400 hover:text-red-300 transition-colors"><i class="fa-solid fa-trash mr-1.5"></i> Hapus</button>
+            <button type="button" onclick="clearSelection()" class="text-[11px] font-bold text-slate-300 hover:text-white transition-colors"><i class="fa-solid fa-times mr-1.5"></i> Batal</button>
+         </div>`;
+
 container.innerHTML = html;
+updateBulkActionBar();
 
 // Initialize SortableJS for drag and drop
 let sortableLists = document.querySelectorAll('.builder-sortable-list');
@@ -1851,6 +1867,135 @@ export function updatePreviewLayanan() {
     let qCount = (typeof builderQuestions !== 'undefined') ? builderQuestions.length : 0;
     if(vQst) vQst.innerHTML = qCount > 0 ? '<i class="fa-solid fa-check-circle text-emerald-500 mt-0.5"></i> <span>Pertanyaan tambahan telah diatur</span>' : '<i class="fa-solid fa-circle-exclamation text-amber-500 mt-0.5"></i> <span>Tidak ada pertanyaan tambahan</span>';
 }
+
+window.handleQuestionSelection = function(checkbox) {
+    let globalIndex = parseInt(checkbox.value);
+    if (checkbox.checked) {
+        window.selectedQuestions.add(globalIndex);
+    } else {
+        window.selectedQuestions.delete(globalIndex);
+    }
+    
+    // Check if we need to uncheck/check the "Select All" for the page
+    let pageNo = checkbox.getAttribute('data-page');
+    let pageCheckboxes = document.querySelectorAll(`.question-checkbox[data-page="${pageNo}"]`);
+    let pageSelectAll = document.querySelector(`input[onchange*="toggleSelectPage(${pageNo}"]`);
+    if (pageSelectAll) {
+        let allChecked = true;
+        pageCheckboxes.forEach(cb => { if (!cb.checked) allChecked = false; });
+        pageSelectAll.checked = (pageCheckboxes.length > 0 && allChecked);
+    }
+    
+    updateBulkActionBar();
+};
+
+window.toggleSelectPage = function(pageNo, isChecked) {
+    let pageCheckboxes = document.querySelectorAll(`.question-checkbox[data-page="${pageNo}"]`);
+    pageCheckboxes.forEach(cb => {
+        cb.checked = isChecked;
+        let globalIndex = parseInt(cb.value);
+        if (isChecked) {
+            window.selectedQuestions.add(globalIndex);
+        } else {
+            window.selectedQuestions.delete(globalIndex);
+        }
+    });
+    updateBulkActionBar();
+};
+
+window.updateBulkActionBar = function() {
+    let bar = document.getElementById('bulk-action-bar');
+    if (!bar) return;
+    
+    let count = window.selectedQuestions ? window.selectedQuestions.size : 0;
+    let countSpan = document.getElementById('bulk-selected-count');
+    if (countSpan) countSpan.innerText = count + ' dipilih';
+    
+    if (count > 0) {
+        bar.classList.remove('hidden');
+        // Small delay to allow display block before transforming
+        setTimeout(() => {
+            bar.classList.remove('translate-y-full', 'opacity-0');
+        }, 10);
+    } else {
+        bar.classList.add('translate-y-full', 'opacity-0');
+        // Wait for transition before hiding
+        setTimeout(() => {
+            if (window.selectedQuestions.size === 0) bar.classList.add('hidden');
+        }, 300);
+    }
+};
+
+window.clearSelection = function() {
+    if (window.selectedQuestions) window.selectedQuestions.clear();
+    document.querySelectorAll('.question-checkbox, input[title="Pilih Semua di Halaman Ini"]').forEach(cb => cb.checked = false);
+    updateBulkActionBar();
+};
+
+window.bulkDeleteQuestions = function() {
+    if (!window.selectedQuestions || window.selectedQuestions.size === 0) return;
+    
+    Swal.fire({
+        title: 'Hapus Pertanyaan Terpilih?',
+        text: `Anda akan menghapus ${window.selectedQuestions.size} pertanyaan. Tindakan ini tidak dapat dibatalkan.`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444',
+        confirmButtonText: 'Ya, Hapus Semua!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            let toDelete = Array.from(window.selectedQuestions).sort((a,b) => b - a); // Sort descending to splice correctly
+            toDelete.forEach(idx => {
+                if (idx >= 0 && idx < window.builderQuestions.length) {
+                    window.builderQuestions.splice(idx, 1);
+                }
+            });
+            window.selectedQuestions.clear();
+            window.renderBuilderQuestionsUIList();
+            pushToast('Pertanyaan terpilih berhasil dihapus', 'success');
+        }
+    });
+};
+
+window.deleteBuilderPage = function(pageNo) {
+    Swal.fire({
+        title: 'Hapus Halaman?',
+        text: `Halaman ${pageNo} dan SELURUH pertanyaan di dalamnya akan dihapus. Yakin?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444',
+        confirmButtonText: 'Ya, Hapus!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Delete questions belonging to this page and active keperluan
+            window.builderQuestions = window.builderQuestions.filter(q => {
+                let meta = parseQuestionMetadata(q.name);
+                if (meta.keperluan === window.builderKeperluanActive && parseInt(meta.halaman) === pageNo) {
+                    return false; // delete
+                }
+                return true; // keep
+            });
+            
+            // Re-normalize page numbers
+            window.builderQuestions.forEach(q => {
+                let meta = parseQuestionMetadata(q.name);
+                if (meta.keperluan === window.builderKeperluanActive) {
+                    let pNo = parseInt(meta.halaman);
+                    if (pNo > pageNo) {
+                        meta.halaman = (pNo - 1).toString();
+                        q.name = JSON.stringify(meta);
+                    }
+                }
+            });
+            
+            window.selectedQuestions.clear();
+            window.renderBuilderQuestionsUIList();
+            pushToast('Halaman berhasil dihapus', 'success');
+        }
+    });
+};
 
 window.deleteKeperluanAtIndex = deleteKeperluanAtIndex;
 window.openDrawer = openDrawer;
