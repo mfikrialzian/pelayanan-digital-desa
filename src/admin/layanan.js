@@ -1078,6 +1078,7 @@ export function renderBuilderQuestionsUIList() {
     });
 
     window.selectedQuestions = window.selectedQuestions || new Set();
+    window.activeBulkPages = window.activeBulkPages || new Set();
 
     if (pages.length === 0) {
         container.innerHTML = `
@@ -1095,19 +1096,32 @@ export function renderBuilderQuestionsUIList() {
             
             html += `<div class="bg-slate-50 px-4 py-3 border-b border-slate-100 flex justify-between items-center">
                         <div class="flex items-center gap-3">
-                            <input type="checkbox" onchange="toggleSelectPage(${page.pageNo}, this.checked)" class="rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer" title="Pilih Semua di Halaman Ini">
                             <span class="w-6 h-6 flex items-center justify-center rounded-full bg-narmadaGreen text-white text-[10px] font-bold">${page.pageNo}</span>
                             <div>
                                 <h4 class="text-xs font-bold text-slate-800">${page.judul === "-" ? "Tanpa Judul" : page.judul}</h4>
                             </div>
                         </div>
-                        <div class="flex gap-2">
-                            <button type="button" onclick="editPageTitle(${page.pageNo}, '${page.judul}')" class="text-amber-500 hover:text-amber-600 p-1 bg-white rounded shadow-sm border border-slate-200" title="Edit Judul Halaman"><i class="fa-solid fa-pen text-[10px]"></i></button>
-                            <button type="button" onclick="deleteBuilderPage(${page.pageNo})" class="text-red-500 hover:text-red-600 p-1 bg-white rounded shadow-sm border border-slate-200" title="Hapus Halaman"><i class="fa-solid fa-trash text-[10px]"></i></button>
+                        <div class="flex gap-2 relative kebab-container">
+                            <button type="button" onclick="toggleKebabMenu(this)" class="w-6 h-6 rounded hover:bg-slate-200 text-slate-500 focus:text-slate-800 flex items-center justify-center text-[12px] kebab-btn"><i class="fa-solid fa-ellipsis-vertical pointer-events-none"></i></button>
+                            <div class="hidden absolute right-0 top-full mt-1 w-36 bg-white border border-slate-200 rounded-lg shadow-[0_10px_40px_rgba(0,0,0,0.15)] flex flex-col overflow-hidden kebab-dropdown" style="z-index: 9999;">
+                                <button type="button" onclick="editPageTitle(${page.pageNo}, '${page.judul}')" class="text-left px-3 py-2 text-[10px] font-bold text-slate-600 hover:bg-slate-50 hover:text-amber-600 border-b border-slate-100"><i class="fa-solid fa-pen w-4"></i> Ubah Judul</button>
+                                <button type="button" onclick="toggleBulkMode(${page.pageNo})" class="text-left px-3 py-2 text-[10px] font-bold text-slate-600 hover:bg-slate-50 hover:text-emerald-600 border-b border-slate-100"><i class="fa-solid fa-check-square w-4"></i> Pilih Pertanyaan</button>
+                                <button type="button" onclick="deleteBuilderPage(${page.pageNo})" class="text-left px-3 py-2 text-[10px] font-bold text-slate-600 hover:bg-slate-50 hover:text-red-600"><i class="fa-solid fa-trash w-4"></i> Hapus Halaman</button>
+                            </div>
                         </div>
                      </div>`;
                      
-            html += `<div class="p-3 space-y-2 builder-sortable-list">`;
+            let isBulkMode = window.activeBulkPages && window.activeBulkPages.has(page.pageNo);
+            let bulkHidden = isBulkMode ? "" : "hidden";
+            
+            html += `<div class="p-3 space-y-2 builder-sortable-list relative">
+                        <div class="${bulkHidden} flex justify-between items-center bg-emerald-50/50 p-2 rounded border border-emerald-100 mb-2">
+                            <label class="flex items-center gap-2 cursor-pointer text-[10px] font-bold text-emerald-700">
+                                <input type="checkbox" onchange="toggleSelectPage(${page.pageNo}, this.checked)" class="page-select-all-checkbox rounded border-emerald-300 text-emerald-600 focus:ring-emerald-500">
+                                Pilih Semua di Halaman Ini
+                            </label>
+                            <button type="button" onclick="toggleBulkMode(${page.pageNo})" class="text-[9px] text-slate-500 hover:text-slate-700 font-bold bg-white px-2 py-1 rounded shadow-sm border border-slate-200 transition-colors">Tutup Mode</button>
+                        </div>`;
             
             let renderItem = function(item, depth, indexNum) {
                 let baseType = item.q.type;
@@ -1117,7 +1131,9 @@ export function renderBuilderQuestionsUIList() {
                 
                 html += `<div class="flex justify-between items-center p-2.5 rounded-lg border border-slate-100 hover:border-emerald-200 hover:bg-emerald-50/30 transition-colors bg-white builder-question-item ${marginLeft}" data-global-index="${item.globalIndex}">
                             <div class="flex items-start">
-                                <input type="checkbox" class="question-checkbox mr-3 mt-1 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer" value="${item.globalIndex}" onchange="handleQuestionSelection(this)" data-page="${page.pageNo}" ${window.selectedQuestions.has(item.globalIndex) ? 'checked' : ''}>
+                                <div class="${bulkHidden}">
+                                    <input type="checkbox" class="question-checkbox mr-3 mt-1 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer" value="${item.globalIndex}" onchange="handleQuestionSelection(this)" data-page="${page.pageNo}" ${window.selectedQuestions.has(item.globalIndex) ? 'checked' : ''}>
+                                </div>
                                 <i class="fa-solid fa-grip-vertical cursor-move text-slate-300 hover:text-slate-500 mr-3 mt-1 builder-drag-handle"></i>
                                 <div>
                             <div class="text-[11px] font-bold text-slate-700">${(item.q.label || '').replace(/\\{.*?\\}/, '').trim()} ${reqBadge}</div>
@@ -1926,10 +1942,28 @@ window.updateBulkActionBar = function() {
     }
 };
 
+window.toggleBulkMode = function(pageNo) {
+    window.activeBulkPages = window.activeBulkPages || new Set();
+    if (window.activeBulkPages.has(pageNo)) {
+        window.activeBulkPages.delete(pageNo);
+        // Unselect everything on this page when closing mode
+        if (window.selectedQuestions) {
+            let meta;
+            window.builderQuestions.forEach((q, idx) => {
+                meta = parseQuestionMetadata(q.name);
+                if (parseInt(meta.halaman) === pageNo) window.selectedQuestions.delete(idx);
+            });
+        }
+    } else {
+        window.activeBulkPages.add(pageNo);
+    }
+    window.renderBuilderQuestionsUIList();
+};
+
 window.clearSelection = function() {
     if (window.selectedQuestions) window.selectedQuestions.clear();
-    document.querySelectorAll('.question-checkbox, input[title="Pilih Semua di Halaman Ini"]').forEach(cb => cb.checked = false);
-    updateBulkActionBar();
+    if (window.activeBulkPages) window.activeBulkPages.clear();
+    window.renderBuilderQuestionsUIList();
 };
 
 window.bulkDeleteQuestions = function() {
