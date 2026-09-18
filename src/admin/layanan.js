@@ -604,6 +604,9 @@ export function renderLayananTable(list) {
                 }
             }
             
+            // Bersihkan sisa menu aksi yang sebelumnya dipindah ke <body> agar tidak menumpuk saat tabel dirender ulang
+            document.querySelectorAll('body > .action-dropdown-menu').forEach(function(m) { m.remove(); });
+            
             listContainer.innerHTML = "";
 
             if (totalBadge) totalBadge.innerText = (list ? list.length : 0) + " Layanan";
@@ -1699,6 +1702,11 @@ window.toggleActionMenu = function(event, menuId) {
             document.querySelectorAll('.action-dropdown-menu').forEach(m => m.classList.add('hidden'));
             
             if (isHidden) {
+                // Pindahkan elemen dropdown ke tag <body> agar terlepas dari batas (overflow: hidden) kontainer tabel
+                if (menu.parentNode !== document.body) {
+                    document.body.appendChild(menu);
+                }
+                
                 menu.classList.remove('hidden');
                 
                 // Kalkulasi posisi fixed agar tidak terpotong oleh overflow-hidden pada tabel
