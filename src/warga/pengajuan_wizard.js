@@ -257,6 +257,18 @@ export function renderDynamicCustomQuestions(fields) {
                     let isHidden = pageIndex > 1;
                     let fieldsInPage = pageGroups[pageNum];
 
+                    // Sort hierarchically so children appear directly under their parents
+                    let orderedFields = [];
+                    let roots = fieldsInPage.filter(f => !f.conditionField);
+                    function traverse(item) {
+                        orderedFields.push(item);
+                        let children = fieldsInPage.filter(child => child.conditionField === item.id);
+                        children.forEach(traverse);
+                    }
+                    roots.forEach(traverse);
+                    fieldsInPage.forEach(f => { if (orderedFields.indexOf(f) === -1) orderedFields.push(f); });
+                    fieldsInPage = orderedFields;
+
                     let pageHtml = '<div class="step3-page' + (isHidden ? ' hidden' : '') + '" data-step3-page="' + pageIndex + '">';
 
                     let lastJudul = "";
