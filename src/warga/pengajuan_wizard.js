@@ -361,10 +361,16 @@ export function generateFieldInputHtml(displayType, actualName, requiredAttr, op
             } else if (displayType === "maps") {
                 let uniqueMapId = "map_" + Math.random().toString(36).substr(2, 9);
                 let uniqueInputId = "input_" + uniqueMapId;
+                let latInputId = "lat_" + uniqueMapId;
+                let lngInputId = "lng_" + uniqueMapId;
                 inputHtml = '<div class="space-y-2">' +
-                            '<div id="' + uniqueMapId + '" class="dynamic-map-container w-full h-48 rounded-xl border border-slate-200 shadow-inner z-0" style="z-index: 0;" data-input-id="' + uniqueInputId + '"></div>' +
-                            '<button type="button" onclick="getCurrentLocationForMap(\'' + uniqueMapId + '\', \'' + uniqueInputId + '\')" class="w-full px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] font-bold rounded-lg transition-all flex items-center justify-center gap-1.5 shadow-sm tap-squish"><i class="fa-solid fa-location-crosshairs text-narmadaGreen"></i> Gunakan Lokasi Saya Saat Ini</button>' +
-                            '<input type="text" id="' + uniqueInputId + '" ' + requiredAttr + ' placeholder="Ketuk Peta, Gunakan GPS, atau Ketik Manual" class="w-full px-3 py-2.5 rounded-xl custom-input text-sm font-medium shadow-sm dynamic-question-field uppercase" data-question="' + actualName + '"' + idAttr + '>' +
+                            '<div id="' + uniqueMapId + '" class="dynamic-map-container w-full h-48 rounded-xl border border-slate-200 shadow-inner z-0" style="z-index: 0;" data-input-id="' + uniqueInputId + '" data-lat-id="' + latInputId + '" data-lng-id="' + lngInputId + '"></div>' +
+                            '<button type="button" onclick="getCurrentLocationForMap(\'' + uniqueMapId + '\', \'' + uniqueInputId + '\', \'' + latInputId + '\', \'' + lngInputId + '\')" class="w-full px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] font-bold rounded-lg transition-all flex items-center justify-center gap-1.5 shadow-sm tap-squish"><i class="fa-solid fa-location-crosshairs text-narmadaGreen"></i> Gunakan Lokasi Saya Saat Ini</button>' +
+                            '<div class="grid grid-cols-2 gap-2">' +
+                            '<div><label class="block text-[10px] font-bold text-slate-600 mb-1">Latitude</label><input type="number" step="any" id="' + latInputId + '" placeholder="Garis Lintang" class="w-full px-3 py-2 rounded-xl custom-input text-sm font-medium shadow-sm"></div>' +
+                            '<div><label class="block text-[10px] font-bold text-slate-600 mb-1">Longitude</label><input type="number" step="any" id="' + lngInputId + '" placeholder="Garis Bujur" class="w-full px-3 py-2 rounded-xl custom-input text-sm font-medium shadow-sm"></div>' +
+                            '</div>' +
+                            '<input type="hidden" id="' + uniqueInputId + '" ' + requiredAttr + ' class="dynamic-question-field" data-question="' + actualName + '"' + idAttr + '>' +
                             '</div>';
             } else {
                 inputHtml = '<input type="text" ' + requiredAttr + ' placeholder="Ketik jawaban Anda" oninput="this.value = this.value.toUpperCase();" class="w-full px-3 py-2.5 rounded-xl custom-input text-sm font-medium shadow-sm dynamic-question-field uppercase" data-question="' + actualName + '"' + idAttr + '>';
@@ -1340,7 +1346,11 @@ export function initDynamicMaps() {
             mapsContainers.forEach(container => {
                 let mapId = container.id;
                 let inputId = container.getAttribute('data-input-id');
+                let latId = container.getAttribute('data-lat-id');
+                let lngId = container.getAttribute('data-lng-id');
                 let inputEl = document.getElementById(inputId);
+                let latEl = document.getElementById(latId);
+                let lngEl = document.getElementById(lngId);
                 
                 if (window.leafletMaps[mapId]) return; // Already initialized
 
@@ -1354,18 +1364,61 @@ export function initDynamicMaps() {
 
                 let marker = L.marker(defaultLatLng, {draggable: true}).addTo(map);
 
+                function updateInputsFromMap(lat, lng) {
+                    let latStr = lat.toFixed(6);
+                    let lngStr = lng.toFixed(6);
+                    if(latEl) latEl.value = latStr;
+                    if(lngEl) lngEl.value = lngStr;
+                    if(inputEl) {
+                        inputEl.value = latStr + ', ' + lngStr;
+                        inputEl.dispatchEvent(new Event('input', { bubbles: true }));
+                    }
+                }
+
                 marker.on('dragend', function (e) {
                     let latlng = marker.getLatLng();
-                    inputEl.value = latlng.lat.toFixed(6) + ', ' + latlng.lng.toFixed(6);
-                    inputEl.dispatchEvent(new Event('input', { bubbles: true }));
+                    updateInputsFromMap(latlng.lat, latlng.lng);
                 });
                 
                 map.on('click', function(e) {
                     let latlng = e.latlng;
                     marker.setLatLng(latlng);
-                    inputEl.value = latlng.lat.toFixed(6) + ', ' + latlng.lng.toFixed(6);
-                    inputEl.dispatchEvent(new Event('input', { bubbles: true }));
+                    updateInputsFromMap(latlng.lat, latlng.lng);
                 });
+
+                function updateMapFromInputs() {
+                    if(!latEl || !lngEl) return;
+                    let lat = parseFloat(latEl.value);
+                    let lng = parseFloat(lngEl.value);
+                    if(!isNaN(lat) && !isNaN(lng)) {
+                        let newLatLng = new L.LatLng(lat, lng);
+                        marker.setLatLng(newLatLng);
+                        map.setView(newLatLng, 15);
+                        if(inputEl) {
+                            inputEl.value = lat + ', ' + lng;
+                            inputEl.dispatchEvent(new Event('input', { bubbles: true }));
+                        }
+                    }
+                }
+
+                if(latEl) latEl.addEventListener('input', updateMapFromInputs);
+                if(lngEl) lngEl.addEventListener('input', updateMapFromInputs);
+
+                // Initial populate if draft exists
+                if(inputEl && inputEl.value) {
+                    let parts = inputEl.value.split(',');
+                    if(parts.length === 2) {
+                        let plat = parseFloat(parts[0].trim());
+                        let plng = parseFloat(parts[1].trim());
+                        if(!isNaN(plat) && !isNaN(plng)) {
+                            let newLatLng = new L.LatLng(plat, plng);
+                            marker.setLatLng(newLatLng);
+                            map.setView(newLatLng, 15);
+                            if(latEl) latEl.value = plat;
+                            if(lngEl) lngEl.value = plng;
+                        }
+                    }
+                }
 
                 // Invalidate size in case it renders inside hidden elements
                 setTimeout(() => { map.invalidateSize(); }, 500);
@@ -1374,7 +1427,7 @@ export function initDynamicMaps() {
             });
         }
 
-export function getCurrentLocationForMap(mapId, inputId) {
+export function getCurrentLocationForMap(mapId, inputId, latId, lngId) {
             if (navigator.geolocation) {
                 pushToast("Sedang mencari lokasi Anda...", "info");
                 navigator.geolocation.getCurrentPosition(
@@ -1382,9 +1435,19 @@ export function getCurrentLocationForMap(mapId, inputId) {
                         let lat = position.coords.latitude;
                         let lng = position.coords.longitude;
                         let inputEl = document.getElementById(inputId);
+                        let latEl = latId ? document.getElementById(latId) : null;
+                        let lngEl = lngId ? document.getElementById(lngId) : null;
                         
-                        inputEl.value = lat.toFixed(6) + ', ' + lng.toFixed(6);
-                        inputEl.dispatchEvent(new Event('input', { bubbles: true }));
+                        let latStr = lat.toFixed(6);
+                        let lngStr = lng.toFixed(6);
+
+                        if(latEl) latEl.value = latStr;
+                        if(lngEl) lngEl.value = lngStr;
+
+                        if(inputEl) {
+                            inputEl.value = latStr + ', ' + lngStr;
+                            inputEl.dispatchEvent(new Event('input', { bubbles: true }));
+                        }
 
                         if (window.leafletMaps && window.leafletMaps[mapId]) {
                             let mapObj = window.leafletMaps[mapId];
