@@ -639,14 +639,16 @@ export function renderLayananTable(list) {
                         '<td class="py-4 px-4 align-top">' + bidangHtml + '</td>' +
                         '<td class="py-4 px-4 align-top">' + kepHtml + '</td>' +
                         '<td class="py-4 px-4 text-center align-middle relative">' +
-                        '<button onclick="toggleActionMenu(event, \'menu-aksi-' + index + '\')" class="w-8 h-8 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-600 flex items-center justify-center transition-colors focus:outline-none ml-auto mr-auto">' +
-                        '<i class="fa-solid fa-ellipsis-vertical"></i>' +
+                        '<div class="flex justify-center">' +
+                        '<button onclick="toggleActionMenu(event, \'menu-aksi-' + index + '\')" class="action-menu-btn ml-auto mr-auto">' +
+                        '<i class="fa-solid fa-ellipsis-vertical pointer-events-none"></i>' +
                         '</button>' +
-                        '<div id="menu-aksi-' + index + '" class="hidden action-dropdown-menu w-36 bg-white rounded-xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] border border-slate-100 py-1.5 z-[100] text-left overflow-hidden">' +
-                        '<button onclick="switchAdminTab(\'layanan\'); populateBuilderLayananToEdit(\'' + row.id + '\')" class="w-full text-left px-4 py-2.5 text-[11px] font-bold text-slate-700 hover:bg-slate-50 flex items-center gap-2"><i class="fa-solid fa-pencil text-amber-500 w-3"></i> Edit</button>' +
-                        '<button onclick="duplicateBuilderMasterLayanan(\'' + row.id + '\')" class="w-full text-left px-4 py-2.5 text-[11px] font-bold text-slate-700 hover:bg-slate-50 flex items-center gap-2"><i class="fa-solid fa-copy text-blue-500 w-3"></i> Duplikat</button>' +
-                        '<div class="border-t border-slate-100 my-1"></div>' +
-                        '<button onclick="deleteBuilderMasterLayanan(\'' + row.nama + '\')" class="w-full text-left px-4 py-2.5 text-[11px] font-bold text-red-600 hover:bg-red-50 flex items-center gap-2"><i class="fa-solid fa-trash w-3"></i> Hapus</button>' +
+                        '<div id="menu-aksi-' + index + '" class="hidden action-menu-dropdown absolute right-0 top-full mt-1 z-[100]">' +
+                        '<button onclick="switchAdminTab(\'layanan\'); populateBuilderLayananToEdit(\'' + row.id + '\')" class="action-menu-item"><i class="fa-solid fa-pencil"></i> Edit</button>' +
+                        '<button onclick="duplicateBuilderMasterLayanan(\'' + row.id + '\')" class="action-menu-item"><i class="fa-solid fa-copy"></i> Duplikat</button>' +
+                        '<div class="action-menu-divider"></div>' +
+                        '<button onclick="deleteBuilderMasterLayanan(\'' + row.nama + '\')" class="action-menu-item danger"><i class="fa-solid fa-trash"></i> Hapus</button>' +
+                        '</div>' +
                         '</div>' +
                         '</td>' +
                         '</tr>';
@@ -1124,11 +1126,12 @@ export function renderBuilderQuestionsUIList() {
                             </div>
                         </div>
                         <div class="flex gap-2 relative kebab-container">
-                            <button type="button" onclick="toggleKebabMenu(this)" class="w-6 h-6 rounded hover:bg-slate-200 text-slate-500 focus:text-slate-800 flex items-center justify-center text-[12px] kebab-btn"><i class="fa-solid fa-ellipsis-vertical pointer-events-none"></i></button>
-                            <div class="hidden absolute right-0 top-full mt-1 w-36 bg-white border border-slate-200 rounded-lg shadow-[0_10px_40px_rgba(0,0,0,0.15)] flex flex-col kebab-dropdown" style="z-index: 9999;">
-                                <button type="button" onclick="editPageTitle(${page.pageNo}, '${page.judul}')" class="text-left px-3 py-2 text-[10px] font-bold text-slate-600 hover:bg-slate-50 hover:text-amber-600 border-b border-slate-100"><i class="fa-solid fa-pen w-4"></i> Ubah Judul</button>
-                                <button type="button" onclick="toggleBulkMode(${page.pageNo})" class="text-left px-3 py-2 text-[10px] font-bold text-slate-600 hover:bg-slate-50 hover:text-emerald-600 border-b border-slate-100"><i class="fa-solid fa-check-square w-4"></i> Pilih Pertanyaan</button>
-                                <button type="button" onclick="deleteBuilderPage(${page.pageNo})" class="text-left px-3 py-2 text-[10px] font-bold text-slate-600 hover:bg-slate-50 hover:text-red-600"><i class="fa-solid fa-trash w-4"></i> Hapus Halaman</button>
+                            <button type="button" onclick="toggleKebabMenu(this)" class="action-menu-btn kebab-btn"><i class="fa-solid fa-ellipsis-vertical pointer-events-none"></i></button>
+                            <div class="hidden absolute right-0 top-full mt-1 kebab-dropdown action-menu-dropdown" style="z-index: 9999;">
+                                <button type="button" onclick="editPageTitle(${page.pageNo}, '${page.judul}')" class="action-menu-item"><i class="fa-solid fa-pen"></i> Ubah Judul</button>
+                                <button type="button" onclick="toggleBulkMode(${page.pageNo})" class="action-menu-item"><i class="fa-solid fa-check-square"></i> Pilih Pertanyaan</button>
+                                <div class="action-menu-divider"></div>
+                                <button type="button" onclick="deleteBuilderPage(${page.pageNo})" class="action-menu-item danger"><i class="fa-solid fa-trash"></i> Hapus Halaman</button>
                             </div>
                         </div>
                      </div>`;
@@ -1166,12 +1169,13 @@ export function renderBuilderQuestionsUIList() {
                                 </div>
                             </div>
                     <div class="relative kebab-container">
-                        <button type="button" onclick="toggleKebabMenu('kebab-menu-${item.globalIndex}', this)" class="w-6 h-6 rounded hover:bg-slate-100 text-slate-400 focus:text-slate-800 flex items-center justify-center text-[12px] kebab-btn"><i class="fa-solid fa-ellipsis-vertical pointer-events-none"></i></button>
-                        <div id="kebab-menu-${item.globalIndex}" class="hidden absolute right-0 top-full mt-1 w-36 bg-white border border-slate-200 rounded-lg shadow-[0_10px_40px_rgba(0,0,0,0.15)] flex flex-col kebab-dropdown" style="z-index: 9999;">
-                            ${baseType === "dropdown" ? `<button type="button" onclick="openConditionalBuilder(${item.globalIndex})" class="text-left px-3 py-2 text-[10px] font-bold text-slate-600 hover:bg-slate-50 hover:text-narmadaGreen border-b border-slate-100"><i class="fa-solid fa-code-branch w-4"></i> Cabang</button>` : ''}
-                            <button type="button" onclick="openFieldEditorModal(${item.globalIndex})" class="text-left px-3 py-2 text-[10px] font-bold text-slate-600 hover:bg-slate-50 hover:text-amber-600 border-b border-slate-100"><i class="fa-solid fa-pen w-4"></i> Edit</button>
-                            <button type="button" onclick="duplicateBuilderQuestion(${item.globalIndex})" class="text-left px-3 py-2 text-[10px] font-bold text-slate-600 hover:bg-slate-50 hover:text-indigo-600 border-b border-slate-100"><i class="fa-solid fa-copy w-4"></i> Duplikat</button>
-                            <button type="button" onclick="removeBuilderQuestion(${item.globalIndex})" class="text-left px-3 py-2 text-[10px] font-bold text-slate-600 hover:bg-slate-50 hover:text-red-600"><i class="fa-solid fa-trash w-4"></i> Hapus</button>
+                        <button type="button" onclick="toggleKebabMenu('kebab-menu-${item.globalIndex}', this)" class="action-menu-btn kebab-btn"><i class="fa-solid fa-ellipsis-vertical pointer-events-none"></i></button>
+                        <div id="kebab-menu-${item.globalIndex}" class="hidden absolute right-0 top-full mt-1 kebab-dropdown action-menu-dropdown" style="z-index: 9999;">
+                            ${baseType === "dropdown" ? `<button type="button" onclick="openConditionalBuilder(${item.globalIndex})" class="action-menu-item"><i class="fa-solid fa-code-branch"></i> Cabang</button>` : ''}
+                            <button type="button" onclick="openFieldEditorModal(${item.globalIndex})" class="action-menu-item"><i class="fa-solid fa-pen"></i> Edit</button>
+                            <button type="button" onclick="duplicateBuilderQuestion(${item.globalIndex})" class="action-menu-item"><i class="fa-solid fa-copy"></i> Duplikat</button>
+                            <div class="action-menu-divider"></div>
+                            <button type="button" onclick="removeBuilderQuestion(${item.globalIndex})" class="action-menu-item danger"><i class="fa-solid fa-trash"></i> Hapus</button>
                         </div>
                     </div>
                  </div>`;
@@ -1681,7 +1685,7 @@ window.toggleActionMenu = function(event, menuId) {
             let isHidden = menu.classList.contains('hidden');
             
             // Tutup semua menu aksi lainnya
-            document.querySelectorAll('.action-dropdown-menu').forEach(m => m.classList.add('hidden'));
+            document.querySelectorAll('.action-menu-dropdown').forEach(m => m.classList.add('hidden'));
             
             if (isHidden) {
                 // Pindahkan elemen dropdown ke tag <body> agar terlepas dari batas (overflow: hidden) kontainer tabel
@@ -1703,14 +1707,14 @@ window.toggleActionMenu = function(event, menuId) {
                 if (spaceBelow < menuHeight + 10 && rect.top > menuHeight + 10) {
                     // Buka ke atas jika ruang di bawah sempit
                     menu.style.top = (rect.top - menuHeight - 4) + 'px';
+                    menu.classList.add('drop-up');
                 } else {
                     // Buka ke bawah (default)
                     menu.style.top = (rect.bottom + 4) + 'px';
+                    menu.classList.remove('drop-up');
                 }
                 
-                // w-36 pada tailwind sama dengan 144px. 
-                // Kita posisikan agar sejajar dengan kanan tombol.
-                let menuWidth = 144;
+                let menuWidth = 150;
                 let leftPos = rect.right - menuWidth;
                 
                 // Pastikan tidak keluar layar sebelah kiri
@@ -1722,7 +1726,7 @@ window.toggleActionMenu = function(event, menuId) {
 
         // Tutup menu saat klik di luar
 document.addEventListener('click', function() {
-            document.querySelectorAll('.action-dropdown-menu').forEach(m => m.classList.add('hidden'));
+            document.querySelectorAll('.action-menu-dropdown').forEach(m => m.classList.add('hidden'));
         });
 
 export let currentRepeaterGroup = [];
@@ -1877,11 +1881,13 @@ window.toggleKebabMenu = function(menuId, btn) {
             
             if (spaceBelow < menuHeight + 10 && rect.top > menuHeight + 10) {
                 menu.style.top = (rect.top - menuHeight - 4) + 'px';
+                menu.classList.add('drop-up');
             } else {
                 menu.style.top = (rect.bottom + 4) + 'px';
+                menu.classList.remove('drop-up');
             }
             
-            let menuWidth = 144;
+            let menuWidth = 150;
             let leftPos = rect.right - menuWidth;
             if (leftPos < 10) leftPos = 10;
             
