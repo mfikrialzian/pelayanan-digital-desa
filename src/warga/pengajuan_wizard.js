@@ -942,26 +942,32 @@ export function showWizardSuccessScreen(regId) {
 export function generateVoucherPDF(data) {
     let { regId, nama, nik, layanan, requirements } = data;
     
-    // Save previous state
-    let oldNama = document.getElementById('voucher-nama').innerText;
-    let oldNik = document.getElementById('voucher-nik').innerText;
-    let oldLayanan = document.getElementById('voucher-layanan').innerText;
-    let oldQr = document.getElementById('voucher-qr').src;
-    let reqUl = document.getElementById('voucher-requirements');
-    let oldReqs = reqUl.innerHTML;
-    let oldRegId = document.getElementById('success-reg-id').innerText;
+    // 1. Clone the original voucher element so we don't mess up the UI or deal with hidden parents
+    let originalVoucher = document.getElementById('success-voucher');
+    let clone = originalVoucher.cloneNode(true);
+    clone.id = "temp-voucher-clone-" + Date.now();
     
-    // Temporarily overwrite
-    document.getElementById('success-reg-id').innerText = regId;
-    document.getElementById('voucher-nama').innerText = nama || "-";
-    document.getElementById('voucher-nik').innerText = nik ? "NIK: " + nik : "-";
-    document.getElementById('voucher-layanan').innerText = layanan || "-";
+    // 2. Temporarily place the clone off-screen in the body to allow rendering
+    clone.style.position = 'fixed';
+    clone.style.top = '-9999px';
+    clone.style.left = '-9999px';
+    clone.style.transform = "scale(1)";
+    clone.style.zIndex = '-999';
+    document.body.appendChild(clone);
+
+    // 3. Populate clone data
+    clone.querySelector('#success-reg-id').innerText = regId;
+    clone.querySelector('#voucher-nama').innerText = nama || "-";
+    clone.querySelector('#voucher-nik').innerText = nik ? "NIK: " + nik : "-";
+    clone.querySelector('#voucher-layanan').innerText = layanan || "-";
 
     let currentUrl = window.location.href.split('?')[0]; 
     let trackingUrl = currentUrl + "?view=status&id=" + encodeURIComponent(regId);
     let newQrSrc = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + encodeURIComponent(trackingUrl);
-    document.getElementById('voucher-qr').src = newQrSrc;
+    let qrImg = clone.querySelector('#voucher-qr');
+    qrImg.src = newQrSrc;
 
+    let reqUl = clone.querySelector('#voucher-requirements');
     reqUl.innerHTML = "";
     if (requirements && requirements.length > 0) {
         requirements.forEach(req => {
@@ -975,46 +981,28 @@ export function generateVoucherPDF(data) {
         reqUl.innerHTML = '<li class="text-slate-400 italic">Tidak ada persyaratan tambahan</li>';
     }
 
-    let voucherEl = document.getElementById('success-voucher');
-    let wrapper = document.getElementById('wizard-section-success');
-    let wasHidden = wrapper.classList.contains('hidden');
-    
-    // Force visibility for html2canvas
-    if (wasHidden) {
-        wrapper.style.position = 'absolute';
-        wrapper.style.opacity = '0.01';
-        wrapper.style.pointerEvents = 'none';
-        wrapper.classList.remove('hidden');
-    }
-    
-    voucherEl.style.transform = "scale(1)";
-
-    // Function to capture and restore
+    // Function to capture and cleanup
     const doCapture = () => {
-        html2canvas(voucherEl, {
+        html2canvas(clone, {
             scale: 3, 
             useCORS: true,
             backgroundColor: "#ffffff",
             logging: false
         }).then(function(canvas) {
-            // Restore visibility and DOM
-            if (wasHidden) {
-                wrapper.classList.add('hidden');
-                wrapper.style.position = '';
-                wrapper.style.opacity = '';
-                wrapper.style.pointerEvents = '';
-            }
-            document.getElementById('success-reg-id').innerText = oldRegId;
-            document.getElementById('voucher-nama').innerText = oldNama;
-            document.getElementById('voucher-nik').innerText = oldNik;
-            document.getElementById('voucher-layanan').innerText = oldLayanan;
-            document.getElementById('voucher-qr').src = oldQr;
-            reqUl.innerHTML = oldReqs;
+            // Cleanup DOM immediately
+            if (clone.parentNode) clone.parentNode.removeChild(clone);
             
             if (window.jspdf && window.jspdf.jsPDF) {
                 const jsPDF = window.jspdf.jsPDF;
-                let w = voucherEl.offsetWidth;
-                let h = voucherEl.offsetHeight;
+                // Original voucher size
+                let w = originalVoucher.offsetWidth || 384; 
+                let h = originalVoucher.offsetHeight || 500;
+                // If it was hidden, offsetWidth might be 0, so calculate from canvas
+                if (w === 0 || h === 0) {
+                    w = canvas.width / 3;
+                    h = canvas.height / 3;
+                }
+                
                 const doc = new jsPDF({
                     orientation: w > h ? 'landscape' : 'portrait',
                     unit: 'px',
@@ -1030,24 +1018,19 @@ export function generateVoucherPDF(data) {
                 link.click();
             }
         }).catch(function(err) {
-            if (wasHidden) {
-                wrapper.classList.add('hidden');
-                wrapper.style.position = '';
-                wrapper.style.opacity = '';
-                wrapper.style.pointerEvents = '';
-            }
+            // Cleanup DOM
+            if (clone.parentNode) clone.parentNode.removeChild(clone);
             console.error("Error generating voucher:", err);
             if(window.pushToast) window.pushToast("Gagal mengunduh voucher.", "error");
         });
     };
 
     // Wait slightly for QR image to load before capturing
-    let qrImg = document.getElementById('voucher-qr');
     if (qrImg.complete) {
-        setTimeout(doCapture, 100);
+        setTimeout(doCapture, 150);
     } else {
-        qrImg.onload = () => setTimeout(doCapture, 100);
-        qrImg.onerror = () => setTimeout(doCapture, 100);
+        qrImg.onload = () => setTimeout(doCapture, 150);
+        qrImg.onerror = () => setTimeout(doCapture, 150);
     }
 }
 window.generateVoucherPDF = generateVoucherPDF;
