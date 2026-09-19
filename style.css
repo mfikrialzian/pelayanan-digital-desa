@@ -631,3 +631,25 @@ body {
     border-color: #cbd5e1;
     background-color: #f8fafc;
 }
+
+@media print {
+    body * {
+        visibility: hidden;
+    }
+    #success-voucher, #success-voucher * {
+        visibility: visible;
+    }
+    #success-voucher {
+        position: absolute;
+        left: 50%;
+        top: 0;
+        transform: translateX(-50%);
+        width: 100%;
+        max-width: 400px;
+        box-shadow: none !important;
+        border: 2px solid #059669 !important;
+    }
+    .hide-on-print {
+        display: none !important;
+    }
+}

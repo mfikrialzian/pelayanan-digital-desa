@@ -908,11 +908,61 @@ export function showWizardSuccessScreen(regId) {
 
             document.getElementById('success-reg-id').innerText = regId;
 
+            // Populate Voucher Data
+            let nama = document.getElementById('warga-nama').value.trim();
+            let nik = document.getElementById('warga-nik').value.trim();
+            let layanan = selectedLayananGlobal ? selectedLayananGlobal.layanan : "-";
+            document.getElementById('voucher-nama').innerText = nama || "-";
+            document.getElementById('voucher-nik').innerText = nik ? "NIK: " + nik : "-";
+            document.getElementById('voucher-layanan').innerText = layanan;
+
+            // Generate QR Code URL
+            let currentUrl = window.location.href.split('?')[0]; // Remove existing query params
+            let trackingUrl = currentUrl + "cek-status?id=" + encodeURIComponent(regId);
+            document.getElementById('voucher-qr').src = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + encodeURIComponent(trackingUrl);
+
+            // Populate Requirements
+            let reqUl = document.getElementById('voucher-requirements');
+            reqUl.innerHTML = "";
+            if (selectedLayananGlobal && selectedLayananGlobal.requirements) {
+                selectedLayananGlobal.requirements.forEach(req => {
+                    let cleanName = req.name.replace(/^\[(.*?)\]\s*/, '');
+                    let li = document.createElement('li');
+                    li.innerText = cleanName;
+                    reqUl.appendChild(li);
+                });
+            }
+
             let successScreen = document.getElementById('wizard-section-success');
             successScreen.classList.remove('hidden');
             successScreen.classList.remove('slide-in-backward');
             successScreen.classList.add('slide-in-forward');
         }
+
+export function downloadVoucher() {
+            let voucherEl = document.getElementById('success-voucher');
+            let regId = document.getElementById('success-reg-id').innerText;
+            
+            // Temporary styles for perfect rendering
+            voucherEl.style.transform = "scale(1)";
+            
+            html2canvas(voucherEl, {
+                scale: 2, // High resolution
+                useCORS: true,
+                backgroundColor: "#ffffff",
+                logging: false
+            }).then(function(canvas) {
+                let link = document.createElement('a');
+                link.download = 'Voucher-Pengajuan-' + regId + '.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            }).catch(function(err) {
+                console.error("Error generating voucher image:", err);
+                pushToast("Gagal mengunduh voucher.", "error");
+            });
+        }
+
+window.downloadVoucher = downloadVoucher;
 
 export function copyRegIdToClipboard() {
             let regId = document.getElementById('success-reg-id').innerText;
