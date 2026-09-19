@@ -619,10 +619,21 @@ export function goToStep5() {
             }
             if (missingFile) return;
 
-            document.getElementById('review-display-nama').innerText = document.getElementById('warga-nama').value.trim();
-            document.getElementById('review-display-nik').innerText = "NIK: " + document.getElementById('warga-nik').value.trim();
-            document.getElementById('review-display-wa').innerText = "WhatsApp: " + document.getElementById('warga-wa').value.trim();
-            document.getElementById('review-display-alamat').innerText = "Alamat KTP: " + document.getElementById('warga-alamat').value.trim();
+            let identitasContainer = document.getElementById('review-display-identitas');
+            identitasContainer.innerHTML = "";
+            let identitasData = [
+                { label: "Nama Pemohon", value: document.getElementById('warga-nama').value.trim() },
+                { label: "NIK", value: document.getElementById('warga-nik').value.trim() },
+                { label: "WhatsApp", value: document.getElementById('warga-wa').value.trim() },
+                { label: "Alamat KTP", value: document.getElementById('warga-alamat').value.trim() }
+            ];
+
+            identitasData.forEach(function(item) {
+                identitasContainer.innerHTML += '<div class="grid grid-cols-[90px_10px_1fr] gap-2 border-b border-slate-50 py-1">' +
+                    '<span class="text-slate-555 text-[10px] text-left break-words">' + item.label + '</span>' +
+                    '<span class="text-slate-400 text-[10px] text-center">:</span>' +
+                    '<span class="font-bold text-slate-800 text-[10px] text-left break-words">' + item.value + '</span></div>';
+            });
 
             let isianContainer = document.getElementById('review-display-isian');
             isianContainer.innerHTML = "";
@@ -632,7 +643,7 @@ export function goToStep5() {
             let hasIsian = false;
 
             if (keperl && keperl.value && optionsList.length > 1) {
-                isianContainer.innerHTML += '<div class="grid grid-cols-[1fr_10px_1fr] gap-2 border-b border-slate-50 py-1">' +
+                isianContainer.innerHTML += '<div class="grid grid-cols-[90px_10px_1fr] gap-2 border-b border-slate-50 py-1">' +
                     '<span class="text-slate-555 text-[10px] text-left break-words">Keperluan Surat</span>' +
                     '<span class="text-slate-400 text-[10px] text-center">:</span>' +
                     '<span class="font-bold text-slate-800 text-[10px] text-left break-words">' + keperl.value + '</span></div>';
@@ -659,7 +670,7 @@ export function goToStep5() {
                         let parts = displayValue.split('-');
                         if (parts.length === 3) displayValue = parts[2] + '/' + parts[1] + '/' + parts[0];
                     }
-                    isianContainer.innerHTML += '<div class="grid grid-cols-[1fr_10px_1fr] gap-2 border-b border-slate-50 py-1">' +
+                    isianContainer.innerHTML += '<div class="grid grid-cols-[90px_10px_1fr] gap-2 border-b border-slate-50 py-1">' +
                         '<span class="text-slate-555 text-[10px] text-left break-words">' + meta.cleanName + '</span>' +
                         '<span class="text-slate-400 text-[10px] text-center">:</span>' +
                         '<span class="font-bold text-slate-800 text-[10px] text-left break-words">' + displayValue + '</span>' +
@@ -836,7 +847,7 @@ export function handleWargaSubmit() {
             });
             
             Object.keys(tempPayload).forEach(function(key) {
-                detailLayananPayload[key] = tempPayload[key].join("; ");
+                detailLayananPayload[key] = [...new Set(tempPayload[key])].join("; ");
             });
 
             let submitBtn = document.getElementById('btn-submit-warga');

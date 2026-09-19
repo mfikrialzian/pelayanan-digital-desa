@@ -102,7 +102,6 @@ export function renderStatusCards(results) {
                     '<div><span class="text-slate-400 block text-[9px]">Alamat:</span><span class="font-semibold text-slate-800">' + (item.alamat || "-") + '</span></div>' +
                     '<div><span class="text-slate-400 block text-[9px]">WhatsApp:</span><span>' + item.wa + '</span></div>' +
                     '</div>' +
-                    '<div class="border-t border-slate-50 pt-2"><span class="text-slate-400 block text-[9px] font-bold uppercase tracking-wide mb-1">ISIAN FORMULIR WARGA:</span>' + parsedDetailsHtml + '</div>' +
                     '<div class="p-2.5 bg-slate-50 border rounded-lg text-[11px] italic text-slate-600 shadow-inner mt-2"><strong>Catatan Petugas:</strong> "' + item.catatan + '"</div>';
 
                 if (item.status === "Perbaikan") {

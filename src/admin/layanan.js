@@ -1844,9 +1844,15 @@ export function updateSummaryPanel() {
 // === KEBAB MENU & DRAG AND DROP GLOBALS === //
 
 window.toggleKebabMenu = function(menuId, btn) {
+    // Handle single-argument usage from pages where menuId is actually the button
+    if (typeof menuId !== 'string') {
+        btn = menuId;
+        menuId = null;
+    }
+
     // Prevent triggering global click
     setTimeout(() => {
-        let menu = document.getElementById(menuId) || btn.nextElementSibling;
+        let menu = menuId ? document.getElementById(menuId) : btn.nextElementSibling;
         if (!menu) return;
         let isHidden = menu.classList.contains('hidden');
         
