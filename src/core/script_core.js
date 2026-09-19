@@ -57,7 +57,10 @@ window.paramEl = document.getElementById('initial-page-param');
 window.urlParams = new URLSearchParams(window.location.search);
 window.pathname = window.location.pathname.toLowerCase();
             
-            if (urlParams.has('page')) {
+            if (urlParams.has('view')) {
+                let viewParam = urlParams.get('view').trim().toLowerCase();
+                if (viewParam === 'status') window.initialPageParam = 'status';
+            } else if (urlParams.has('page')) {
                 window.initialPageParam = urlParams.get('page').trim().toLowerCase();
             } else if (pathname === '/admin' || pathname.startsWith('/admin/')) {
                 window.initialPageParam = 'admin';
@@ -68,6 +71,15 @@ window.pathname = window.location.pathname.toLowerCase();
                     switchView('admin');
                 } else {
                     switchView('admin-login');
+                }
+            } else if (window.initialPageParam === 'status') {
+                switchView('status');
+                if (urlParams.has('id')) {
+                    let reqId = urlParams.get('id');
+                    let statusInput = document.getElementById('search-status-id');
+                    if (statusInput) statusInput.value = reqId;
+                    // Need to wait until scripts are loaded and views are switched
+                    setTimeout(() => { if (window.runSearchStatus) window.runSearchStatus(); }, 500);
                 }
             } else {
                 switchView('beranda');

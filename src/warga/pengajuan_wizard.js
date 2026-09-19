@@ -918,7 +918,7 @@ export function showWizardSuccessScreen(regId) {
 
             // Generate QR Code URL
             let currentUrl = window.location.href.split('?')[0]; // Remove existing query params
-            let trackingUrl = currentUrl + "cek-status?id=" + encodeURIComponent(regId);
+            let trackingUrl = currentUrl + "?view=status&id=" + encodeURIComponent(regId);
             document.getElementById('voucher-qr').src = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + encodeURIComponent(trackingUrl);
 
             // Populate Requirements
@@ -952,10 +952,22 @@ export function downloadVoucher() {
                 backgroundColor: "#ffffff",
                 logging: false
             }).then(function(canvas) {
-                let link = document.createElement('a');
-                link.download = 'Voucher-Pengajuan-' + regId + '.png';
-                link.href = canvas.toDataURL('image/png');
-                link.click();
+                if (window.jspdf && window.jspdf.jsPDF) {
+                    const jsPDF = window.jspdf.jsPDF;
+                    const doc = new jsPDF({
+                        orientation: 'portrait',
+                        unit: 'px',
+                        format: [canvas.width, canvas.height]
+                    });
+                    doc.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, canvas.width, canvas.height);
+                    doc.save('Voucher-Pengajuan-' + regId + '.pdf');
+                } else {
+                    // Fallback to PNG if jsPDF fails to load
+                    let link = document.createElement('a');
+                    link.download = 'Voucher-Pengajuan-' + regId + '.png';
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                }
             }).catch(function(err) {
                 console.error("Error generating voucher image:", err);
                 pushToast("Gagal mengunduh voucher.", "error");
