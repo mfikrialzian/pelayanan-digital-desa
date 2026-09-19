@@ -290,6 +290,18 @@ var LayananService = {
       
       var list = master.map(function(lay) {
         var idLay = lay.id;
+        var logicArr = [];
+        try { logicArr = JSON.parse(lay.logikaKondisional || "[]"); } catch(e) {}
+        
+        var layFields = fields.filter(function(f) { return f.idLayanan === idLay; });
+        layFields.forEach(function(f) {
+          var match = logicArr.find(function(lg) { return lg.id === f.id; });
+          if (match) {
+            f.conditionField = match.conditionField;
+            f.conditionValue = match.conditionValue;
+          }
+        });
+
         return {
           id: idLay,
           nama: lay.nama,
@@ -297,7 +309,7 @@ var LayananService = {
           judulSectionIsian: lay.judulSectionIsian || "Formulir Isian Tambahan",
           deskripsiSectionIsian: lay.deskripsiSectionIsian || "Mohon lengkapi rincian formulir berikut.",
           logikaKondisional: lay.logikaKondisional || "[]",
-          fields: fields.filter(function(f) { return f.idLayanan === idLay; }),
+          fields: layFields,
           requirements: reqs.filter(function(r) { return r.idLayanan === idLay; })
         };
       });
@@ -371,7 +383,7 @@ var LayananService = {
                 // Format Baru v4.8.3 (JSON Parsing untuk mendukung Repeater, Limit & Opsional)
                 var qObj = JSON.parse(cleanField);
                 LayananRepository.insertField({
-                  id: "FLD-" + targetId + j,
+                  id: qObj.id || ("FLD-" + targetId + j),
                   idLayanan: targetId,
                   name: qObj.name,
                   type: qObj.type,

@@ -278,8 +278,9 @@ export function renderDynamicCustomQuestions(fields) {
                             condAttrs = ' data-bind-condition-field="' + f.conditionField + '" data-bind-condition-value="' + f.conditionValue + '"';
                         }
 
+                        let hasCondition = (f.conditionField && f.conditionValue);
                         if (displayType === "repeater") {
-                            let groupHtml = '<div class="dynamic-question-wrapper mt-3" data-bind-keperluan="' + meta.keperluan + '"' + condAttrs + '>';
+                            let groupHtml = '<div class="dynamic-question-wrapper mt-3' + (hasCondition ? ' hidden' : '') + '" data-bind-keperluan="' + meta.keperluan + '"' + condAttrs + '>';
                             groupHtml += '<div id="' + qInputId + '_container" class="space-y-3"></div>';
                             let encodedOpts = encodeURIComponent(f.options || "[]");
                             groupHtml += '<button type="button" onclick="addRepeaterGroup(\'' + qInputId + '_container\', \'' + encodedOpts + '\')" class="mt-3 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-[10px] font-bold shadow-sm transition-all flex items-center gap-1.5"><i class="fa-solid fa-plus"></i> Tambah Jawaban Lain</button>';
@@ -291,7 +292,7 @@ export function renderDynamicCustomQuestions(fields) {
                         let isRequiredStr = f.required === "ya" ? " *" : ' <span class="text-[9px] text-slate-400 font-semibold">(Opsional)</span>';
                         let requiredAttr = f.required === "ya" ? "required" : "";
 
-                        let groupHtml = '<div class="dynamic-question-wrapper space-y-1.5 mt-3" data-bind-keperluan="' + meta.keperluan + '"' + condAttrs + '>';
+                        let groupHtml = '<div class="dynamic-question-wrapper space-y-1.5 mt-3' + (hasCondition ? ' hidden' : '') + '" data-bind-keperluan="' + meta.keperluan + '"' + condAttrs + '>';
 
                         if (meta.judul && meta.judul !== "-" && meta.judul !== lastJudul) {
                             groupHtml += '<h4 class="text-sm font-semibold text-narmadaGreen border-b border-emerald-100 pb-1.5 mt-3 mb-2"><i class="fa-solid fa-list-check"></i> ' + meta.judul + '</h4>';
@@ -446,6 +447,7 @@ export function runLiveConditionalLogicEvaluationForCitizen() {
             let qWrappers = document.querySelectorAll('.dynamic-question-wrapper');
             qWrappers.forEach(function (el) {
                 if (el.closest('.repeater-block')) return;
+                if (el.hasAttribute('data-bind-condition-field')) return; // Visibility dikontrol oleh branching evaluator
                 let boundKeperluan = el.getAttribute('data-bind-keperluan');
                 if (boundKeperluan === "Wajib" || (activeKeperluan !== "" && boundKeperluan === activeKeperluan)) {
                     el.classList.remove('hidden');

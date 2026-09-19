@@ -1114,7 +1114,7 @@ export function renderBuilderQuestionsUIList() {
     } else {
         let html = '';
         pages.forEach((page, pIdx) => {
-            html += `<div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden mb-4 relative">`;
+            html += `<div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-visible mb-4 relative">`;
             
             html += `<div class="bg-slate-50 px-4 py-3 border-b border-slate-100 flex justify-between items-center">
                         <div class="flex items-center gap-3">
@@ -1125,7 +1125,7 @@ export function renderBuilderQuestionsUIList() {
                         </div>
                         <div class="flex gap-2 relative kebab-container">
                             <button type="button" onclick="toggleKebabMenu(this)" class="w-6 h-6 rounded hover:bg-slate-200 text-slate-500 focus:text-slate-800 flex items-center justify-center text-[12px] kebab-btn"><i class="fa-solid fa-ellipsis-vertical pointer-events-none"></i></button>
-                            <div class="hidden absolute right-0 top-full mt-1 w-36 bg-white border border-slate-200 rounded-lg shadow-[0_10px_40px_rgba(0,0,0,0.15)] flex flex-col overflow-hidden kebab-dropdown" style="z-index: 9999;">
+                            <div class="hidden absolute right-0 top-full mt-1 w-36 bg-white border border-slate-200 rounded-lg shadow-[0_10px_40px_rgba(0,0,0,0.15)] flex flex-col kebab-dropdown" style="z-index: 9999;">
                                 <button type="button" onclick="editPageTitle(${page.pageNo}, '${page.judul}')" class="text-left px-3 py-2 text-[10px] font-bold text-slate-600 hover:bg-slate-50 hover:text-amber-600 border-b border-slate-100"><i class="fa-solid fa-pen w-4"></i> Ubah Judul</button>
                                 <button type="button" onclick="toggleBulkMode(${page.pageNo})" class="text-left px-3 py-2 text-[10px] font-bold text-slate-600 hover:bg-slate-50 hover:text-emerald-600 border-b border-slate-100"><i class="fa-solid fa-check-square w-4"></i> Pilih Pertanyaan</button>
                                 <button type="button" onclick="deleteBuilderPage(${page.pageNo})" class="text-left px-3 py-2 text-[10px] font-bold text-slate-600 hover:bg-slate-50 hover:text-red-600"><i class="fa-solid fa-trash w-4"></i> Hapus Halaman</button>
@@ -1167,7 +1167,7 @@ export function renderBuilderQuestionsUIList() {
                             </div>
                     <div class="relative kebab-container">
                         <button type="button" onclick="toggleKebabMenu(this)" class="w-6 h-6 rounded hover:bg-slate-100 text-slate-400 focus:text-slate-800 flex items-center justify-center text-[12px] kebab-btn"><i class="fa-solid fa-ellipsis-vertical pointer-events-none"></i></button>
-                        <div class="hidden absolute right-0 top-full mt-1 w-36 bg-white border border-slate-200 rounded-lg shadow-[0_10px_40px_rgba(0,0,0,0.15)] flex flex-col overflow-hidden kebab-dropdown" style="z-index: 9999;">
+                        <div class="hidden absolute right-0 top-full mt-1 w-36 bg-white border border-slate-200 rounded-lg shadow-[0_10px_40px_rgba(0,0,0,0.15)] flex flex-col kebab-dropdown" style="z-index: 9999;">
                             ${baseType === "dropdown" ? `<button type="button" onclick="openConditionalBuilder(${item.globalIndex})" class="text-left px-3 py-2 text-[10px] font-bold text-slate-600 hover:bg-slate-50 hover:text-narmadaGreen border-b border-slate-100"><i class="fa-solid fa-code-branch w-4"></i> Cabang</button>` : ''}
                             <button type="button" onclick="openFieldEditorModal(${item.globalIndex})" class="text-left px-3 py-2 text-[10px] font-bold text-slate-600 hover:bg-slate-50 hover:text-amber-600 border-b border-slate-100"><i class="fa-solid fa-pen w-4"></i> Edit</button>
                             <button type="button" onclick="duplicateBuilderQuestion(${item.globalIndex})" class="text-left px-3 py-2 text-[10px] font-bold text-slate-600 hover:bg-slate-50 hover:text-indigo-600 border-b border-slate-100"><i class="fa-solid fa-copy w-4"></i> Duplikat</button>
@@ -1854,19 +1854,32 @@ export function updateSummaryPanel() {
 window.toggleKebabMenu = function(btn) {
     // Prevent triggering global click
     setTimeout(() => {
+        let menu = btn.nextElementSibling;
+        let isHidden = menu.classList.contains('hidden');
+        
         // Close other dropdowns
         document.querySelectorAll('.kebab-dropdown').forEach(el => {
-            if (el !== btn.nextElementSibling) el.classList.add('hidden');
+            el.classList.add('hidden');
         });
         // Reset all z-indexes
         document.querySelectorAll('.builder-question-item').forEach(el => el.style.zIndex = '1');
         
-        // Toggle current menu
-        let menu = btn.nextElementSibling;
-        menu.classList.toggle('hidden');
-        
-        // Bring row to front to prevent it from being hidden behind next items
-        if (!menu.classList.contains('hidden')) {
+        if (isHidden) {
+            if (menu.parentNode !== document.body) {
+                document.body.appendChild(menu);
+            }
+            menu.classList.remove('hidden');
+            
+            let rect = btn.getBoundingClientRect();
+            menu.style.position = 'fixed';
+            menu.style.top = (rect.bottom + 4) + 'px';
+            
+            let menuWidth = 144;
+            let leftPos = rect.right - menuWidth;
+            if (leftPos < 10) leftPos = 10;
+            
+            menu.style.left = leftPos + 'px';
+            
             let row = btn.closest('.builder-question-item') || btn.closest('.kebab-container').parentNode;
             if (row && row.style) row.style.zIndex = '50';
         }

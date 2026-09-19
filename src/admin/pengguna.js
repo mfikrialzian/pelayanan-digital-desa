@@ -84,8 +84,8 @@ export function renderUserTable(users) {
                             '<td class="py-3 px-4">' + statusBadge + '</td>' +
                             '<td class="py-3 px-4 text-xs text-slate-500">' + (u.terakhirLogin || '-') + '</td>' +
                             '<td class="py-3 px-4 text-right relative">' +
-                                '<button onclick="toggleDropdown(\'' + dropdownId + '\')" class="w-8 h-8 rounded-lg bg-slate-50 text-slate-500 hover:bg-slate-200 hover:text-slate-800 transition-colors"><i class="fa-solid fa-ellipsis-vertical"></i></button>' +
-                                '<div id="' + dropdownId + '" class="hidden absolute right-4 top-10 w-48 bg-white border border-slate-100 shadow-lg rounded-xl z-10 overflow-hidden text-left">' +
+                                '<button onclick="toggleDropdown(this, \'' + dropdownId + '\')" class="w-8 h-8 rounded-lg bg-slate-50 text-slate-500 hover:bg-slate-200 hover:text-slate-800 transition-colors pengguna-kebab-btn"><i class="fa-solid fa-ellipsis-vertical pointer-events-none"></i></button>' +
+                                '<div id="' + dropdownId + '" class="hidden w-48 bg-white border border-slate-100 shadow-lg rounded-xl overflow-hidden text-left pengguna-dropdown" style="z-index: 9999;">' +
                                     '<button onclick="openModalEditPengguna(\'' + u.username + '\'); toggleDropdown(\'' + dropdownId + '\')" class="w-full text-left px-4 py-2.5 text-xs font-medium text-slate-700 hover:bg-slate-50 transition-colors flex items-center gap-2"><i class="fa-solid fa-pen-to-square w-4"></i> Edit Pengguna</button>' +
                                     '<button onclick="resetPasswordPengguna(\'' + u.username + '\'); toggleDropdown(\'' + dropdownId + '\')" class="w-full text-left px-4 py-2.5 text-xs font-medium text-slate-700 hover:bg-slate-50 transition-colors flex items-center gap-2"><i class="fa-solid fa-key w-4"></i> Reset Password</button>' +
                                     '<div class="h-px bg-slate-100 w-full my-1"></div>' +
@@ -102,10 +102,45 @@ export function renderUserTable(users) {
             });
         }
 
-export function toggleDropdown(id) {
-            let el = document.getElementById(id);
-            if (el) el.classList.toggle('hidden');
+export function toggleDropdown(btn, id) {
+            if (typeof btn === 'string') {
+                let el = document.getElementById(btn);
+                if (el) el.classList.add('hidden');
+                return;
+            }
+
+            setTimeout(() => {
+                let menu = document.getElementById(id);
+                if (!menu) return;
+                
+                let isHidden = menu.classList.contains('hidden');
+                
+                document.querySelectorAll('.pengguna-dropdown').forEach(el => el.classList.add('hidden'));
+                
+                if (isHidden) {
+                    if (menu.parentNode !== document.body) {
+                        document.body.appendChild(menu);
+                    }
+                    menu.classList.remove('hidden');
+                    
+                    let rect = btn.getBoundingClientRect();
+                    menu.style.position = 'fixed';
+                    menu.style.top = (rect.bottom + 4) + 'px';
+                    
+                    let menuWidth = 192; // 48 * 4 (w-48)
+                    let leftPos = rect.right - menuWidth;
+                    if (leftPos < 10) leftPos = 10;
+                    
+                    menu.style.left = leftPos + 'px';
+                }
+            }, 10);
         }
+
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('.pengguna-kebab-btn')) {
+        document.querySelectorAll('.pengguna-dropdown').forEach(d => d.classList.add('hidden'));
+    }
+});
 
 export function switchManajemenPenggunaTab(tabId) {
             // Sembunyikan menu container utama
