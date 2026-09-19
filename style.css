@@ -679,12 +679,14 @@ body {
     border-radius: 12px;
     box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0,0,0,0.05);
     padding: 4px;
-    display: flex;
-    flex-direction: column;
     gap: 2px;
     z-index: 9999;
     transform-origin: top right;
     animation: actionMenuPop 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+.action-menu-dropdown:not(.hidden) {
+    display: flex;
+    flex-direction: column;
 }
 .action-menu-dropdown.drop-up {
     transform-origin: bottom right;
