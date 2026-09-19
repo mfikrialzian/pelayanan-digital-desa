@@ -1423,6 +1423,13 @@ export function initDynamicMaps() {
                 // Invalidate size in case it renders inside hidden elements
                 setTimeout(() => { map.invalidateSize(); }, 500);
 
+                if (window.ResizeObserver) {
+                    let resizeObserver = new ResizeObserver(() => {
+                        map.invalidateSize();
+                    });
+                    resizeObserver.observe(container);
+                }
+
                 window.leafletMaps[mapId] = { map: map, marker: marker };
             });
         }
