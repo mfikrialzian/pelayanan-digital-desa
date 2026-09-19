@@ -76,7 +76,7 @@ window.pathname = window.location.pathname.toLowerCase();
                 switchView('status');
                 if (urlParams.has('id')) {
                     let reqId = urlParams.get('id');
-                    let statusInput = document.getElementById('search-status-id');
+                    let statusInput = document.getElementById('search-status-key');
                     if (statusInput) statusInput.value = reqId;
                     // Need to wait until scripts are loaded and views are switched
                     setTimeout(() => { if (window.runSearchStatus) window.runSearchStatus(); }, 500);

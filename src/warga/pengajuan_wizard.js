@@ -911,7 +911,7 @@ export function showWizardSuccessScreen(regId) {
             // Populate Voucher Data
             let nama = document.getElementById('warga-nama').value.trim();
             let nik = document.getElementById('warga-nik').value.trim();
-            let layanan = selectedLayananGlobal ? selectedLayananGlobal.layanan : "-";
+            let layanan = selectedLayananGlobal ? selectedLayananGlobal.nama : "-";
             document.getElementById('voucher-nama').innerText = nama || "-";
             document.getElementById('voucher-nik').innerText = nik ? "NIK: " + nik : "-";
             document.getElementById('voucher-layanan').innerText = layanan;
@@ -947,19 +947,27 @@ export function downloadVoucher() {
             voucherEl.style.transform = "scale(1)";
             
             html2canvas(voucherEl, {
-                scale: 2, // High resolution
+                scale: 3, // Higher resolution for canvas
                 useCORS: true,
                 backgroundColor: "#ffffff",
                 logging: false
             }).then(function(canvas) {
                 if (window.jspdf && window.jspdf.jsPDF) {
                     const jsPDF = window.jspdf.jsPDF;
+                    
+                    // Use the exact DOM element dimensions to prevent scaling issues
+                    let w = voucherEl.offsetWidth;
+                    let h = voucherEl.offsetHeight;
+                    
                     const doc = new jsPDF({
-                        orientation: 'portrait',
+                        orientation: w > h ? 'landscape' : 'portrait',
                         unit: 'px',
-                        format: [canvas.width, canvas.height]
+                        format: [w, h]
                     });
-                    doc.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, canvas.width, canvas.height);
+                    
+                    // The canvas is large (scale: 3), but we render it into the PDF at the element's actual size (w, h)
+                    // This packs all those pixels into the smaller area, resulting in a crisp, high-res PDF.
+                    doc.addImage(canvas.toDataURL('image/png', 1.0), 'PNG', 0, 0, w, h);
                     doc.save('Voucher-Pengajuan-' + regId + '.pdf');
                 } else {
                     // Fallback to PNG if jsPDF fails to load
