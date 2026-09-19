@@ -974,11 +974,12 @@ export function generateVoucherPDF(data) {
             let reqName = typeof req === 'object' ? req.name : req;
             let cleanName = reqName.replace(/^\[(.*?)\]\s*/, '');
             let li = document.createElement('li');
-            li.innerText = cleanName;
+            li.className = "flex items-start gap-1.5";
+            li.innerHTML = '<i class="fa-solid fa-check text-emerald-500 mt-0.5"></i> <span>' + cleanName + '</span>';
             reqUl.appendChild(li);
         });
     } else {
-        reqUl.innerHTML = '<li class="text-slate-400 italic">Tidak ada persyaratan tambahan</li>';
+        reqUl.innerHTML = '<li class="text-slate-400 italic col-span-full">Tidak ada persyaratan tambahan</li>';
     }
 
     // Function to capture and cleanup
@@ -1018,19 +1019,19 @@ export function generateVoucherPDF(data) {
                 let y = (8 - pdfHeight) / 2;
 
                 doc.addImage(canvas.toDataURL('image/png', 1.0), 'PNG', x, y, pdfWidth, pdfHeight);
-                doc.save('Voucher-Pengajuan-' + regId + '.pdf');
-                if(window.pushToast) window.pushToast("Voucher berhasil diunduh!", "success");
+                doc.save('Tiket-Pengajuan-' + regId + '.pdf');
+                if(window.pushToast) window.pushToast("Tiket berhasil diunduh!", "success");
             } else {
                 let link = document.createElement('a');
-                link.download = 'Voucher-Pengajuan-' + regId + '.png';
+                link.download = 'Tiket-Pengajuan-' + regId + '.png';
                 link.href = canvas.toDataURL('image/png');
                 link.click();
             }
         }).catch(function(err) {
             // Cleanup DOM
             if (clone.parentNode) clone.parentNode.removeChild(clone);
-            console.error("Error generating voucher:", err);
-            if(window.pushToast) window.pushToast("Gagal mengunduh voucher.", "error");
+            console.error("Error generating tiket:", err);
+            if(window.pushToast) window.pushToast("Gagal mengunduh tiket.", "error");
         });
     };
 

@@ -92,7 +92,7 @@ export function renderStatusCards(results) {
                     '<div><span class="text-[8px] text-slate-400 block font-bold uppercase">No. Registrasi</span>' +
                     '<span class="font-extrabold text-slate-900">' + item.id + '</span></div>' +
                     '<div class="flex items-center gap-1.5">' +
-                    '<button onclick="if(window.downloadStatusVoucher) window.downloadStatusVoucher(\'' + item.id + '\')" class="bg-slate-800 hover:bg-slate-900 text-white px-2 py-1 rounded text-[9px] font-bold transition-all shadow-sm"><i class="fa-solid fa-download"></i> Voucher</button>' +
+                    '<button onclick="if(window.downloadStatusVoucher) window.downloadStatusVoucher(\'' + item.id + '\')" class="bg-slate-800 hover:bg-slate-900 text-white px-2 py-1 rounded text-[9px] font-bold transition-all shadow-sm"><i class="fa-solid fa-download"></i> Tiket</button>' +
                     '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold border ' + badgeColor + '">' + item.status + '</span>' +
                     '</div>' +
                     '</div>' +
@@ -158,7 +158,7 @@ window.downloadStatusVoucher = function(id) {
             requirements: reqs
         });
     } else {
-        if(window.pushToast) window.pushToast("Fitur voucher sedang dimuat, coba lagi.", "error");
+        if(window.pushToast) window.pushToast("Fitur tiket sedang dimuat, coba lagi.", "error");
     }
 };
 
