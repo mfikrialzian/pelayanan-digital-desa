@@ -1331,6 +1331,10 @@ export function updateStep3PaginationUI() {
 
 export function initDynamicMaps() {
             let mapsContainers = document.querySelectorAll('.dynamic-map-container');
+            if (typeof L === 'undefined') {
+                console.warn('Leaflet library is not loaded. Maps will not be available.');
+                return;
+            }
             if (!window.leafletMaps) window.leafletMaps = {};
 
             mapsContainers.forEach(container => {
