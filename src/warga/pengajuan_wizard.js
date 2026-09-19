@@ -939,46 +939,130 @@ export function showWizardSuccessScreen(regId) {
             successScreen.classList.add('slide-in-forward');
         }
 
+export function generateVoucherPDF(data) {
+    let { regId, nama, nik, layanan, requirements } = data;
+    
+    // Save previous state
+    let oldNama = document.getElementById('voucher-nama').innerText;
+    let oldNik = document.getElementById('voucher-nik').innerText;
+    let oldLayanan = document.getElementById('voucher-layanan').innerText;
+    let oldQr = document.getElementById('voucher-qr').src;
+    let reqUl = document.getElementById('voucher-requirements');
+    let oldReqs = reqUl.innerHTML;
+    let oldRegId = document.getElementById('success-reg-id').innerText;
+    
+    // Temporarily overwrite
+    document.getElementById('success-reg-id').innerText = regId;
+    document.getElementById('voucher-nama').innerText = nama || "-";
+    document.getElementById('voucher-nik').innerText = nik ? "NIK: " + nik : "-";
+    document.getElementById('voucher-layanan').innerText = layanan || "-";
+
+    let currentUrl = window.location.href.split('?')[0]; 
+    let trackingUrl = currentUrl + "?view=status&id=" + encodeURIComponent(regId);
+    let newQrSrc = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + encodeURIComponent(trackingUrl);
+    document.getElementById('voucher-qr').src = newQrSrc;
+
+    reqUl.innerHTML = "";
+    if (requirements && requirements.length > 0) {
+        requirements.forEach(req => {
+            let reqName = typeof req === 'object' ? req.name : req;
+            let cleanName = reqName.replace(/^\[(.*?)\]\s*/, '');
+            let li = document.createElement('li');
+            li.innerText = cleanName;
+            reqUl.appendChild(li);
+        });
+    } else {
+        reqUl.innerHTML = '<li class="text-slate-400 italic">Tidak ada persyaratan tambahan</li>';
+    }
+
+    let voucherEl = document.getElementById('success-voucher');
+    let wrapper = document.getElementById('wizard-section-success');
+    let wasHidden = wrapper.classList.contains('hidden');
+    
+    // Force visibility for html2canvas
+    if (wasHidden) {
+        wrapper.style.position = 'absolute';
+        wrapper.style.opacity = '0.01';
+        wrapper.style.pointerEvents = 'none';
+        wrapper.classList.remove('hidden');
+    }
+    
+    voucherEl.style.transform = "scale(1)";
+
+    // Function to capture and restore
+    const doCapture = () => {
+        html2canvas(voucherEl, {
+            scale: 3, 
+            useCORS: true,
+            backgroundColor: "#ffffff",
+            logging: false
+        }).then(function(canvas) {
+            // Restore visibility and DOM
+            if (wasHidden) {
+                wrapper.classList.add('hidden');
+                wrapper.style.position = '';
+                wrapper.style.opacity = '';
+                wrapper.style.pointerEvents = '';
+            }
+            document.getElementById('success-reg-id').innerText = oldRegId;
+            document.getElementById('voucher-nama').innerText = oldNama;
+            document.getElementById('voucher-nik').innerText = oldNik;
+            document.getElementById('voucher-layanan').innerText = oldLayanan;
+            document.getElementById('voucher-qr').src = oldQr;
+            reqUl.innerHTML = oldReqs;
+            
+            if (window.jspdf && window.jspdf.jsPDF) {
+                const jsPDF = window.jspdf.jsPDF;
+                let w = voucherEl.offsetWidth;
+                let h = voucherEl.offsetHeight;
+                const doc = new jsPDF({
+                    orientation: w > h ? 'landscape' : 'portrait',
+                    unit: 'px',
+                    format: [w, h]
+                });
+                doc.addImage(canvas.toDataURL('image/png', 1.0), 'PNG', 0, 0, w, h);
+                doc.save('Voucher-Pengajuan-' + regId + '.pdf');
+                if(window.pushToast) window.pushToast("Voucher berhasil diunduh!", "success");
+            } else {
+                let link = document.createElement('a');
+                link.download = 'Voucher-Pengajuan-' + regId + '.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            }
+        }).catch(function(err) {
+            if (wasHidden) {
+                wrapper.classList.add('hidden');
+                wrapper.style.position = '';
+                wrapper.style.opacity = '';
+                wrapper.style.pointerEvents = '';
+            }
+            console.error("Error generating voucher:", err);
+            if(window.pushToast) window.pushToast("Gagal mengunduh voucher.", "error");
+        });
+    };
+
+    // Wait slightly for QR image to load before capturing
+    let qrImg = document.getElementById('voucher-qr');
+    if (qrImg.complete) {
+        setTimeout(doCapture, 100);
+    } else {
+        qrImg.onload = () => setTimeout(doCapture, 100);
+        qrImg.onerror = () => setTimeout(doCapture, 100);
+    }
+}
+window.generateVoucherPDF = generateVoucherPDF;
+
 export function downloadVoucher() {
             let voucherEl = document.getElementById('success-voucher');
             let regId = document.getElementById('success-reg-id').innerText;
             
-            // Temporary styles for perfect rendering
-            voucherEl.style.transform = "scale(1)";
-            
-            html2canvas(voucherEl, {
-                scale: 3, // Higher resolution for canvas
-                useCORS: true,
-                backgroundColor: "#ffffff",
-                logging: false
-            }).then(function(canvas) {
-                if (window.jspdf && window.jspdf.jsPDF) {
-                    const jsPDF = window.jspdf.jsPDF;
-                    
-                    // Use the exact DOM element dimensions to prevent scaling issues
-                    let w = voucherEl.offsetWidth;
-                    let h = voucherEl.offsetHeight;
-                    
-                    const doc = new jsPDF({
-                        orientation: w > h ? 'landscape' : 'portrait',
-                        unit: 'px',
-                        format: [w, h]
-                    });
-                    
-                    // The canvas is large (scale: 3), but we render it into the PDF at the element's actual size (w, h)
-                    // This packs all those pixels into the smaller area, resulting in a crisp, high-res PDF.
-                    doc.addImage(canvas.toDataURL('image/png', 1.0), 'PNG', 0, 0, w, h);
-                    doc.save('Voucher-Pengajuan-' + regId + '.pdf');
-                } else {
-                    // Fallback to PNG if jsPDF fails to load
-                    let link = document.createElement('a');
-                    link.download = 'Voucher-Pengajuan-' + regId + '.png';
-                    link.href = canvas.toDataURL('image/png');
-                    link.click();
-                }
-            }).catch(function(err) {
-                console.error("Error generating voucher image:", err);
-                pushToast("Gagal mengunduh voucher.", "error");
+            // Just use the new generic function
+            generateVoucherPDF({
+                regId: regId,
+                nama: document.getElementById('voucher-nama').innerText,
+                nik: document.getElementById('voucher-nik').innerText.replace('NIK: ', ''),
+                layanan: document.getElementById('voucher-layanan').innerText,
+                requirements: Array.from(document.getElementById('voucher-requirements').children).map(li => li.innerText)
             });
         }
 

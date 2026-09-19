@@ -18,6 +18,8 @@ export function runSearchStatus() {
         }
 
 export function renderStatusCards(results) {
+            window.lastStatusResults = results; // Save for voucher downloads
+            
             let boxList = document.getElementById('box-list-status');
             if (!boxList) return;
 
@@ -89,7 +91,10 @@ export function renderStatusCards(results) {
                     '<div class="flex justify-between items-center pb-2 border-b border-slate-101">' +
                     '<div><span class="text-[8px] text-slate-400 block font-bold uppercase">No. Registrasi</span>' +
                     '<span class="font-extrabold text-slate-900">' + item.id + '</span></div>' +
+                    '<div class="flex items-center gap-1.5">' +
+                    '<button onclick="if(window.downloadStatusVoucher) window.downloadStatusVoucher(\'' + item.id + '\')" class="bg-slate-800 hover:bg-slate-900 text-white px-2 py-1 rounded text-[9px] font-bold transition-all shadow-sm"><i class="fa-solid fa-download"></i> Voucher</button>' +
                     '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold border ' + badgeColor + '">' + item.status + '</span>' +
+                    '</div>' +
                     '</div>' +
                     '<div class="grid grid-cols-2 gap-2 text-slate-700">' +
                     '<div><span class="text-slate-400 block text-[9px]">Pemohon:</span><span class="font-bold text-slate-900">' + item.nama + '</span></div>' +
@@ -135,6 +140,27 @@ export function renderStatusCards(results) {
             });
             boxList.innerHTML = htmlBuffer;
         }
+
+window.downloadStatusVoucher = function(id) {
+    if (!window.lastStatusResults) return;
+    let item = window.lastStatusResults.find(i => i.id === id);
+    if (!item) return;
+
+    let matchedLayanan = (window.loadedLayananList || window.dummyLayananList).find(l => l.nama === item.layanan);
+    let reqs = matchedLayanan ? matchedLayanan.requirements : [];
+    
+    if (window.generateVoucherPDF) {
+        window.generateVoucherPDF({
+            regId: item.id,
+            nama: item.nama,
+            nik: item.nik,
+            layanan: item.layanan,
+            requirements: reqs
+        });
+    } else {
+        if(window.pushToast) window.pushToast("Fitur voucher sedang dimuat, coba lagi.", "error");
+    }
+};
 
 export function runReuploadProcessDirect(event, idPengajuan, labelNamaBerkas) {
     let file = event.target.files[0];
