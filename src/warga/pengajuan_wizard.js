@@ -994,21 +994,30 @@ export function generateVoucherPDF(data) {
             
             if (window.jspdf && window.jspdf.jsPDF) {
                 const jsPDF = window.jspdf.jsPDF;
-                // Original voucher size
-                let w = originalVoucher.offsetWidth || 384; 
-                let h = originalVoucher.offsetHeight || 500;
-                // If it was hidden, offsetWidth might be 0, so calculate from canvas
-                if (w === 0 || h === 0) {
-                    w = canvas.width / 3;
-                    h = canvas.height / 3;
-                }
                 
+                // Create an 8x10 inch PDF
                 const doc = new jsPDF({
-                    orientation: w > h ? 'landscape' : 'portrait',
-                    unit: 'px',
-                    format: [w, h]
+                    orientation: 'portrait',
+                    unit: 'in',
+                    format: [8, 10]
                 });
-                doc.addImage(canvas.toDataURL('image/png', 1.0), 'PNG', 0, 0, w, h);
+
+                // Calculate proportions to fit within 8x10
+                let canvasRatio = canvas.height / canvas.width;
+                let pdfWidth = 8;
+                let pdfHeight = 8 * canvasRatio;
+                
+                // If height exceeds 10 inches, scale by height instead
+                if (pdfHeight > 10) {
+                    pdfHeight = 10;
+                    pdfWidth = 10 / canvasRatio;
+                }
+
+                // Center the voucher on the 8x10 page
+                let x = (8 - pdfWidth) / 2;
+                let y = (10 - pdfHeight) / 2;
+
+                doc.addImage(canvas.toDataURL('image/png', 1.0), 'PNG', x, y, pdfWidth, pdfHeight);
                 doc.save('Voucher-Pengajuan-' + regId + '.pdf');
                 if(window.pushToast) window.pushToast("Voucher berhasil diunduh!", "success");
             } else {
