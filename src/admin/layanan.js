@@ -1696,7 +1696,17 @@ window.toggleActionMenu = function(event, menuId) {
                 let rect = btn.getBoundingClientRect();
                 
                 menu.style.position = 'fixed';
-                menu.style.top = (rect.bottom + 4) + 'px';
+                
+                let menuHeight = menu.offsetHeight || 120; // Estimasi tinggi jika tidak terdeteksi
+                let spaceBelow = window.innerHeight - rect.bottom;
+                
+                if (spaceBelow < menuHeight + 10 && rect.top > menuHeight + 10) {
+                    // Buka ke atas jika ruang di bawah sempit
+                    menu.style.top = (rect.top - menuHeight - 4) + 'px';
+                } else {
+                    // Buka ke bawah (default)
+                    menu.style.top = (rect.bottom + 4) + 'px';
+                }
                 
                 // w-36 pada tailwind sama dengan 144px. 
                 // Kita posisikan agar sejajar dengan kanan tombol.
