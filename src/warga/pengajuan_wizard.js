@@ -635,10 +635,10 @@ export function goToStep5() {
             ];
 
             identitasData.forEach(function(item) {
-                identitasContainer.innerHTML += '<div class="grid grid-cols-[90px_10px_1fr] gap-2 border-b border-slate-50 py-1">' +
-                    '<span class="text-slate-555 text-[10px] text-left break-words">' + item.label + '</span>' +
-                    '<span class="text-slate-400 text-[10px] text-center">:</span>' +
-                    '<span class="font-bold text-slate-800 text-[10px] text-left break-words">' + item.value + '</span></div>';
+                identitasContainer.innerHTML += '<div class="grid grid-cols-12 gap-1 border-b border-slate-50 py-1">' +
+                    '<span class="col-span-4 text-slate-555 text-[10px] text-left break-words">' + item.label + '</span>' +
+                    '<span class="col-span-1 text-slate-400 text-[10px] text-center">:</span>' +
+                    '<span class="col-span-7 font-bold text-slate-800 text-[10px] text-left break-words">' + item.value + '</span></div>';
             });
 
             let isianContainer = document.getElementById('review-display-isian');
@@ -649,10 +649,10 @@ export function goToStep5() {
             let hasIsian = false;
 
             if (keperl && keperl.value && optionsList.length > 1) {
-                isianContainer.innerHTML += '<div class="grid grid-cols-[90px_10px_1fr] gap-2 border-b border-slate-50 py-1">' +
-                    '<span class="text-slate-555 text-[10px] text-left break-words">Keperluan Surat</span>' +
-                    '<span class="text-slate-400 text-[10px] text-center">:</span>' +
-                    '<span class="font-bold text-slate-800 text-[10px] text-left break-words">' + keperl.value + '</span></div>';
+                isianContainer.innerHTML += '<div class="grid grid-cols-12 gap-1 border-b border-slate-50 py-1">' +
+                    '<span class="col-span-4 text-slate-555 text-[10px] text-left break-words">Keperluan Surat</span>' +
+                    '<span class="col-span-1 text-slate-400 text-[10px] text-center">:</span>' +
+                    '<span class="col-span-7 font-bold text-slate-800 text-[10px] text-left break-words">' + keperl.value + '</span></div>';
                 hasIsian = true;
             }
 
@@ -676,10 +676,10 @@ export function goToStep5() {
                         let parts = displayValue.split('-');
                         if (parts.length === 3) displayValue = parts[2] + '/' + parts[1] + '/' + parts[0];
                     }
-                    isianContainer.innerHTML += '<div class="grid grid-cols-[90px_10px_1fr] gap-2 border-b border-slate-50 py-1">' +
-                        '<span class="text-slate-555 text-[10px] text-left break-words">' + meta.cleanName + '</span>' +
-                        '<span class="text-slate-400 text-[10px] text-center">:</span>' +
-                        '<span class="font-bold text-slate-800 text-[10px] text-left break-words">' + displayValue + '</span>' +
+                    isianContainer.innerHTML += '<div class="grid grid-cols-12 gap-1 border-b border-slate-50 py-1">' +
+                        '<span class="col-span-4 text-slate-555 text-[10px] text-left break-words">' + meta.cleanName + '</span>' +
+                        '<span class="col-span-1 text-slate-400 text-[10px] text-center">:</span>' +
+                        '<span class="col-span-7 font-bold text-slate-800 text-[10px] text-left break-words">' + displayValue + '</span>' +
                         '</div>';
                     hasIsian = true;
                 }
