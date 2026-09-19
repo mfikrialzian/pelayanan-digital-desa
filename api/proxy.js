@@ -3,7 +3,8 @@ export default async function handler(req, res) {
         return res.status(405).json({ success: false, error: 'Method Not Allowed' });
     }
 
-    const GAS_API_URL = process.env.GAS_API_URL;
+    // FORCE to new deployment ID to ensure ID preservation bugfix is active
+    const GAS_API_URL = "https://script.google.com/macros/s/AKfycbyYyDijq_kjRzqa9CeqGm706-FDssRGaNYN9kLTe9awI3h-fsoK5ZCd3OPZKBv56fnM/exec";
 
     if (!GAS_API_URL) {
         console.error("GAS_API_URL environment variable is missing.");
