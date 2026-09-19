@@ -1865,7 +1865,15 @@ window.toggleKebabMenu = function(menuId, btn) {
             
             let rect = btn.getBoundingClientRect();
             menu.style.position = 'fixed';
-            menu.style.top = (rect.bottom + 4) + 'px';
+            
+            let menuHeight = menu.offsetHeight || 120; // Estimasi tinggi jika tidak terdeteksi
+            let spaceBelow = window.innerHeight - rect.bottom;
+            
+            if (spaceBelow < menuHeight + 10 && rect.top > menuHeight + 10) {
+                menu.style.top = (rect.top - menuHeight - 4) + 'px';
+            } else {
+                menu.style.top = (rect.bottom + 4) + 'px';
+            }
             
             let menuWidth = 144;
             let leftPos = rect.right - menuWidth;
