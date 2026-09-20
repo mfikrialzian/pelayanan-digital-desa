@@ -695,6 +695,28 @@ export function showPengaturanAkunMenu() {
 
     const roleText = document.getElementById('admin-profile-role-view');
     if (roleText) roleText.innerText = role;
+
+    const tteConfigPanel = document.getElementById('pa-content-tte-config');
+    if (tteConfigPanel) {
+        if (role === 'Kepala Desa' || role === 'Sekretaris Desa') {
+            tteConfigPanel.classList.remove('hidden');
+            let tteKey = 'tte_profile_' + userId;
+            if (window.setelanData && window.setelanData[tteKey]) {
+                try {
+                    let tteData = JSON.parse(window.setelanData[tteKey]);
+                    document.getElementById('input-tte-nama').value = tteData.nama || '';
+                    document.getElementById('input-tte-jabatan').value = tteData.jabatan || '';
+                    document.getElementById('input-tte-nip').value = tteData.nip || '';
+                } catch(e) {}
+            } else {
+                document.getElementById('input-tte-nama').value = nama;
+                document.getElementById('input-tte-jabatan').value = role;
+                document.getElementById('input-tte-nip').value = '';
+            }
+        } else {
+            tteConfigPanel.classList.add('hidden');
+        }
+    }
 }
 
 export function switchPengaturanAkunTab(tabId) {
@@ -1040,3 +1062,47 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+window.simpanProfilTTE = function() {
+    const btn = document.getElementById('btn-simpan-tte');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan...';
+    btn.disabled = true;
+
+    const nama = document.getElementById('input-tte-nama').value;
+    const jabatan = document.getElementById('input-tte-jabatan').value;
+    const nip = document.getElementById('input-tte-nip').value;
+    const userId = localStorage.getItem('userId');
+    const token = localStorage.getItem('adminToken_Narmada');
+
+    const tteData = { nama, jabatan, nip };
+    const tteKey = 'tte_profile_' + userId;
+
+    let payload = {};
+    payload[tteKey] = JSON.stringify(tteData);
+
+    google.script.run
+        .withSuccessHandler(function(res) {
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+            if (res && res.success) {
+                if (!window.setelanData) window.setelanData = {};
+                window.setelanData[tteKey] = JSON.stringify(tteData);
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil',
+                    text: 'Konfigurasi profil TTE berhasil disimpan.',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+            } else {
+                Swal.fire('Gagal', res.message || 'Terjadi kesalahan saat menyimpan.', 'error');
+            }
+        })
+        .withFailureHandler(function(err) {
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+            Swal.fire('Gagal', 'Kesalahan jaringan: ' + err.message, 'error');
+        })
+        .updateAdminSetelan(token, payload);
+};

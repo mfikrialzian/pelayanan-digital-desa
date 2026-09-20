@@ -1616,6 +1616,42 @@
                             </div>
                         </div>
 
+                            <!-- Konfigurasi TTE (Khusus Kades/Sekdes) -->
+                            <div id="pa-content-tte-config" class="hidden bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden mt-6 border-l-4 border-l-narmadaGreen">
+                                <div class="p-4 md:p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                                    <h3 class="text-xs md:text-sm font-bold text-slate-800 flex items-center gap-2">
+                                        <i class="fa-solid fa-signature text-narmadaGreen"></i> Konfigurasi Tanda Tangan Elektronik (TTE)
+                                    </h3>
+                                </div>
+                                <div class="p-4 md:p-6">
+                                    <p class="text-xs text-slate-500 mb-5 leading-relaxed">
+                                        Pengaturan di bawah ini akan digunakan sebagai nama dan jabatan yang terukir secara otomatis di setiap <b>QR Code (Tanda Tangan Elektronik)</b> pada dokumen yang Anda setujui.
+                                    </p>
+                                    <form id="form-profil-tte" class="space-y-4" onsubmit="event.preventDefault(); window.simpanProfilTTE();">
+                                        <div class="flex flex-col gap-4">
+                                            <div>
+                                                <label class="block text-[9px] md:text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Nama Lengkap beserta Gelar</label>
+                                                <input type="text" id="input-tte-nama" required class="w-full bg-slate-50 border border-slate-200 text-slate-800 text-xs md:text-sm rounded-xl focus:ring-narmadaGreen focus:border-narmadaGreen block px-4 py-2.5 outline-none transition-all" placeholder="Contoh: H. Fulan, S.Ag.">
+                                            </div>
+                                            <div>
+                                                <label class="block text-[9px] md:text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Jabatan Tertulis</label>
+                                                <input type="text" id="input-tte-jabatan" required class="w-full bg-slate-50 border border-slate-200 text-slate-800 text-xs md:text-sm rounded-xl focus:ring-narmadaGreen focus:border-narmadaGreen block px-4 py-2.5 outline-none transition-all" placeholder="Contoh: Kepala Desa Narmada">
+                                            </div>
+                                            <div>
+                                                <label class="block text-[9px] md:text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Keterangan Tambahan / NIP (Opsional)</label>
+                                                <input type="text" id="input-tte-nip" class="w-full bg-slate-50 border border-slate-200 text-slate-800 text-xs md:text-sm rounded-xl focus:ring-narmadaGreen focus:border-narmadaGreen block px-4 py-2.5 outline-none transition-all" placeholder="Kosongkan jika tidak ada">
+                                            </div>
+                                        </div>
+                                        <div class="pt-2 flex justify-end">
+                                            <button type="submit" id="btn-simpan-tte" class="px-5 py-2.5 text-xs font-bold text-white bg-narmadaGreen hover:bg-emerald-700 rounded-xl transition-colors shadow-sm flex items-center gap-2">
+                                                <i class="fa-solid fa-floppy-disk"></i> Simpan Konfigurasi TTE
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
                         
                             <!-- TAB KEAMANAN -->
                         <div id="pa-content-keamanan" class="space-y-6 hidden">
@@ -2160,6 +2196,12 @@
                                                 <option value="Menunggu TTE">Menunggu TTE</option>
                                                 <option value="Selesai">Selesai</option>
                                                 <option value="Perbaikan">Perbaikan</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block text-[10px] font-extrabold text-slate-700 uppercase tracking-wide mb-1.5">Penandatangan (Draf)</label>
+                                            <select id="verif-pejabat-select" onchange="if(typeof renderDrafSurat === 'function') renderDrafSurat()" class="transition-all duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-narmadaGreen focus-visible:outline-none w-full px-3 py-2.5 rounded-xl bg-white border border-slate-200 text-xs font-medium focus:ring-2 focus:ring-narmadaGreen/20 focus:border-narmadaGreen outline-none transition-all shadow-sm">
+                                                <option value="">-- Default / Aktif --</option>
                                             </select>
                                         </div>
                                         <div>
@@ -2777,6 +2819,21 @@
                 </div>
                 
                 <div id="subview-admin-tte" class="hidden max-w-4xl mx-auto text-left space-y-4">
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex justify-between items-center">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-narmadaGreen/10 flex items-center justify-center text-narmadaGreen"><i class="fa-solid fa-signature"></i></div>
+                            <div>
+                                <h3 class="text-sm font-black text-slate-800">Persetujuan & TTE</h3>
+                                <p class="text-[11px] text-slate-500 font-medium">Tandatangani dokumen elektronik</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Tanda Tangan Atas Nama:</label>
+                            <div id="tte-pejabat-badge" class="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-bold text-slate-700">
+                                Memuat profil...
+                            </div>
+                        </div>
+                    </div>
                     <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center justify-center min-h-[300px]" id="tte-empty-state">
                         <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center text-slate-300 text-2xl mb-4">
                             <i class="fa-solid fa-signature"></i>

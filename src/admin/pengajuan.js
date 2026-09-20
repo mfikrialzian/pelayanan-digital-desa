@@ -289,61 +289,24 @@ export function openManageStatusModalById(id) {
                 jawabanFormatted += "<p class='text-slate-400 italic text-[10px] pt-1'>Tidak ada isian tambahan.</p>";
             }
             
-            let templateMap = {};
-            let matchedLayanan = window.loadedLayananList ? window.loadedLayananList.find(l => l.nama === row.layanan) : null;
-            if (matchedLayanan && matchedLayanan.templatePratinjau) {
-                try {
-                    templateMap = JSON.parse(matchedLayanan.templatePratinjau);
-                } catch(e) {
-                    templateMap[row.keperluan] = matchedLayanan.templatePratinjau;
-                }
-            }
-            let templateHtml = templateMap[row.keperluan] || "";
-            
-            if (templateHtml) {
-                let variables = {
-                    nomor_surat: row.id,
-                    tanggal_cetak: new Date().toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' }),
-                    pemohon_nama: row.nama,
-                    pemohon_nik: row.nik || "-",
-                    pemohon_alamat: "Desa Narmada",
-                    pejabat_nama: "",
-                    pejabat_jabatan: "",
-                    pejabat_keterangan: ""
-                };
-                
-                if (window.pejabatList) {
-                    let aktifPejabat = window.pejabatList.find(p => p.aktif);
-                    if (aktifPejabat) {
-                        variables.pejabat_nama = aktifPejabat.nama;
-                        variables.pejabat_jabatan = aktifPejabat.jabatan;
-                        variables.pejabat_keterangan = aktifPejabat.keterangan;
-                    }
-                }
-                
-                if (qMap) {
-                    Object.keys(qMap).forEach(k => {
-                        qMap[k].forEach(qa => {
-                            let safeVal = qa.q.replace(/[^a-zA-Z0-9]/g, '_').toLowerCase();
-                            variables[safeVal] = qa.a || "-";
-                        });
-                    });
-                }
-                
-                Object.keys(variables).forEach(k => {
-                    let regex = new RegExp(`{{${k}}}`, 'g');
-                    templateHtml = templateHtml.replace(regex, variables[k]);
+            let selPejabat = document.getElementById('verif-pejabat-select');
+            if (selPejabat && window.pejabatList) {
+                selPejabat.innerHTML = '<option value="">-- Default / Aktif --</option>';
+                window.pejabatList.forEach(p => {
+                    let opt = document.createElement('option');
+                    opt.value = p.id;
+                    opt.innerText = p.nama + " (" + p.jabatan + ")";
+                    if (p.aktif) opt.selected = true;
+                    selPejabat.appendChild(opt);
                 });
-                
-                let btnPrint = document.getElementById('btn-print-draf');
-                if (btnPrint) btnPrint.classList.remove('hidden');
-                
-                document.getElementById('info-modal-jawaban').innerHTML = `<div class="quill-content text-sm text-black leading-relaxed" style="font-family: 'Times New Roman', serif;">${templateHtml}</div>`;
-            } else {
-                let btnPrint = document.getElementById('btn-print-draf');
-                if (btnPrint) btnPrint.classList.add('hidden');
-                
-                document.getElementById('info-modal-jawaban').innerHTML = jawabanFormatted;
+            }
+
+            window.currentPengajuanRow = row;
+            window.currentJawabanFormatted = jawabanFormatted;
+            window.currentQMap = qMap;
+
+            if (typeof window.renderDrafSurat === 'function') {
+                window.renderDrafSurat();
             }
             let selStatus = document.getElementById('edit-status-select');
             if(selStatus) selStatus.value = row.status;
@@ -655,4 +618,76 @@ window.printDrafSurat = function() {
         </html>
     `);
     win.document.close();
+};
+
+window.renderDrafSurat = function() {
+    let row = window.currentPengajuanRow;
+    let jawabanFormatted = window.currentJawabanFormatted;
+    let qMap = window.currentQMap;
+    if (!row) return;
+
+    let templateMap = {};
+    let matchedLayanan = window.loadedLayananList ? window.loadedLayananList.find(l => l.nama === row.layanan) : null;
+    if (matchedLayanan && matchedLayanan.templatePratinjau) {
+        try {
+            templateMap = JSON.parse(matchedLayanan.templatePratinjau);
+        } catch(e) {
+            templateMap[row.keperluan] = matchedLayanan.templatePratinjau;
+        }
+    }
+    let templateHtml = templateMap[row.keperluan] || "";
+    
+    if (templateHtml) {
+        let variables = {
+            nomor_surat: row.id,
+            tanggal_cetak: new Date().toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' }),
+            pemohon_nama: row.nama,
+            pemohon_nik: row.nik || "-",
+            pemohon_alamat: row.alamat || "-",
+            pejabat_nama: "",
+            pejabat_jabatan: "",
+            pejabat_keterangan: ""
+        };
+        
+        let selPejabat = document.getElementById('verif-pejabat-select');
+        let selectedPejabatId = selPejabat ? selPejabat.value : "";
+        let targetPejabat = null;
+
+        if (window.pejabatList) {
+            if (selectedPejabatId) {
+                targetPejabat = window.pejabatList.find(p => p.id === selectedPejabatId);
+            } else {
+                targetPejabat = window.pejabatList.find(p => p.aktif);
+            }
+            if (targetPejabat) {
+                variables.pejabat_nama = targetPejabat.nama;
+                variables.pejabat_jabatan = targetPejabat.jabatan;
+                variables.pejabat_keterangan = targetPejabat.keterangan;
+            }
+        }
+        
+        if (qMap) {
+            Object.keys(qMap).forEach(k => {
+                qMap[k].forEach(qa => {
+                    let safeVal = qa.q.replace(/[^a-zA-Z0-9]/g, '_').toLowerCase();
+                    variables[safeVal] = qa.a || "-";
+                });
+            });
+        }
+        
+        Object.keys(variables).forEach(k => {
+            let regex = new RegExp(`{{${k}}}`, 'g');
+            templateHtml = templateHtml.replace(regex, variables[k]);
+        });
+        
+        let btnPrint = document.getElementById('btn-print-draf');
+        if (btnPrint) btnPrint.classList.remove('hidden');
+        
+        document.getElementById('info-modal-jawaban').innerHTML = `<div class="quill-content text-sm text-black leading-relaxed" style="font-family: 'Times New Roman', serif;">${templateHtml}</div>`;
+    } else {
+        let btnPrint = document.getElementById('btn-print-draf');
+        if (btnPrint) btnPrint.classList.add('hidden');
+        
+        document.getElementById('info-modal-jawaban').innerHTML = jawabanFormatted;
+    }
 };

@@ -434,6 +434,22 @@ window.fetchPendingTTE = function() {
     
     if (!container || !emptyState) return;
 
+    let badge = document.getElementById('tte-pejabat-badge');
+    if (badge) {
+        let userId = localStorage.getItem('userId');
+        let tteKey = 'tte_profile_' + userId;
+        if (window.setelanData && window.setelanData[tteKey]) {
+            try {
+                let tteData = JSON.parse(window.setelanData[tteKey]);
+                badge.innerText = tteData.nama + " (" + tteData.jabatan + ")";
+                badge.className = "px-3 py-1.5 bg-emerald-50 border border-emerald-200 rounded-lg text-xs font-bold text-narmadaGreen";
+            } catch(e) {}
+        } else {
+            badge.innerText = "Belum Dikonfigurasi (Buka Pengaturan Akun)";
+            badge.className = "px-3 py-1.5 bg-red-50 border border-red-200 rounded-lg text-xs font-bold text-red-600";
+        }
+    }
+
     // Fetch pengajuan with status Menunggu TTE
     google.script.run
         .withSuccessHandler(function (res) {
@@ -487,13 +503,21 @@ window.approveTTE = function(id) {
             });
 
             let timestamp = new Date().toLocaleString('id-ID', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-            let signer = "Pejabat Desa Narmada";
-            try {
-                if (window.pejabatList) {
-                    let aktif = window.pejabatList.find(p => p.aktif);
-                    if (aktif) signer = aktif.nama + " (" + aktif.jabatan + ")";
-                }
-            } catch(e) {}
+            let userId = localStorage.getItem('userId');
+            let tteKey = 'tte_profile_' + userId;
+            let signer = "";
+            
+            if (window.setelanData && window.setelanData[tteKey]) {
+                try {
+                    let tteData = JSON.parse(window.setelanData[tteKey]);
+                    signer = tteData.nama + " (" + tteData.jabatan + ")";
+                } catch(e) {}
+            }
+            
+            if (!signer) {
+                Swal.fire('Konfigurasi TTE Belum Ada', 'Anda belum mengonfigurasi profil TTE. Silakan buka menu "Pengaturan Akun" dan isi form Konfigurasi Tanda Tangan Elektronik terlebih dahulu.', 'warning');
+                return;
+            }
             
             let tteNote = "TTE_APPROVED|" + timestamp + "|" + signer;
             
