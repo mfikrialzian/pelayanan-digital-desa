@@ -18,6 +18,16 @@ export function loadAdminSettingsForm() {
                     document.getElementById('setelan-desc-browser').value = res.login_desc_browser || "Google Chrome atau Edge terbaru.";
                     document.getElementById('setelan-desc-kendala').value = res.login_desc_kendala || "Hubungi 0812-3456-7890 (08:00 - 16:00).";
                     document.getElementById('setelan-desc-keamanan').value = res.login_desc_keamanan || "Sistem menggunakan enkripsi data.";
+                    
+                    // Parse Pejabat
+                    try {
+                        window.pejabatList = res.pejabat_penandatangan ? JSON.parse(res.pejabat_penandatangan) : [];
+                    } catch(e) {
+                        window.pejabatList = [];
+                    }
+                    if (typeof window.renderPejabatList === 'function') {
+                        window.renderPejabatList();
+                    }
                 }).getAdminSetelan();
 
         }
@@ -43,7 +53,8 @@ export function saveAdminSettings() {
 
                 login_desc_browser: document.getElementById('setelan-desc-browser').value.trim(),
                 login_desc_kendala: document.getElementById('setelan-desc-kendala').value.trim(),
-                login_desc_keamanan: document.getElementById('setelan-desc-keamanan').value.trim()
+                login_desc_keamanan: document.getElementById('setelan-desc-keamanan').value.trim(),
+                pejabat_penandatangan: JSON.stringify(window.pejabatList || [])
             };
 
             google.script.run.withSuccessHandler(function (res) {
@@ -947,3 +958,85 @@ export function promptKeamananAccess() {
         }
     });
 }
+
+// --- PEJABAT PENANDATANGAN ---
+window.pejabatList = [];
+
+window.renderPejabatList = function() {
+    let tbody = document.getElementById('pejabat-list-tbody');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+    
+    if (window.pejabatList.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" class="py-4 text-center text-xs text-slate-400 italic">Belum ada pejabat ditambahkan.</td></tr>';
+        return;
+    }
+    
+    window.pejabatList.forEach((p, index) => {
+        let activeCheck = p.aktif ? 'checked' : '';
+        let tr = document.createElement('tr');
+        tr.className = 'hover:bg-slate-50 transition-colors group';
+        tr.innerHTML = `
+            <td class="py-3 px-3 text-center border-b border-slate-100">
+                <input type="radio" name="pejabat_aktif" onchange="window.setPejabatAktif(${index})" ${activeCheck} class="w-4 h-4 text-narmadaGreen border-slate-300 focus:ring-narmadaGreen cursor-pointer">
+            </td>
+            <td class="py-3 px-3 border-b border-slate-100">
+                <input type="text" value="${p.nama}" onchange="window.updatePejabat(${index}, 'nama', this.value)" class="w-full bg-transparent border-b border-transparent focus:border-narmadaGreen focus:outline-none text-xs text-slate-700 font-bold" placeholder="Nama Lengkap">
+            </td>
+            <td class="py-3 px-3 border-b border-slate-100">
+                <input type="text" value="${p.jabatan}" onchange="window.updatePejabat(${index}, 'jabatan', this.value)" class="w-full bg-transparent border-b border-transparent focus:border-narmadaGreen focus:outline-none text-xs text-slate-600" placeholder="Kepala Desa">
+            </td>
+            <td class="py-3 px-3 border-b border-slate-100">
+                <input type="text" value="${p.keterangan || ''}" onchange="window.updatePejabat(${index}, 'keterangan', this.value)" class="w-full bg-transparent border-b border-transparent focus:border-narmadaGreen focus:outline-none text-xs text-slate-600" placeholder="An. Kepala Desa">
+            </td>
+            <td class="py-3 px-3 text-center border-b border-slate-100">
+                <button type="button" onclick="window.deletePejabat(${index})" class="w-7 h-7 rounded-lg bg-red-50 text-red-500 hover:bg-red-500 hover:text-white transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
+                    <i class="fa-solid fa-trash text-[10px]"></i>
+                </button>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+window.addPejabatRow = function() {
+    window.pejabatList.push({
+        nama: '',
+        jabatan: '',
+        keterangan: '',
+        aktif: window.pejabatList.length === 0
+    });
+    window.renderPejabatList();
+}
+
+window.updatePejabat = function(index, field, value) {
+    if (window.pejabatList[index]) {
+        window.pejabatList[index][field] = value;
+    }
+}
+
+window.setPejabatAktif = function(index) {
+    window.pejabatList.forEach((p, i) => {
+        p.aktif = (i === index);
+    });
+}
+
+window.deletePejabat = function(index) {
+    if (confirm("Hapus pejabat ini?")) {
+        let wasAktif = window.pejabatList[index].aktif;
+        window.pejabatList.splice(index, 1);
+        if (wasAktif && window.pejabatList.length > 0) {
+            window.pejabatList[0].aktif = true;
+        }
+        window.renderPejabatList();
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    let btnSavePejabat = document.getElementById('btn-save-pejabat');
+    if (btnSavePejabat) {
+        btnSavePejabat.addEventListener('click', () => {
+            saveAdminSettings();
+        });
+    }
+});

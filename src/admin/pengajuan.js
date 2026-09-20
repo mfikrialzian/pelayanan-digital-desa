@@ -288,8 +288,63 @@ export function openManageStatusModalById(id) {
             } else {
                 jawabanFormatted += "<p class='text-slate-400 italic text-[10px] pt-1'>Tidak ada isian tambahan.</p>";
             }
-            document.getElementById('info-modal-jawaban').innerHTML = jawabanFormatted;
-
+            
+            let templateMap = {};
+            let matchedLayanan = window.loadedLayananList ? window.loadedLayananList.find(l => l.nama === row.layanan) : null;
+            if (matchedLayanan && matchedLayanan.templatePratinjau) {
+                try {
+                    templateMap = JSON.parse(matchedLayanan.templatePratinjau);
+                } catch(e) {
+                    templateMap[row.keperluan] = matchedLayanan.templatePratinjau;
+                }
+            }
+            let templateHtml = templateMap[row.keperluan] || "";
+            
+            if (templateHtml) {
+                let variables = {
+                    nomor_surat: row.id,
+                    tanggal_cetak: new Date().toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' }),
+                    pemohon_nama: row.nama,
+                    pemohon_nik: row.nik || "-",
+                    pemohon_alamat: "Desa Narmada",
+                    pejabat_nama: "",
+                    pejabat_jabatan: "",
+                    pejabat_keterangan: ""
+                };
+                
+                if (window.pejabatList) {
+                    let aktifPejabat = window.pejabatList.find(p => p.aktif);
+                    if (aktifPejabat) {
+                        variables.pejabat_nama = aktifPejabat.nama;
+                        variables.pejabat_jabatan = aktifPejabat.jabatan;
+                        variables.pejabat_keterangan = aktifPejabat.keterangan;
+                    }
+                }
+                
+                if (qMap) {
+                    Object.keys(qMap).forEach(k => {
+                        qMap[k].forEach(qa => {
+                            let safeVal = qa.q.replace(/[^a-zA-Z0-9]/g, '_').toLowerCase();
+                            variables[safeVal] = qa.a || "-";
+                        });
+                    });
+                }
+                
+                Object.keys(variables).forEach(k => {
+                    let regex = new RegExp(`{{${k}}}`, 'g');
+                    templateHtml = templateHtml.replace(regex, variables[k]);
+                });
+                
+                let btnPrint = document.getElementById('btn-print-draf');
+                if (btnPrint) btnPrint.classList.remove('hidden');
+                
+                document.getElementById('info-modal-jawaban').innerHTML = `<div class="quill-content text-sm text-black leading-relaxed" style="font-family: 'Times New Roman', serif;">${templateHtml}</div>`;
+            } else {
+                let btnPrint = document.getElementById('btn-print-draf');
+                if (btnPrint) btnPrint.classList.add('hidden');
+                
+                document.getElementById('info-modal-jawaban').innerHTML = jawabanFormatted;
+            }
             let selStatus = document.getElementById('edit-status-select');
             if(selStatus) selStatus.value = row.status;
             
@@ -568,4 +623,36 @@ window.updatePengajuanSidebarBadges = function(stats) {
     updateBadge('badge-pengajuan-selesai', stats.selesai);
 };
 
-
+window.printDrafSurat = function() {
+    let content = document.getElementById('info-modal-jawaban').innerHTML;
+    let win = window.open('', '_blank');
+    win.document.write(`
+        <html>
+        <head>
+            <title>Cetak Draf Surat</title>
+            <style>
+                @page { margin: 2cm; }
+                body { 
+                    font-family: "Times New Roman", Times, serif; 
+                    font-size: 12pt; 
+                    color: black;
+                    line-height: 1.5;
+                }
+                .quill-content p { margin: 0 0 1em 0; }
+                .quill-content strong { font-weight: bold; }
+                .quill-content em { font-style: italic; }
+                .quill-content h1, .quill-content h2, .quill-content h3 { font-weight: bold; margin: 1em 0 0.5em 0; }
+                .quill-content ul, .quill-content ol { padding-left: 1.5em; margin: 0 0 1em 0; }
+                .quill-content li { margin-bottom: 0.25em; }
+                .quill-content .ql-align-center { text-align: center; }
+                .quill-content .ql-align-right { text-align: right; }
+                .quill-content .ql-align-justify { text-align: justify; }
+            </style>
+        </head>
+        <body onload="window.print(); window.close();">
+            ${content}
+        </body>
+        </html>
+    `);
+    win.document.close();
+};

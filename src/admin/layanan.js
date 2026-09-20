@@ -798,6 +798,16 @@ export function populateBuilderLayananToEdit(id) {
             }
 
             window.builderReqMap = {};
+            window.builderTemplateMap = {};
+            if (found.templatePratinjau) {
+                try {
+                    window.builderTemplateMap = JSON.parse(found.templatePratinjau);
+                } catch(e) {
+                    if (Object.keys(window.builderReqMap).length > 0) {
+                        window.builderTemplateMap[Object.keys(window.builderReqMap)[0]] = found.templatePratinjau;
+                    }
+                }
+            }
             try {
                 let savedSyarat = found.syarat || found.persyaratan || "";
                 if (savedSyarat) {
@@ -863,6 +873,7 @@ export function populateBuilderLayananToEdit(id) {
             pushToast("Konfigurasi '" + found.nama + "' berhasil dimuat.", "info");
             try { initStep2RequirementsBuilder(); } catch(e) { console.error("initStep2RequirementsBuilder crashed", e); }
             try { initStep3QuestionsBuilder(); } catch(e) { console.error("initStep3QuestionsBuilder crashed", e); }
+            try { initStep5TemplateBuilder(); } catch(e) { console.error("initStep5TemplateBuilder crashed", e); }
         }
 
 export function toggleBuilderOptionInput() {
@@ -1476,8 +1487,12 @@ export function submitBuilderDataToServer() {
             let bidangStr = bidangChecked.join(',');
             let templateDocIdEl = document.getElementById('builder-template-doc-id');
             let templateDocId = templateDocIdEl ? templateDocIdEl.value.trim() : "";
-            let templatePratinjauEl = document.getElementById('builder-template-pratinjau');
-            let templatePratinjau = templatePratinjauEl ? templatePratinjauEl.value.trim() : "";
+            
+            // Simpan state editor aktif sebelum disubmit
+            if (window.currentQuillEditor && window.activeTemplateKeperluan) {
+                window.builderTemplateMap[window.activeTemplateKeperluan] = window.currentQuillEditor.root.innerHTML;
+            }
+            let templatePratinjau = JSON.stringify(window.builderTemplateMap || {});
 
             let selectKeperluan = document.getElementById('builder-keperluan-select');
             let keperluanOpts = [];
@@ -1626,6 +1641,12 @@ export function resetBuilderFormState() {
             renderBuilderQuestionsUIList();
             initStep2RequirementsBuilder();
             initStep3QuestionsBuilder();
+            
+            window.builderTemplateMap = {};
+            if (window.currentQuillEditor) {
+                window.currentQuillEditor.root.innerHTML = "";
+            }
+            initStep5TemplateBuilder();
         }
 
 export function deleteBuilderMasterLayanan(nama) {
@@ -2223,3 +2244,189 @@ window.openDrawer = openDrawer;
 window.closeAllDrawers = closeAllDrawers;
 window.updateSummaryPanel = updateSummaryPanel;
 window.updatePreviewLayanan = updatePreviewLayanan;
+
+// --- STEP 5: TEMPLATE SURAT ---
+
+window.builderTemplateMap = {};
+window.currentQuillEditor = null;
+window.activeTemplateKeperluan = "";
+
+export function initStep5TemplateBuilder() {
+    let tabsContainer = document.getElementById('builder-template-tabs');
+    let workspace = document.getElementById('builder-template-workspace');
+    let emptyState = document.getElementById('builder-template-empty');
+    
+    if (!tabsContainer || !workspace || !emptyState) return;
+    
+    tabsContainer.innerHTML = '';
+    
+    let keperluanList = Object.keys(window.builderReqMap || {});
+    if (keperluanList.length === 0 && window.builderKeperluanList) {
+        keperluanList = window.builderKeperluanList.map(k => k.nama);
+    }
+    
+    if (keperluanList.length === 0) {
+        workspace.classList.add('hidden');
+        emptyState.classList.remove('hidden');
+        return;
+    }
+    
+    workspace.classList.remove('hidden');
+    workspace.classList.add('flex');
+    emptyState.classList.add('hidden');
+    
+    keperluanList.forEach((kep, idx) => {
+        let btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'cursor-pointer py-2 px-4 text-xs font-bold rounded-xl transition-all whitespace-nowrap shrink-0 border border-slate-200 ';
+        if (idx === 0) {
+            btn.classList.add('bg-narmadaGreen', 'text-white', 'border-narmadaGreen', 'shadow-sm');
+            window.activeTemplateKeperluan = kep;
+        } else {
+            btn.classList.add('bg-white', 'text-slate-500', 'hover:bg-slate-50');
+        }
+        btn.innerText = kep;
+        btn.onclick = () => switchTemplateTab(kep, btn, tabsContainer);
+        tabsContainer.appendChild(btn);
+    });
+    
+    initQuillEditor();
+    loadTemplateForActiveKeperluan();
+    updateVariablesDropdown();
+}
+window.initStep5TemplateBuilder = initStep5TemplateBuilder;
+
+function switchTemplateTab(kep, btn, tabsContainer) {
+    if (window.currentQuillEditor && window.activeTemplateKeperluan) {
+        window.builderTemplateMap[window.activeTemplateKeperluan] = window.currentQuillEditor.root.innerHTML;
+    }
+    
+    Array.from(tabsContainer.children).forEach(child => {
+        child.className = 'cursor-pointer py-2 px-4 text-xs font-bold rounded-xl transition-all whitespace-nowrap shrink-0 border border-slate-200 bg-white text-slate-500 hover:bg-slate-50';
+    });
+    btn.className = 'cursor-pointer py-2 px-4 text-xs font-bold rounded-xl transition-all whitespace-nowrap shrink-0 border border-narmadaGreen bg-narmadaGreen text-white shadow-sm';
+    
+    window.activeTemplateKeperluan = kep;
+    loadTemplateForActiveKeperluan();
+    updateVariablesDropdown();
+}
+
+function initQuillEditor() {
+    let container = document.getElementById('quill-editor-container');
+    if (!container) return;
+    
+    if (!window.currentQuillEditor) {
+        window.currentQuillEditor = new Quill('#quill-editor-container', {
+            theme: 'snow',
+            placeholder: 'Ketik template surat manual atau unggah file .docx...',
+            modules: {
+                toolbar: [
+                    [{ 'header': [1, 2, 3, false] }],
+                    ['bold', 'italic', 'underline'],
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                    [{ 'align': [] }],
+                    ['clean']
+                ]
+            }
+        });
+        
+        window.currentQuillEditor.on('text-change', function() {
+            if (window.activeTemplateKeperluan) {
+                window.builderTemplateMap[window.activeTemplateKeperluan] = window.currentQuillEditor.root.innerHTML;
+            }
+        });
+        
+        let uploadInput = document.getElementById('builder-template-upload');
+        if (uploadInput) {
+            uploadInput.addEventListener('change', handleDocxUpload);
+        }
+    }
+}
+
+function loadTemplateForActiveKeperluan() {
+    if (!window.currentQuillEditor) return;
+    let html = window.builderTemplateMap[window.activeTemplateKeperluan] || "";
+    window.currentQuillEditor.root.innerHTML = html;
+}
+
+function handleDocxUpload(e) {
+    let file = e.target.files[0];
+    if (!file) return;
+    
+    let statusEl = document.getElementById('template-upload-status');
+    if (statusEl) statusEl.classList.remove('hidden');
+    
+    let reader = new FileReader();
+    reader.onload = function(event) {
+        let arrayBuffer = event.target.result;
+        mammoth.convertToHtml({arrayBuffer: arrayBuffer})
+            .then(function(result) {
+                if (window.currentQuillEditor) {
+                    window.currentQuillEditor.root.innerHTML = result.value;
+                    if (window.activeTemplateKeperluan) {
+                        window.builderTemplateMap[window.activeTemplateKeperluan] = result.value;
+                    }
+                    if (typeof pushToast === 'function') pushToast("Template berhasil diimpor dari file Word.", "success");
+                }
+                if (statusEl) statusEl.classList.add('hidden');
+            })
+            .catch(function(err) {
+                if (typeof pushToast === 'function') pushToast("Gagal membaca file: " + err.message, "error");
+                if (statusEl) statusEl.classList.add('hidden');
+            });
+    };
+    reader.readAsArrayBuffer(file);
+    e.target.value = "";
+}
+
+function updateVariablesDropdown() {
+    let dropdown = document.getElementById('builder-template-variables-dropdown');
+    if (!dropdown) return;
+    
+    dropdown.innerHTML = '';
+    
+    let defaultVars = [
+        { label: 'Nomor Surat', val: 'nomor_surat' },
+        { label: 'Tanggal Cetak', val: 'tanggal_cetak' },
+        { label: 'Nama Lengkap (Pemohon)', val: 'pemohon_nama' },
+        { label: 'NIK (Pemohon)', val: 'pemohon_nik' },
+        { label: 'Alamat (Pemohon)', val: 'pemohon_alamat' },
+        { label: 'Nama Pejabat (Kades/Sekdes)', val: 'pejabat_nama' },
+        { label: 'Jabatan Pejabat', val: 'pejabat_jabatan' },
+        { label: 'Keterangan Pejabat (An.)', val: 'pejabat_keterangan' }
+    ];
+    
+    let html = '<div class="px-3 py-2 border-b border-slate-100 text-[10px] font-bold text-slate-400 uppercase">Sistem</div>';
+    defaultVars.forEach(v => {
+        html += `<button type="button" onclick="insertVariableToQuill('${v.val}')" class="w-full text-left px-3 py-2 text-xs text-slate-700 hover:bg-emerald-50 hover:text-narmadaGreen transition-colors flex items-center justify-between group">
+                    <span>${v.label}</span>
+                    <span class="text-[10px] text-slate-400 group-hover:text-narmadaGreen font-mono">{{${v.val}}}</span>
+                 </button>`;
+    });
+    
+    html += '<div class="px-3 py-2 border-y border-slate-100 text-[10px] font-bold text-slate-400 uppercase mt-2">Formulir (Langkah 4)</div>';
+    
+    if (window.builderQuestions && window.builderQuestions.length > 0) {
+        window.builderQuestions.forEach(q => {
+            if (q.type !== 'header' && q.type !== 'paragraph') {
+                let safeVal = q.label.replace(/[^a-zA-Z0-9]/g, '_').toLowerCase();
+                html += `<button type="button" onclick="insertVariableToQuill('${safeVal}')" class="w-full text-left px-3 py-2 text-xs text-slate-700 hover:bg-emerald-50 hover:text-narmadaGreen transition-colors flex items-center justify-between group">
+                            <span class="truncate pr-2">${q.label}</span>
+                            <span class="text-[10px] text-slate-400 group-hover:text-narmadaGreen font-mono">{{${safeVal}}}</span>
+                         </button>`;
+            }
+        });
+    } else {
+        html += '<div class="px-3 py-2 text-[10px] text-slate-400 italic">Belum ada pertanyaan form</div>';
+    }
+    
+    dropdown.innerHTML = html;
+}
+
+window.insertVariableToQuill = function(val) {
+    if (!window.currentQuillEditor) return;
+    let range = window.currentQuillEditor.getSelection(true);
+    let index = range ? range.index : window.currentQuillEditor.getLength() - 1;
+    window.currentQuillEditor.insertText(index, `{{${val}}}`, 'user');
+    window.currentQuillEditor.setSelection(index + val.length + 4, 'silent');
+}
