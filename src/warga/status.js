@@ -87,11 +87,19 @@ export function renderStatusCards(results) {
                     parsedDetailsHtml += '<div class="font-bold text-slate-800">-</div>';
                 }
 
+                let downloadSuratBtn = '';
+                let tteNoteMatch = item.catatan ? item.catatan.match(/TTE_APPROVED\|(.*?)\|(.*)/) : null;
+                if (item.status === "Selesai" && tteNoteMatch) {
+                    downloadSuratBtn = '<button onclick="if(window.downloadTteSurat) window.downloadTteSurat(\'' + item.id + '\')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-2 py-1 rounded text-[9px] font-bold transition-all shadow-sm"><i class="fa-solid fa-file-pdf"></i> Surat (TTE)</button>';
+                } else if (item.status === "Selesai") {
+                    downloadSuratBtn = '<button onclick="if(window.downloadTteSurat) window.downloadTteSurat(\'' + item.id + '\')" class="bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded text-[9px] font-bold transition-all shadow-sm"><i class="fa-solid fa-print"></i> Cetak Surat</button>';
+                }
+
                 let cardHtml = '<div class="bg-white border border-slate-200 p-4 rounded-xl shadow-2xl space-y-2.5 text-xs text-left">' +
                     '<div class="flex justify-between items-center pb-2 border-b border-slate-101">' +
                     '<div><span class="text-[8px] text-slate-400 block font-bold uppercase">No. Registrasi</span>' +
                     '<span class="font-extrabold text-slate-900">' + item.id + '</span></div>' +
-                    '<div class="flex items-center gap-1.5">' +
+                    '<div class="flex items-center gap-1.5">' + downloadSuratBtn +
                     '<button onclick="if(window.downloadStatusVoucher) window.downloadStatusVoucher(\'' + item.id + '\')" class="bg-slate-800 hover:bg-slate-900 text-white px-2 py-1 rounded text-[9px] font-bold transition-all shadow-sm"><i class="fa-solid fa-download"></i> Tiket</button>' +
                     '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold border ' + badgeColor + '">' + item.status + '</span>' +
                     '</div>' +
@@ -198,3 +206,112 @@ export function runReuploadProcessDirect(event, idPengajuan, labelNamaBerkas) {
             };
             reader.readAsDataURL(file);
         }
+
+window.downloadTteSurat = function(id) {
+    let item = window.lastStatusResults.find(r => r.id === id);
+    if (!item) return;
+
+    Swal.fire({
+        title: 'Mempersiapkan Dokumen',
+        text: 'Sedang merender surat Anda...',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
+    let templateMap = {};
+    let matchedLayanan = (window.loadedLayananList || (typeof dummyLayananList !== 'undefined' ? dummyLayananList : [])).find(l => l.nama === item.layanan);
+    
+    if (matchedLayanan && matchedLayanan.templatePratinjau) {
+        try {
+            templateMap = JSON.parse(matchedLayanan.templatePratinjau);
+        } catch(e) {
+            templateMap[item.keperluan] = matchedLayanan.templatePratinjau;
+        }
+    }
+    
+    let templateHtml = templateMap[item.keperluan] || "Template belum tersedia untuk layanan ini.";
+    
+    let qMap = {};
+    if (item.isianDetail && item.isianDetail !== "-") {
+        try {
+            qMap = JSON.parse(item.isianDetail);
+        } catch (e) {}
+    }
+    
+    let tteNoteMatch = item.catatan ? item.catatan.match(/TTE_APPROVED\|(.*?)\|(.*)/) : null;
+    let tteTimestamp = tteNoteMatch ? tteNoteMatch[1] : "";
+    let tteSigner = tteNoteMatch ? tteNoteMatch[2] : "";
+
+    let variables = {
+        nomor_surat: item.id,
+        tanggal_cetak: new Date().toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' }),
+        pemohon_nama: item.nama,
+        pemohon_nik: item.nik || "-",
+        pemohon_alamat: item.alamat || "-",
+        pejabat_nama: tteSigner.split(" (")[0] || "",
+        pejabat_jabatan: tteSigner.includes("(") ? tteSigner.split(" (")[1].replace(")", "") : "",
+        pejabat_keterangan: ""
+    };
+    
+    Object.keys(qMap).forEach(k => {
+        qMap[k].forEach(qa => {
+            let safeVal = qa.q.replace(/[^a-zA-Z0-9]/g, '_').toLowerCase();
+            variables[safeVal] = qa.a || "-";
+        });
+    });
+    
+    Object.keys(variables).forEach(k => {
+        let regex = new RegExp(`{{${k}}}`, 'g');
+        templateHtml = templateHtml.replace(regex, variables[k]);
+    });
+
+    let container = document.createElement('div');
+    container.style.position = 'absolute';
+    container.style.left = '-9999px';
+    container.innerHTML = `
+        <div id="pdf-content-${id}" style="font-family: 'Times New Roman', Times, serif; font-size: 12pt; padding: 2cm; color: black; line-height: 1.5; background: white; width: 800px;">
+            ${templateHtml}
+            ${tteNoteMatch ? `
+            <div style="margin-top: 50px; text-align: right; padding-right: 50px;">
+                <p><strong>Ditandatangani secara elektronik oleh:</strong></p>
+                <div id="qr-code-${id}" style="display: inline-block; margin: 15px 0;"></div>
+                <p style="text-decoration: underline; font-weight: bold;">${variables.pejabat_nama}</p>
+                <p>${variables.pejabat_jabatan}</p>
+                <p style="font-size: 9pt; color: #666; margin-top: 5px;">Waktu: ${tteTimestamp}</p>
+            </div>
+            ` : ''}
+        </div>
+    `;
+    document.body.appendChild(container);
+
+    if (tteNoteMatch && typeof QRCode !== 'undefined') {
+        new QRCode(document.getElementById(`qr-code-${id}`), {
+            text: `Validasi TTE Desa Narmada\nDokumen: ${item.id}\nPenandatangan: ${tteSigner}\nWaktu: ${tteTimestamp}`,
+            width: 120,
+            height: 120
+        });
+    }
+
+    setTimeout(() => {
+        let element = document.getElementById(`pdf-content-${id}`);
+        let opt = {
+            margin:       0,
+            filename:     `Surat_${item.layanan}_${item.nama}.pdf`,
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2 },
+            jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+        };
+
+        if (typeof html2pdf !== 'undefined') {
+            html2pdf().set(opt).from(element).save().then(() => {
+                document.body.removeChild(container);
+                Swal.fire('Berhasil', 'Dokumen PDF telah diunduh.', 'success');
+            });
+        } else {
+            Swal.fire('Gagal', 'Library pembuat PDF belum dimuat.', 'error');
+            document.body.removeChild(container);
+        }
+    }, 1000);
+};

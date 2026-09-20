@@ -66,7 +66,7 @@ export function executeSwitchAdminTab(tabId, updateUrl = true) {
                 'subview-admin-dashboard', 'subview-admin-pengajuan', 'subview-admin-daftar-layanan',
                 'subview-admin-layanan', 'subview-admin-verifikasi', 'subview-admin-kontak',
                 'subview-admin-beranda', 'subview-admin-kredensial', 'subview-admin-laporan',
-                'subview-admin-aktivitas', 'subview-admin-pengaturan-akun'
+                'subview-admin-aktivitas', 'subview-admin-pengaturan-akun', 'subview-admin-tte'
             ];
             subviews.forEach(id => {
                 let el = document.getElementById(id);
@@ -74,7 +74,7 @@ export function executeSwitchAdminTab(tabId, updateUrl = true) {
             });
 
 
-            const allTabs = ['tab-adm-dashboard', 'tab-adm-pengajuan', 'tab-adm-daftar-layanan', 'tab-adm-kontak', 'tab-adm-beranda', 'tab-adm-kredensial', 'tab-adm-laporan', 'tab-adm-aktivitas'];
+            const allTabs = ['tab-adm-dashboard', 'tab-adm-pengajuan', 'tab-adm-daftar-layanan', 'tab-adm-kontak', 'tab-adm-beranda', 'tab-adm-kredensial', 'tab-adm-laporan', 'tab-adm-aktivitas', 'tab-adm-tte'];
 
             let inactiveClass = "w-full text-left flex items-center px-3 py-2.5 text-slate-500 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-semibold text-sm transition-colors";
             let activeClass = "w-full text-left flex items-center px-3 py-2.5 bg-emerald-50 text-narmadaGreen rounded-xl font-bold text-sm transition-colors";
@@ -128,6 +128,8 @@ export function executeSwitchAdminTab(tabId, updateUrl = true) {
                     showPengaturanAkunMenu();
                 } else if (tabId === 'kredensial') {
                     initManajemenPengguna();
+                } else if (tabId === 'tte') {
+                    if (typeof window.fetchPendingTTE === 'function') window.fetchPendingTTE();
                 }
             }
 
@@ -389,7 +391,7 @@ export const SIDEBAR_ITEMS = [
         { id: 'pengajuan-perbaiki', label: 'Pengajuan Diperbaiki', badgeId: 'badge-pengajuan-perbaikan', action: "openPengajuanFilter('Perbaikan')" },
         { id: 'pengajuan-selesai', label: 'Pengajuan Selesai', badgeId: 'badge-pengajuan-selesai', action: "openPengajuanFilter('Selesai')" }
     ]},
-    { id: 'tte', icon: 'fa-signature', label: 'Persetujuan & TTE', action: "pushToast('Fitur Persetujuan & TTE segera hadir', 'info')" },
+    { id: 'tte', icon: 'fa-signature', label: 'Persetujuan & TTE', action: "switchAdminTab('tte')" },
     { id: 'data-penduduk', icon: 'fa-users', label: 'Data Penduduk', action: "pushToast('Fitur Data Penduduk segera hadir', 'info')" },
     { id: 'dokumen', icon: 'fa-folder-open', label: 'Dokumen & Surat', action: "", disabled: true },
     { id: 'kontak', icon: 'fa-address-book', label: 'Kontak Pelayanan', action: "switchAdminTab('kontak')" },
@@ -424,4 +426,88 @@ export const ROLE_MAPPINGS = {
         sidebar: ['dashboard', 'pengajuan-group', 'pengajuan-menunggu', 'pengajuan-proses', 'pengajuan-perbaiki', 'pengajuan-selesai', 'tte', 'data-penduduk', 'laporan'],
         avatar: ['pengaturan-akun', 'log-saya', 'divider', 'logout']
     }
+};
+
+window.fetchPendingTTE = function() {
+    let container = document.getElementById('tte-list-container');
+    let emptyState = document.getElementById('tte-empty-state');
+    
+    if (!container || !emptyState) return;
+
+    // Fetch pengajuan with status Menunggu TTE
+    google.script.run
+        .withSuccessHandler(function (res) {
+            if (res && res.data && res.data.length > 0) {
+                emptyState.classList.add('hidden');
+                container.classList.remove('hidden');
+                container.innerHTML = '';
+                
+                res.data.forEach(item => {
+                    let card = document.createElement('div');
+                    card.className = "bg-slate-50 border border-slate-100 p-4 rounded-xl flex items-center justify-between";
+                    card.innerHTML = `
+                        <div>
+                            <p class="text-[10px] text-slate-500 font-bold mb-1"><i class="fa-solid fa-calendar-day mr-1"></i> ${item.tanggal} &nbsp;|&nbsp; <i class="fa-solid fa-layer-group mr-1"></i> ${item.layanan}</p>
+                            <h5 class="text-sm font-black text-slate-800">${item.nama}</h5>
+                            <p class="text-[11px] text-slate-600 mt-0.5"><span class="font-bold">Keperluan:</span> ${item.keperluan}</p>
+                        </div>
+                        <button onclick="window.approveTTE('${item.id}')" class="px-4 py-2 bg-narmadaGreen text-white font-bold text-xs rounded-lg hover:bg-emerald-700 transition-colors flex items-center gap-2 shadow-sm">
+                            <i class="fa-solid fa-signature"></i> Setujui & TTE
+                        </button>
+                    `;
+                    container.appendChild(card);
+                });
+            } else {
+                emptyState.classList.remove('hidden');
+                container.classList.add('hidden');
+            }
+        })
+        .getAdminDashboardData(localStorage.getItem('adminToken_Narmada'), "", 1, "Menunggu TTE");
+};
+
+window.approveTTE = function(id) {
+    Swal.fire({
+        title: 'Konfirmasi TTE',
+        text: "Apakah Anda yakin ingin menandatangani dokumen ini secara elektronik?",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#059669',
+        cancelButtonColor: '#ef4444',
+        confirmButtonText: 'Ya, Setujui!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            Swal.fire({
+                title: 'Memproses...',
+                text: 'Menandatangani dokumen secara elektronik.',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            let timestamp = new Date().toLocaleString('id-ID', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+            let signer = "Pejabat Desa Narmada";
+            try {
+                if (window.pejabatList) {
+                    let aktif = window.pejabatList.find(p => p.aktif);
+                    if (aktif) signer = aktif.nama + " (" + aktif.jabatan + ")";
+                }
+            } catch(e) {}
+            
+            let tteNote = "TTE_APPROVED|" + timestamp + "|" + signer;
+            
+            google.script.run
+                .withSuccessHandler(function (res) {
+                    if (res && res.success) {
+                        Swal.fire('Berhasil!', 'Dokumen telah ditandatangani.', 'success');
+                        window.fetchPendingTTE();
+                        if(typeof window.fetchAdminDashboardData === 'function') window.fetchAdminDashboardData();
+                    } else {
+                        Swal.fire('Gagal', 'Terjadi kesalahan.', 'error');
+                    }
+                })
+                .updatePengajuanStatus(localStorage.getItem('adminToken_Narmada'), id, "Selesai", tteNote);
+        }
+    });
 };
