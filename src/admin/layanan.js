@@ -764,7 +764,7 @@ export function populateBuilderLayananToEdit(id) {
                         if (!actualName) return;
                         
                         let displayType = (f && f.type) ? f.type : "text";
-                        let typeMatch = actualName.match(/(.*)\s*\|\|(number|date)\|\|$/);
+                        let typeMatch = actualName.match(/(.*)\s*\|\|(number|date|currency)\|\|$/);
                         if (typeMatch) {
                             displayType = typeMatch[2];
                             actualName = typeMatch[1].trim();

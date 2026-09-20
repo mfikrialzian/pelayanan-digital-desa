@@ -276,7 +276,7 @@ export function renderDynamicCustomQuestions(fields) {
                     fieldsInPage.forEach(function (f) {
                         let displayType = f.type;
                         let actualName = f.name;
-                        let typeMatch = actualName.match(/(.*)\s*\|\|(number|date)\|\|$/);
+                        let typeMatch = actualName.match(/(.*)\s*\|\|(number|date|currency)\|\|$/);
                         if (typeMatch) {
                             displayType = typeMatch[2];
                             actualName = typeMatch[1].trim();
@@ -354,8 +354,15 @@ export function generateFieldInputHtml(displayType, actualName, requiredAttr, op
                     inputHtml += '</select>';
                 }
             } else if (displayType === "number") {
-                let limitAttr = optionsStr ? ' oninput="if(this.value.length > ' + optionsStr + ') this.value = this.value.slice(0, ' + optionsStr + ');"' : '';
-                inputHtml = '<input type="number" ' + requiredAttr + limitAttr + ' placeholder="KETIK ANGKA" class="w-full px-3 py-2.5 rounded-xl custom-input text-sm font-medium shadow-sm dynamic-question-field uppercase" data-question="' + actualName + '"' + idAttr + '>';
+                let limitJs = optionsStr ? 'if(this.value.length > ' + optionsStr + ') this.value = this.value.slice(0, ' + optionsStr + ');' : '';
+                let onInput = 'oninput="this.value = this.value.replace(/[^0-9]/g, \'\'); ' + limitJs + '"';
+                inputHtml = '<input type="text" inputmode="numeric" pattern="[0-9]*" ' + requiredAttr + ' ' + onInput + ' placeholder="KETIK ANGKA" class="w-full px-3 py-2.5 rounded-xl custom-input text-sm font-medium shadow-sm dynamic-question-field uppercase" data-question="' + actualName + '"' + idAttr + '>';
+            } else if (displayType === "currency") {
+                let onInput = 'oninput="let val = this.value.replace(/[^0-9]/g, \'\'); this.value = val ? parseInt(val, 10).toLocaleString(\'id-ID\') : \'\';"';
+                inputHtml = '<div class="relative flex items-center">' +
+                            '<span class="absolute left-3 font-bold text-slate-500 text-sm pointer-events-none">Rp</span>' +
+                            '<input type="text" inputmode="numeric" ' + requiredAttr + ' ' + onInput + ' placeholder="0" class="w-full pl-9 pr-3 py-2.5 rounded-xl custom-input text-sm font-medium shadow-sm dynamic-question-field" data-question="' + actualName + '"' + idAttr + '>' +
+                            '</div>';
             } else if (displayType === "date") {
                 inputHtml = '<input type="date" ' + requiredAttr + ' class="w-full px-3 py-2.5 rounded-xl custom-input text-sm font-medium shadow-sm dynamic-question-field uppercase" data-question="' + actualName + '"' + idAttr + '>';
             } else if (displayType === "maps") {
@@ -385,7 +392,7 @@ export function generateRepeaterBlockHtml(encodedSubFields, isRemovable) {
             subFields.forEach(function(f) {
                 let dType = f.type;
                 let aName = f.name;
-                let tMatch = aName.match(/(.*)\s*\|\|(number|date)\|\|$/);
+                let tMatch = aName.match(/(.*)\s*\|\|(number|date|currency)\|\|$/);
                 if (tMatch) {
                     dType = tMatch[2];
                     aName = tMatch[1].trim();
