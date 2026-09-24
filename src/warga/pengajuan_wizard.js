@@ -133,6 +133,8 @@ export function openFormPengajuan(nama) {
 
             selectedLayananGlobal = found;
             document.getElementById('text-judul-layanan-terpilih').innerText = found.nama;
+            document.getElementById('text-desc-layanan-terpilih').classList.remove('hidden');
+            document.getElementById('text-desc-layanan-terpilih').innerText = found.deskripsi || 'Silakan lengkapi form ini.';
 
             document.getElementById('lbl-judul-section-isian').innerText = "Isian Keperluan Surat & Formulir";
             document.getElementById('lbl-desc-section-isian').innerText = "Pilih keperluan pengurusan surat Anda dan isi formulir tambahan.";
@@ -489,6 +491,14 @@ export function runLiveConditionalLogicEvaluationForCitizen() {
             let activeKeperluan = "";
             let elKeperluan = document.getElementById('warga-keperluan-surat');
             if (elKeperluan) activeKeperluan = elKeperluan.value.trim();
+            let descEl = document.getElementById('text-desc-layanan-terpilih');
+            if (descEl) {
+                if (activeKeperluan) {
+                    descEl.innerText = 'Keperluan: ' + activeKeperluan;
+                } else {
+                    descEl.innerText = selectedLayananGlobal.deskripsi || 'Silakan lengkapi formulir pengajuan.';
+                }
+            }
 
             let reqWrappers = document.querySelectorAll('.wrapper-syarat-tambahan');
             reqWrappers.forEach(function (el) {
