@@ -39,7 +39,7 @@ export function loadWargaDraft(layananNama) {
                             });
                         }
                         runLiveConditionalLogicEvaluationForCitizen();
-                        toggleWizardStep1State();
+                        if(window.toggleWizardStep1State) window.toggleWizardStep1State();
                     }
                 } catch (e) {
                     console.error("Gagal memuat draft:", e);
@@ -195,7 +195,7 @@ export function openFormPengajuan(nama) {
             renderDynamicCustomQuestions(found.fields || []);
             renderDynamicUploadSlots(found.requirements || []);
 
-            toggleWizardStep1State();
+            if(window.toggleWizardStep1State) window.toggleWizardStep1State();
             loadWargaDraft(found.nama);
             switchWizardSection(1);
 
@@ -215,23 +215,44 @@ export function renderDynamicCustomQuestions(fields) {
             qContainer.innerHTML = "";
 
             let keperluanOptionsStr = selectedLayananGlobal.judulSectionIsian || "";
-            if (keperluanOptionsStr) {
-                let optionsList = keperluanOptionsStr.split(',').map(function(opt) { return opt.trim(); }).filter(function(opt) { return opt !== ""; });
-                
-                if (optionsList.length === 1) {
-                    qContainer.innerHTML += '<input type="hidden" id="warga-keperluan-surat" value="' + optionsList[0] + '">';
-                } else if (optionsList.length > 1) {
-                    let selectHtml = '<div class="space-y-1">' +
-                        '<label class="block text-xs font-semibold text-slate-600 mb-1.5">Keperluan Surat *</label>' +
-                        '<select id="warga-keperluan-surat" onchange="runLiveConditionalLogicEvaluationForCitizen()" required class="w-full px-3 py-2.5 rounded-xl custom-input text-sm font-medium shadow-sm bg-white">' +
-                        '<option value="">-- Pilih Keperluan Surat --</option>';
+            let keperluanContainer = document.getElementById('container-keperluan-surat');
+            if (keperluanContainer) {
+                keperluanContainer.innerHTML = "";
+                if (keperluanOptionsStr) {
+                    let optionsList = keperluanOptionsStr.split(',').map(function(opt) { return opt.trim(); }).filter(function(opt) { return opt !== ""; });
+                    
+                    if (optionsList.length === 1) {
+                        keperluanContainer.innerHTML = '<input type="hidden" id="warga-keperluan-surat" value="' + optionsList[0] + '">';
+                        let btnNext1 = document.getElementById('btn-next-step-1');
+                        if (btnNext1) {
+                            btnNext1.disabled = false;
+                            btnNext1.className = "px-5 py-2.5 rounded-xl bg-narmadaGreen hover:bg-narmadaGreen-dark text-white font-bold text-xs shadow-lg transition-all flex items-center gap-1.5 cursor-pointer tap-squish";
+                        }
+                    } else if (optionsList.length > 1) {
+                        let selectHtml = '<div class="space-y-1">' +
+                            '<label class="block text-xs font-semibold text-slate-600 mb-1.5">Silakan Pilih Keperluan Anda *</label>' +
+                            '<select id="warga-keperluan-surat" onchange="window.if(window.toggleWizardStep1State) window.toggleWizardStep1State(); window.runLiveConditionalLogicEvaluationForCitizen();" required class="w-full px-3 py-2.5 rounded-xl custom-input text-sm font-medium shadow-sm bg-white">' +
+                            '<option value="">-- Pilih Keperluan Surat --</option>';
 
-                    optionsList.forEach(function (opt) {
-                        selectHtml += '<option value="' + opt + '">' + opt + '</option>';
-                    });
+                        optionsList.forEach(function (opt) {
+                            selectHtml += '<option value="' + opt + '">' + opt + '</option>';
+                        });
 
-                    selectHtml += '</select></div>';
-                    qContainer.innerHTML += selectHtml;
+                        selectHtml += '</select></div>';
+                        keperluanContainer.innerHTML = selectHtml;
+                        
+                        let btnNext1 = document.getElementById('btn-next-step-1');
+                        if (btnNext1) {
+                            btnNext1.disabled = true;
+                            btnNext1.className = "px-5 py-2.5 rounded-xl bg-slate-300 text-slate-500 font-bold text-xs shadow-md transition-all flex items-center gap-1.5 cursor-not-allowed tap-squish";
+                        }
+                    }
+                } else {
+                    let btnNext1 = document.getElementById('btn-next-step-1');
+                    if (btnNext1) {
+                        btnNext1.disabled = false;
+                        btnNext1.className = "px-5 py-2.5 rounded-xl bg-narmadaGreen hover:bg-narmadaGreen-dark text-white font-bold text-xs shadow-lg transition-all flex items-center gap-1.5 cursor-pointer tap-squish";
+                    }
                 }
             }
 
@@ -498,29 +519,45 @@ export function runLiveConditionalLogicEvaluationForCitizen() {
         }
         window.runLiveConditionalLogicEvaluationForCitizen = runLiveConditionalLogicEvaluationForCitizen;
 
-export function toggleWizardStep1State() {
+window.toggleWizardStep1State = function() {
+    let select = document.getElementById('warga-keperluan-surat');
+    let btnNext = document.getElementById('btn-next-step-1');
+    if (btnNext) {
+        if (!select || select.value !== "") {
+            btnNext.disabled = false;
+            btnNext.className = "px-5 py-2.5 rounded-xl bg-narmadaGreen hover:bg-narmadaGreen-dark text-white font-bold text-xs shadow-lg transition-all flex items-center gap-1.5 cursor-pointer tap-squish";
+        } else {
+            btnNext.disabled = true;
+            btnNext.className = "px-5 py-2.5 rounded-xl bg-slate-300 text-slate-500 font-bold text-xs shadow-md transition-all flex items-center gap-1.5 cursor-not-allowed tap-squish";
+        }
+    }
+}
+
+export function toggleWizardStep2State() {
             let isChecked = document.getElementById('warga-syarat-checkbox').checked;
-            let btnNext = document.getElementById('btn-next-step-1');
-            if (isChecked) {
-                btnNext.disabled = false;
-                btnNext.className = "px-5 py-2.5 rounded-xl bg-narmadaGreen hover:bg-narmadaGreen-dark text-white font-bold text-xs shadow-lg transition-all flex items-center gap-1.5 cursor-pointer tap-squish";
-            } else {
-                btnNext.disabled = true;
-                btnNext.className = "px-5 py-2.5 rounded-xl bg-slate-300 text-slate-500 font-bold text-xs shadow-md transition-all flex items-center gap-1.5 cursor-not-allowed tap-squish";
+            let btnNext = document.getElementById('btn-next-step-2');
+            if (btnNext) {
+                if (isChecked) {
+                    btnNext.disabled = false;
+                    btnNext.className = "px-5 py-2.5 rounded-xl bg-narmadaGreen hover:bg-narmadaGreen-dark text-white font-bold text-xs shadow-lg transition-all flex items-center gap-1.5 cursor-pointer tap-squish";
+                } else {
+                    btnNext.disabled = true;
+                    btnNext.className = "px-5 py-2.5 rounded-xl bg-slate-300 text-slate-500 font-bold text-xs shadow-md transition-all flex items-center gap-1.5 cursor-not-allowed tap-squish";
+                }
             }
         }
 
 export function switchWizardSection(stepNum) {
             currentWizardStep = stepNum;
 
-            for (let s = 1; s <= 5; s++) {
+            for (let s = 1; s <= 6; s++) {
                 let el = document.getElementById('wizard-section-' + s);
                 if (el) {
                     el.classList.add('hidden');
                     el.classList.remove('animate-fade-in');
                 }
             }
-            for (let b = 1; b <= 5; b++) {
+            for (let b = 1; b <= 6; b++) {
                 let badge = document.getElementById('step-badge-' + b);
                 if (badge) {
                     badge.className = "w-4 h-4 rounded-full flex items-center justify-center text-[8px] font-bold " +
@@ -534,7 +571,7 @@ export function switchWizardSection(stepNum) {
             }
 
             // Reset step 3 sub-page to first page when entering step 3
-            if (stepNum === 3) {
+            if (stepNum === 4) {
                 window.step3CurrentPage = 1;
                 let allPages = document.querySelectorAll('.step3-page');
                 allPages.forEach(function(el) {
@@ -556,9 +593,9 @@ export function goToStep1() { switchWizardSection(1); }
 
 export function goToStep2() {
             if (currentWizardStep === 1) {
-                let isChecked = document.getElementById('warga-syarat-checkbox').checked;
-                if (!isChecked) {
-                    pushToast("Centang pernyataan persetujuan kelengkapan dokumen terlebih dahulu!", "error");
+                let select = document.getElementById('warga-keperluan-surat');
+                if (select && select.tagName === 'SELECT' && !select.value) {
+                    pushToast("Mohon pilih Keperluan Surat!", "error");
                     return;
                 }
             }
@@ -566,6 +603,17 @@ export function goToStep2() {
         }
 
 export function goToStep3() {
+            if (currentWizardStep === 2) {
+                let isChecked = document.getElementById('warga-syarat-checkbox').checked;
+                if (!isChecked) {
+                    pushToast("Centang pernyataan persetujuan kelengkapan dokumen terlebih dahulu!", "error");
+                    return;
+                }
+            }
+            switchWizardSection(3);
+        }
+
+export function goToStep4() {
             let nikVal = document.getElementById('warga-nik').value.trim();
             let namaVal = document.getElementById('warga-nama').value.trim();
             let waVal = document.getElementById('warga-wa').value.trim();
@@ -584,16 +632,10 @@ export function goToStep3() {
                 document.getElementById('lbl-nik-warning').classList.add('hidden');
             }
 
-            switchWizardSection(3);
+            switchWizardSection(4);
         }
 
-export function goToStep4() {
-            let reqKeperluan = document.getElementById('warga-keperluan-surat');
-            if (reqKeperluan && !reqKeperluan.value.trim()) {
-                pushToast("Mohon pilih Keperluan Surat!", "error");
-                return;
-            }
-
+export function goToStep5() {
             let qWrappers = document.querySelectorAll('.dynamic-question-wrapper');
             for (let i = 0; i < qWrappers.length; i++) {
                 if (!qWrappers[i].classList.contains('hidden')) {
@@ -607,10 +649,10 @@ export function goToStep4() {
             }
 
             runLiveConditionalLogicEvaluationForCitizen();
-            switchWizardSection(4);
+            switchWizardSection(5);
         }
 
-export function goToStep5() {
+export function goToStep6() {
             let requirements = selectedLayananGlobal.requirements || [];
             let missingFile = false;
 
@@ -667,10 +709,8 @@ export function goToStep5() {
 
             allDynamicInputs.forEach(function (inp) {
                 let wrapper = inp.closest('.dynamic-question-wrapper');
-                // Skip if parent wrapper is hidden (unless it's an inner repeater wrapper which relies on outer wrapper visibility)
                 if (wrapper && wrapper.classList.contains('hidden') && !wrapper.closest('.repeater-block')) return;
                 
-                // If it's in a repeater block, check if the outer wrapper is hidden
                 if (wrapper && wrapper.closest('.repeater-block')) {
                     let outerWrapper = wrapper.closest('.repeater-block').closest('.dynamic-question-wrapper');
                     if (outerWrapper && outerWrapper.classList.contains('hidden')) return;
@@ -715,7 +755,7 @@ export function goToStep5() {
                 }
             });
 
-            switchWizardSection(5);
+            switchWizardSection(6);
         }
 
 export function backToPrevStepOrMenu() {
@@ -750,6 +790,8 @@ export function executeBackStep() {
                 goToStep3();
             } else if (currentWizardStep === 5) {
                 goToStep4();
+            } else if (currentWizardStep === 6) {
+                goToStep5();
             }
         }
 
