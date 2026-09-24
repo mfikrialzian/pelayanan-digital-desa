@@ -181,7 +181,7 @@ export function openFormPengajuan(nama) {
 
                 Object.keys(groupedReqs).forEach(function (kep) {
                     if (kep !== "Wajib") {
-                        htmlBuffer += '<div class="mb-2 border-l-2 border-emerald-300 pl-2 ml-1">';
+                        htmlBuffer += '<div class="mb-2 border-l-2 border-emerald-300 pl-2 ml-1 wrapper-syarat-tambahan" data-syarat-keperluan="' + escapeHtml(kep) + '">';
                         htmlBuffer += '<p class="font-extrabold text-emerald-700 text-[10px] bg-emerald-50 px-2 py-0.5 rounded inline-block mb-1 border border-emerald-100">Jika Keperluan: ' + escapeHtml(kep) + '</p>';
                         groupedReqs[kep].forEach(function (item, index) {
                             htmlBuffer += '<div class="flex items-center space-x-1.5 py-1 pl-1"><span class="text-emerald-600 font-bold text-[9px] bg-emerald-50 w-3.5 h-3.5 rounded-full flex items-center justify-center shrink-0 border border-emerald-100">' + (index + 1) + '</span> <span class="text-[10px] text-slate-600 font-semibold leading-snug flex-1">' + escapeHtml(item) + '</span></div>';
@@ -231,7 +231,7 @@ export function renderDynamicCustomQuestions(fields) {
                     } else if (optionsList.length > 1) {
                         let selectHtml = '<div class="space-y-1">' +
                             '<label class="block text-xs font-semibold text-slate-600 mb-1.5">Silakan Pilih Keperluan Anda *</label>' +
-                            '<select id="warga-keperluan-surat" onchange="window.if(window.toggleWizardStep1State) window.toggleWizardStep1State(); window.runLiveConditionalLogicEvaluationForCitizen();" required class="w-full px-3 py-2.5 rounded-xl custom-input text-sm font-medium shadow-sm bg-white">' +
+                            '<select id="warga-keperluan-surat" onchange="if(window.toggleWizardStep1State) window.toggleWizardStep1State(); window.runLiveConditionalLogicEvaluationForCitizen();" required class="w-full px-3 py-2.5 rounded-xl custom-input text-sm font-medium shadow-sm bg-white">' +
                             '<option value="">-- Pilih Keperluan Surat --</option>';
 
                         optionsList.forEach(function (opt) {
@@ -490,6 +490,16 @@ export function runLiveConditionalLogicEvaluationForCitizen() {
             let elKeperluan = document.getElementById('warga-keperluan-surat');
             if (elKeperluan) activeKeperluan = elKeperluan.value.trim();
 
+            let reqWrappers = document.querySelectorAll('.wrapper-syarat-tambahan');
+            reqWrappers.forEach(function (el) {
+                let boundKeperluan = el.getAttribute('data-syarat-keperluan');
+                if (boundKeperluan === "Wajib" || (activeKeperluan !== "" && boundKeperluan === activeKeperluan)) {
+                    el.classList.remove('hidden');
+                } else {
+                    el.classList.add('hidden');
+                }
+            });
+
             let qWrappers = document.querySelectorAll('.dynamic-question-wrapper');
             qWrappers.forEach(function (el) {
                 if (el.closest('.repeater-block')) return;
@@ -636,6 +646,16 @@ export function goToStep4() {
         }
 
 export function goToStep5() {
+            let reqWrappers = document.querySelectorAll('.wrapper-syarat-tambahan');
+            reqWrappers.forEach(function (el) {
+                let boundKeperluan = el.getAttribute('data-syarat-keperluan');
+                if (boundKeperluan === "Wajib" || (activeKeperluan !== "" && boundKeperluan === activeKeperluan)) {
+                    el.classList.remove('hidden');
+                } else {
+                    el.classList.add('hidden');
+                }
+            });
+
             let qWrappers = document.querySelectorAll('.dynamic-question-wrapper');
             for (let i = 0; i < qWrappers.length; i++) {
                 if (!qWrappers[i].classList.contains('hidden')) {
