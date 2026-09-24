@@ -541,9 +541,14 @@ export function runLiveConditionalLogicEvaluationForCitizen() {
 
 window.toggleWizardStep1State = function() {
     let select = document.getElementById('warga-keperluan-surat');
+    let checkbox = document.getElementById('warga-syarat-checkbox');
     let btnNext = document.getElementById('btn-next-step-1');
+    
+    let isKeperluanValid = (!select || select.value !== "");
+    let isCheckboxChecked = checkbox && checkbox.checked;
+
     if (btnNext) {
-        if (!select || select.value !== "") {
+        if (isKeperluanValid && isCheckboxChecked) {
             btnNext.disabled = false;
             btnNext.className = "px-5 py-2.5 rounded-xl bg-narmadaGreen hover:bg-narmadaGreen-dark text-white font-bold text-xs shadow-lg transition-all flex items-center gap-1.5 cursor-pointer tap-squish";
         } else {
@@ -577,7 +582,7 @@ export function switchWizardSection(stepNum) {
                     el.classList.remove('animate-fade-in');
                 }
             }
-            for (let b = 1; b <= 6; b++) {
+            for (let b = 1; b <= 5; b++) {
                 let badge = document.getElementById('step-badge-' + b);
                 if (badge) {
                     badge.className = "w-4 h-4 rounded-full flex items-center justify-center text-[8px] font-bold " +
@@ -616,6 +621,11 @@ export function goToStep2() {
                 let select = document.getElementById('warga-keperluan-surat');
                 if (select && select.tagName === 'SELECT' && !select.value) {
                     pushToast("Mohon pilih Keperluan Surat!", "error");
+                    return;
+                }
+                let checkbox = document.getElementById('warga-syarat-checkbox');
+                if (checkbox && !checkbox.checked) {
+                    pushToast("Mohon centang persetujuan persyaratan!", "error");
                     return;
                 }
             }
@@ -682,7 +692,7 @@ export function goToStep5() {
             switchWizardSection(5);
         }
 
-export function goToStep6() {
+export function goToStep5() {
             let requirements = selectedLayananGlobal.requirements || [];
             let missingFile = false;
 
