@@ -100,14 +100,14 @@ export function renderLayananListWarga(list) {
 
             let htmlBuffer = "";
             list.forEach(function (row) {
-                if (row.nama) row.nama = row.nama.replace(/[\n\r]+/g, ' ').trim(); // Bersihkan spasi berlebih atau enter (newline) dari backend
-                let safeNamaForJS = row.nama ? row.nama.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '&quot;') : '';
+                if (row.nama) row.nama = row.nama.replace(/[nr]+/g, ' ').trim(); // Bersihkan spasi berlebih atau enter (newline) dari backend
+                let safeNamaForJS = row.nama ? row.nama.replace(//g, '').replace(/'/g, "'").replace(/"/g, '&quot;') : '';
 
                 let keperluanText = (row.judulSectionIsian && row.judulSectionIsian.trim() !== "") 
                     ? row.judulSectionIsian.split(',').join(', ') 
                     : "Layanan Digital Terintegrasi";
                     
-                let itemHtml = '<div onclick="openFormPengajuan(\'' + safeNamaForJS + '\')" class="light-glass-card p-3.5 md:p-4 rounded-2xl transition-all duration-300 shadow-md hover:shadow-xl cursor-pointer group bg-white border border-slate-100 hover:border-emerald-200 flex items-center justify-between tap-squish">' +
+                let itemHtml = '<div onclick="openFormPengajuan('' + safeNamaForJS + '')" class="light-glass-card p-3.5 md:p-4 rounded-2xl transition-all duration-300 shadow-md hover:shadow-xl cursor-pointer group bg-white border border-slate-100 hover:border-emerald-200 flex items-center justify-between tap-squish">' +
                     '<div class="flex items-center space-x-3.5 flex-1 min-w-0 pr-2">' +
                     '<div class="w-10 h-10 md:w-11 md:h-11 bg-gradient-to-br from-emerald-50 to-teal-50 text-emerald-600 rounded-xl flex items-center justify-center shrink-0 border border-emerald-100/50 group-hover:bg-gradient-to-br group-hover:from-narmadaGreen group-hover:to-narmadaGreen-dark group-hover:text-white transition-all duration-500 shadow-sm">' +
                     '<i class="fa-solid fa-file-signature text-lg md:text-xl drop-shadow-sm group-hover:scale-110 transition-transform"></i>' +
@@ -133,15 +133,15 @@ export function openFormPengajuan(nama) {
 
             selectedLayananGlobal = found;
             document.getElementById('text-judul-layanan-terpilih').innerText = found.nama;
-            document.getElementById('text-desc-layanan-terpilih').classList.remove('hidden');
-            document.getElementById('text-desc-layanan-terpilih').innerText = found.deskripsi || 'Silakan lengkapi form ini.';
+
+
 
             document.getElementById('lbl-judul-section-isian').innerText = "Isian Keperluan Surat & Formulir";
             document.getElementById('lbl-desc-section-isian').innerText = "Pilih keperluan pengurusan surat Anda dan isi formulir tambahan.";
 
             uploadDataStore = {};
             currentWizardStep = 1;
-            document.getElementById('warga-syarat-checkbox').checked = false;
+
 
             let listSyaratDiv = document.getElementById('container-desc-syarat-vertikal');
             listSyaratDiv.innerHTML = "";
@@ -154,7 +154,7 @@ export function openFormPengajuan(nama) {
                 reqs.forEach(function (req) {
                     let cleanName = String(req.name || "");
                     let keperluan = "Wajib";
-                    let match = cleanName.match(/^\[(.*?)\]\s*(.*)$/);
+                    let match = cleanName.match(/^[(.*?)]s*(.*)$/);
                     if (match) {
                         keperluan = match[1];
                         cleanName = match[2];
@@ -258,7 +258,7 @@ export function renderDynamicCustomQuestions(fields) {
                 let pageGroups = {};
                 fields.forEach(function (f) {
                     let actualName = String(f.name || "");
-                    let typeMatch = actualName.match(/(.*)\s*\|\|(number|date)\|\|$/);
+                    let typeMatch = actualName.match(/(.*)s*||(number|date)||$/);
                     if (typeMatch) actualName = typeMatch[1].trim();
                     let meta = parseQuestionMetadata(actualName);
                     let pageNum = meta.halaman || 1;
@@ -294,7 +294,7 @@ export function renderDynamicCustomQuestions(fields) {
                     fieldsInPage.forEach(function (f) {
                         let displayType = f.type;
                         let actualName = f.name;
-                        let typeMatch = actualName.match(/(.*)\s*\|\|(number|date|currency)\|\|$/);
+                        let typeMatch = actualName.match(/(.*)s*||(number|date|currency)||$/);
                         if (typeMatch) {
                             displayType = typeMatch[2];
                             actualName = typeMatch[1].trim();
@@ -313,7 +313,7 @@ export function renderDynamicCustomQuestions(fields) {
                             let groupHtml = '<div class="dynamic-question-wrapper mt-3' + (hasCondition ? ' hidden' : '') + '" data-bind-keperluan="' + meta.keperluan + '"' + condAttrs + '>';
                             groupHtml += '<div id="' + qInputId + '_container" class="space-y-3"></div>';
                             let encodedOpts = encodeURIComponent(f.options || "[]");
-                            groupHtml += '<button type="button" onclick="addRepeaterGroup(\'' + qInputId + '_container\', \'' + encodedOpts + '\')" class="mt-3 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-[10px] font-bold shadow-sm transition-all flex items-center gap-1.5"><i class="fa-solid fa-plus"></i> Tambah Jawaban Lain</button>';
+                            groupHtml += '<button type="button" onclick="addRepeaterGroup('' + qInputId + '_container', '' + encodedOpts + '')" class="mt-3 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-[10px] font-bold shadow-sm transition-all flex items-center gap-1.5"><i class="fa-solid fa-plus"></i> Tambah Jawaban Lain</button>';
                             groupHtml += '</div>';
                             pageHtml += groupHtml;
                             return;
@@ -357,7 +357,7 @@ export function generateFieldInputHtml(displayType, actualName, requiredAttr, op
                 if (optionsList.length > 10) {
                     let optionsJson = JSON.stringify(optionsList.map(function(o) { return o.trim(); }));
                     let uniqueId = "sd_" + Math.random().toString(36).substr(2, 9);
-                    inputHtml = '<div class="sd-container" id="' + uniqueId + '" data-options=\'' + optionsJson.replace(/'/g, "&#39;") + '\'>' +
+                    inputHtml = '<div class="sd-container" id="' + uniqueId + '" data-options='' + optionsJson.replace(/'/g, "&#39;") + ''>' +
                                 '<div class="sd-input-wrapper">' +
                                 '<i class="fa-solid fa-search"></i>' +
                                 '<input type="text" class="sd-input" placeholder="KETIK UNTUK MENCARI..." autocomplete="off">' +
@@ -373,10 +373,10 @@ export function generateFieldInputHtml(displayType, actualName, requiredAttr, op
                 }
             } else if (displayType === "number") {
                 let limitJs = optionsStr ? 'if(this.value.length > ' + optionsStr + ') this.value = this.value.slice(0, ' + optionsStr + ');' : '';
-                let onInput = 'oninput="this.value = this.value.replace(/[^0-9]/g, \'\'); ' + limitJs + '"';
+                let onInput = 'oninput="this.value = this.value.replace(/[^0-9]/g, ''); ' + limitJs + '"';
                 inputHtml = '<input type="text" inputmode="numeric" pattern="[0-9]*" ' + requiredAttr + ' ' + onInput + ' placeholder="KETIK ANGKA" class="w-full px-3 py-2.5 rounded-xl custom-input text-sm font-medium shadow-sm dynamic-question-field uppercase" data-question="' + actualName + '"' + idAttr + '>';
             } else if (displayType === "currency") {
-                let onInput = 'oninput="let val = this.value.replace(/[^0-9]/g, \'\'); this.value = val ? parseInt(val, 10).toLocaleString(\'id-ID\') : \'\';"';
+                let onInput = 'oninput="let val = this.value.replace(/[^0-9]/g, ''); this.value = val ? parseInt(val, 10).toLocaleString('id-ID') : '';"';
                 inputHtml = '<div class="relative flex items-center">' +
                             '<span class="absolute left-3 font-bold text-slate-500 text-sm pointer-events-none">Rp</span>' +
                             '<input type="text" inputmode="numeric" ' + requiredAttr + ' ' + onInput + ' placeholder="0" class="w-full pl-9 pr-3 py-2.5 rounded-xl custom-input text-sm font-medium shadow-sm dynamic-question-field" data-question="' + actualName + '"' + idAttr + '>' +
@@ -390,7 +390,7 @@ export function generateFieldInputHtml(displayType, actualName, requiredAttr, op
                 let lngInputId = "lng_" + uniqueMapId;
                 inputHtml = '<div class="space-y-2">' +
                             '<div id="' + uniqueMapId + '" class="dynamic-map-container w-full h-48 rounded-xl border border-slate-200 shadow-inner z-0" style="z-index: 0;" data-input-id="' + uniqueInputId + '" data-lat-id="' + latInputId + '" data-lng-id="' + lngInputId + '"></div>' +
-                            '<button type="button" onclick="getCurrentLocationForMap(\'' + uniqueMapId + '\', \'' + uniqueInputId + '\', \'' + latInputId + '\', \'' + lngInputId + '\')" class="w-full px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] font-bold rounded-lg transition-all flex items-center justify-center gap-1.5 shadow-sm tap-squish"><i class="fa-solid fa-location-crosshairs text-narmadaGreen"></i> Gunakan Lokasi Saya Saat Ini</button>' +
+                            '<button type="button" onclick="getCurrentLocationForMap('' + uniqueMapId + '', '' + uniqueInputId + '', '' + latInputId + '', '' + lngInputId + '')" class="w-full px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] font-bold rounded-lg transition-all flex items-center justify-center gap-1.5 shadow-sm tap-squish"><i class="fa-solid fa-location-crosshairs text-narmadaGreen"></i> Gunakan Lokasi Saya Saat Ini</button>' +
                             '<div class="grid grid-cols-2 gap-2">' +
                             '<div><label class="block text-[10px] font-bold text-slate-600 mb-1">Latitude</label><input type="number" step="any" id="' + latInputId + '" placeholder="Garis Lintang" class="w-full px-3 py-2 rounded-xl custom-input text-sm font-medium shadow-sm"></div>' +
                             '<div><label class="block text-[10px] font-bold text-slate-600 mb-1">Longitude</label><input type="number" step="any" id="' + lngInputId + '" placeholder="Garis Bujur" class="w-full px-3 py-2 rounded-xl custom-input text-sm font-medium shadow-sm"></div>' +
@@ -410,7 +410,7 @@ export function generateRepeaterBlockHtml(encodedSubFields, isRemovable) {
             subFields.forEach(function(f) {
                 let dType = f.type;
                 let aName = f.name;
-                let tMatch = aName.match(/(.*)\s*\|\|(number|date|currency)\|\|$/);
+                let tMatch = aName.match(/(.*)s*||(number|date|currency)||$/);
                 if (tMatch) {
                     dType = tMatch[2];
                     aName = tMatch[1].trim();
@@ -449,7 +449,7 @@ export function renderDynamicUploadSlots(requirements) {
             if (requirements && requirements.length > 0) {
                 requirements.forEach(function (req) {
                     let cleanName = String(req.name || "");
-                    let match = cleanName.match(/^\[(.*?)\]\s*(.*)$/);
+                    let match = cleanName.match(/^[(.*?)]s*(.*)$/);
                     let boundKeperluan = "Wajib";
                     if (match) {
                         boundKeperluan = match[1];
@@ -468,7 +468,7 @@ export function renderDynamicUploadSlots(requirements) {
                         '<div class="flex justify-end">' +
                         '<label class="w-full py-1.5 rounded-lg border border-slate-200 hover:border-emerald-505 text-slate-700 hover:text-narmadaGreen text-[9px] font-bold flex items-center justify-center gap-1 bg-slate-50 transition-all cursor-pointer text-center shadow-inner">' +
                         '<i class="fa-solid fa-images"></i> Pilih Foto Dokumen' +
-                        '<input type="file" accept="image/*" class="hidden" onchange="handleFileSelectImageAndCompress(event, \'' + slotId + '\')">' +
+                        '<input type="file" accept="image/*" class="hidden" onchange="handleFileSelectImageAndCompress(event, '' + slotId + '')">' +
                         '</label>' +
                         '</div>' +
                         '</div>';
@@ -534,16 +534,24 @@ export function runLiveConditionalLogicEvaluationForCitizen() {
         }
         window.runLiveConditionalLogicEvaluationForCitizen = runLiveConditionalLogicEvaluationForCitizen;
 
-window.toggleWizardStep1State = function() {
+export function toggleWizardStep1State() {
     let select = document.getElementById('warga-keperluan-surat');
-    let checkbox = document.getElementById('warga-syarat-checkbox');
     let btnNext = document.getElementById('btn-next-step-1');
     
     let isKeperluanValid = (!select || select.value !== "");
-    let isCheckboxChecked = checkbox && checkbox.checked;
+    
+    // Check all visible checkboxes
+    let allCheckboxes = document.querySelectorAll('#container-desc-syarat-vertikal .req-checkbox');
+    let allChecked = true;
+    allCheckboxes.forEach(function(cb) {
+        // Only require visible checkboxes to be checked
+        if (cb.offsetParent !== null && !cb.checked) {
+            allChecked = false;
+        }
+    });
 
     if (btnNext) {
-        if (isKeperluanValid && isCheckboxChecked) {
+        if (isKeperluanValid && allChecked) {
             btnNext.disabled = false;
             btnNext.className = "px-5 py-2.5 rounded-xl bg-narmadaGreen hover:bg-narmadaGreen-dark text-white font-bold text-xs shadow-lg transition-all flex items-center gap-1.5 cursor-pointer tap-squish";
         } else {
@@ -614,7 +622,7 @@ export function showWizardSuccessScreen(regId) {
             reqUl.innerHTML = "";
             if (selectedLayananGlobal && selectedLayananGlobal.requirements) {
                 selectedLayananGlobal.requirements.forEach(req => {
-                    let cleanName = req.name.replace(/^\[(.*?)\]\s*/, '');
+                    let cleanName = req.name.replace(/^[(.*?)]s*/, '');
                     let li = document.createElement('li');
                     li.innerText = cleanName;
                     reqUl.appendChild(li);
@@ -660,7 +668,7 @@ export function generateVoucherPDF(data) {
     if (requirements && requirements.length > 0) {
         requirements.forEach(req => {
             let reqName = typeof req === 'object' ? req.name : req;
-            let cleanName = reqName.replace(/^\[(.*?)\]\s*/, '');
+            let cleanName = reqName.replace(/^[(.*?)]s*/, '');
             let li = document.createElement('li');
             li.className = "flex items-start gap-1.5";
             li.innerHTML = '<i class="fa-solid fa-check text-emerald-500 mt-0.5"></i> <span>' + cleanName + '</span>';
@@ -768,7 +776,7 @@ export function sendWaAfterSubmit() {
             waAdmin = formatWhatsAppToInternational(waAdmin).replace('+', '');
             let namaDesa = globalSettings.nama_desa || dummySetelan.nama_desa;
             
-            let msg = "Halo Admin Desa " + namaDesa + ",\nSaya baru saja mengirimkan pengajuan layanan digital dengan Nomor Registrasi: *" + regId + "*.\n\nMohon bantuannya untuk segera diproses. Terima kasih.";
+            let msg = "Halo Admin Desa " + namaDesa + ",nSaya baru saja mengirimkan pengajuan layanan digital dengan Nomor Registrasi: *" + regId + "*.nnMohon bantuannya untuk segera diproses. Terima kasih.";
             let url = "https://wa.me/" + waAdmin + "?text=" + encodeURIComponent(msg);
             window.open(url, '_blank');
         }
