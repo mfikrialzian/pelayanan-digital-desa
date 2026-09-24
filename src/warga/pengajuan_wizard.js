@@ -223,14 +223,7 @@ export function renderDynamicCustomQuestions(fields) {
                 if (keperluanOptionsStr) {
                     let optionsList = keperluanOptionsStr.split(',').map(function(opt) { return opt.trim(); }).filter(function(opt) { return opt !== ""; });
                     
-                    if (optionsList.length === 1) {
-                        keperluanContainer.innerHTML = '<input type="hidden" id="warga-keperluan-surat" value="' + optionsList[0] + '">';
-                        let btnNext1 = document.getElementById('btn-next-step-1');
-                        if (btnNext1) {
-                            btnNext1.disabled = false;
-                            btnNext1.className = "px-5 py-2.5 rounded-xl bg-narmadaGreen hover:bg-narmadaGreen-dark text-white font-bold text-xs shadow-lg transition-all flex items-center gap-1.5 cursor-pointer tap-squish";
-                        }
-                    } else if (optionsList.length > 1) {
+                    if (optionsList.length > 0) {
                         let selectHtml = '<div class="space-y-1">' +
                             '<label class="block text-xs font-semibold text-slate-600 mb-1.5">Silakan Pilih Keperluan Anda *</label>' +
                             '<select id="warga-keperluan-surat" onchange="if(window.toggleWizardStep1State) window.toggleWizardStep1State(); window.runLiveConditionalLogicEvaluationForCitizen();" required class="w-full px-3 py-2.5 rounded-xl custom-input text-sm font-medium shadow-sm bg-white">' +
@@ -248,6 +241,8 @@ export function renderDynamicCustomQuestions(fields) {
                             btnNext1.disabled = true;
                             btnNext1.className = "px-5 py-2.5 rounded-xl bg-slate-300 text-slate-500 font-bold text-xs shadow-md transition-all flex items-center gap-1.5 cursor-not-allowed tap-squish";
                         }
+                        if (window.toggleWizardStep1State) window.toggleWizardStep1State();
+                        window.runLiveConditionalLogicEvaluationForCitizen();
                     }
                 } else {
                     let btnNext1 = document.getElementById('btn-next-step-1');
