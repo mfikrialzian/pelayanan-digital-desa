@@ -1,6 +1,6 @@
 const {
     switchView, handleMulaiPengajuan, toggleInfoDetail, backToPrevStepOrMenu, toggleWizardStep1State, 
-    goToStep2, goToStep3, goToStep4, goToStep5, goToStep6, toggleWizardStep2State, toggleSubmitButtonState, handleWargaSubmit, copyRegIdToClipboard, 
+    goToStep2, goToStep3, goToStep4, goToStep5, toggleWizardStep2State, toggleSubmitButtonState, handleWargaSubmit, copyRegIdToClipboard, 
     sendWaAfterSubmit, runSearchStatus, runAdminLoginAuth, togglePasswordView, markAllNotificationsAsRead, 
     deleteAllNotifications, setStatusFilter, moveAdminPage, switchPengaturanAkunTab, promptKeamananAccess, 
     showPengaturanAkunMenu, handleProfilePhotoChange, toggleEditProfile, savePassword, toggleDarkModeUI, 
@@ -153,15 +153,6 @@ if (el_btn_next_step_4) {
 }
 
 
-// Extracted from button #btn-next-step-5
-const el_btn_next_step_5 = document.getElementById('btn-next-step-5');
-if (el_btn_next_step_5) {
-    el_btn_next_step_5.addEventListener('click', function(event) {
-        goToStep6()
-    });
-} else {
-    console.warn("Element #btn-next-step-5 not found for event binding.");
-}
 
 
 // Extracted from input #warga-check-kebenaran
