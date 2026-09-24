@@ -1,4 +1,4 @@
-export function saveWargaDraft() {
+﻿export function saveWargaDraft() {
             if (!selectedLayananGlobal) return;
             let draft = {
                 layanan: selectedLayananGlobal.nama,
@@ -133,19 +133,15 @@ export function openFormPengajuan(nama) {
 
             selectedLayananGlobal = found;
             document.getElementById('text-judul-layanan-terpilih').innerText = found.nama;
-            let descEl = document.getElementById('text-desc-layanan-terpilih');
-            if (descEl) {
-                descEl.classList.remove('hidden');
-                descEl.innerText = found.deskripsi || 'Silakan lengkapi form ini.';
-            }
+            document.getElementById('text-desc-layanan-terpilih').classList.remove('hidden');
+            document.getElementById('text-desc-layanan-terpilih').innerText = found.deskripsi || 'Silakan lengkapi form ini.';
 
             document.getElementById('lbl-judul-section-isian').innerText = "Isian Keperluan Surat & Formulir";
             document.getElementById('lbl-desc-section-isian').innerText = "Pilih keperluan pengurusan surat Anda dan isi formulir tambahan.";
 
             uploadDataStore = {};
             currentWizardStep = 1;
-            let checkboxEl = document.getElementById('warga-syarat-checkbox');
-            if (checkboxEl) checkboxEl.checked = false;
+            document.getElementById('warga-syarat-checkbox').checked = false;
 
             let listSyaratDiv = document.getElementById('container-desc-syarat-vertikal');
             listSyaratDiv.innerHTML = "";
