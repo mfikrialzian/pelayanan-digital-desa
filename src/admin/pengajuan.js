@@ -41,13 +41,6 @@ export function renderAdminTable(response) {
                     countEl.className = "bg-emerald-50 text-emerald-600 px-2 py-0.5 rounded text-[10px] font-bold";
                 }
             }
-                
-                if (countEl) {
-                    countEl.innerText = response.totalItems + " Pengajuan";
-                    countEl.className = "bg-emerald-50 text-emerald-600 px-2 py-0.5 rounded text-[10px] font-bold";
-                }
-            }
-
 
             if (!response.data || response.data.length === 0) {
                 tbody.innerHTML = "<tr><td colspan='7' class='p-6 text-center text-slate-400 italic'>Tidak ada berkas pelayanan terdaftar dengan kriteria ini.</td></tr>";
