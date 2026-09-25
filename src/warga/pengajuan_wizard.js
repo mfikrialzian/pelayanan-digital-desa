@@ -421,7 +421,7 @@ export function generateRepeaterBlockHtml(encodedSubFields, isRemovable) {
             });
             
             if (isRemovable) {
-                blockHtml += '<button type="button" onclick="this.parentElement.remove()" class="absolute -top-3 right-0 px-2 py-1 bg-red-50 hover:bg-red-100 text-red-500 rounded-lg transition-all shadow-sm text-[10px] flex items-center gap-1"><i class="fa-solid fa-trash"></i> Hapus</button>';
+                blockHtml += '<button type="button" onclick="this.parentElement.remove(); if(typeof validateCurrentWizardStep === \'function\') validateCurrentWizardStep();" class="absolute -top-3 right-0 px-2 py-1 bg-red-50 hover:bg-red-100 text-red-500 rounded-lg transition-all shadow-sm text-[10px] flex items-center gap-1"><i class="fa-solid fa-trash"></i> Hapus</button>';
             }
             blockHtml += '</div>';
             return blockHtml;
