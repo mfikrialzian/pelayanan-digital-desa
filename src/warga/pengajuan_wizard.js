@@ -757,21 +757,23 @@ export function goToStep5() {
         isianContainer.innerHTML = '<p class="text-[10px] text-slate-400 italic">Tidak ada isian tambahan.</p>';
     }
 
-    let fileContainer = document.getElementById('review-display-file');
-    fileContainer.innerHTML = "";
+    let fileContainer = document.getElementById('review-display-berkas');
+    if(fileContainer) fileContainer.innerHTML = "";
     let fileKeys = Object.keys(uploadDataStore);
-    if (fileKeys.length === 0) {
-        fileContainer.innerHTML = '<p class="text-[10px] text-slate-400 italic">Tidak ada file yang diunggah.</p>';
-    } else {
-        fileKeys.forEach(function (k) {
-            let info = uploadDataStore[k];
-            let rawSize = typeof info.size === 'number' ? info.size : 0;
-            let sizeMb = (rawSize / (1024 * 1024)).toFixed(2);
-            fileContainer.innerHTML += '<div class="flex items-start border-b border-slate-50 py-1">' +
-                '<span class="text-slate-555 text-[10px] text-left break-words" style="flex: 0 0 45%; padding-right: 4px;">' + info.cleanName + '</span>' +
-                '<span class="text-slate-400 text-[10px] text-center" style="flex: 0 0 10px;">:</span>' +
-                '<span class="font-bold text-narmadaGreen text-[10px] text-left break-words" style="flex: 1; padding-left: 4px;"><i class="fa-solid fa-check-circle mr-1"></i>Tersimpan (' + sizeMb + ' MB)</span></div>';
-        });
+    if (fileContainer) {
+        if (fileKeys.length === 0) {
+            fileContainer.innerHTML = '<p class="text-[10px] text-slate-400 italic">Tidak ada file yang diunggah.</p>';
+        } else {
+            fileKeys.forEach(function (k) {
+                let info = uploadDataStore[k];
+                let rawSize = typeof info.size === 'number' ? info.size : 0;
+                let sizeMb = (rawSize / (1024 * 1024)).toFixed(2);
+                fileContainer.innerHTML += '<div class="flex items-start border-b border-slate-50 py-1">' +
+                    '<span class="text-slate-555 text-[10px] text-left break-words" style="flex: 0 0 45%; padding-right: 4px;">' + info.cleanName + '</span>' +
+                    '<span class="text-slate-400 text-[10px] text-center" style="flex: 0 0 10px;">:</span>' +
+                    '<span class="font-bold text-narmadaGreen text-[10px] text-left break-words" style="flex: 1; padding-left: 4px;"><i class="fa-solid fa-check-circle mr-1"></i>Tersimpan (' + sizeMb + ' MB)</span></div>';
+            });
+        }
     }
 
     switchWizardSection(5);
