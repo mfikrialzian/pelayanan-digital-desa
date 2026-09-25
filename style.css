@@ -736,3 +736,9 @@ body {
     background-color: #f1f5f9;
     margin: 2px 0;
 }
+
+
+@keyframes slideUpFade {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}

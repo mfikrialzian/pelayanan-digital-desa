@@ -1,37 +1,35 @@
 # Rencana Implementasi
 
-Halo! Berdasarkan permintaan Anda, saya telah memeriksa struktur kode dan merencanakan langkah-langkah implementasi berikut untuk merombak UI bagian "Pengajuan" di Dashboard Admin:
+Halo! Berdasarkan masukan terbaru Anda, berikut adalah langkah-langkah implementasi yang akan saya kerjakan selanjutnya:
 
-## 1. Menghapus Submenu di Sidebar
+## 1. Pembaruan Judul Tabel (Statis)
 
-Pada file `src/admin/admin_core.js`, saya akan:
+Pada file `src/admin/pengajuan.js`:
 
-- Menghapus submenu `pengajuan-proses`, `pengajuan-perbaiki`, dan `pengajuan-selesai`.
-- Mengubah menu "Pengajuan" menjadi satu tombol tunggal yang akan membuka halaman `Daftar Pengajuan`.
-- Memastikan navigasi ini terhubung dengan benar sehingga ketika admin mengklik "Pengajuan" di dashboard/sidebar, mereka akan diarahkan ke satu halaman terpusat.
+- Saya akan menghapus logika Javascript yang secara otomatis merubah teks judul tabel ("Daftar Pengajuan Masuk", "Daftar Pengajuan Diperiksa", dll) ketika Tab diklik.
+- Judul akan dikunci (*hardcoded*) menjadi satu teks statis, karena fungsi navigasinya sudah sepenuhnya digantikan oleh keberadaan Tab di bagian bawah judul.
 
-## 2. Mengubah UI Pengajuan Menjadi Tab (index.html)
+## 2. Penggabungan Dropdown Bidang ke dalam Tombol Filter
 
-Pada file `index.html` (bagian `subview-admin-pengajuan`):
+Pada file `index.html` dan `src/admin/pengajuan.js`:
 
-- Saya akan mengganti judul statis menjadi kelompok **Tab Navigasi**: `Semua`, `Diperiksa`, `Perbaikan`, dan `Selesai`.
-- Menyesuaikan fungsi Javascript di `src/admin/pengajuan.js` agar ketika tab diklik, variabel filter status (`activeStatusFilter`) berubah dan memuat ulang tabel.
+- Tombol "Filter" statis di ujung kanan akan saya ganti menjadi elemen `<select>` *dropdown* interaktif namun tetap menggunakan **gaya/desain visual yang persis sama** dengan tombol Filter sebelumnya (berbentuk kotak putih dengan *border* halus).
+- Opsi di dalamnya akan secara dinamis diisi dengan data jenis Layanan dari backend. 
+- Ini membuat UI menjadi efisien: letaknya ada di posisi "Filter" kanan, tapi langsung menampilkan pilihan Bidang tanpa memakan banyak tempat.
 
-## 3. Implementasi Filter Waktu dan Jenis Bidang (Backend & Frontend)
+## 3. Penghapusan Garis Pembatas Header (UI/UX)
 
-Untuk memastikan tombol "Semua", "Hari Ini", "Minggu Ini", dan "Bulan Ini" berfungsi dengan nyata (bukan hanya UI), serta menambah dropdown "Jenis Bidang", saya akan melakukan update dari Frontend hingga ke *Google Apps Script* Backend:
+Pada file `index.html`:
 
-- **Frontend (`pengajuan.js` & `dashboard.js`)**: Menambahkan *state* global untuk `activeTimeFilter` dan `activeBidangFilter`. Memperbarui fungsi *fetch* untuk mengirimkan kedua filter ini ke backend.
-- **Backend (`code.js`, `service.js`, `repository.js`)**:
-  - Mengubah fungsi `getAdminDashboardData` agar menerima dua parameter tambahan: `timeFilter` dan `bidangFilter`.
-  - Di `repository.js` -> `getPaginated()`, saya akan menambahkan logika filtering tanggal (mem-parsing string `"dd/MM/yyyy"`) untuk memfilter "Hari Ini", "Minggu Ini", dan "Bulan Ini".
-  - Menambahkan logika filter string pada kolom Layanan (Jenis Bidang).
+- Saya akan menghapus *class* `border-b border-slate-100` pada kontainer yang membungkus judul tabel dan tombol waktu.
+- Dengan demikian, batas visual antara baris judul dengan barisan Tab akan hilang, menjadikannya terlihat sebagai satu kesatuan komponen (Tab langsung menempel halus pada konten di atasnya).
 
-## 4. Finalisasi UI Filter
+## 4. Mempercantik Animasi Tabel
 
-Pada bagian *header* tabel pengajuan di `index.html`, akan ditambahkan:
+Pada file `src/admin/pengajuan.js` dan/atau `index.html`:
 
-- Deretan tombol Filter Waktu yang interaktif (berganti warna bila aktif).
-- Elemen `<select>` untuk memilih Layanan/Jenis Bidang, yang opsinya akan diambil dari data layanan yang sudah ada secara dinamis.
+- Saya akan mempercantik tabel dengan menambahkan animasi mikro modern.
+- Baris tabel (*table row*) akan diberikan efek transisi *fade-in* (*slide up fade*) setiap kali data dimuat, sehingga tidak terlihat kaku saat berganti halaman atau mem-filter.
+- Menambahkan efek *hover* yang lebih terasa elegan (seperti *glow* tipis atau pergeseran halus pada tombol cetak/aksi).
 
-Semua penyesuaian akan tetap mematuhi arsitektur *hybrid* yang ada (menggunakan `google.script.run`) sehingga kode tetap aman digunakan saat di-deploy langsung ke GAS di masa depan.
+Langkah ini akan langsung saya eksekusi!

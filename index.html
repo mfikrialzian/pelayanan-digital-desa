@@ -1232,7 +1232,7 @@
                         <!-- TABEL PENGGAJUAN MASUK DI DASHBOARD -->
                         <div class="bg-white rounded-2xl shadow-sm border border-slate-100 flex flex-col overflow-hidden mt-6">
                             <!-- Table Header & Filters -->
-                            <div class="p-5 border-b border-slate-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                            <div class="p-5 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                                 <div class="flex items-center gap-2">
                                     <h3 class="text-sm font-bold text-slate-800">Daftar Pengajuan</h3>
                                     <span id="dashboard-table-count" class="bg-blue-50 text-blue-600 px-2 py-0.5 rounded text-[10px] font-bold"></span>
@@ -1285,16 +1285,13 @@
                                     <span id="pengajuan-table-count" class="bg-blue-50 text-blue-600 px-2 py-0.5 rounded text-[10px] font-bold"></span>
                                 </div>
                                 <div class="flex items-center gap-2 overflow-x-auto w-full md:w-auto pb-1 md:pb-0">
-                                    <select id="admin-bidang-filter" onchange="window.runAdminFilter()" class="px-3 py-1.5 bg-white border border-slate-200 text-slate-600 font-bold text-xs rounded-full outline-none focus:border-narmadaGreen min-w-[120px]">
-                                        <option value="">Semua Bidang</option>
-                                    </select>
                                     <button id="time-filter-Semua" onclick="window.setTimeFilter('Semua')" class="px-4 py-1.5 bg-emerald-50 text-narmadaGreen font-bold text-xs rounded-full whitespace-nowrap">Semua</button>
                                     <button id="time-filter-Hari-Ini" onclick="window.setTimeFilter('Hari Ini')" class="px-4 py-1.5 bg-transparent text-slate-500 hover:bg-slate-50 hover:text-slate-700 font-semibold text-xs rounded-full whitespace-nowrap transition-colors">Hari Ini</button>
                                     <button id="time-filter-Minggu-Ini" onclick="window.setTimeFilter('Minggu Ini')" class="px-4 py-1.5 bg-transparent text-slate-500 hover:bg-slate-50 hover:text-slate-700 font-semibold text-xs rounded-full whitespace-nowrap transition-colors">Minggu Ini</button>
                                     <button id="time-filter-Bulan-Ini" onclick="window.setTimeFilter('Bulan Ini')" class="px-4 py-1.5 bg-transparent text-slate-500 hover:bg-slate-50 hover:text-slate-700 font-semibold text-xs rounded-full whitespace-nowrap transition-colors">Bulan Ini</button>
-                                    <button class="px-3 py-1.5 bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold text-xs rounded-lg transition-colors flex items-center gap-1.5 ml-2">
-                                        <i class="fa-solid fa-filter"></i> Filter
-                                    </button>
+                                    <select id="admin-bidang-filter" onchange="window.runAdminFilter()" class="px-3 py-1.5 bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold text-xs rounded-lg transition-colors outline-none focus:border-narmadaGreen flex items-center ml-2 cursor-pointer appearance-none shadow-sm" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23475569%22%20stroke-width%3D%222.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolygon%20points%3D%2222%203%202%203%2010%2012.46%2010%2019%2014%2021%2014%2012.46%2022%203%22%2F%3E%3C%2Fsvg%3E'); background-repeat: no-repeat; background-position: left 8px center; padding-left: 26px; padding-right: 12px;">
+                                        <option value="">Semua Bidang</option>
+                                    </select>
                                 </div>
                             </div>
                             <!-- Tabs placed right below the header area -->
