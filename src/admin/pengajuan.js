@@ -9,24 +9,23 @@ export function renderAdminTable(response) {
             // Populate Bidang Filter if empty and data is available
             let bidangFilterEl = document.getElementById('admin-bidang-filter');
             if (bidangFilterEl && bidangFilterEl.options.length <= 1) {
-                if (window.loadedLayananList) {
-                    window.loadedLayananList.forEach(layanan => {
+                let renderBidang = function(list) {
+                    let bidangSet = new Set();
+                    list.forEach(lay => { if (lay.bidang) bidangSet.add(lay.bidang); });
+                    bidangSet.forEach(bid => {
                         let opt = document.createElement('option');
-                        opt.value = layanan.nama;
-                        opt.innerText = layanan.nama;
-                        if (window.currentPengajuanBidangFilter === layanan.nama) opt.selected = true;
+                        opt.value = bid;
+                        opt.innerText = bid;
+                        if (window.currentPengajuanBidangFilter === bid) opt.selected = true;
                         bidangFilterEl.appendChild(opt);
                     });
+                };
+                if (window.loadedLayananList) {
+                    renderBidang(window.loadedLayananList);
                 } else {
                     google.script.run.withSuccessHandler(function(list) {
                         window.loadedLayananList = list;
-                        list.forEach(layanan => {
-                            let opt = document.createElement('option');
-                            opt.value = layanan.nama;
-                            opt.innerText = layanan.nama;
-                            if (window.currentPengajuanBidangFilter === layanan.nama) opt.selected = true;
-                            bidangFilterEl.appendChild(opt);
-                        });
+                        renderBidang(list);
                     }).getLayananList();
                 }
             }
@@ -716,3 +715,5 @@ window.renderDrafSurat = function() {
         document.getElementById('info-modal-jawaban').innerHTML = jawabanFormatted;
     }
 };
+
+window.runAdminFilter = runAdminFilter;
