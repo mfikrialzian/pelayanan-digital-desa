@@ -655,6 +655,10 @@ export function goToStep3() {
 }
 
 export function goToStep4() {
+    let activeKeperluan = "";
+    let elKeperluan = document.getElementById('warga-keperluan-surat');
+    if (elKeperluan) activeKeperluan = elKeperluan.value.trim();
+
     let reqWrappers = document.querySelectorAll('.wrapper-syarat-tambahan');
     reqWrappers.forEach(function (el) {
         let boundKeperluan = el.getAttribute('data-syarat-keperluan');
