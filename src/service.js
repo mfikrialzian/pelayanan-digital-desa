@@ -719,9 +719,9 @@ var PengajuanService = {
     }
   },
   
-  getDashboardData: function(filterKeyword, page, statusFilter) {
+  getDashboardData: function(filterKeyword, page, statusFilter, timeFilter, bidangFilter) {
     try {
-      return PengajuanRepository.getPaginated(filterKeyword, page, statusFilter);
+      return PengajuanRepository.getPaginated(filterKeyword, page, statusFilter, timeFilter, bidangFilter);
     } catch (e) {
       return { data: [], totalPages: 1, currentPage: 1, totalItems: 0, error: e.toString() };
     }

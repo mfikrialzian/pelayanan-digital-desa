@@ -67,9 +67,9 @@ function getLogKeamanan(token) {
   }
 }
 
-function getAdminDashboardData(token, filterKeyword, page, statusFilter) {
+function getAdminDashboardData(token, filterKeyword, page, statusFilter, timeFilter, bidangFilter) {
   if (!AuthService.verifyToken(token)) return { data: [], totalPages: 1, currentPage: 1, totalItems: 0, error: "Sesi tidak valid atau telah berakhir. Silakan login kembali.", authError: true };
-  return PengajuanService.getDashboardData(filterKeyword, page, statusFilter);
+  return PengajuanService.getDashboardData(filterKeyword, page, statusFilter, timeFilter, bidangFilter);
 }
 
 function updatePengajuanStatus(token, id, nextStatus, notes) {

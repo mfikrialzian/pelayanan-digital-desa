@@ -169,7 +169,14 @@ export function fetchAdminDashboardData() {
                             if (res && res.authError) { pushToast(res.error, "error"); handleAdminLogout(); return; }
                             renderAdminTable(res);
                         })
-                        .getAdminDashboardData(localStorage.getItem('adminToken_Narmada'), adminKeyword, currentAdminPage, activeStatusFilter);
+                        .getAdminDashboardData(
+                            localStorage.getItem('adminToken_Narmada'), 
+                            adminKeyword, 
+                            currentAdminPage, 
+                            activeStatusFilter,
+                            window.currentPengajuanTimeFilter || "Semua",
+                            window.currentPengajuanBidangFilter || ""
+                        );
                 } catch (e) { }
 
         }

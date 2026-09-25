@@ -386,11 +386,7 @@ window.triggerNewNotification = function(tipe, detailPemohon) {
 export const SIDEBAR_ITEMS = [
     { id: 'dashboard', icon: 'fa-house', label: 'Dashboard', action: "switchAdminTab('dashboard')" },
     { id: 'daftar-layanan', icon: 'fa-layer-group', label: 'Layanan', action: "switchAdminTab('daftar-layanan')" },
-    { id: 'pengajuan-group', icon: 'fa-file-lines', label: 'Pengajuan', subItems: [
-        { id: 'pengajuan-proses', label: 'Pengajuan Diperiksa', badgeId: 'badge-pengajuan-proses', action: "openPengajuanFilter('Diperiksa')" },
-        { id: 'pengajuan-perbaiki', label: 'Pengajuan Diperbaiki', badgeId: 'badge-pengajuan-perbaikan', action: "openPengajuanFilter('Perbaikan')" },
-        { id: 'pengajuan-selesai', label: 'Pengajuan Selesai', badgeId: 'badge-pengajuan-selesai', action: "openPengajuanFilter('Selesai')" }
-    ]},
+    { id: 'pengajuan-group', icon: 'fa-file-lines', label: 'Pengajuan', action: "window.openPengajuanFilter('Semua')" },
     { id: 'tte', icon: 'fa-signature', label: 'Persetujuan & TTE', action: "switchAdminTab('tte')" },
     { id: 'data-penduduk', icon: 'fa-users', label: 'Data Penduduk', action: "pushToast('Fitur Data Penduduk segera hadir', 'info')" },
     { id: 'dokumen', icon: 'fa-folder-open', label: 'Dokumen & Surat', action: "", disabled: true },

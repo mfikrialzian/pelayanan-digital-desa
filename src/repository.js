@@ -404,12 +404,16 @@ var PengajuanRepository = {
     });
   },
   
-  getPaginated: function(filterKeyword, page, statusFilter) {
+  getPaginated: function(filterKeyword, page, statusFilter, timeFilter, bidangFilter) {
     var sheet = BaseRepository.getSheet(ZettConstants.SHEET_PENGAJUAN);
     var rawData = sheet.getDataRange().getDisplayValues();
     var filteredRows = [];
     var keyword = String(filterKeyword || "").toLowerCase().trim();
     var stat = String(statusFilter || "").trim();
+    var timeF = String(timeFilter || "Semua").trim();
+    var bidangF = String(bidangFilter || "").trim();
+    
+    var now = new Date();
     
     // Looping terbalik (terbaru tampil di halaman pertama), lewati header (index 0)
     for (var i = rawData.length - 1; i >= 1; i--) {
@@ -420,7 +424,7 @@ var PengajuanRepository = {
                      row[3].toLowerCase().indexOf(keyword) !== -1;
                      
       var matchesS = true;
-      if (stat) {
+      if (stat && stat !== "Semua") {
         var rowStatus = row[8];
         if (stat === "Selesai") {
           matchesS = (rowStatus === ZettConstants.STATUS_SELESAI);
@@ -433,7 +437,32 @@ var PengajuanRepository = {
         }
       }
       
-      if (matchesK && matchesS) {
+      var matchesB = true;
+      if (bidangF && bidangF !== "") {
+        matchesB = (row[4] === bidangF);
+      }
+      
+      var matchesT = true;
+      if (timeF !== "Semua") {
+        var tDateStr = row[1]; // format: dd/MM/yyyy HH:mm:ss
+        var parts = tDateStr.split(" ")[0].split("/");
+        if (parts.length === 3) {
+           var tDate = new Date(parts[2], parts[1] - 1, parts[0]);
+           tDate.setHours(0,0,0,0);
+           var nDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+           var diffDays = Math.floor((nDate - tDate) / (1000 * 60 * 60 * 24));
+           
+           if (timeF === "Hari Ini") {
+              matchesT = (diffDays === 0);
+           } else if (timeF === "Minggu Ini") {
+              matchesT = (diffDays >= 0 && diffDays <= 7);
+           } else if (timeF === "Bulan Ini") {
+              matchesT = (diffDays >= 0 && diffDays <= 30);
+           }
+        }
+      }
+      
+      if (matchesK && matchesS && matchesB && matchesT) {
         filteredRows.push(row);
       }
     }

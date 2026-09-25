@@ -6,6 +6,18 @@ export function renderAdminTable(response) {
             document.getElementById('btn-adm-prev').disabled = response.currentPage <= 1;
             document.getElementById('btn-adm-next').disabled = response.currentPage >= response.totalPages;
 
+            // Populate Bidang Filter if empty and data is available
+            let bidangFilterEl = document.getElementById('admin-bidang-filter');
+            if (bidangFilterEl && bidangFilterEl.options.length <= 1 && window.loadedLayananList) {
+                window.loadedLayananList.forEach(layanan => {
+                    let opt = document.createElement('option');
+                    opt.value = layanan.nama;
+                    opt.innerText = layanan.nama;
+                    if (window.currentPengajuanBidangFilter === layanan.nama) opt.selected = true;
+                    bidangFilterEl.appendChild(opt);
+                });
+            }
+            
             let titleEl = document.getElementById('pengajuan-table-title');
             let countEl = document.getElementById('pengajuan-table-count');
             

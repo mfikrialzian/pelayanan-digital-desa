@@ -1,114 +1,134 @@
 const fs = require('fs');
-let js = fs.readFileSync('d:/PelayananDigitalDesa/vercel-frontend/src/warga/pengajuan_wizard.js', 'utf8');
+let file = 'src/admin/pengajuan.js';
+let content = fs.readFileSync(file, 'utf8');
 
-// 1. Fix rendering requirements
-const startRender = js.indexOf('let listSyaratDiv = document.getElementById(\'container-desc-syarat-vertikal\');');
-const endRender = js.indexOf('renderDynamicCustomQuestions(found.fields || []);');
+const target1 = `export function runAdminFilter() {
+            adminKeyword = document.getElementById('admin-keyword-filter').value;
+            currentAdminPage = 1;
+            fetchAdminDashboardData();
+        }`;
+const replacement1 = `window.currentPengajuanTimeFilter = 'Semua';
+window.currentPengajuanBidangFilter = '';
 
-if (startRender !== -1 && endRender !== -1) {
-    const newRender = `let listSyaratDiv = document.getElementById('container-desc-syarat-vertikal');
-            listSyaratDiv.innerHTML = "";
+export function runAdminFilter() {
+            let keywordEl = document.getElementById('admin-keyword-filter');
+            if (keywordEl) adminKeyword = keywordEl.value;
+            
+            let bidangEl = document.getElementById('admin-bidang-filter');
+            if (bidangEl) window.currentPengajuanBidangFilter = bidangEl.value;
+            
+            currentAdminPage = 1;
+            if (typeof window.fetchAdminDashboardData === 'function') window.fetchAdminDashboardData();
+        }
 
-            let reqs = found.requirements || [];
-            if (reqs.length === 0) {
-                listSyaratDiv.innerHTML = '<p class="text-[10px] text-slate-400 italic">Tidak ada persyaratan berkas khusus.</p>';
+window.runAdminFilter = runAdminFilter;
+
+window.setTimeFilter = function(timeFilter) {
+    window.currentPengajuanTimeFilter = timeFilter;
+    
+    ['Semua', 'Hari Ini', 'Minggu Ini', 'Bulan Ini'].forEach(tf => {
+        let el = document.getElementById('time-filter-' + tf);
+        if (el) {
+            if (tf === timeFilter) {
+                el.className = "px-3 py-1 bg-white shadow-sm text-narmadaGreen font-bold text-xs rounded-md whitespace-nowrap transition-all";
             } else {
-                let groupedReqs = {};
-                reqs.forEach(function (req) {
-                    let cleanName = String(req.name || "");
-                    let keperluan = "Wajib";
-                    let match = cleanName.match(/^\\[(.*?)\\]\\s*(.*)$/);
-                    if (match) {
-                        keperluan = match[1];
-                        cleanName = match[2];
-                    }
-                    if (!groupedReqs[keperluan]) groupedReqs[keperluan] = [];
-                    if (!groupedReqs[keperluan].includes(cleanName)) {
-                        groupedReqs[keperluan].push(cleanName);
-                    }
-                });
+                el.className = "px-3 py-1 bg-transparent text-slate-500 hover:text-slate-700 font-bold text-xs rounded-md whitespace-nowrap transition-all";
+            }
+        }
+    });
+    
+    runAdminFilter();
+};`;
 
-                let htmlBuffer = "";
+content = content.replace(target1, replacement1);
 
-                if (groupedReqs["Wajib"]) {
-                    htmlBuffer += '<div class="mb-2">';
-                    groupedReqs["Wajib"].forEach(function (item, index) {
-                        htmlBuffer += '<label class="flex items-start space-x-2 py-1.5 cursor-pointer tap-squish hover:bg-slate-50 rounded px-1 transition-colors">' +
-                            '<input type="checkbox" onchange="if(window.toggleWizardStep1State) window.toggleWizardStep1State();" class="req-checkbox mt-0.5 w-4 h-4 text-narmadaGreen border-slate-300 rounded focus:ring-narmadaGreen shrink-0">' +
-                            '<span class="text-[11px] text-slate-700 font-semibold leading-snug flex-1">' + escapeHtml(item) + '</span>' +
-                            '</label>';
-                    });
-                    htmlBuffer += '</div>';
+const target2 = `window.currentPengajuanFilterStatus = 'Semua';
+
+window.openPengajuanFilter = function(status) {
+    window.currentPengajuanFilterStatus = status;
+    activeStatusFilter = status;
+    switchAdminTab('pengajuan');
+    runAdminFilter();
+};`;
+
+const replacement2 = `window.currentPengajuanFilterStatus = 'Semua';
+
+window.openPengajuanFilter = function(status) {
+    window.currentPengajuanFilterStatus = status;
+    activeStatusFilter = status;
+    
+    ['Semua', 'Menunggu', 'Diperiksa', 'Perbaikan', 'Selesai'].forEach(tab => {
+        let el = document.getElementById('tab-pengajuan-' + tab);
+        if (el) {
+            if (tab === status) {
+                el.className = "px-2 py-2 text-sm font-bold border-b-2 border-narmadaGreen text-narmadaGreen whitespace-nowrap transition-all";
+            } else {
+                el.className = "px-2 py-2 text-sm font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-700 whitespace-nowrap transition-all";
+            }
+        }
+    });
+    
+    switchAdminTab('pengajuan');
+    runAdminFilter();
+};`;
+
+content = content.replace(target2, replacement2);
+
+// Make sure the title logic uses tabs
+const target3 = `            if (titleEl) {
+                let status = window.currentPengajuanFilterStatus;
+                let titleText = "Daftar Pengajuan";
+                let countColor = "bg-slate-100 text-slate-600";
+                
+                if (status === 'Menunggu') {
+                    titleText = "Daftar Pengajuan Masuk";
+                    countColor = "bg-blue-50 text-blue-600";
+                } else if (status === 'Diperiksa') {
+                    titleText = "Daftar Pengajuan Diperiksa";
+                    countColor = "bg-amber-50 text-amber-600";
+                } else if (status === 'Perbaikan') {
+                    titleText = "Daftar Perbaiki Pengajuan";
+                    countColor = "bg-red-50 text-red-600";
+                } else if (status === 'Selesai') {
+                    titleText = "Daftar Pengajuan Selesai";
+                    countColor = "bg-emerald-50 text-emerald-600";
+                } else {
+                    titleText = "Semua Pengajuan";
                 }
+                titleEl.innerText = titleText;
+                
+                if (countEl) {
+                    countEl.innerText = response.totalItems + " Pengajuan";
+                    countEl.className = countColor + " px-2 py-0.5 rounded text-[10px] font-bold";
+                }
+            }`;
 
-                Object.keys(groupedReqs).forEach(function (kep) {
-                    if (kep !== "Wajib") {
-                        htmlBuffer += '<div class="mb-2 wrapper-syarat-tambahan" data-syarat-keperluan="' + escapeHtml(kep) + '">';
-                        groupedReqs[kep].forEach(function (item, index) {
-                            htmlBuffer += '<label class="flex items-start space-x-2 py-1.5 cursor-pointer tap-squish hover:bg-slate-50 rounded px-1 transition-colors">' +
-                                '<input type="checkbox" onchange="if(window.toggleWizardStep1State) window.toggleWizardStep1State();" class="req-checkbox mt-0.5 w-4 h-4 text-narmadaGreen border-slate-300 rounded focus:ring-narmadaGreen shrink-0">' +
-                                '<span class="text-[11px] text-slate-700 font-semibold leading-snug flex-1">' + escapeHtml(item) + '</span>' +
-                                '</label>';
-                        });
-                        htmlBuffer += '</div>';
-                    }
-                });
-                listSyaratDiv.innerHTML = htmlBuffer;
+const replacement3 = `            if (titleEl) {
+                // Not updating titleText anymore as we use tabs now
             }
+            if (countEl) {
+                countEl.innerText = response.totalItems + " Pengajuan";
+                countEl.className = "bg-slate-100 text-slate-600 px-2 py-1 rounded text-[10px] font-bold";
+                countEl.classList.remove('hidden');
+            }`;
 
-            `;
-    js = js.substring(0, startRender) + newRender + js.substring(endRender);
-}
+content = content.replace(target3, replacement3);
 
-// 2. Fix toggleWizardStep1State
-const startToggle = js.indexOf('window.toggleWizardStep1State = function() {');
-const endToggle = js.indexOf('export function toggleWizardStep2State() {');
+const target4 = `    updateBadge('badge-pengajuan-menunggu', stats.pending);
+    updateBadge('badge-pengajuan-proses', stats.diperiksa);
+    updateBadge('badge-pengajuan-perbaikan', stats.perbaikan);
+    updateBadge('badge-pengajuan-selesai', stats.selesai);`;
 
-if (startToggle !== -1 && endToggle !== -1) {
-    const newToggle = `window.toggleWizardStep1State = function() {
-    let select = document.getElementById('warga-keperluan-surat');
-    let btnNext = document.getElementById('btn-next-step-1');
+const replacement4 = `    updateBadge('badge-pengajuan-menunggu', stats.pending);
+    updateBadge('badge-pengajuan-proses', stats.diperiksa);
+    updateBadge('badge-pengajuan-perbaikan', stats.perbaikan);
+    updateBadge('badge-pengajuan-selesai', stats.selesai);
     
-    let isKeperluanValid = (!select || select.value !== "");
-    
-    // Check all visible checkboxes
-    let allCheckboxes = document.querySelectorAll('#container-desc-syarat-vertikal .req-checkbox');
-    let allVisibleChecked = true;
-    
-    for (let i = 0; i < allCheckboxes.length; i++) {
-        let cb = allCheckboxes[i];
-        let wrapper = cb.closest('.wrapper-syarat-tambahan');
-        // If it's not in a hidden wrapper, it must be checked
-        if (!wrapper || !wrapper.classList.contains('hidden')) {
-            if (!cb.checked) {
-                allVisibleChecked = false;
-                break;
-            }
-        }
-    }
+    updateBadge('tab-badge-menunggu', stats.pending);
+    updateBadge('tab-badge-diperiksa', stats.diperiksa);
+    updateBadge('tab-badge-perbaikan', stats.perbaikan);`;
 
-    if (btnNext) {
-        if (isKeperluanValid && allVisibleChecked) {
-            btnNext.disabled = false;
-            btnNext.className = "px-5 py-2.5 rounded-xl bg-narmadaGreen hover:bg-narmadaGreen-dark text-white font-bold text-xs shadow-lg transition-all flex items-center gap-1.5 cursor-pointer tap-squish";
-        } else {
-            btnNext.disabled = true;
-            btnNext.className = "px-5 py-2.5 rounded-xl bg-slate-300 text-slate-500 font-bold text-xs shadow-md transition-all flex items-center gap-1.5 cursor-not-allowed tap-squish";
-        }
-    }
-}
+content = content.replace(target4, replacement4);
 
-`;
-    js = js.substring(0, startToggle) + newToggle + js.substring(endToggle);
-}
-
-// 3. Remove document.getElementById('warga-syarat-checkbox').checked = false;
-js = js.replace("document.getElementById('warga-syarat-checkbox').checked = false;", "");
-// and the one in step 2 (if there's a leftover bug? wait step 2 doesn't use it, but wait!
-// line 555 was:
-// export function toggleWizardStep2State() {
-//             let isChecked = document.getElementById('warga-syarat-checkbox').checked;
-// Oh no! toggleWizardStep2State uses warga-syarat-checkbox ?? No, step 2 is Identity. Step 2 has its own checkbox maybe? No, the user said step 2 is identitas. Why does toggleWizardStep2State use warga-syarat-checkbox? Let's check!
-
-fs.writeFileSync('d:/PelayananDigitalDesa/vercel-frontend/src/warga/pengajuan_wizard.js', js);
-console.log('Fixed js successfully');
+fs.writeFileSync(file, content);
+console.log('Done replacing pengajuan.js');
