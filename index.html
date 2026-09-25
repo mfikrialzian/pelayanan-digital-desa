@@ -1289,16 +1289,18 @@
                                         <option value="">Semua Bidang</option>
                                     </select>
                                     <button id="time-filter-Semua" onclick="window.setTimeFilter('Semua')" class="px-4 py-1.5 bg-emerald-50 text-narmadaGreen font-bold text-xs rounded-full whitespace-nowrap">Semua</button>
-                                    <button id="time-filter-Hari Ini" onclick="window.setTimeFilter('Hari Ini')" class="px-4 py-1.5 bg-transparent text-slate-500 hover:bg-slate-50 hover:text-slate-700 font-semibold text-xs rounded-full whitespace-nowrap transition-colors">Hari Ini</button>
-                                    <button id="time-filter-Minggu Ini" onclick="window.setTimeFilter('Minggu Ini')" class="px-4 py-1.5 bg-transparent text-slate-500 hover:bg-slate-50 hover:text-slate-700 font-semibold text-xs rounded-full whitespace-nowrap transition-colors">Minggu Ini</button>
-                                    <button id="time-filter-Bulan Ini" onclick="window.setTimeFilter('Bulan Ini')" class="px-4 py-1.5 bg-transparent text-slate-500 hover:bg-slate-50 hover:text-slate-700 font-semibold text-xs rounded-full whitespace-nowrap transition-colors">Bulan Ini</button>
+                                    <button id="time-filter-Hari-Ini" onclick="window.setTimeFilter('Hari Ini')" class="px-4 py-1.5 bg-transparent text-slate-500 hover:bg-slate-50 hover:text-slate-700 font-semibold text-xs rounded-full whitespace-nowrap transition-colors">Hari Ini</button>
+                                    <button id="time-filter-Minggu-Ini" onclick="window.setTimeFilter('Minggu Ini')" class="px-4 py-1.5 bg-transparent text-slate-500 hover:bg-slate-50 hover:text-slate-700 font-semibold text-xs rounded-full whitespace-nowrap transition-colors">Minggu Ini</button>
+                                    <button id="time-filter-Bulan-Ini" onclick="window.setTimeFilter('Bulan Ini')" class="px-4 py-1.5 bg-transparent text-slate-500 hover:bg-slate-50 hover:text-slate-700 font-semibold text-xs rounded-full whitespace-nowrap transition-colors">Bulan Ini</button>
+                                    <button class="px-3 py-1.5 bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold text-xs rounded-lg transition-colors flex items-center gap-1.5 ml-2">
+                                        <i class="fa-solid fa-filter"></i> Filter
+                                    </button>
                                 </div>
                             </div>
                             <!-- Tabs placed right below the header area -->
                             <div class="px-5 pt-3 flex items-center gap-4 border-b border-slate-100 w-full overflow-x-auto" id="pengajuan-tabs-container">
                                 <button onclick="window.openPengajuanFilter('Semua')" id="tab-pengajuan-Semua" class="px-2 py-2 text-sm font-bold border-b-2 border-narmadaGreen text-narmadaGreen whitespace-nowrap transition-all">Semua</button>
-                                <button onclick="window.openPengajuanFilter('Menunggu')" id="tab-pengajuan-Menunggu" class="px-2 py-2 text-sm font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-700 whitespace-nowrap transition-all">Masuk <span id="tab-badge-menunggu" class="hidden ml-1 px-1.5 py-0.5 rounded-full bg-blue-100 text-blue-700 text-[9px]"></span></button>
-                                <button onclick="window.openPengajuanFilter('Diperiksa')" id="tab-pengajuan-Diperiksa" class="px-2 py-2 text-sm font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-700 whitespace-nowrap transition-all">Diperiksa <span id="tab-badge-diperiksa" class="hidden ml-1 px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-700 text-[9px]"></span></button>
+                                
                                 <button onclick="window.openPengajuanFilter('Perbaikan')" id="tab-pengajuan-Perbaikan" class="px-2 py-2 text-sm font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-700 whitespace-nowrap transition-all">Perbaikan <span id="tab-badge-perbaikan" class="hidden ml-1 px-1.5 py-0.5 rounded-full bg-red-100 text-red-700 text-[9px]"></span></button>
                                 <button onclick="window.openPengajuanFilter('Selesai')" id="tab-pengajuan-Selesai" class="px-2 py-2 text-sm font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-700 whitespace-nowrap transition-all">Selesai</button>
                             </div>
